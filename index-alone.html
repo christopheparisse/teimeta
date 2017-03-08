@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="shortcut icon" type="image/ico" href="favicon.ico">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+	<title></title>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.js"></script>
+  <script src="js/filesaver.js"></script>
+	<script src="teiEdit/data.js"></script>
+	<script src="teiEdit/initalone.js"></script>
+	<script src="teiEdit/events.js"></script>
+	<script src="teiEdit/help.js"></script>
+	<script src="teimeta/odd.js"></script>
+	<script src="systemcall/opensavelocal.js"></script>
+	<script type="text/javascript" language="javascript">
+		$(document).ready(function() {
+            teiEdit.init();
+		} );
+	</script>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="css/display.css">
+	<link rel="stylesheet" type="text/css" href="css/tables.css">
+ </head>
+<body style="margin-left:10px;">
+    <nav id="trjsnav" class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#" onclick='help.shortHelp();' title='Short Help'><img height="24px" src="favicon.png"></img></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          	<!-- FILE MENU -->
+            <li class="dropdown" id="id-files">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span id="files">Files </span><b class="caret"></b></a>
+              <ul class="dropdown-menu">    
+                <li><a href="#" onclick="teiEdit.open();"><i class="fa fa-folder-open-o"></i>Ouvrir un fichier <span id="fkey"> Ctrl O</span></a></li>
+                <li><a href="#" onclick='teiEdit.openOdd();'>Ouvrir un fichier ODD</a></li>
+                <li class="divider"></li>
+                <li><a href="#" onclick='teiEdit.saveAsLocal();'><i class="fa fa-save"></i><i class="fa fa-pencil"></i>Sauver sous ... <span id="fkey"> Ctrl Shift S</span></a></li>
+                <li><a href="#" onclick='teiEdit.new();'><i class="fa fa-new"></i> Nouveau <span id="fkey"> Ctrl N</span></a></li>
+              </ul>
+            </li>
+          	<!-- END FILE MENU -->
+            <!--
+            <li class="dropdown">
+              <a id="id-edit-title" href="#" class="dropdown-toggle" data-toggle="dropdown">Edition <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#" onclick='teiEdit.insertLineAtEnd();'><i class="fa fa-archive"></i> Insérer <span id="fkey"> F6</span></a></li>
+                <li><a href="#" onclick='teiEdit.deleteLine();'><i class="fa fa-user"></i> Supprimer <span id="fkey"> Ctrl F6</span></a></li>
+              </ul>
+            </li>
+            -->
+          </ul>
+        </div><!--/.nav-collapse --> 
+      </div>
+    </nav>
+    <div id='divopenfile' style="padding-left:10px;">
+        <p><span id='o1'>Ouvrir fichier local : </span><input style="display:inline;" id="upload-input-transcript" type="file" name="file-transcript" onchange="systemCall.openLocalFile();" /> <span id="trsize">taille: </span><span id="transcript-file-size">0</span></p>
+        <p class='info-opensave'><span id='o3'>Cliquer sur champ ci-dessus ou y faire glisser un fichier.</span></p>
+    </div>
+    <h3 id="subtitle"></h3>
+    <h4 id="oddname">ODD: </h4>
+    <div id="odddata"></div>
+    <h4 id="filename">Fichier: </h4>
+    <div id="teidata"></div>
+    <!--
+    <div id="datalist"></div>
+        <div class="epilogue">
+        <p>Copyright Ircom/Christophe Parisse.</p>
+      </div>
+    -->
+</body>
+</html>

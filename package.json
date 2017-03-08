@@ -1,0 +1,31 @@
+{
+  "name": "tei-meta",
+  "version": "0.1.0",
+  "description": "An editor for TEI CORPO metadata",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron index.js"
+  },
+  "keywords": [
+    "Electron",
+    "tei",
+    "TEICORPO",
+    "metadata"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/christopheparisse/tei-meta/issues"
+  },
+  "homepage": "https://github.com/christopheparisse/tei-meta#readme",
+  "devDependencies": {
+    "electron-builder": "latest",
+    "electron-packager": "latest",
+    "electron": "latest"
+  },
+  "dependencies": {
+    "xml2js": "^0.4.17",
+    "xmldom": "latest",
+    "xpath": "0.0.23"
+  }
+}

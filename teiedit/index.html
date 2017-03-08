@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="shortcut icon" type="image/ico" href="favicon.ico">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+	<title>?</title>
+	<script type="text/javascript" language="javascript">
+		window.$ = window.jQuery = require('./js/jquery.min.js');
+	</script>
+	<script src="teiEdit/data.js"></script>
+	<script src="teiEdit/initelectron.js"></script>
+	<script src="teiEdit/events.js"></script>
+	<script src="systemcall/opensave.js"></script>
+	<script type="text/javascript" language="javascript">
+		$(document).ready(function() {
+            teiEdit.init();
+		} );
+	</script>
+	<link rel="stylesheet" type="text/css" href="css/display.css">
+	<link rel="stylesheet" type="text/css" href="css/tables.css">
+ </head>
+<body>
+    <h4 id="oddname">ODD: </h4>
+    <h4 id="filename">Fichier: </h4>
+    <div id="teidata">
+    </div>
+    <!--
+    <div id="datalist"></div>
+        <div class="epilogue">
+        <p>Copyright Ircom/Christophe Parisse.</p>
+      </div>
+    -->
+</body>
+</html>
