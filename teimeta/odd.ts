@@ -1,5 +1,5 @@
 /**
- * odd.js
+ * odd.ts
  * author: Christophe Parisse
  * lecture du fichier odd et préparation des commandes pour l'édition de la tei
  */
@@ -8,8 +8,6 @@
 
 let dom = require('xmldom').DOMParser;
 let xpath = require('xpath');
-var parseString = require('xml2js').parseString;
-var teiMeta = {};
 let select = xpath.useNamespaces({
         "tei": "http://www.tei-c.org/ns/1.0",
         "xml": "",
@@ -17,52 +15,84 @@ let select = xpath.useNamespaces({
         "s": "http://purl.oclc.org/dsdl/schematron"
     });
 
-export function ElementSpec() {
-    this.ident = '';
-    this.predeclare = '';
-    this.desc = '';
-    this.module = '';
-    this.mode = '';
-    this.content = null;
-    this.usage = '';
+export class ElementSpec {
+    // Informations de l'ODD
+    ident = '';
+    predeclare = '';
+    desc = '';
+    module = '';
+    mode = ''; // change=oneOrMore, replace=one, add=zeroOrMore
+    content = null;
+    // Informations pour éditer la TEI
+    absolutepath = '';
+    validated = false; // is false element vide, sinon element valide
+    validatedID = '';
+    list = []; // si plusieurs elementSpec,
+        // cela permet de les mettre dans un tableau
 }
 
-export function Content() {
-    this.one = [];
-    this.zeroOrMore = [];
-    this.oneOrMore = [];
-    this.twoOrMore = [];
+export class Content {
+    // les tableaux contiennent des éléments étendus
+    // un élément étendu est un objet qui permet de gérer
+    // un nombre quelconque d'éléments dupliqués et validés ou non 
+    one = [];
+    zeroOrMore = [];
+    oneOrMore = [];
 }
 
-export function Element() {
-    this.name = '';
-    this.module = '';
-    this.usage = '';
-    this.mode = '';
-    this.desc = '';
-    this.attr = [];
-    this.category = [];
-    this.content = null;
+export class ElementCount {
+    count = ''; // oneOrMore, one, zeroOrMore, twoOrMore
+    model = null;
+    eCI = []; // element Count Items
 }
 
-export function Attr() {
-    this.ident = '';
-    this.value = '';
-    this.val = null;
-    this.usage = '';
-    this.mode = '';
-    this.desc = '';
+export class ElementCountItem {
+    validated = false; // is false element not used, si non element used
+    validatedID = '';
+    // obligatory = false; // true if element cannot be removed
+    element = null;
 }
 
-export function Val() {
-    this.type = '';
-    this.mode = '';
-    this.items = [];
+export class Element {
+    // Informations de l'ODD
+    name = '';
+    module = '';
+    usage = '';
+    mode = '';
+    desc = '';
+    attr = [];
+    category = [];
+    content = null;
+    // Informations pour éditer la TEI
+    absolutepath = '';
+    textContent = ''; // ID pour le texte si nécessaire
+    textContentID = ''; // value pour le texte si nécessaire
 }
 
-export function ValItem() {
-    this.ident = '';
-    this.desc = '';
+export class Attr {
+    // Informations de l'ODD
+    ident = '';
+    value = '';
+    val = null;
+    usage = '';
+    mode = '';
+    desc = '';
+    // Informations pour éditer la TEI
+}
+
+export class Val {
+    // Informations de l'ODD
+    ident = '';
+    desc = '';
+    type = '';
+    mode = '';
+    items = [];
+}
+
+export class ValItem {
+    // Informations de l'ODD
+    ident = '';
+    desc = '';
 }
 
 function valList(node) {
@@ -141,7 +171,7 @@ function parseElement(doc) {
 
     let content = select('/exm:element/exm:content', doc1);
     if (content.length > 1) {
-        console.log("content différent de 1 at ", et.name);
+        console.log("content différent de 1 at ", el.name);
     }
     if (content.length > 0)
         el.content = parseContent(content[0].toString());
@@ -166,9 +196,11 @@ function parseContent(doc) {
     content = select('/exm:content/exm:zeroOrMore/exm:element', doc1);
     for (let k=0; k < content.length; k++)
         ei.zeroOrMore.push(parseElement(content[k].toString()));
+    /*
     content = select('/exm:content/exm:twoOrMore/exm:element', doc1);
     for (let k=0; k < content.length; k++)
         ei.twoOrMore.push(parseElement(content[k].toString()));
+    */
     return ei;
 }
 
@@ -206,28 +238,9 @@ export function loadOdd(data) {
         }
         if (content.length > 0)
             esElt.content = parseContent(content[0].toString());
-
-        // xml2js method
-        /*
-        let ei2 = new EditInfo();
-        parseString(s, function (err, result) {
-            // console.log(result);
-            if (result.elementSpec.$.ident)
-                ei2.ident = result.elementSpec.$.ident;
-            if (result.elementSpec.desc && result.elementSpec.desc.length>0)
-                ei2.desc = result.elementSpec.desc[0];
-            if (result.elementSpec.content && result.elementSpec.content.length>0) {
-                let c = result.elementSpec.content[0];
-                if (c.element && c.element.length>0) {
-                    for (let k=0; k < c.element.length; k++)
-                        ei2.one.push(parseElement(c.element[k].toString()));
-                }
-            }
-            console.log(ei2);
-        });
-        */
+//        if (content.length > 0)
         eSpec.push(esElt)
     }
-    console.log(eSpec);
+    // console.log(eSpec);
     return eSpec;
 }

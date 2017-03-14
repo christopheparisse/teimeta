@@ -1,9 +1,76 @@
-#maintable {
-    cellspacing:"0";
+.elementSpec {
     width:"100%";
-    border: 1px solid #F0F;
+    border: 1px solid blue;
     border-collapse: collapse;
+	border-radius: 2px;
 }
+
+.divESpec {
+    width:"100%";
+    margin-left: 10px;
+    border: 2px solid #F0F;
+    border-collapse: collapse;
+	border-radius: 4px;
+}
+
+.fa-red { color: red; }
+.fa-green { color: green; }
+.fa-blue { color: blue; }
+
+.elementSpec .tagnameESpec {
+    display: inline-block;
+    font-size: x-large;
+    font-weight: bold;
+    border: 2px solid blue;
+	border-radius: 6px;
+    margin-left: 10px;
+}
+
+.elementSpec .pathESpec {
+    display: inline-block;
+    font-style: italic;
+    background-color: lightgray;
+    margin-left: 10px;
+}
+
+.elementSpec .descESpec {
+    font-style: italic;
+    font-size: smaller;
+    margin-left: 15px;
+}
+
+.elementSpec .usageESpec {
+    font-size: smaller;
+    margin-left: 15px;
+}
+
+.eltName {
+    display: inline-block;
+    font-size: large;
+    background-color: #f0f0f0;
+}
+
+.innerContent {
+    margin-left: 10px;
+}
+
+.eltName label {
+    margin-left: 5px;
+    margin-right: 5px;
+    border: 1px solid blue;
+	border-radius: 4px;
+}
+
+.eltName em {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.validate {
+    display: inline-block;
+}
+
+/*
 .num { 
     color:blue; 
     text-align: center; 
@@ -18,3 +85,4 @@ tbody, th, td {
 .select-editable select:focus, .select-editable input:focus { outline:none; }
 
 #divopenfile { display: none; border: 1px solid #F0F; }
+*/

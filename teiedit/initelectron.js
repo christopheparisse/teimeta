@@ -1,39 +1,42 @@
-/* global teiEdit */
+/**
+ * @name initelectron.js
+ * @author Christophe Parisse
+ */
 
 const ipcRenderer = require('electron').ipcRenderer;
-
-teiEdit.init = function() {
+import * as events from './events';
+export function init() {
     // load previous data
     try {
         if (localStorage.previousData) {
             var js = JSON.parse(localStorage.previousData);
-            teiEdit.loadTableData(js);
-            teiEdit.datatable.fileName = js.datatable.fileName;
-            $('#filename').html("Fichier: " + teiEdit.datatable.fileName);
+            events.loadTableData(js);
+            events.datatable.fileName = js.datatable.fileName;
+            $('#filename').html("Fichier: " + events.datatable.fileName);
        } else
-        teiEdit.new();
+        events.new();
     } catch (error) {
-        teiEdit.new();
+        events.new();
     }
     /*
         $('body').keydown(bodyKeys);
     */
     ipcRenderer.on('clear', function(event, arg) {
-        teiEdit.new();
+        events.newFile();
     });
     ipcRenderer.on('open', function(event, arg) {
-        teiEdit.open();
+        events.open();
     });
     ipcRenderer.on('openodd', function(event, arg) {
-        teiEdit.openOdd();
+        events.openOdd();
     });
     ipcRenderer.on('save', function(event, arg) {
-        teiEdit.save();
+        events.save();
     });
     ipcRenderer.on('saveas', function(event, arg) {
-        teiEdit.saveAs();
+        events.saveAs();
     });
     ipcRenderer.on('test', function(event, arg) {
-        teiEdit.test();
+        events.test();
     });
 };

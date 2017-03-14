@@ -5,11 +5,10 @@
  * @param {file} object
  */
 
-var systemCall = {};
-
-systemCall.openLocalFile = function(fn) {
+export function openLocalFile(fn) {
+    /*
     var nBytes = 0,
-        oFiles = $("#upload-input-transcript")[0].files,
+        oFiles = document.getElementById("upload-input-transcript").files,
         nBytes = oFiles[0].size;
     var sOutput = nBytes + " bytes";
     // optional code for multiples approximation
@@ -18,8 +17,10 @@ systemCall.openLocalFile = function(fn) {
         nApprox = nBytes / 1024; nApprox > 1; nApprox /= 1024, nMultiple++) {
         sOutput = nApprox.toFixed(1) + " " + aMultiples[nMultiple] + " (" + nBytes + " bytes)";
     }
+    */
     // end of optional code
-    $("#transcript-file-size").html(sOutput);
+    // document.getElementById("transcript-file-size").innerHTML = sOutput;
+    let oFiles = document.getElementById("upload-input-transcript").files;
     readTranscriptObj(oFiles[0]);
 };
 
@@ -36,7 +37,7 @@ function readTranscriptObj(file) {
     // Closure to capture the file information.
     reader.onload = (function(theFile) {
         return function(e) {
-            $('#divopenfile').hide();
+            // document.getElementById('divopenfile').style.display = 'none';
             if (readTranscriptObjCallback) {
                 readTranscriptObjCallback(0, file.name, e.target.result);
             }
@@ -50,12 +51,14 @@ function readTranscriptObj(file) {
 /**
  * available in main
  */
-systemCall.chooseOpenFile = function(callback) {
+export function chooseOpenFile(callback) {
     readTranscriptObjCallback = callback;
-    $('#divopenfile').show();
+//    $("#upload-input-transcript").trigger();
+    document.getElementById('upload-input-transcript').click();
+//    document.getElementById('divopenfile').style.display = 'block';
 };
 
-systemCall.saveFileLocal = function(type, name, data) {
+export function saveFileLocal(type, name, data) {
     var blob = new Blob([data], {
         type : "text/plain;charset=utf-8"
     });

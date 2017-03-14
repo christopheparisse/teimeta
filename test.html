@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+    <style>
+        .fa-red { color: red; }
+        .fa-green { color: green; }
+    </style>
+    <script>
+        document.ids = {};
+        function fun(event, id) {
+            if (event.target.className.indexOf('fa-plus') >= 0) {
+                event.target.className = 'fa fa-2x fa-circle fa-green';
+                document.ids[id] = true;
+            } else {
+                event.target.className = 'fa fa-2x fa-plus fa-red';
+                document.ids[id] = false;
+            }
+            console.log(document.ids);
+        }
+    </script>
+</head>
+<body>
+    <div id="teidata"><i id="alpha" class="fa fa-2x fa-plus fa-red" onclick="fun(event, 'id234567');"></i></div>
+</body>
+</html>

@@ -7,15 +7,9 @@
 	<title></title>
 	<script type="text/javascript" language="javascript">
 		window.$ = window.jQuery = require('./js/jquery.min.js');
-	</script>
-	<script src="teiedit/data.js"></script>
-	<script src="teiedit/initelectron.js"></script>
-	<script src="teiedit/events.js"></script>
-	<script src="teimeta/odd.js"></script>
-	<script src="systemcall/opensave.js"></script>
-	<script type="text/javascript" language="javascript">
+		init = require('./teiedit/initelectron.js');
 		$(document).ready(function() {
-            teiEdit.init();
+            init.init();
 		} );
 	</script>
 	<link rel="stylesheet" type="text/css" href="css/display.css">
