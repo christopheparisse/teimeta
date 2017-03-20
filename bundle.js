@@ -72,8 +72,11 @@
 
 "use strict";
 /**
- * @name edit.js
+ * @module edit.js
  * @author Christophe Parisse
+ * création des structures HTML permettant l'édiion d'un ODD
+ * toutes les structures sous-jacentes (contenus à éditer)
+ * ont été générés précédemment dans les fonctions odd.loadOdd et tei.load
  */
 
 exports.__esModule = true;
@@ -88,11 +91,11 @@ function createID() {
 }
 function setOnOff(event, id) {
     if (event.target.className.indexOf('fa-red') >= 0) {
-        event.target.className = 'validate fa fa-bookmark fa-green';
+        event.target.className = 'validate fa fa-2x fa-bookmark fa-green';
         exports.values[id] = true;
     }
     else {
-        event.target.className = 'validate fa fa-bookmark-o fa-red';
+        event.target.className = 'validate fa fa-2x fa-bookmark-o fa-red';
         exports.values[id] = false;
     }
     console.log(event);
@@ -104,7 +107,7 @@ function setOnOffEC(event, id) {
         exports.values[id] = true;
     }
     else {
-        event.target.className = 'validate fa fa-minus-circle fa-red';
+        event.target.className = 'validate fa fa-circle-o fa-red';
         exports.values[id] = false;
     }
     console.log(event, id);
@@ -120,7 +123,7 @@ function createEC(event, id) {
     var uniq = createID();
     var s = '<div class="headCM">';
     exports.values[uniq] = false;
-    s += '<i class="validate fa fa-minus-circle fa-red" '
+    s += '<i class="validate fa fa-circle-o fa-red" '
         + 'onclick="window.ui.setOnOffEC(event, \'' + uniq + '\')"></i>';
     s += generateElement(eci.element);
     s += '</div>';
@@ -139,6 +142,11 @@ function setText(event, id) {
     console.log(event);
 }
 exports.setText = setText;
+function setAttr(event, id) {
+    exports.values[id] = event.target.value;
+    console.log(event);
+}
+exports.setAttr = setAttr;
 /**
  * @function generateHtml
  * @param {*} elist
@@ -149,34 +157,40 @@ function generateHTML(dataTei) {
         var es = dataTei[i];
         //console.log(es);
         // ElementSpec
-        s += '<div class="elementSpec">';
-        if (es.predeclare) {
-            var uniq = createID();
-            if (es.validated) {
-                s += '<i class="validate fa fa-bookmark fa-green" '
-                    + 'onclick="window.ui.setOnOff(event, \'' + uniq + '\')"></i>';
+        if (es.ec.length > 0) {
+            for (var k = 0; k < es.ec.length; k++) {
+                s += '<div class="elementSpec">';
+                var uniq = createID();
+                if (es.ec[k].validated) {
+                    s += '<i class="validate fa fa-2x fa-bookmark fa-green" '
+                        + 'onclick="window.ui.setOnOff(event, \'' + uniq + '\')"></i>';
+                }
+                else {
+                    s += '<i class="validate fa fa-2x fa-bookmark-o fa-red" '
+                        + 'onclick="window.ui.setOnOff(event, \'' + uniq + '\')"></i>';
+                }
+                exports.values[uniq] = es.ec[k].validated;
+                es.ec[k].validatedID = uniq;
+                s += '<div class="tagnameESpec">' + es.ident + '</div>';
+                s += '<div class="pathESpec">' + es.absolutepath + '</div>';
+                s += (es.mode === "replace" || es.mode === "change")
+                    ? '<div class="usageESpec">Usage: <b>Obligatoire</b></div>'
+                    : '';
+                if (es.ec[k].content)
+                    s += generateContent(es.ec[k].content);
+                if (es.desc)
+                    s += '<div class="descESpec">Description: <b>' + es.desc + '</b></div>';
+                s += '</div>';
             }
-            else {
-                s += '<i class="validate fa fa-bookmark-o fa-red" '
-                    + 'onclick="window.ui.setOnOff(event, \'' + uniq + '\')"></i>';
-            }
-            exports.values[uniq] = es.validated;
-            es.validatedID = uniq;
-            s += '<div class="tagnameESpec">' + es.ident + '</div>';
-            s += '<div class="pathESpec">' + es.absolutepath + '</div>';
-            s += (es.mode === "replace" || es.mode === "change")
-                ? '<div class="usageESpec">Usage: <b>Obligatoire</b></div>'
-                : '';
-            if (es.content)
-                s += generateContent(es.content);
         }
         else {
+            s += '<div class="elementSpec">';
             s += '<div class="tagnameESpec">' + es.ident + '</div>';
             s += '<div class="pathESpec">Non éditable</div>';
+            if (es.desc)
+                s += '<div class="descESpec">Description: <b>' + es.desc + '</b></div>';
+            s += '</div>';
         }
-        if (es.desc)
-            s += '<div class="descESpec">Description: <b>' + es.desc + '</b></div>';
-        s += '</div>';
     }
     return s;
 }
@@ -217,7 +231,7 @@ function groupXOrMore(ec, x) {
             s += '<i class="validate fa fa-circle-o fa-green" '
                 + 'onclick="window.ui.setOnOffEC(event, \'' + uniq + '\')"></i>';
         else
-            s += '<i class="validate fa fa-minus-circle fa-red" '
+            s += '<i class="validate fa fa-circle-o fa-red" '
                 + 'onclick="window.ui.setOnOffEC(event, \'' + uniq + '\')"></i>';
         s += generateElement(ec.eCI[i].element);
         s += '</div>';
@@ -228,19 +242,71 @@ function groupXOrMore(ec, x) {
 function generateElement(elt) {
     // let s = '<div class="element">';
     var s = '';
-    var uniq = createID();
+    var uniq;
+    var txct = elt.textContent;
     s += '<div class="eltName">';
-    s += '<label for="' + uniq + '">';
-    s += '<b>' + elt.name + '</b></label>';
-    s += '<input name="' + uniq + '" id="' + uniq + '"';
-    s += 'onchange="window.ui.setText(event, \'' + uniq + '\')"';
-    if (elt.textContent)
-        s += ' value="' + elt.textContent + '"';
-    exports.values[uniq] = (elt.textContent) ? elt.textContent : '';
-    elt.textContentID = uniq;
-    s += ' />';
+    if (elt.category.length > 0) {
+        uniq = createID();
+        s += '<label for="' + uniq + '">';
+        s += '<b>' + elt.name + '(category)</b></label>';
+        // choix dans une liste
+        s += '<select class="listattr" id="' + uniq + '" ';
+        s += 'onchange="window.ui.setAttr(event, \'' + uniq + '\');"';
+        for (var k in elt.category) {
+            s += '<option value="' +
+                elt.category[k].desc + '">' + elt.category[k].ident
+                + ' (' + elt.category[k].desc + ')</option>';
+        }
+        s += '</select>';
+    }
+    else {
+        uniq = createID();
+        s += '<label for="' + uniq + '">';
+        s += '<b>' + elt.name + '(text)</b></label>';
+        // edition de la valeur
+        s += '<input name="' + uniq + '" id="' + uniq + '" ';
+        s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+        if (elt.textContent)
+            s += ' value="' + txct + '"';
+        exports.values[uniq] = (txct) ? txct : '';
+        elt.textContentID = uniq;
+        s += ' />';
+    }
     if (elt.usage === 'req')
         s += ' <em>obligatoire</em>';
+    if (elt.attr.length > 0) {
+        s += '<div class="attrs">';
+        for (var i in elt.attr) {
+            if (elt.attr[i].val.items && elt.attr[i].val.items.length > 0) {
+                // attributs avec liste
+                uniq = createID();
+                s += '<label for="' + uniq + '">';
+                s += '<b>' + elt.attr[i].ident + '-' + elt.attr[i].desc + '(attribute list)</b></label>';
+                s += '<select class="listattr" id="' + uniq + '" ';
+                s += 'onchange="window.ui.setAttr(event, \'' + uniq + '\');">';
+                for (var k in elt.attr[i].val.items) {
+                    s += '<option value="' +
+                        elt.attr[i].val.items[k].ident + '">' + elt.attr[i].val.items[k].ident
+                        + ' (' + elt.attr[i].val.items[k].desc + ')</option>';
+                }
+                s += '</select>';
+            }
+            else {
+                // attribut sans liste: edition de la valeur
+                uniq = createID();
+                s += '<label for="' + uniq + '">';
+                s += '<b>' + elt.attr[i].ident + '-' + elt.attr[i].desc + '(attribute valeur)</b></label>';
+                s += '<input name="' + uniq + '" id="' + uniq + '"';
+                s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+                if (elt.attr[i].value)
+                    s += ' value="' + elt.attr[i].value + '"';
+                exports.values[uniq] = (elt.attr[i].value) ? elt.attr[i].value : '';
+                elt.textContentID = uniq;
+                s += ' />';
+            }
+        }
+        s += '</div>';
+    }
     s += '</div>';
     if (elt.desc)
         s += '<div class="eltDesc">Description: <b>' + elt.desc + '</b></div>';
@@ -259,9 +325,12 @@ function generateElement(elt) {
 
 "use strict";
 /**
- * odd.ts
- * author: Christophe Parisse
- * lecture du fichier odd et préparation des commandes pour l'édition de la tei
+ * @module odd.ts
+ * @author: Christophe Parisse
+ * lecture du fichier odd et récupération de toutes
+ * les informatons qui permettront l'édition de la tei
+ * @exports loadOdd
+ * @exports Element ElementCount ElementCountItem ElementSpec Content Attr Val ValItem
  */
 
 exports.__esModule = true;
@@ -284,10 +353,9 @@ var ElementSpec = (function () {
         this.content = null;
         // Informations pour éditer la TEI
         this.absolutepath = '';
-        this.validated = false; // is false element vide, sinon element valide
-        this.validatedID = '';
-        this.list = []; // si plusieurs elementSpec,
+        this.ec = []; // si plusieurs elementSpec,
         // cela permet de les mettre dans un tableau
+        // cette partie est initialisée dans load() dans le module tei()
     }
     return ElementSpec;
 }());
@@ -313,12 +381,23 @@ var ElementCount = (function () {
     return ElementCount;
 }());
 exports.ElementCount = ElementCount;
+var ElementSpecItem = (function () {
+    function ElementSpecItem() {
+        this.validated = false; // is false element not used, si non element used
+        this.validatedID = '';
+        // obligatory = false; // true if element cannot be removed
+        this.node = null; // seulement utilie pour les elementSpec
+        this.content = null; // seulement utilise pour les elementSpec 
+    }
+    return ElementSpecItem;
+}());
+exports.ElementSpecItem = ElementSpecItem;
 var ElementCountItem = (function () {
     function ElementCountItem() {
         this.validated = false; // is false element not used, si non element used
         this.validatedID = '';
         // obligatory = false; // true if element cannot be removed
-        this.element = null;
+        this.element = null; // seulement utilisé pour les noeuds internes
     }
     return ElementCountItem;
 }());
@@ -377,6 +456,12 @@ var ValItem = (function () {
     return ValItem;
 }());
 exports.ValItem = ValItem;
+/**
+ * @method valList
+ * fonction de traitement des listes de valeurs pour les attributs
+ * @param node
+ * @returns structure Val()
+ */
 function valList(node) {
     var v = new Val();
     var valList = node.getElementsByTagName("valList");
@@ -402,6 +487,12 @@ function valList(node) {
     }
     return v;
 }
+/**
+ * @method parseElement
+ * traite tout le contenu d'un élément de description
+ * @param doc
+ * @returns structure Element()
+ */
 function parseElement(doc) {
     // DOM method
     // initialize DOM
@@ -469,6 +560,12 @@ function parseElement(doc) {
         el.content = parseContent(content[0].toString());
     return el;
 }
+/**
+ * @method parseContent
+ * liste tous les elements d'un content et lance leur traitement
+ * @param doc chaime contenant du xml
+ * @returns structure Content()
+ */
 function parseContent(doc) {
     // DOM method
     // initialize DOM
@@ -494,6 +591,12 @@ function parseContent(doc) {
     */
     return ei;
 }
+/**
+ * @method loadOdd
+ * parse tous les elementSpec du odd et appele sous-fonction pour les champs Content
+ * @param data : contenu d'un fichier xml
+ * @returns structure teiOdd (modèle de données du ODD)
+ */
 function loadOdd(data) {
     // get XML ready
     var parser = new DOMParser();
@@ -504,12 +607,29 @@ function loadOdd(data) {
     for (var i = 0; i < nodes.length; i++) {
         // console.log(nodes[i]);
         var s = nodes[i].toString();
-        var esElt = new ElementSpec();
         // DOM method
         // initialize DOM
         var doc1 = new dom().parseFromString(s, 'text/xml');
-        // find all elementSpec
+        // find all about elementSpec
+        var content = select('/exm:elementSpec/exm:content', doc1);
         var attr = select('/exm:elementSpec/@ident', doc1); // .value;
+        var ident = '?';
+        if (attr.length)
+            ident = attr[0].textContent;
+        if (content.length > 1) {
+            s = "content différent de 1 à " + ident + " seulement premier de traité.";
+            console.log(s);
+            alert(s);
+        }
+        if (content.length <= 0)
+            continue;
+        var esElt = new ElementSpec();
+        // décryptage du champ Content
+        esElt.content = parseContent(content[0].toString());
+        eSpec.push(esElt);
+        // insertion des données attribut du ElementSpec
+        esElt.ident = ident;
+        attr = select('/exm:elementSpec/@ident', doc1); // .value;
         if (attr.length)
             esElt.ident = attr[0].textContent;
         attr = select('/exm:elementSpec/@module', doc1); // .value;
@@ -524,14 +644,6 @@ function loadOdd(data) {
         var desc = select('/exm:elementSpec/exm:desc', doc1);
         if (desc.length > 0)
             esElt.desc = desc[0].textContent;
-        var content = select('/exm:elementSpec/exm:content', doc1);
-        if (content.length > 1) {
-            console.log("content différent de 1 at ", esElt.ident);
-        }
-        if (content.length > 0)
-            esElt.content = parseContent(content[0].toString());
-        //        if (content.length > 0)
-        eSpec.push(esElt);
     }
     // console.log(eSpec);
     return eSpec;
@@ -627,8 +739,11 @@ function saveFileLocal(type, name, data) {
 
 "use strict";
 /**
- * @name tei.ts
+ * @module tei.ts
  * @author Christophe Parisse
+ * lecture d'un fichier xml et chargement des valeurs initiales
+ * si le fichier est vide (null) les valeurs initiales sont toutes mises à zéro
+ * la structrue résultat teiData est prête à être traitée
  */
 
 exports.__esModule = true;
@@ -642,25 +757,25 @@ var select = xpath.useNamespaces({
     "exm": "http://www.tei-c.org/ns/Examples",
     "s": "http://purl.oclc.org/dsdl/schematron"
 });
-var parser = null;
-var doc = null;
+var basicTEI = '<?xml version="1.0" encoding="UTF-8"?>\
+<TEI xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:svg="http://www.w3.org/2000/svg"\
+     xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns="http://www.tei-c.org/ns/1.0">\
+</TEI>';
 /**
  * @method load
  * @param {*} data raw data content of TEI file
  * @param {*} dataOdd array of ElementSpec from odd.ts - loadOdd
- * @returns {*} array of ElementSpec TEI + ODD
+ * @returns {*} true if ok
  */
-function load(data, dataOdd) {
+function load(data, teiData) {
+    teiData.dataTei = [];
     // get XML ready
-    parser = new DOMParser();
-    // let doc = parser.parseFromString(data, "text/xml");
-    doc = data
+    teiData.parser = new DOMParser();
+    teiData.doc = data
         ? new dom().parseFromString(data.toString(), 'text/xml')
         : null;
-    var dataTei = [];
-    for (var i in dataOdd) {
-        var es = copy(dataOdd[i]);
-        dataTei.push(es);
+    for (var i in teiData.dataOdd) {
+        var es = copy(teiData.dataOdd[i]);
         if (es.predeclare.endsWith('/'))
             es.predeclare = es.predeclare.substring(0, es.predeclare.length - 1);
         // if (!es.predeclare) es.predeclare = '***NEPASEDITER***';
@@ -670,33 +785,48 @@ function load(data, dataOdd) {
         //console.log(path);
         var nodes = void 0;
         try {
-            nodes = doc ? select(path, doc) : [];
+            nodes = teiData.doc ? select(path, teiData.doc) : [];
         }
         catch (err) {
             console.log('caught at load: ', err);
             continue;
         }
-        if (nodes.length > 1) {
-            console.log("not only one elementSpec");
-            console.log("pas encore implémenté");
+        // les données sont prêtes à être traitées.
+        // on ajoute donc l'élément au tableau de données
+        teiData.dataTei.push(es);
+        // les valeurs du contenu des ElementSpec (tableau de valeurs)
+        // permettant de gérer un nombre quelconque d'éléments 
+        // si autorisé est initialisé
+        if (nodes.length > 0) {
             // créer un tableau
             // faire autant de copies que nécessaire pour mettre dans le tableau
-        }
-        else if (nodes.length === 1) {
-            es.validated = true;
-            edit.values[es.validatedID] = true;
-            if (es.content)
-                loadContent(nodes[0], es.content, es.absolutepath); // es === es.list[0]
+            for (var k = 0; k < nodes.length; k++) {
+                var esEC = new odd.ElementSpecItem();
+                esEC.validated = true;
+                esEC.node = nodes[k];
+                es.ec.push(esEC); // ajout de l'élément à liste
+                // il est prêt à être étudié et édité
+                if (es.content) {
+                    esEC.content = copy(es.content);
+                    loadContent(nodes[k], esEC.content, es.absolutepath);
+                }
+            }
         }
         else {
             // nodes.length === 0
-            es.validated = false;
-            edit.values[es.validatedID] = true;
-            if (es.content)
-                loadContent(null, es.content, es.absolutepath);
+            var esEC = new odd.ElementSpecItem();
+            if (es.mode === 'replace' || es.mode === 'change')
+                esEC.validated = true;
+            esEC.node = null;
+            es.ec.push(esEC); // ajout de l'élément à liste
+            // il est prêt à être étudié et édité
+            if (es.content) {
+                esEC.content = copy(es.content);
+                loadContent(null, esEC.content, es.absolutepath);
+            }
         }
     }
-    return dataTei;
+    return true;
 }
 exports.load = load;
 function copy(obj) {
@@ -726,7 +856,22 @@ function loadContent(doc, ct, abspath) {
         loadXOrMore(doc, ec, abspath, false); // read element editing info
     }
 }
-function loadOne(doc, ec, abspath) {
+/**
+ * @method getNodeText
+ * get text of current node only
+ * @param node
+ * @returns value of text
+ */
+function getNodeText(node) {
+    var txt = '';
+    for (var child in node.childNodes) {
+        if (node.childNodes[child].nodeType === 3) {
+            txt += node.childNodes[child];
+        }
+    }
+    return txt;
+}
+function loadOne(node, ec, abspath) {
     // préparer l'élément unique
     // ec est un ElementCount
     var eci = new odd.ElementCountItem();
@@ -737,35 +882,19 @@ function loadOne(doc, ec, abspath) {
     var elt = eci.element;
     elt.absolutepath = abspath + '/' + elt.name;
     // load from TEI
-    var path = elt.absolutepath.replace(/\//g, "/tei:"); // add namespace
-    var nodes;
-    try {
-        nodes = doc ? select(path, doc) : [];
-    }
-    catch (err) {
-        console.log('caught at loadOne: ', err);
-        return;
-    }
+    var nodes = node ? getChildrenByName(node, elt.name) : [];
     // utiliser count TODO
     if (nodes.length > 0) {
-        elt.textContent = nodes[0].textContent.trim();
+        elt.textContent = getNodeText(nodes[0]).trim();
     }
     if (elt.content) {
-        loadContent(doc, elt.content, elt.absolutepath);
+        loadContent(nodes.length > 0 ? nodes[0] : null, elt.content, elt.absolutepath);
     }
 }
-function loadXOrMore(doc, ec, abspath, x) {
-    var path = ec.model.absolutepath = abspath + '/' + ec.model.name;
+function loadXOrMore(node, ec, abspath, x) {
+    ec.model.absolutepath = abspath + '/' + ec.model.name;
     // load from TEI
-    path = path.replace(/\//g, "/tei:"); // add namespace
-    var nodes;
-    try {
-        nodes = doc ? select(path, doc) : [];
-    }
-    catch (err) {
-        console.log('caught at loadXOrMore: ', err);
-        return;
-    }
+    var nodes = node ? getChildrenByName(node, ec.model.name) : [];
     // utiliser count
     if (nodes.length > 0) {
         // on peut se baser sur ce qui existe pour construire les données
@@ -777,9 +906,9 @@ function loadXOrMore(doc, ec, abspath, x) {
             eci.validated = true;
             edit.values[eci.validatedID] = true;
             ec.eCI.push(eci);
-            eci.element.textContent = nodes[i].textContent.trim();
+            eci.element.textContent = getNodeText(nodes[i]).trim();
             if (eci.element.content) {
-                loadContent(doc, eci.element.content, ec.model.absolutepath);
+                loadContent(nodes[i], eci.element.content, ec.model.absolutepath);
             }
         }
     }
@@ -793,45 +922,178 @@ function loadXOrMore(doc, ec, abspath, x) {
         edit.values[eci.validatedID] = x;
         ec.eCI.push(eci);
         if (eci.element.content) {
-            loadContent(doc, eci.element.content, ec.model.absolutepath);
+            loadContent(null, eci.element.content, ec.model.absolutepath);
         }
     }
 }
-function generateTEI(dataTei) {
-    var s = '';
-    for (var i in dataTei) {
-        dataTei[i].validated = edit.values[dataTei[i].validatedID];
-        s += dataTei[i].predeclare + '/' + dataTei[i].ident + ': ' + dataTei[i].validated + '\n';
-        if (dataTei[i].content) {
-            s += generateTEIContent(dataTei[i].content, null); // null for node TODO
+/**
+ * @method getChildrenByName
+ * get list of immediate children nodes with a given tagname
+ * @param node
+ * @param name
+ * @returns [list of nodes]
+ */
+function getChildrenByName(node, name) {
+    var children = [];
+    for (var child in node.childNodes) {
+        if (node.childNodes[child].nodeType === 1) {
+            if (node.childNodes[child].tagName === name)
+                children.push(node.childNodes[child]);
         }
     }
-    return s;
+    return children;
+}
+function setTextNode(node, val, doc) {
+    var first = false;
+    for (var child in node.childNodes) {
+        if (node.childNodes[child].nodeType === 3) {
+            if (first === false) {
+                first = true;
+                node.childNodes[child].nodeValue = val;
+            }
+            else {
+                node.childNodes[child].nodeValue = '';
+            }
+        }
+    }
+    if (first === false) {
+        // pas de noeud texte rencontré
+        var nn = doc.createTextNode(val);
+        node.appendChild(nn);
+    }
+}
+/**
+ * @method createAbsolutePath
+ * creates a path from top of xml file and returns last node created
+ * @param path
+ * @param doc
+ * @returns node
+ */
+function createAbsolutePath(path, doc) {
+    var p = path.split('/').slice(1);
+    var node = doc.documentElement;
+    for (var i = 0; i < p.length; i++) {
+        var nds = getChildrenByName(node, p[i]);
+        if (nds.length > 1) {
+            var s = p.slice(0, i).join('/');
+            s = 'attention element ' + s + " n'est pas unique.";
+            console.log(s);
+            alert(s);
+        }
+        if (nds.length > 0) {
+            node = nds[0];
+        }
+        else {
+            var newnode = doc.createElement(p[i]);
+            node.appendChild(newnode);
+            node = newnode;
+        }
+    }
+    return node;
+}
+function generateTEI(teiData) {
+    // get XML ready surtout si nouveau texte
+    if (teiData.doc === null) {
+        teiData.doc = new dom().parseFromString(basicTEI, 'text/xml');
+    }
+    var s = '';
+    for (var i in teiData.dataTei) {
+        for (var k = 0; k < teiData.dataTei[i].ec.length; k++) {
+            teiData.dataTei[i].ec[k].validated = edit.values[teiData.dataTei[i].ec[k].validatedID];
+            s += '<element path="' + teiData.dataTei[i].absolutepath + '" name="'
+                + teiData.dataTei[i].ident + '" validated="' + teiData.dataTei[i].validated + '">\n';
+            if (!teiData.dataTei[i].ec[k].validated) {
+                s += '</element>\n';
+                continue;
+            }
+            var current = void 0;
+            if (teiData.dataTei[i].ec[k].node) {
+                current = teiData.dataTei[i].ec[k].node;
+            }
+            else {
+                current = createAbsolutePath(teiData.dataTei[i].absolutepath, teiData.doc);
+                teiData.dataTei[i].ec[k].node = current;
+            }
+            if (teiData.dataTei[i].ec[k].content) {
+                // si on edite quelque chose au niveau de l'élémentSpec il faut le mettre ici
+                s += generateTEIContent(teiData.dataTei[i].ec[k].content, teiData.doc, current);
+            }
+            s += '</element>\n';
+        }
+    }
+    console.log(teiData.dataTei);
+    console.log(s);
+    // transform doc to text
+    console.log(teiData.doc.toString());
+    return teiData.doc.toString();
 }
 exports.generateTEI = generateTEI;
-function generateTEIContent(ct, node) {
+function generateOneContent(eci, doc, current) {
     var s = '';
-    for (var i = 0; i < ct.one.length; i++) {
-        s += generateElements(ct.one[i].eCI, node);
+    // find or create element from XML file
+    var nodes = getChildrenByName(current, eci.element.name);
+    if (nodes.length > 0) {
+        if (nodes.length > 1) {
+            alert("Trop d'élements pour un One. Il faudrait supprimer les éléments en trop.");
+        }
+        s += generateElement(eci, doc, nodes[0]);
     }
-    for (var i = 0; i < ct.oneOrMore.length; i++) {
-        s += generateElements(ct.oneOrMore[i].eCI, node);
-    }
-    for (var i = 0; i < ct.zeroOrMore.length; i++) {
-        s += generateElements(ct.zeroOrMore[i].eCI, node);
+    else {
+        // console.log("create new node", eci.element.name); // va générer le node si nécessaire
+        var newnode = doc.createElement(eci.element.name);
+        current.appendChild(newnode);
+        s += generateElement(eci, doc, newnode);
     }
     return s;
 }
-function generateElements(ec, node) {
+function generateXOrMoreContent(ec, doc, current, type) {
     var s = '';
-    for (var i in ec) {
-        s += (edit.values[ec[i].validatedID] === true)
-            ? "VALIDATED "
-            : ((edit.values[ec[i].validatedID] === false) ? "unchecked " : "empty");
-        ec[i].element.textContent = edit.values[ec[i].element.textContentID];
-        s += ec[i].element.name + ' := ' + ec[i].element.textContent + '\n';
-        if (ec[i].element.content) {
-            s += generateTEIContent(ec[i].element.content, node);
+    // find or create element from XML file
+    var nodes = getChildrenByName(current, ec[0].element.name);
+    // maintenant il faut d'abord utiliser tous les nodes pour les premiers ec
+    // et s'il n'y a pas la place rajouter des nodes
+    var iEC = 0; // pointeur sur l'élément dans ec
+    for (; iEC < nodes.length && iEC < ec.length; iEC++) {
+        s += generateElement(ec[iEC], doc, nodes[iEC]);
+    }
+    for (; iEC < ec.length; iEC++) {
+        // si on passe ici c'est qu'on a fini les nodes sans avoir fini les ec
+        var newnode = doc.createElement(ec[iEC].element.name);
+        current.appendChild(newnode);
+        s += generateElement(ec[iEC], doc, newnode);
+    }
+    return s;
+}
+function generateTEIContent(ct, doc, current) {
+    var s = '';
+    for (var i = 0; i < ct.one.length; i++) {
+        s += generateOneContent(ct.one[i].eCI[0], doc, current);
+    }
+    for (var i = 0; i < ct.oneOrMore.length; i++) {
+        s += generateXOrMoreContent(ct.oneOrMore[i].eCI, doc, current, true);
+    }
+    for (var i = 0; i < ct.zeroOrMore.length; i++) {
+        s += generateXOrMoreContent(ct.zeroOrMore[i].eCI, doc, current, false);
+    }
+    return s;
+}
+function generateElement(eci, doc, node) {
+    var s = '';
+    /*
+    s += (edit.values[ec[i].validatedID] === true)
+        ? "VALIDATED "
+        : ( (edit.values[ec[i].validatedID] === false) ? "unchecked " : "empty");
+    */
+    // console.log("geneElemts:",eci);
+    if (edit.values[eci.validatedID] === true) {
+        eci.element.textContent = edit.values[eci.element.textContentID];
+        if (doc !== null)
+            setTextNode(node, eci.element.textContent, doc);
+        else
+            node.textContent = eci.element.textContent;
+        s += '<' + eci.element.name + '>' + eci.element.textContent + '</' + eci.element.name + '>\n';
+        if (eci.element.content) {
+            s += generateTEIContent(eci.element.content, doc, node);
         }
     }
     return s;
@@ -7059,11 +7321,10 @@ exports.select1 = function(e, doc) {
 /* unused harmony export tableElementKeys */
 /* unused harmony export test */
 /* harmony export (immutable) */ __webpack_exports__["a"] = open;
-/* harmony export (immutable) */ __webpack_exports__["e"] = openOddDefault;
+/* harmony export (immutable) */ __webpack_exports__["d"] = newFile;
 /* unused harmony export openOddLoad */
 /* harmony export (immutable) */ __webpack_exports__["b"] = openOdd;
 /* unused harmony export emptyFile */
-/* harmony export (immutable) */ __webpack_exports__["d"] = newFile;
 /* unused harmony export saveAs */
 /* unused harmony export save */
 /* harmony export (immutable) */ __webpack_exports__["c"] = saveAsLocal;
@@ -7082,6 +7343,9 @@ var teiData = {
     dataOdd: null,
     dataTei: null,
     html: null,
+    new: true,
+    parser: null,
+    doc: null,
 };
 
 function tableElementKeys(e) {
@@ -7105,7 +7369,7 @@ function tableElementKeys(e) {
 };
 
 function test() {
-    openOddDefault();
+    newFile();
 };
 
 function open() {    
@@ -7114,15 +7378,14 @@ function open() {
             function finish(err) {
                 teiData.fileName = name;
                 $('#filename').html("Fichier: " + name);
-                console.log(teiData.dataOdd);
-                teiData.dataTei = __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__["load"](data, teiData.dataOdd);
-                console.log(teiData.dataTei);
+                __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__["load"](data, teiData);
                 teiData.html = __WEBPACK_IMPORTED_MODULE_0__teimeta_edit_ts__["generateHTML"](teiData.dataTei);
-                console.log(teiData.dataTei);
                 $('#teidata').html(teiData.html);
-            } 
+                teiData.new = false;
+                console.log("openfile", teiData.dataTei);
+            }
             if (!teiData.dataOdd) {
-                openOddDefault(finish);
+                newFile(finish);
             } else {
                 finish(0);
             }
@@ -7131,7 +7394,7 @@ function open() {
     });
 };
 
-function openOddDefault(callback) {
+function newFile(callback) {
     try {
         let ls = localStorage.getItem("previousODD");
         if (ls) {
@@ -7150,11 +7413,14 @@ function openOddLoad(name, data) {
     teiData.oddName = name;
     $('#oddname').html("ODD: " + name);
     teiData.dataOdd = __WEBPACK_IMPORTED_MODULE_1__teimeta_odd_ts__["loadOdd"](data);
-    console.log(teiData.dataOdd);
-    teiData.dataTei = __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__["load"](null, teiData.dataOdd);
-    console.log(teiData.dataTei);
+    __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__["load"](null, teiData);
     teiData.html = __WEBPACK_IMPORTED_MODULE_0__teimeta_edit_ts__["generateHTML"](teiData.dataTei);
+    teiData.fileName = 'Pas de nom de fichier';
+    teiData.new = true;
+    $('#filename').html("Fichier: " + teiData.fileName);
     $('#teidata').html(teiData.html);
+    console.log("openOddLoad", teiData.dataOdd);
+    console.log("openOddLoad", teiData.dataTei);
 }
 
 function openOdd() {
@@ -7175,22 +7441,9 @@ function emptyFile() {
     dt.html('<p>TEI DATA VIDE</p>');
     teiData.oddName = "Pas de nom de fichier";
     $('#oddname').html("ODD: " + name);
-    teiData.fileName = 'Pad de nom de fichier';
+    teiData.fileName = 'Pas de nom de fichier';
+    teiData.new = true;
     $('#filename').html("Fichier: " + name);
-}
-
-function newFile() {
-    function finish(err) {
-        teiData.fileName = "Nouveau fichier";
-        $('#filename').html("Fichier: " + name);
-        console.log(teiData.dataOdd);
-        teiData.dataTei = __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__["load"](null, teiData.dataOdd);
-        console.log(teiData.dataTei);
-        teiData.html = __WEBPACK_IMPORTED_MODULE_0__teimeta_edit_ts__["generateHTML"](teiData.dataTei);
-        console.log(teiData.dataTei);
-        $('#teidata').html(teiData.html);
-    } 
-    openOddDefault(finish);
 }
 
 function saveAs() {    
@@ -7198,8 +7451,7 @@ function saveAs() {
         if (!err) {
             teiData.fileName = name;
             $('#filename').html("Fichier: " + teiData.fileName);
-            var ed = __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__["generateTEI"](teiData.dataTei);
-            console.log(ed);
+            var ed = __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__["generateTEI"](teiData);
             __WEBPACK_IMPORTED_MODULE_3__systemcall_opensavelocal_js__["saveFile"](teiData.fileName, ed);
         } else
             console.log(name, err);
@@ -7209,14 +7461,15 @@ function saveAs() {
 function save() {
     var fileok = true;
     if (!teiData.fileName) {
-            var ed = __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__["generateTEI"](teiData.dataTei);
+            var ed = __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__["generateTEI"](teiData);
             __WEBPACK_IMPORTED_MODULE_3__systemcall_opensavelocal_js__["saveFile"](teiData.fileName, ed);
     } else
         saveAs();
 };
 
 function saveAsLocal() {
-    var ed = __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__["generateTEI"](teiData.dataTei);
+    var ed = __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__["generateTEI"](teiData);
+    // console.log(ed);
     __WEBPACK_IMPORTED_MODULE_3__systemcall_opensavelocal_js__["e" /* saveFileLocal */]('xml', teiData.fileName, ed);
 };
 
@@ -7914,7 +8167,7 @@ function bodyKeys(e) {
 
 function init() {
     // load previous data
-    __WEBPACK_IMPORTED_MODULE_0__events_js__["e" /* openOddDefault */](__WEBPACK_IMPORTED_MODULE_0__events_js__["d" /* newFile */]);
+    __WEBPACK_IMPORTED_MODULE_0__events_js__["d" /* newFile */]();
     let el;
     el = document.getElementsByTagName('body');
     el[0].addEventListener("keydown", bodyKeys);
@@ -7931,8 +8184,9 @@ function init() {
     window.ui = {};
     window.ui.setOnOff = __WEBPACK_IMPORTED_MODULE_1__teimeta_edit_ts__["setOnOff"];    
     window.ui.setOnOffEC = __WEBPACK_IMPORTED_MODULE_1__teimeta_edit_ts__["setOnOffEC"];    
-    window.ui.setText = __WEBPACK_IMPORTED_MODULE_1__teimeta_edit_ts__["setText"];    
+    window.ui.setText = __WEBPACK_IMPORTED_MODULE_1__teimeta_edit_ts__["setText"];
     window.ui.createEC = __WEBPACK_IMPORTED_MODULE_1__teimeta_edit_ts__["createEC"];    
+    window.ui.setAttr = __WEBPACK_IMPORTED_MODULE_1__teimeta_edit_ts__["setAttr"];
 }
 
 // in case the document is already rendered

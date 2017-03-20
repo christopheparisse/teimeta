@@ -1,8 +1,36 @@
+#top {
+    margin: 0;
+    padding: 0;
+    border-collapse: collapse;
+}
+
+.headtop {
+    width: 19%;
+    display: inline-block;
+    color: white;
+    background-color: darkblue;
+    margin: 0;
+    padding: 0;
+}
+
+.headtopi {
+    padding-left: 4px;
+    vertical-align: middle;
+}
+
+.headtopt {
+    text-align: center;
+    vertical-align: middle;
+}
+
 .elementSpec {
     width:"100%";
     border: 1px solid blue;
     border-collapse: collapse;
 	border-radius: 2px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    padding: 2px;
 }
 
 .divESpec {

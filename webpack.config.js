@@ -1,5 +1,5 @@
 module.exports = {
-  entry: './teiedit/initalone.js',
+  entry: './teiedit/singlepage.js',
   output: {
     filename: 'bundle.js'
   },

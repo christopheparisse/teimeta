@@ -13,6 +13,9 @@ var teiData = {
     dataOdd: null,
     dataTei: null,
     html: null,
+    new: true,
+    parser: null,
+    doc: null,
 };
 
 export function tableElementKeys(e) {
@@ -36,7 +39,7 @@ export function tableElementKeys(e) {
 };
 
 export function test() {
-    openOddDefault();
+    newFile();
 };
 
 export function open() {    
@@ -45,15 +48,14 @@ export function open() {
             function finish(err) {
                 teiData.fileName = name;
                 $('#filename').html("Fichier: " + name);
-                console.log(teiData.dataOdd);
-                teiData.dataTei = tei.load(data, teiData.dataOdd);
-                console.log(teiData.dataTei);
+                tei.load(data, teiData);
                 teiData.html = edit.generateHTML(teiData.dataTei);
-                console.log(teiData.dataTei);
                 $('#teidata').html(teiData.html);
-            } 
+                teiData.new = false;
+                console.log("openfile", teiData.dataTei);
+            }
             if (!teiData.dataOdd) {
-                openOddDefault(finish);
+                newFile(finish);
             } else {
                 finish(0);
             }
@@ -62,7 +64,7 @@ export function open() {
     });
 };
 
-export function openOddDefault(callback) {
+export function newFile(callback) {
     try {
         let ls = localStorage.getItem("previousODD");
         if (ls) {
@@ -81,11 +83,14 @@ export function openOddLoad(name, data) {
     teiData.oddName = name;
     $('#oddname').html("ODD: " + name);
     teiData.dataOdd = odd.loadOdd(data);
-    console.log(teiData.dataOdd);
-    teiData.dataTei = tei.load(null, teiData.dataOdd);
-    console.log(teiData.dataTei);
+    tei.load(null, teiData);
     teiData.html = edit.generateHTML(teiData.dataTei);
+    teiData.fileName = 'Pas de nom de fichier';
+    teiData.new = true;
+    $('#filename').html("Fichier: " + teiData.fileName);
     $('#teidata').html(teiData.html);
+    console.log("openOddLoad", teiData.dataOdd);
+    console.log("openOddLoad", teiData.dataTei);
 }
 
 export function openOdd() {
@@ -106,22 +111,9 @@ export function emptyFile() {
     dt.html('<p>TEI DATA VIDE</p>');
     teiData.oddName = "Pas de nom de fichier";
     $('#oddname').html("ODD: " + name);
-    teiData.fileName = 'Pad de nom de fichier';
+    teiData.fileName = 'Pas de nom de fichier';
+    teiData.new = true;
     $('#filename').html("Fichier: " + name);
-}
-
-export function newFile() {
-    function finish(err) {
-        teiData.fileName = "Nouveau fichier";
-        $('#filename').html("Fichier: " + name);
-        console.log(teiData.dataOdd);
-        teiData.dataTei = tei.load(null, teiData.dataOdd);
-        console.log(teiData.dataTei);
-        teiData.html = edit.generateHTML(teiData.dataTei);
-        console.log(teiData.dataTei);
-        $('#teidata').html(teiData.html);
-    } 
-    openOddDefault(finish);
 }
 
 export function saveAs() {    
@@ -129,8 +121,7 @@ export function saveAs() {
         if (!err) {
             teiData.fileName = name;
             $('#filename').html("Fichier: " + teiData.fileName);
-            var ed = tei.generateTEI(teiData.dataTei);
-            console.log(ed);
+            var ed = tei.generateTEI(teiData);
             systemCall.saveFile(teiData.fileName, ed);
         } else
             console.log(name, err);
@@ -140,13 +131,14 @@ export function saveAs() {
 export function save() {
     var fileok = true;
     if (!teiData.fileName) {
-            var ed = tei.generateTEI(teiData.dataTei);
+            var ed = tei.generateTEI(teiData);
             systemCall.saveFile(teiData.fileName, ed);
     } else
         saveAs();
 };
 
 export function saveAsLocal() {
-    var ed = tei.generateTEI(teiData.dataTei);
+    var ed = tei.generateTEI(teiData);
+    // console.log(ed);
     systemCall.saveFileLocal('xml', teiData.fileName, ed);
 };

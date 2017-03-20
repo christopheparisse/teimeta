@@ -1,6 +1,9 @@
 /**
- * @name edit.js
+ * @module edit.js
  * @author Christophe Parisse
+ * création des structures HTML permettant l'édiion d'un ODD
+ * toutes les structures sous-jacentes (contenus à éditer)
+ * ont été générés précédemment dans les fonctions odd.loadOdd et tei.load
  */
 
 import * as odd from './odd';
@@ -17,10 +20,10 @@ function createID() {
 
 export function setOnOff(event, id) {
     if (event.target.className.indexOf('fa-red') >= 0) {
-        event.target.className = 'validate fa fa-bookmark fa-green';
+        event.target.className = 'validate fa fa-2x fa-bookmark fa-green';
         values[id] = true;
     } else {
-        event.target.className = 'validate fa fa-bookmark-o fa-red';
+        event.target.className = 'validate fa fa-2x fa-bookmark-o fa-red';
         values[id] = false;
     }
     console.log(event);
@@ -31,7 +34,7 @@ export function setOnOffEC(event, id) {
         event.target.className = 'validate fa fa-circle-o fa-green';
         values[id] = true;
     } else {
-        event.target.className = 'validate fa fa-minus-circle fa-red';
+        event.target.className = 'validate fa fa-circle-o fa-red';
         values[id] = false;
     }
     console.log(event, id);
@@ -48,7 +51,7 @@ export function createEC(event, id) {
     let uniq = createID();
     let s = '<div class="headCM">';
     values[uniq] = false;
-    s += '<i class="validate fa fa-minus-circle fa-red" '
+    s += '<i class="validate fa fa-circle-o fa-red" '
         + 'onclick="window.ui.setOnOffEC(event, \'' + uniq + '\')"></i>';
     s += generateElement(eci.element);
     s += '</div>';
@@ -67,6 +70,11 @@ export function setText(event, id) {
     console.log(event);
 }
 
+export function setAttr(event, id) {
+    values[id] = event.target.value;
+    console.log(event);
+}
+
 /**
  * @function generateHtml
  * @param {*} elist 
@@ -77,31 +85,36 @@ export function generateHTML(dataTei) {
         let es = dataTei[i];
         //console.log(es);
         // ElementSpec
-        s += '<div class="elementSpec">';
-        if (es.predeclare) {
-            let uniq = createID();
-            if (es.validated) {
-                s += '<i class="validate fa fa-bookmark fa-green" '
-                    + 'onclick="window.ui.setOnOff(event, \'' + uniq + '\')"></i>';
-            } else {
-                s += '<i class="validate fa fa-bookmark-o fa-red" '
-                    + 'onclick="window.ui.setOnOff(event, \'' + uniq + '\')"></i>';
+        if (es.ec.length > 0) {
+            for (let k=0; k < es.ec.length; k++) {
+                s += '<div class="elementSpec">';
+                let uniq = createID();
+                if (es.ec[k].validated) {
+                    s += '<i class="validate fa fa-2x fa-bookmark fa-green" '
+                        + 'onclick="window.ui.setOnOff(event, \'' + uniq + '\')"></i>';
+                } else {
+                    s += '<i class="validate fa fa-2x fa-bookmark-o fa-red" '
+                        + 'onclick="window.ui.setOnOff(event, \'' + uniq + '\')"></i>';
+                }
+                values[uniq] = es.ec[k].validated;
+                es.ec[k].validatedID = uniq;
+                s += '<div class="tagnameESpec">' + es.ident + '</div>';
+                s += '<div class="pathESpec">' + es.absolutepath + '</div>';
+                s += (es.mode === "replace" || es.mode === "change")
+                    ? '<div class="usageESpec">Usage: <b>Obligatoire</b></div>' 
+                    : '';
+                if (es.ec[k].content)
+                    s += generateContent(es.ec[k].content);
+                if (es.desc) s += '<div class="descESpec">Description: <b>' + es.desc + '</b></div>';
+                s += '</div>';
             }
-            values[uniq] = es.validated;
-            es.validatedID = uniq;
-            s += '<div class="tagnameESpec">' + es.ident + '</div>';
-            s += '<div class="pathESpec">' + es.absolutepath + '</div>';
-            s += (es.mode === "replace" || es.mode === "change")
-                ? '<div class="usageESpec">Usage: <b>Obligatoire</b></div>' 
-                : '';
-            if (es.content)
-                s += generateContent(es.content);
         } else {
+            s += '<div class="elementSpec">';
             s += '<div class="tagnameESpec">' + es.ident + '</div>';
             s += '<div class="pathESpec">Non éditable</div>';
+            if (es.desc) s += '<div class="descESpec">Description: <b>' + es.desc + '</b></div>';
+            s += '</div>';
         }
-        if (es.desc) s += '<div class="descESpec">Description: <b>' + es.desc + '</b></div>';
-        s += '</div>';
     }
     return s;
 }
@@ -143,7 +156,7 @@ function groupXOrMore(ec, x) {
             s += '<i class="validate fa fa-circle-o fa-green" '
                 + 'onclick="window.ui.setOnOffEC(event, \'' + uniq + '\')"></i>';
         else
-            s += '<i class="validate fa fa-minus-circle fa-red" '
+            s += '<i class="validate fa fa-circle-o fa-red" '
                 + 'onclick="window.ui.setOnOffEC(event, \'' + uniq + '\')"></i>';
         s += generateElement(ec.eCI[i].element);
         s += '</div>';
@@ -155,17 +168,67 @@ function groupXOrMore(ec, x) {
 function generateElement(elt) {
     // let s = '<div class="element">';
     let s = '';
-    let uniq = createID();
+    let uniq;
+    let txct = elt.textContent;
     s += '<div class="eltName">';
-    s += '<label for="' + uniq + '">';
-    s += '<b>' + elt.name + '</b></label>';
-    s += '<input name="' + uniq + '" id="' + uniq + '"';
-    s += 'onchange="window.ui.setText(event, \'' + uniq + '\')"';
-    if (elt.textContent) s += ' value="' + elt.textContent + '"';
-    values[uniq] = (elt.textContent) ? elt.textContent : '';
-    elt.textContentID = uniq;
-    s += ' />';
+    if (elt.category.length > 0) {
+        uniq = createID();
+        s += '<label for="' + uniq + '">';
+        s += '<b>' + elt.name + '(category)</b></label>';
+        // choix dans une liste
+        s +='<select class="listattr" id="' + uniq + '" ';
+        s +='onchange="window.ui.setAttr(event, \'' + uniq + '\');"';
+        for (let k in elt.category) {
+            s += '<option value="' +
+                elt.category[k].desc + '">' + elt.category[k].ident
+                + ' (' + elt.category[k].desc + ')</option>';
+        }
+        s += '</select>';        
+    } else {
+        uniq = createID();
+        s += '<label for="' + uniq + '">';
+        s += '<b>' + elt.name  + '(text)</b></label>';
+        // edition de la valeur
+        s += '<input name="' + uniq + '" id="' + uniq + '" ';
+        s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+        if (elt.textContent) s += ' value="' + txct + '"';
+        values[uniq] = (txct) ? txct : '';
+        elt.textContentID = uniq;
+        s += ' />';
+    }
     if (elt.usage === 'req') s += ' <em>obligatoire</em>';
+    if (elt.attr.length > 0)  {
+        s += '<div class="attrs">';
+        for (let i in elt.attr) {
+            if (elt.attr[i].val.items && elt.attr[i].val.items.length > 0) {
+                // attributs avec liste
+                uniq = createID();
+                s += '<label for="' + uniq + '">';
+                s += '<b>' + elt.attr[i].ident + '-' + elt.attr[i].desc + '(attribute list)</b></label>';
+                s +='<select class="listattr" id="' + uniq + '" ';
+                s +='onchange="window.ui.setAttr(event, \'' + uniq + '\');">';
+                for (let k in elt.attr[i].val.items) {
+                    s += '<option value="' +
+                        elt.attr[i].val.items[k].ident + '">' + elt.attr[i].val.items[k].ident 
+                        + ' (' + elt.attr[i].val.items[k].desc + ')</option>';
+                }
+                s += '</select>';                    
+            } else {
+                // attribut sans liste: edition de la valeur
+                uniq = createID();
+                s += '<label for="' + uniq + '">';
+                s += '<b>' + elt.attr[i].ident + '-' + elt.attr[i].desc + '(attribute valeur)</b></label>';
+                s += '<input name="' + uniq + '" id="' + uniq + '"';
+                s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+                if (elt.attr[i].value) s += ' value="' + elt.attr[i].value + '"';
+                values[uniq] = (elt.attr[i].value) ? elt.attr[i].value : '';
+                elt.textContentID = uniq;
+                s += ' />';
+            }
+        }
+        s += '</div>';
+    }
+
     s += '</div>';
     if (elt.desc) s += '<div class="eltDesc">Description: <b>' + elt.desc + '</b></div>';
     if (elt.content) {

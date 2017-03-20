@@ -1,10 +1,7 @@
 /**
- * @module odd.ts
- * @author: Christophe Parisse
- * lecture du fichier odd et récupération de toutes
- * les informatons qui permettront l'édition de la tei
- * @exports loadOdd
- * @exports Element ElementCount ElementCountItem ElementSpec Content Attr Val ValItem
+ * odd.ts
+ * author: Christophe Parisse
+ * lecture du fichier odd et préparation des commandes pour l'édition de la tei
  */
 
 "use strict";
@@ -28,9 +25,10 @@ export class ElementSpec {
     content = null;
     // Informations pour éditer la TEI
     absolutepath = '';
-    ec = []; // si plusieurs elementSpec,
-    // cela permet de les mettre dans un tableau
-    // cette partie est initialisée dans load() dans le module tei()
+    validated = false; // is false element vide, sinon element valide
+    validatedID = '';
+    list = []; // si plusieurs elementSpec,
+        // cela permet de les mettre dans un tableau
 }
 
 export class Content {
@@ -48,19 +46,11 @@ export class ElementCount {
     eCI = []; // element Count Items
 }
 
-export class ElementSpecItem {
-    validated = false; // is false element not used, si non element used
-    validatedID = '';
-    // obligatory = false; // true if element cannot be removed
-    node = null; // seulement utilie pour les elementSpec
-    content = null; // seulement utilise pour les elementSpec 
-}
-
 export class ElementCountItem {
     validated = false; // is false element not used, si non element used
     validatedID = '';
     // obligatory = false; // true if element cannot be removed
-    element = null; // seulement utilisé pour les noeuds internes
+    element = null;
 }
 
 export class Element {
@@ -105,12 +95,6 @@ export class ValItem {
     desc = '';
 }
 
-/**
- * @method valList
- * fonction de traitement des listes de valeurs pour les attributs
- * @param node 
- * @returns structure Val()
- */
 function valList(node) {
     let v = new Val();
     let valList = node.getElementsByTagName("valList");
@@ -133,12 +117,6 @@ function valList(node) {
     return v;
 }
 
-/**
- * @method parseElement
- * traite tout le contenu d'un élément de description
- * @param doc
- * @returns structure Element()
- */
 function parseElement(doc) {
     // DOM method
     // initialize DOM
@@ -200,12 +178,6 @@ function parseElement(doc) {
     return el;
 }
 
-/**
- * @method parseContent
- * liste tous les elements d'un content et lance leur traitement
- * @param doc chaime contenant du xml
- * @returns structure Content()
- */
 function parseContent(doc) {
     // DOM method
     // initialize DOM
@@ -232,12 +204,6 @@ function parseContent(doc) {
     return ei;
 }
 
-/**
- * @method loadOdd
- * parse tous les elementSpec du odd et appele sous-fonction pour les champs Content
- * @param data : contenu d'un fichier xml
- * @returns structure teiOdd (modèle de données du ODD)
- */
 export function loadOdd(data) {
     // get XML ready
     let parser = new DOMParser();
@@ -248,27 +214,13 @@ export function loadOdd(data) {
     for (let i=0; i < nodes.length ; i++) {
         // console.log(nodes[i]);
         let s = nodes[i].toString();
+        let esElt = new ElementSpec();
+
         // DOM method
         // initialize DOM
         let doc1 = new dom().parseFromString(s, 'text/xml');
-        // find all about elementSpec
-        let content = select('/exm:elementSpec/exm:content', doc1);
+        // find all elementSpec
         let attr = select('/exm:elementSpec/@ident', doc1); // .value;
-        let ident = '?';
-        if (attr.length) ident = attr[0].textContent;
-        if (content.length > 1) {
-            s = "content différent de 1 à " + ident + " seulement premier de traité.";
-            console.log(s);
-            alert(s);
-        }
-        if (content.length <= 0) continue;
-        let esElt = new ElementSpec();
-        // décryptage du champ Content
-        esElt.content = parseContent(content[0].toString());
-        eSpec.push(esElt);
-        // insertion des données attribut du ElementSpec
-        esElt.ident = ident;
-        attr = select('/exm:elementSpec/@ident', doc1); // .value;
         if (attr.length) esElt.ident = attr[0].textContent;
         attr = select('/exm:elementSpec/@module', doc1); // .value;
         if (attr.length) esElt.module = attr[0].textContent;
@@ -279,6 +231,15 @@ export function loadOdd(data) {
 
         let desc = select('/exm:elementSpec/exm:desc', doc1);
         if (desc.length>0) esElt.desc = desc[0].textContent;
+
+        let content = select('/exm:elementSpec/exm:content', doc1);
+        if (content.length > 1) {
+            console.log("content différent de 1 at ", esElt.ident);
+        }
+        if (content.length > 0)
+            esElt.content = parseContent(content[0].toString());
+//        if (content.length > 0)
+        eSpec.push(esElt)
     }
     // console.log(eSpec);
     return eSpec;
