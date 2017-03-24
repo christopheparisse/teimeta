@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "electron index.js",
-    "page": "webpack"
+    "page": "webpack",
+    "readme": "marky-markdown README.md > readme.html"
   },
   "keywords": [
     "Electron",
@@ -37,6 +38,8 @@
     "webpack": "^2.2.1"
   },
   "dependencies": {
+    "entities": "^1.1.1",
+    "file-saver": "^1.3.3",
     "xmldom": "latest",
     "xpath": "0.0.23"
   }

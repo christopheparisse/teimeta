@@ -10,6 +10,7 @@ import * as edit from './edit';
 import * as odd from './odd';
 import * as system from '../system/opensave';
 
+let entities = require("entities");
 let dom = require('xmldom').DOMParser;
 let xpath = require('xpath');
 let select = xpath.useNamespaces({
@@ -434,14 +435,14 @@ function generateElement(eci, doc, node) {
 function generateFilledElement(elt, doc, node) {
     let s = '';
     if (elt.ana !== 'none') {
-        elt.textContent = edit.values[elt.textContentID];
+        elt.textContent = entities.encodeXML(edit.values[elt.textContentID]);
         setTextNode(node, elt.textContent, doc);
         s += '<' + elt.name + '>' + elt.textContent + '</' + elt.name + '>\n';
     }
     // attributs
     for (let i = 0; i < elt.attr.length; i++) {
         if (elt.attr[i].ident && elt.attr[i].ana !== 'none') {
-            elt.attr[i].value = edit.values[elt.attr[i].valueID];
+            elt.attr[i].value = entities.encodeXML(edit.values[elt.attr[i].valueID]);
             node.setAttribute(elt.attr[i].ident, elt.attr[i].value);
         }
     }

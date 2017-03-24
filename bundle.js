@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 22);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -72,16 +72,113 @@
 
 "use strict";
 /**
- * @module edit.js
- * @author Christophe Parisse
- * création des structures HTML permettant l'édiion d'un ODD
- * toutes les structures sous-jacentes (contenus à éditer)
- * ont été générés précédemment dans les fonctions odd.loadOdd et tei.load
+ * load a transcription from a FILE object (for internal purposes)
+ * @method localLoadTranscriptFile
+ * @param {file} object
  */
 
 exports.__esModule = true;
-var odd = __webpack_require__(1);
-var tei = __webpack_require__(3);
+var saveAs = __webpack_require__(16);
+function openLocalFile(fn) {
+    /*
+    var nBytes = 0,
+        oFiles = document.getElementById("upload-input-transcript").files,
+        nBytes = oFiles[0].size;
+    var sOutput = nBytes + " bytes";
+    // optional code for multiples approximation
+    for (var aMultiples = ["KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"],
+        nMultiple = 0,
+        nApprox = nBytes / 1024; nApprox > 1; nApprox /= 1024, nMultiple++) {
+        sOutput = nApprox.toFixed(1) + " " + aMultiples[nMultiple] + " (" + nBytes + " bytes)";
+    }
+    */
+    // end of optional code
+    // document.getElementById("transcript-file-size").innerHTML = sOutput;
+    var oFiles = document.getElementById("upload-input-transcript").files;
+    readTranscriptObj(oFiles[0]);
+}
+exports.openLocalFile = openLocalFile;
+;
+/**
+ * read a transcription from a FILE object with FileReader
+ * @method readTranscriptObj
+ * @param File object
+ */
+var readTranscriptObjCallback = null;
+function readTranscriptObj(file) {
+    var reader = new FileReader();
+    // Closure to capture the file information.
+    reader.onload = (function (theFile) {
+        return function (e) {
+            // document.getElementById('divopenfile').style.display = 'none';
+            if (readTranscriptObjCallback) {
+                readTranscriptObjCallback(0, file.name, e.target.result);
+            }
+        };
+    })(file);
+    // Read in the image file as a data URL.
+    reader.readAsText(file);
+}
+/**
+ * available in main
+ */
+function chooseOpenFile(callback) {
+    readTranscriptObjCallback = callback;
+    document.getElementById('upload-input-transcript').click();
+}
+exports.chooseOpenFile = chooseOpenFile;
+;
+/**
+ * @method saveFile
+ * for compatibility purpose. Should not be used in a web navigator interface.
+ * @param name
+ * @param data
+ */
+function saveFile(name, data) {
+    saveFileLocal('xml', name, data);
+}
+exports.saveFile = saveFile;
+function chooseSaveFile(type, fun) { }
+exports.chooseSaveFile = chooseSaveFile;
+function saveFileLocal(type, name, data) {
+    var blob = new Blob([data], {
+        type: "text/plain;charset=utf-8"
+    });
+    // {type: 'text/css'});
+    var p1 = name.lastIndexOf('/');
+    var p2 = name.lastIndexOf('\\');
+    if (p1 < p2)
+        p1 = p2;
+    if (p1 === -1)
+        p1 = 0;
+    var l = name.substr(p1);
+    saveAs.saveAs(blob, l);
+}
+exports.saveFileLocal = saveFileLocal;
+;
+function alertUser(s) {
+    alert(s);
+    //    dialog.showErrorBox('teiEdit', s);
+}
+exports.alertUser = alertUser;
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * @module edit.js
+ * @author Christophe Parisse
+ * création des structures HTML permettant l'édiion d'un ODD et d'un TEI
+ * toutes les structures sous-jacentes (contenus à éditer)
+ * ont été générés précédemment dans les fonctions odd.loadOdd et tei.load
+ * les champs xxID qui permettent de récupérer les valeurs sont créés ici
+ */
+
+exports.__esModule = true;
+var odd = __webpack_require__(2);
 exports.values = {};
 var lastId = 0;
 function createID() {
@@ -89,6 +186,7 @@ function createID() {
     lastId++;
     return id;
 }
+exports.createID = createID;
 function setOnOff(event, id) {
     if (event.target.className.indexOf('fa-red') >= 0) {
         event.target.className = 'validate fa fa-2x fa-bookmark fa-green';
@@ -98,36 +196,38 @@ function setOnOff(event, id) {
         event.target.className = 'validate fa fa-2x fa-bookmark-o fa-red';
         exports.values[id] = false;
     }
-    console.log(event);
+    //console.log(event);
 }
 exports.setOnOff = setOnOff;
 function setOnOffEC(event, id) {
     if (event.target.className.indexOf('fa-red') >= 0) {
-        event.target.className = 'validate fa fa-circle-o fa-green';
+        event.target.className = 'validate fa fa-circle fa-green';
         exports.values[id] = true;
     }
     else {
         event.target.className = 'validate fa fa-circle-o fa-red';
         exports.values[id] = false;
     }
-    console.log(event, id);
+    //console.log(event, id);
 }
 exports.setOnOffEC = setOnOffEC;
 function createEC(event, id) {
     var c = exports.values[id];
     // values[uniqCreate] = {elt: ec.model, tab: ec.eCI, id: uniqCreate};
     var eci = new odd.ElementCountItem();
-    eci.element = tei.copy(c.elt);
-    eci.validated = false;
+    eci.element = odd.copyElementOdd(c.elt);
+    // propager à tous les enfants la mise à zéro des champs node
+    odd.setNodesToNull(eci.element);
+    eci.validatedEC = false;
+    eci.validatedECID = createID();
+    exports.values[eci.validatedECID] = false;
     c.tab.push(eci);
-    var uniq = createID();
     var s = '<div class="headCM">';
-    exports.values[uniq] = false;
     s += '<i class="validate fa fa-circle-o fa-red" '
-        + 'onclick="window.ui.setOnOffEC(event, \'' + uniq + '\')"></i>';
+        + 'onclick="window.ui.setOnOffEC(event, \'' + eci.validatedECID + '\')"></i>';
     s += generateElement(eci.element);
     s += '</div>';
-    console.log(event, id);
+    //console.log(event, id);
     var referenceNode = document.getElementById(id);
     /*
     var newEl = document.createElement('div');
@@ -139,12 +239,12 @@ function createEC(event, id) {
 exports.createEC = createEC;
 function setText(event, id) {
     exports.values[id] = event.target.value;
-    console.log(event);
+    //console.log(event);
 }
 exports.setText = setText;
 function setAttr(event, id) {
     exports.values[id] = event.target.value;
-    console.log(event);
+    //console.log(event);
 }
 exports.setAttr = setAttr;
 /**
@@ -153,15 +253,20 @@ exports.setAttr = setAttr;
  */
 function generateHTML(dataTei) {
     var s = '';
+    var nth = 0;
     for (var i in dataTei) {
         var es = dataTei[i];
         //console.log(es);
         // ElementSpec
         if (es.ec.length > 0) {
             for (var k = 0; k < es.ec.length; k++) {
-                s += '<div class="elementSpec">';
+                if (nth % 2 === 1)
+                    s += '<div class="elementSpec">';
+                else
+                    s += '<div class="elementSpec odd">';
+                nth++;
                 var uniq = createID();
-                if (es.ec[k].validated) {
+                if (es.ec[k].validatedES) {
                     s += '<i class="validate fa fa-2x fa-bookmark fa-green" '
                         + 'onclick="window.ui.setOnOff(event, \'' + uniq + '\')"></i>';
                 }
@@ -169,17 +274,17 @@ function generateHTML(dataTei) {
                     s += '<i class="validate fa fa-2x fa-bookmark-o fa-red" '
                         + 'onclick="window.ui.setOnOff(event, \'' + uniq + '\')"></i>';
                 }
-                exports.values[uniq] = es.ec[k].validated;
-                es.ec[k].validatedID = uniq;
-                s += '<div class="tagnameESpec">' + es.ident + '</div>';
-                s += '<div class="pathESpec">' + es.absolutepath + '</div>';
+                exports.values[uniq] = es.ec[k].validatedES;
+                es.ec[k].validatedESID = uniq;
+                s += '<div class="tagnameESpec" title="' + es.absolutepath + '">' + es.ident + '</div>';
+                s += generateElement(es.ec[k].element, "ESpec");
                 s += (es.mode === "replace" || es.mode === "change")
                     ? '<div class="usageESpec">Usage: <b>Obligatoire</b></div>'
                     : '';
-                if (es.ec[k].content)
-                    s += generateContent(es.ec[k].content);
                 if (es.desc)
                     s += '<div class="descESpec">Description: <b>' + es.desc + '</b></div>';
+                if (es.ec[k].content)
+                    s += generateContent(es.ec[k].content);
                 s += '</div>';
             }
         }
@@ -198,10 +303,15 @@ exports.generateHTML = generateHTML;
 function generateContent(ct) {
     var s = '<div class="content">';
     for (var i = 0; i < ct.one.length; i++) {
+        var uniq = createID();
+        exports.values[uniq] = ct.one[i].eCI[0].validatedEC;
+        ct.one[i].eCI[0].validatedECID = uniq;
         s += '<div class="groupCountOne">';
+        s += '<div class="headCM">';
         s += '<i class="validate fa fa-circle fa-green"></i>';
         // pas de fancy stuff car l'élément est toujours présent
         s += generateElement(ct.one[i].eCI[0].element);
+        s += '</div>';
         s += '</div>';
     }
     for (var i = 0; i < ct.oneOrMore.length; i++) {
@@ -209,6 +319,9 @@ function generateContent(ct) {
     }
     for (var i = 0; i < ct.zeroOrMore.length; i++) {
         s += groupXOrMore(ct.zeroOrMore[i], false);
+    }
+    for (var i = 0; i < ct.twoOrMore.length; i++) {
+        s += groupXOrMore(ct.twoOrMore[i], true);
     }
     return s + '</div>';
 }
@@ -218,17 +331,17 @@ function groupXOrMore(ec, x) {
     var uniqCreate = createID();
     s += '<div class="groupCountMany" id="' + uniqCreate + '" >';
     // on peut en rajouter ... ou supprimer
-    s += '<i class="create fa fa-plus fa-blue" '
-        + 'onclick="window.ui.createEC(event, \'' + uniqCreate + '\')"></i>';
+    s += '<div class="plusCM"><i class="create fa fa-plus fa-blue" '
+        + 'onclick="window.ui.createEC(event, \'' + uniqCreate + '\')"></i></div>';
     exports.values[uniqCreate] = { elt: ec.eCI[0].element, tab: ec.eCI, id: uniqCreate };
     for (var i in ec.eCI) {
         var uniq = createID();
-        ec.eCI[i].validatedID = uniq;
+        ec.eCI[i].validatedECID = uniq;
         s += '<div class="headCM">';
-        exports.values[uniq] = ec.eCI[i].validated;
+        exports.values[uniq] = ec.eCI[i].validatedEC;
         // l'élément peut être validé ou non
         if (exports.values[uniq])
-            s += '<i class="validate fa fa-circle-o fa-green" '
+            s += '<i class="validate fa fa-circle fa-green" '
                 + 'onclick="window.ui.setOnOffEC(event, \'' + uniq + '\')"></i>';
         else
             s += '<i class="validate fa fa-circle-o fa-red" '
@@ -239,78 +352,108 @@ function groupXOrMore(ec, x) {
     s += '</div>';
     return s;
 }
-function generateElement(elt) {
+function generateElement(elt, style) {
+    if (style === void 0) { style = ''; }
     // let s = '<div class="element">';
     var s = '';
     var uniq;
     var txct = elt.textContent;
-    s += '<div class="eltName">';
-    if (elt.category.length > 0) {
-        uniq = createID();
-        s += '<label for="' + uniq + '">';
-        s += '<b>' + elt.name + '(category)</b></label>';
-        // choix dans une liste
-        s += '<select class="listattr" id="' + uniq + '" ';
-        s += 'onchange="window.ui.setAttr(event, \'' + uniq + '\');"';
-        for (var k in elt.category) {
-            s += '<option value="' +
-                elt.category[k].desc + '">' + elt.category[k].ident
-                + ' (' + elt.category[k].desc + ')</option>';
-        }
-        s += '</select>';
+    if (elt.category.length === 0 && elt.ana === 'none') {
+        // rien à editer
+        if (style !== 'ESpec')
+            s += '<div class="eltName">' + elt.name + '</div>';
     }
     else {
-        uniq = createID();
-        s += '<label for="' + uniq + '">';
-        s += '<b>' + elt.name + '(text)</b></label>';
-        // edition de la valeur
-        s += '<input name="' + uniq + '" id="' + uniq + '" ';
-        s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
-        if (elt.textContent)
-            s += ' value="' + txct + '"';
-        exports.values[uniq] = (txct) ? txct : '';
-        elt.textContentID = uniq;
-        s += ' />';
+        s += '<div class="elementBlock" title="' + elt.absolutepath + '">';
+        if (elt.category.length > 0) {
+            uniq = createID();
+            if (!elt.textContent) {
+                elt.textContent = elt.category[0].ident;
+                txct = elt.textContent;
+            } // si vide mettre le premier de la liste
+            exports.values[uniq] = (txct) ? txct : '';
+            elt.textContentID = uniq;
+            s += '<label for="' + uniq + '">';
+            s += '<b>' + elt.name + '</b>';
+            if (elt.usage === 'req')
+                s += ' <em>obligatoire</em></span>';
+            s += '</label>';
+            // choix dans une liste
+            s += '<select class="listattr" id="' + uniq + '" ';
+            s += 'onchange="window.ui.setAttr(event, \'' + uniq + '\');" >';
+            for (var k = 0; k < elt.category.length; k++) {
+                s += '<option value="' +
+                    elt.category[k].desc + '" ';
+                if (txct === elt.category[k].ident)
+                    s += 'selected="selected" ';
+                s += '>' + elt.category[k].desc + '</option>';
+            }
+            s += '</select>';
+        }
+        else if (elt.ana !== 'none') {
+            uniq = createID();
+            exports.values[uniq] = (txct) ? txct : '';
+            elt.textContentID = uniq;
+            if (style !== 'ESpec') {
+                s += '<label for="' + uniq + '">';
+                s += '<b>' + elt.name + '</b>';
+                if (elt.usage === 'req')
+                    s += ' <em>obligatoire</em></span>';
+                s += '</label>';
+            }
+            // edition de la valeur
+            s += '<input name="' + uniq + '" id="' + uniq + '" ';
+            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+            if (elt.textContent)
+                s += ' value="' + txct + '"';
+            s += ' />';
+        }
+        s += '</div>';
+        if (elt.desc && style !== 'ESpec')
+            s += '<div class="eltDesc">Description: <b>' + elt.desc + '</b></div>';
     }
-    if (elt.usage === 'req')
-        s += ' <em>obligatoire</em>';
     if (elt.attr.length > 0) {
         s += '<div class="attrs">';
         for (var i in elt.attr) {
-            if (elt.attr[i].val.items && elt.attr[i].val.items.length > 0) {
+            if (elt.attr[i].items && elt.attr[i].items.length > 0) {
                 // attributs avec liste
                 uniq = createID();
+                if (!elt.attr[i].value)
+                    elt.attr[i].value = elt.attr[i].items[0].ident;
+                exports.values[uniq] = elt.attr[i].value;
+                elt.attr[i].valueID = uniq;
                 s += '<label for="' + uniq + '">';
-                s += '<b>' + elt.attr[i].ident + '-' + elt.attr[i].desc + '(attribute list)</b></label>';
+                s += '<b>' + elt.attr[i].desc + '</b></label>';
                 s += '<select class="listattr" id="' + uniq + '" ';
                 s += 'onchange="window.ui.setAttr(event, \'' + uniq + '\');">';
-                for (var k in elt.attr[i].val.items) {
+                for (var k in elt.attr[i].items) {
                     s += '<option value="' +
-                        elt.attr[i].val.items[k].ident + '">' + elt.attr[i].val.items[k].ident
-                        + ' (' + elt.attr[i].val.items[k].desc + ')</option>';
+                        elt.attr[i].items[k].ident + '" ';
+                    if (elt.attr[i].value === elt.attr[i].items[k].ident)
+                        s += 'selected="selected" ';
+                    s += '>' + elt.attr[i].items[k].desc;
+                    s += '</option>';
                 }
                 s += '</select>';
             }
-            else {
+            else if (elt.attr[i].ana !== 'none') {
                 // attribut sans liste: edition de la valeur
                 uniq = createID();
+                exports.values[uniq] = elt.attr[i].value;
+                elt.attr[i].valueID = uniq;
                 s += '<label for="' + uniq + '">';
-                s += '<b>' + elt.attr[i].ident + '-' + elt.attr[i].desc + '(attribute valeur)</b></label>';
+                s += '<b>' + elt.attr[i].desc + '</b></label>';
                 s += '<input name="' + uniq + '" id="' + uniq + '"';
                 s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
                 if (elt.attr[i].value)
                     s += ' value="' + elt.attr[i].value + '"';
                 exports.values[uniq] = (elt.attr[i].value) ? elt.attr[i].value : '';
-                elt.textContentID = uniq;
                 s += ' />';
             }
         }
         s += '</div>';
     }
-    s += '</div>';
-    if (elt.desc)
-        s += '<div class="eltDesc">Description: <b>' + elt.desc + '</b></div>';
-    if (elt.content) {
+    if (elt.content && style !== 'ESpec') {
         s += '<div class="innerContent">';
         s += generateContent(elt.content);
         s += '</div>';
@@ -320,7 +463,7 @@ function generateElement(elt) {
 
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -334,28 +477,33 @@ function generateElement(elt) {
  */
 
 exports.__esModule = true;
-var dom = __webpack_require__(4).DOMParser;
-var xpath = __webpack_require__(6);
-var select = xpath.useNamespaces({
-    "tei": "http://www.tei-c.org/ns/1.0",
-    "xml": "",
-    "exm": "http://www.tei-c.org/ns/Examples",
-    "s": "http://purl.oclc.org/dsdl/schematron"
-});
+var dom = __webpack_require__(5).DOMParser;
+var xpath = __webpack_require__(7);
+var select;
+var system = __webpack_require__(0);
 var ElementSpec = (function () {
     function ElementSpec() {
         // Informations de l'ODD
-        this.ident = '';
-        this.predeclare = '';
+        this.ident = ''; // nom de l'élément
+        this.predeclare = ''; // path dans le fichier XML
         this.desc = '';
         this.module = '';
         this.mode = ''; // change=oneOrMore, replace=one, add=zeroOrMore
-        this.content = null;
+        this.ana = 'text'; // mode d'édtion - texte par défaut
+        this.content = null; // pointeur sur les enfants.
         // Informations pour éditer la TEI
         this.absolutepath = '';
         this.ec = []; // si plusieurs elementSpec,
         // cela permet de les mettre dans un tableau
         // cette partie est initialisée dans load() dans le module tei()
+        // chaque ec est une copie de l'élément principal
+        this.element = null; // contenu pour l'édtion du noeud lui même, champ texte, attributs et categories
+        this.validatedES = false; // is false element not used, si non element used
+        this.validatedESID = '';
+        this.node = null; // utilisé pour retrouver les éléments orignaux
+        // si null alors création ex nihilo dans un emplacement absoulu
+        // si d'autres créations, alors frères
+        // dans la version courante on ne peut pas créer de frères
     }
     return ElementSpec;
 }());
@@ -368,6 +516,7 @@ var Content = (function () {
         this.one = [];
         this.zeroOrMore = [];
         this.oneOrMore = [];
+        this.twoOrMore = [];
     }
     return Content;
 }());
@@ -381,21 +530,10 @@ var ElementCount = (function () {
     return ElementCount;
 }());
 exports.ElementCount = ElementCount;
-var ElementSpecItem = (function () {
-    function ElementSpecItem() {
-        this.validated = false; // is false element not used, si non element used
-        this.validatedID = '';
-        // obligatory = false; // true if element cannot be removed
-        this.node = null; // seulement utilie pour les elementSpec
-        this.content = null; // seulement utilise pour les elementSpec 
-    }
-    return ElementSpecItem;
-}());
-exports.ElementSpecItem = ElementSpecItem;
 var ElementCountItem = (function () {
     function ElementCountItem() {
-        this.validated = false; // is false element not used, si non element used
-        this.validatedID = '';
+        this.validatedEC = false; // is false element not used, si non element used
+        this.validatedECID = '';
         // obligatory = false; // true if element cannot be removed
         this.element = null; // seulement utilisé pour les noeuds internes
     }
@@ -405,18 +543,23 @@ exports.ElementCountItem = ElementCountItem;
 var Element = (function () {
     function Element() {
         // Informations de l'ODD
-        this.name = '';
+        this.name = ''; // nom de l'élément
         this.module = '';
-        this.usage = '';
+        this.usage = ''; // req ou rien
         this.mode = '';
         this.desc = '';
+        this.ana = 'text'; // mode d'édtion - texte par défaut - si none pas modifiable
         this.attr = [];
         this.category = [];
         this.content = null;
         // Informations pour éditer la TEI
         this.absolutepath = '';
-        this.textContent = ''; // ID pour le texte si nécessaire
-        this.textContentID = ''; // value pour le texte si nécessaire
+        this.textContent = ''; // value pour le texte si nécessaire
+        this.textContentID = ''; // ID pour le texte si nécessaire
+        this.useTextContent = true; // is false element not used, si non element used
+        // obligatory = false; // true if element cannot be removed
+        this.node = null; // utilisé pour retrouver les éléments orignaux
+        // si null alors un élément doit être créé et ajouté au node parent
     }
     return Element;
 }());
@@ -426,27 +569,19 @@ var Attr = (function () {
         // Informations de l'ODD
         this.ident = '';
         this.value = '';
-        this.val = null;
         this.usage = '';
         this.mode = '';
         this.desc = '';
+        this.ana = 'text'; // mode d'édtion - texte par défaut - si none pas modifiable
+        this.type = '';
+        this.items = [];
         // Informations pour éditer la TEI
+        this.editing = '';
+        this.valueID = '';
     }
     return Attr;
 }());
 exports.Attr = Attr;
-var Val = (function () {
-    function Val() {
-        // Informations de l'ODD
-        this.ident = '';
-        this.desc = '';
-        this.type = '';
-        this.mode = '';
-        this.items = [];
-    }
-    return Val;
-}());
-exports.Val = Val;
 var ValItem = (function () {
     function ValItem() {
         // Informations de l'ODD
@@ -456,23 +591,209 @@ var ValItem = (function () {
     return ValItem;
 }());
 exports.ValItem = ValItem;
+function copyESOdd(obj) {
+    var cp = {};
+    cp.ident = obj.ident; // nom de l'élément
+    cp.predeclare = obj.predeclare; // path dans le fichier XML
+    cp.desc = obj.desc;
+    cp.module = obj.module;
+    cp.mode = obj.mode; // change=oneOrMore, replace=one, add=zeroOrMore
+    cp.ana = obj.ana; // mode d'édtion - texte par défaut
+    cp.absolutepath = obj.absolutepath;
+    cp.validatedES = obj.validatedES; // is false element not used, si non element used
+    cp.validatedESID = obj.validatedESID;
+    cp.content = (obj.content !== null)
+        ? copyContentOdd(obj.content)
+        : null; // pointeur sur les enfants.
+    cp.element = (obj.element !== null)
+        ? copyElementOdd(obj.element)
+        : null; // contenu pour l'édtion du noeud lui même, champ texte, attributs et categories
+    cp.ec = []; // si plusieurs elementSpec: normalement pas besoin de copie récursive, la copie sert à cela
+    cp.node = null; // utilisé pour retrouver les éléments orignaux
+    return cp;
+}
+exports.copyESOdd = copyESOdd;
+function cpBloc(cp, obj) {
+    for (var i in obj) {
+        if (obj[i].count !== undefined) {
+            var inner = {};
+            inner.count = obj[i].count; // oneOrMore, one, zeroOrMore, twoOrMore
+            inner.model = obj[i].model;
+            inner.eCI = []; // element Count Items
+            for (var k in obj[i].eCI) {
+                var eci = new ElementCountItem();
+                var e = obj[i].eCI[k];
+                eci.validatedEC = e.validatedEC;
+                eci.validatedECID = e.validatedECID;
+                eci.element = copyElementOdd(e.element);
+                inner.eCI.push(eci);
+            }
+            cp.push(inner);
+        }
+        else {
+            cp.push(copyElementOdd(obj[i]));
+        }
+    }
+}
+function copyContentOdd(obj) {
+    var cp = {};
+    cp.one = [];
+    cpBloc(cp.one, obj.one);
+    cp.zeroOrMore = [];
+    cpBloc(cp.zeroOrMore, obj.zeroOrMore);
+    cp.oneOrMore = [];
+    cpBloc(cp.oneOrMore, obj.oneOrMore);
+    cp.twoOrMore = [];
+    cpBloc(cp.twoOrMore, obj.twoOrMore);
+    /*
+    cp.one = [];
+    for (let i in obj.one) {
+        if (obj.one[i].count !== undefined) {
+            let inner: any = {};
+            inner.count = obj.one[i].count; // oneOrMore, one, zeroOrMore, twoOrMore
+            inner.model = obj.one[i].model;
+            inner.eCI = []; // element Count Items
+            for (let k in obj.one[i].eCI) {
+                let eci = new ElementCountItem();
+                let e = obj.one[i].eCI[k];
+                eci.validatedEC = e.validatedEC;
+                eci.validatedECID = e.validatedECID;
+                eci.element = copyElementOdd(e.element);
+                inner.eCI.push(eci);
+            }
+            cp.one.push(inner);
+        } else {
+            cp.one.push(copyElementOdd(obj.one[i]));
+        }
+    }
+    cp.oneOrMore = [];
+    for (let i in obj.oneOrMore) {
+        if (obj.oneOrMore[i].count !== undefined) {
+            let inner: any = {};
+            inner.count = obj.oneOrMore[i].count; // oneOrMore, one, zeroOrMore, twoOrMore
+            inner.model = obj.oneOrMore[i].model;
+            inner.eCI = []; // element Count Items
+            for (let k in obj.oneOrMore[i].eCI) {
+                let eci = new ElementCountItem();
+                let e = obj.oneOrMore[i].eCI[k];
+                eci.validatedEC = e.validatedEC;
+                eci.validatedECID = e.validatedECID;
+                eci.element = copyElementOdd(e.element);
+                inner.eCI.push(eci);
+            }
+            cp.oneOrMore.push(inner);
+        } else {
+            cp.oneOrMore.push(copyElementOdd(obj.oneOrMore[i]));
+        }
+    }
+    cp.zeroOrMore = [];
+    for (let i in obj.zeroOrMore) {
+        if (obj.zeroOrMore[i].count !== undefined) {
+            let inner: any = {};
+            inner.count = obj.zeroOrMore[i].count; // oneOrMore, one, zeroOrMore, twoOrMore
+            inner.model = obj.zeroOrMore[i].model;
+            inner.eCI = []; // element Count Items
+            for (let k in obj.zeroOrMore[i].eCI) {
+                let eci = new ElementCountItem();
+                let e = obj.zeroOrMore[i].eCI[k];
+                eci.validatedEC = e.validatedEC;
+                eci.validatedECID = e.validatedECID;
+                eci.element = copyElementOdd(e.element);
+                inner.eCI.push(eci);
+            }
+            cp.zeroOrMore.push(inner);
+        } else {
+            cp.zeroOrMore.push(copyElementOdd(obj.zeroOrMore[i]));
+        }
+    }
+    cp.twoOrMore = [];
+    for (let i in obj.twoOrMore) {
+        if (obj.twoOrMore[i].count !== undefined) {
+            let inner: any = {};
+            inner.count = obj.twoOrMore[i].count; // oneOrMore, one, zeroOrMore, twoOrMore
+            inner.model = obj.twoOrMore[i].model;
+            inner.eCI = []; // element Count Items
+            for (let k in obj.twoOrMore[i].eCI) {
+                let eci = new ElementCountItem();
+                let e = obj.twoOrMore[i].eCI[k];
+                eci.validatedEC = e.validatedEC;
+                eci.validatedECID = e.validatedECID;
+                eci.element = copyElementOdd(e.element);
+                inner.eCI.push(eci);
+            }
+            cp.twoOrMore.push(inner);
+        } else {
+            cp.twoOrMore.push(copyElementOdd(obj.twoOrMore[i]));
+        }
+    }
+    */
+    return cp;
+}
+exports.copyContentOdd = copyContentOdd;
+function copyElementOdd(obj) {
+    var cp = {};
+    cp.name = obj.name; // nom de l'élément
+    cp.module = obj.module;
+    cp.usage = obj.usage; // req ou rien
+    cp.mode = obj.mode;
+    cp.desc = obj.desc;
+    cp.ana = obj.ana; // mode d'édtion - texte par défaut - si none pas modifiable
+    cp.absolutepath = obj.absolutepath;
+    cp.textContent = obj.textContent; // value pour le texte si nécessaire
+    cp.textContentID = obj.textContentID; // ID pour le texte si nécessaire
+    cp.useTextContent = obj.useTextContent; // is false element not used, si non element used
+    var p = JSON.stringify(obj.attr);
+    cp.attr = JSON.parse(p);
+    cp.category = JSON.parse(JSON.stringify(obj.category));
+    cp.content = (obj.content !== null)
+        ? copyContentOdd(obj.content)
+        : null; // pointeur sur les enfants.
+    // Informations pour éditer la TEI
+    cp.node = null; // utilisé pour retrouver les éléments orignaux
+    return cp;
+}
+exports.copyElementOdd = copyElementOdd;
+function setNodesToNullCT(obj) {
+    for (var i in obj.one) {
+        for (var k in obj.one[i].eCI)
+            setNodesToNull(obj.one[i].eCI[k].element);
+    }
+    for (var i in obj.zeroOrMore) {
+        for (var k in obj.zeroOrMore[i].eCI)
+            setNodesToNull(obj.zeroOrMore[i].eCI[k].element);
+    }
+    for (var i in obj.oneOrMore) {
+        for (var k in obj.oneOrMore[i].eCI)
+            setNodesToNull(obj.oneOrMore[i].eCI[k].element);
+    }
+    for (var i in obj.twoOrMore) {
+        for (var k in obj.twoOrMore[i].eCI)
+            setNodesToNull(obj.twoOrMore[i].eCI[k].element);
+    }
+}
+exports.setNodesToNullCT = setNodesToNullCT;
+function setNodesToNull(obj) {
+    obj.node = null;
+    if (obj.content)
+        setNodesToNullCT(obj.content);
+}
+exports.setNodesToNull = setNodesToNull;
 /**
  * @method valList
  * fonction de traitement des listes de valeurs pour les attributs
+ * @param Attr structure
  * @param node
- * @returns structure Val()
  */
-function valList(node) {
-    var v = new Val();
+function valList(attrdef, node) {
     var valList = node.getElementsByTagName("valList");
     if (valList.length) {
         // find all about element
         var attr = valList[0].getAttribute("type");
         if (attr.length)
-            v.type = attr[0].textContent;
+            attrdef.type = attr[0].textContent;
         attr = valList[0].getAttribute("mode");
         if (attr.length)
-            v.mode = attr[0].textContent;
+            attrdef.mode = attr[0].textContent;
         var valItem = node.getElementsByTagName("valItem");
         for (var k = 0; k < valItem.length; k++) {
             var vi = new ValItem();
@@ -482,10 +803,11 @@ function valList(node) {
             var desc = valItem[k].getElementsByTagName("desc");
             if (desc.length > 0)
                 vi.desc = desc[0].textContent;
-            v.items.push(vi);
+            if (!vi.desc)
+                vi.desc = vi.ident;
+            attrdef.items.push(vi);
         }
     }
-    return v;
 }
 /**
  * @method parseElement
@@ -493,22 +815,30 @@ function valList(node) {
  * @param doc
  * @returns structure Element()
  */
-function parseElement(doc) {
+function parseElement(doc, eltSpec) {
+    var hp = (eltSpec) ? '/exm:elementSpec' : '/exm:element';
     // DOM method
     // initialize DOM
     var doc1 = new dom().parseFromString(doc, 'text/xml');
     var el = new Element();
     // find all about element
-    var attr = select('/exm:element/@name', doc1); // .value;
+    var attr;
+    if (eltSpec)
+        attr = select(hp + '/@ident', doc1); // .value;
+    else
+        attr = select(hp + '/@name', doc1); // .value;
     if (attr.length)
         el.name = attr[0].textContent;
-    attr = select('/exm:element/@module', doc1); // .value;
+    attr = select(hp + '/@module', doc1); // .value;
     if (attr.length)
         el.module = attr[0].textContent;
-    attr = select('/exm:element/@usage', doc1); // .value;
+    attr = select(hp + '/@ana', doc1); // .value;
+    if (attr.length)
+        el.ana = attr[0].textContent;
+    attr = select(hp + '/@usage', doc1); // .value;
     if (attr.length)
         el.usage = attr[0].textContent;
-    var attList = select('/exm:element/exm:attList', doc1);
+    var attList = select(hp + '/exm:attList', doc1);
     for (var k = 0; k < attList.length; k++) {
         var attDef = attList[k].getElementsByTagName("attDef");
         for (var l = 0; l < attDef.length; l++) {
@@ -525,17 +855,22 @@ function parseElement(doc) {
             attr = attDef[l].getAttribute("mode");
             if (attr)
                 a.mode = attr;
+            attr = attDef[l].getAttribute("ana");
+            if (attr)
+                a.ana = attr;
             var desc_1 = attDef[l].getElementsByTagName("desc");
             if (desc_1.length > 0)
                 a.desc = desc_1[0].textContent;
-            a.val = valList(attDef[l]);
+            if (!a.desc)
+                a.desc = a.ident;
+            valList(a, attDef[l]);
             el.attr.push(a);
         }
     }
-    var category = select('/exm:element/exm:category', doc1);
+    var category = select(hp + '/exm:category', doc1);
     for (var k = 0; k < category.length; k++) {
         var cat = category[k].getElementsByTagName("catDesc");
-        var vi = new Val();
+        var vi = new ValItem();
         for (var l = 0; l < cat.length; l++) {
             attr = cat[l].getAttribute("xml:lang");
             if (attr && attr === 'fr') {
@@ -547,12 +882,16 @@ function parseElement(doc) {
         attr = category[k].getAttribute("xml:id");
         if (attr)
             vi.ident = attr;
+        if (!vi.desc)
+            vi.desc = vi.ident;
         el.category.push(vi);
     }
-    var desc = select('/exm:element/exm:desc', doc1);
+    var desc = select(hp + '/exm:desc', doc1);
     if (desc.length > 0)
         el.desc = desc[0].textContent;
-    var content = select('/exm:element/exm:content', doc1);
+    if (eltSpec)
+        return el; // fin du calcul pour elementSpec
+    var content = select(hp + '/exm:content', doc1);
     if (content.length > 1) {
         console.log("content différent de 1 at ", el.name);
     }
@@ -574,16 +913,19 @@ function parseContent(doc) {
     // find all elements
     var content = select('/exm:content/exm:element', doc1);
     for (var k = 0; k < content.length; k++)
-        ei.one.push(parseElement(content[k].toString()));
+        ei.one.push(parseElement(content[k].toString(), false));
     content = select('/exm:content/exm:one/exm:element', doc1);
     for (var k = 0; k < content.length; k++)
-        ei.one.push(parseElement(content[k].toString()));
+        ei.one.push(parseElement(content[k].toString(), false));
     content = select('/exm:content/exm:oneOrMore/exm:element', doc1);
     for (var k = 0; k < content.length; k++)
-        ei.oneOrMore.push(parseElement(content[k].toString()));
+        ei.oneOrMore.push(parseElement(content[k].toString(), false));
     content = select('/exm:content/exm:zeroOrMore/exm:element', doc1);
     for (var k = 0; k < content.length; k++)
-        ei.zeroOrMore.push(parseElement(content[k].toString()));
+        ei.zeroOrMore.push(parseElement(content[k].toString(), false));
+    content = select('/exm:content/exm:twoOrMore/exm:element', doc1);
+    for (var k = 0; k < content.length; k++)
+        ei.twoOrMore.push(parseElement(content[k].toString(), false));
     /*
     content = select('/exm:content/exm:twoOrMore/exm:element', doc1);
     for (let k=0; k < content.length; k++)
@@ -602,6 +944,17 @@ function loadOdd(data) {
     var parser = new DOMParser();
     // let doc = parser.parseFromString(data, "text/xml");
     var doc = new dom().parseFromString(data.toString(), 'text/xml');
+    var ns = doc.documentElement.namespaceURI;
+    select = xpath.useNamespaces({ "tei": ns, "exm": ns });
+    var egxml = select("//exm:egXML", doc);
+    if (egxml.length < 1) {
+        select = xpath.useNamespaces({ "tei": ns, "exm": "http://www.tei-c.org/ns/Examples" });
+        egxml = select("//exm:egXML", doc);
+        if (egxml.length < 1) {
+            system.alertUser("Pas d'élément egXML dans le fichier ODD");
+            return;
+        }
+    }
     var eSpec = [];
     var nodes = select("//exm:elementSpec", doc);
     for (var i = 0; i < nodes.length; i++) {
@@ -619,14 +972,11 @@ function loadOdd(data) {
         if (content.length > 1) {
             s = "content différent de 1 à " + ident + " seulement premier de traité.";
             console.log(s);
-            alert(s);
+            system.alertUser(s);
         }
         if (content.length <= 0)
             continue;
         var esElt = new ElementSpec();
-        // décryptage du champ Content
-        esElt.content = parseContent(content[0].toString());
-        eSpec.push(esElt);
         // insertion des données attribut du ElementSpec
         esElt.ident = ident;
         attr = select('/exm:elementSpec/@ident', doc1); // .value;
@@ -635,15 +985,28 @@ function loadOdd(data) {
         attr = select('/exm:elementSpec/@module', doc1); // .value;
         if (attr.length)
             esElt.module = attr[0].textContent;
+        attr = select('/exm:elementSpec/@ana', doc1); // .value;
+        if (attr.length)
+            esElt.ana = attr[0].textContent;
         attr = select('/exm:elementSpec/@mode', doc1); // .value;
         if (attr.length)
             esElt.mode = attr[0].textContent;
         attr = select('/exm:elementSpec/@predeclare', doc1); // .value;
         if (attr.length)
             esElt.predeclare = attr[0].textContent;
+        var e = esElt.predeclare.substring(esElt.predeclare.length - 1);
+        if (e === '/')
+            esElt.predeclare = esElt.predeclare.substring(0, esElt.predeclare.length - 1);
+        // if (!es.predeclare) es.predeclare = '***NEPASEDITER***';
+        esElt.absolutepath = esElt.predeclare + '/' + esElt.ident;
         var desc = select('/exm:elementSpec/exm:desc', doc1);
         if (desc.length > 0)
             esElt.desc = desc[0].textContent;
+        // décryptage des valeurs possible pour les attributs et les catégories
+        esElt.element = parseElement(s, true);
+        // décryptage du champ Content
+        esElt.content = parseContent(content[0].toString());
+        eSpec.push(esElt);
     }
     // console.log(eSpec);
     return eSpec;
@@ -652,456 +1015,2151 @@ exports.loadOdd = loadOdd;
 
 
 /***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = openLocalFile;
-/* harmony export (immutable) */ __webpack_exports__["b"] = chooseOpenFile;
-/* harmony export (immutable) */ __webpack_exports__["e"] = saveFileLocal;
-
-/**
- * load a transcription from a FILE object (for internal purposes)
- * @method localLoadTranscriptFile
- * @param {file} object
- */
-
-function openLocalFile(fn) {
-    /*
-    var nBytes = 0,
-        oFiles = document.getElementById("upload-input-transcript").files,
-        nBytes = oFiles[0].size;
-    var sOutput = nBytes + " bytes";
-    // optional code for multiples approximation
-    for (var aMultiples = ["KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"],
-        nMultiple = 0,
-        nApprox = nBytes / 1024; nApprox > 1; nApprox /= 1024, nMultiple++) {
-        sOutput = nApprox.toFixed(1) + " " + aMultiples[nMultiple] + " (" + nBytes + " bytes)";
-    }
-    */
-    // end of optional code
-    // document.getElementById("transcript-file-size").innerHTML = sOutput;
-    let oFiles = document.getElementById("upload-input-transcript").files;
-    readTranscriptObj(oFiles[0]);
-};
-
-/**
- * read a transcription from a FILE object with FileReader
- * @method readTranscriptObj
- * @param File object
- */
-
-var readTranscriptObjCallback = null;
-
-function readTranscriptObj(file) {
-    var reader = new FileReader();
-    // Closure to capture the file information.
-    reader.onload = (function(theFile) {
-        return function(e) {
-            // document.getElementById('divopenfile').style.display = 'none';
-            if (readTranscriptObjCallback) {
-                readTranscriptObjCallback(0, file.name, e.target.result);
-            }
-        };
-    })(file);
-
-    // Read in the image file as a data URL.
-    reader.readAsText(file);
-}
-
-/**
- * available in main
- */
-function chooseOpenFile(callback) {
-    readTranscriptObjCallback = callback;
-//    $("#upload-input-transcript").trigger();
-    document.getElementById('upload-input-transcript').click();
-//    document.getElementById('divopenfile').style.display = 'block';
-};
-
-function saveFileLocal(type, name, data) {
-    var blob = new Blob([data], {
-        type : "text/plain;charset=utf-8"
-    });
-    // {type: 'text/css'});
-    var p1 = name.lastIndexOf('/');
-    var p2 = name.lastIndexOf('\\');
-    if (p1 < p2) p1 = p2;
-    if (p1 === -1) p1 = 0;
-    var l = name.substr(p1);
-    saveAs(blob, l);
-};
-
-
-/***/ }),
 /* 3 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-/**
- * @module tei.ts
- * @author Christophe Parisse
- * lecture d'un fichier xml et chargement des valeurs initiales
- * si le fichier est vide (null) les valeurs initiales sont toutes mises à zéro
- * la structrue résultat teiData est prête à être traitée
- */
-
-exports.__esModule = true;
-var edit = __webpack_require__(0);
-var odd = __webpack_require__(1);
-var dom = __webpack_require__(4).DOMParser;
-var xpath = __webpack_require__(6);
-var select = xpath.useNamespaces({
-    "tei": "http://www.tei-c.org/ns/1.0",
-    "xml": "",
-    "exm": "http://www.tei-c.org/ns/Examples",
-    "s": "http://purl.oclc.org/dsdl/schematron"
-});
-var basicTEI = '<?xml version="1.0" encoding="UTF-8"?>\
-<TEI xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:svg="http://www.w3.org/2000/svg"\
-     xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns="http://www.tei-c.org/ns/1.0">\
-</TEI>';
-/**
- * @method load
- * @param {*} data raw data content of TEI file
- * @param {*} dataOdd array of ElementSpec from odd.ts - loadOdd
- * @returns {*} true if ok
- */
-function load(data, teiData) {
-    teiData.dataTei = [];
-    // get XML ready
-    teiData.parser = new DOMParser();
-    teiData.doc = data
-        ? new dom().parseFromString(data.toString(), 'text/xml')
-        : null;
-    for (var i in teiData.dataOdd) {
-        var es = copy(teiData.dataOdd[i]);
-        if (es.predeclare.endsWith('/'))
-            es.predeclare = es.predeclare.substring(0, es.predeclare.length - 1);
-        // if (!es.predeclare) es.predeclare = '***NEPASEDITER***';
-        es.absolutepath = es.predeclare + '/' + es.ident;
-        // load from TEI
-        var path = es.absolutepath.replace(/\//g, "/tei:"); // add namespace
-        //console.log(path);
-        var nodes = void 0;
-        try {
-            nodes = teiData.doc ? select(path, teiData.doc) : [];
-        }
-        catch (err) {
-            console.log('caught at load: ', err);
-            continue;
-        }
-        // les données sont prêtes à être traitées.
-        // on ajoute donc l'élément au tableau de données
-        teiData.dataTei.push(es);
-        // les valeurs du contenu des ElementSpec (tableau de valeurs)
-        // permettant de gérer un nombre quelconque d'éléments 
-        // si autorisé est initialisé
-        if (nodes.length > 0) {
-            // créer un tableau
-            // faire autant de copies que nécessaire pour mettre dans le tableau
-            for (var k = 0; k < nodes.length; k++) {
-                var esEC = new odd.ElementSpecItem();
-                esEC.validated = true;
-                esEC.node = nodes[k];
-                es.ec.push(esEC); // ajout de l'élément à liste
-                // il est prêt à être étudié et édité
-                if (es.content) {
-                    esEC.content = copy(es.content);
-                    loadContent(nodes[k], esEC.content, es.absolutepath);
-                }
-            }
-        }
-        else {
-            // nodes.length === 0
-            var esEC = new odd.ElementSpecItem();
-            if (es.mode === 'replace' || es.mode === 'change')
-                esEC.validated = true;
-            esEC.node = null;
-            es.ec.push(esEC); // ajout de l'élément à liste
-            // il est prêt à être étudié et édité
-            if (es.content) {
-                esEC.content = copy(es.content);
-                loadContent(null, esEC.content, es.absolutepath);
-            }
-        }
-    }
-    return true;
-}
-exports.load = load;
-function copy(obj) {
-    return JSON.parse(JSON.stringify(obj));
-}
-exports.copy = copy;
-function loadContent(doc, ct, abspath) {
-    for (var i = 0; i < ct.one.length; i++) {
-        var ec = new odd.ElementCount();
-        ec.count = "one";
-        ec.model = copy(ct.one[i]);
-        ct.one[i] = ec;
-        loadOne(doc, ec, abspath); // read element editing info
-    }
-    for (var i = 0; i < ct.oneOrMore.length; i++) {
-        var ec = new odd.ElementCount();
-        ec.count = "oneOrMore";
-        ec.model = copy(ct.oneOrMore[i]);
-        ct.oneOrMore[i] = ec;
-        loadXOrMore(doc, ec, abspath, true); // read element editing info
-    }
-    for (var i = 0; i < ct.zeroOrMore.length; i++) {
-        var ec = new odd.ElementCount();
-        ec.count = "zeroOrMoreone";
-        ec.model = copy(ct.zeroOrMore[i]);
-        ct.zeroOrMore[i] = ec;
-        loadXOrMore(doc, ec, abspath, false); // read element editing info
-    }
-}
-/**
- * @method getNodeText
- * get text of current node only
- * @param node
- * @returns value of text
- */
-function getNodeText(node) {
-    var txt = '';
-    for (var child in node.childNodes) {
-        if (node.childNodes[child].nodeType === 3) {
-            txt += node.childNodes[child];
-        }
-    }
-    return txt;
-}
-function loadOne(node, ec, abspath) {
-    // préparer l'élément unique
-    // ec est un ElementCount
-    var eci = new odd.ElementCountItem();
-    eci.element = copy(ec.model);
-    eci.validated = true;
-    edit.values[eci.validatedID] = true;
-    ec.eCI.push(eci);
-    var elt = eci.element;
-    elt.absolutepath = abspath + '/' + elt.name;
-    // load from TEI
-    var nodes = node ? getChildrenByName(node, elt.name) : [];
-    // utiliser count TODO
-    if (nodes.length > 0) {
-        elt.textContent = getNodeText(nodes[0]).trim();
-    }
-    if (elt.content) {
-        loadContent(nodes.length > 0 ? nodes[0] : null, elt.content, elt.absolutepath);
-    }
-}
-function loadXOrMore(node, ec, abspath, x) {
-    ec.model.absolutepath = abspath + '/' + ec.model.name;
-    // load from TEI
-    var nodes = node ? getChildrenByName(node, ec.model.name) : [];
-    // utiliser count
-    if (nodes.length > 0) {
-        // on peut se baser sur ce qui existe pour construire les données
-        for (var i in nodes) {
-            // préparer l'élément
-            // ec ElementCount
-            var eci = new odd.ElementCountItem();
-            eci.element = copy(ec.model);
-            eci.validated = true;
-            edit.values[eci.validatedID] = true;
-            ec.eCI.push(eci);
-            eci.element.textContent = getNodeText(nodes[i]).trim();
-            if (eci.element.content) {
-                loadContent(nodes[i], eci.element.content, ec.model.absolutepath);
-            }
-        }
-    }
-    else {
-        // il faut construire au moins un élément vide
-        // préparer l'élément unique
-        // ec est un ElementCount
-        var eci = new odd.ElementCountItem();
-        eci.element = copy(ec.model);
-        eci.validated = x; // si x == true on est dans oneOrMore sinon dans zeroOrMore
-        edit.values[eci.validatedID] = x;
-        ec.eCI.push(eci);
-        if (eci.element.content) {
-            loadContent(null, eci.element.content, ec.model.absolutepath);
-        }
-    }
-}
-/**
- * @method getChildrenByName
- * get list of immediate children nodes with a given tagname
- * @param node
- * @param name
- * @returns [list of nodes]
- */
-function getChildrenByName(node, name) {
-    var children = [];
-    for (var child in node.childNodes) {
-        if (node.childNodes[child].nodeType === 1) {
-            if (node.childNodes[child].tagName === name)
-                children.push(node.childNodes[child]);
-        }
-    }
-    return children;
-}
-function setTextNode(node, val, doc) {
-    var first = false;
-    for (var child in node.childNodes) {
-        if (node.childNodes[child].nodeType === 3) {
-            if (first === false) {
-                first = true;
-                node.childNodes[child].nodeValue = val;
-            }
-            else {
-                node.childNodes[child].nodeValue = '';
-            }
-        }
-    }
-    if (first === false) {
-        // pas de noeud texte rencontré
-        var nn = doc.createTextNode(val);
-        node.appendChild(nn);
-    }
-}
-/**
- * @method createAbsolutePath
- * creates a path from top of xml file and returns last node created
- * @param path
- * @param doc
- * @returns node
- */
-function createAbsolutePath(path, doc) {
-    var p = path.split('/').slice(1);
-    var node = doc.documentElement;
-    for (var i = 0; i < p.length; i++) {
-        var nds = getChildrenByName(node, p[i]);
-        if (nds.length > 1) {
-            var s = p.slice(0, i).join('/');
-            s = 'attention element ' + s + " n'est pas unique.";
-            console.log(s);
-            alert(s);
-        }
-        if (nds.length > 0) {
-            node = nds[0];
-        }
-        else {
-            var newnode = doc.createElement(p[i]);
-            node.appendChild(newnode);
-            node = newnode;
-        }
-    }
-    return node;
-}
-function generateTEI(teiData) {
-    // get XML ready surtout si nouveau texte
-    if (teiData.doc === null) {
-        teiData.doc = new dom().parseFromString(basicTEI, 'text/xml');
-    }
-    var s = '';
-    for (var i in teiData.dataTei) {
-        for (var k = 0; k < teiData.dataTei[i].ec.length; k++) {
-            teiData.dataTei[i].ec[k].validated = edit.values[teiData.dataTei[i].ec[k].validatedID];
-            s += '<element path="' + teiData.dataTei[i].absolutepath + '" name="'
-                + teiData.dataTei[i].ident + '" validated="' + teiData.dataTei[i].validated + '">\n';
-            if (!teiData.dataTei[i].ec[k].validated) {
-                s += '</element>\n';
-                continue;
-            }
-            var current = void 0;
-            if (teiData.dataTei[i].ec[k].node) {
-                current = teiData.dataTei[i].ec[k].node;
-            }
-            else {
-                current = createAbsolutePath(teiData.dataTei[i].absolutepath, teiData.doc);
-                teiData.dataTei[i].ec[k].node = current;
-            }
-            if (teiData.dataTei[i].ec[k].content) {
-                // si on edite quelque chose au niveau de l'élémentSpec il faut le mettre ici
-                s += generateTEIContent(teiData.dataTei[i].ec[k].content, teiData.doc, current);
-            }
-            s += '</element>\n';
-        }
-    }
-    console.log(teiData.dataTei);
-    console.log(s);
-    // transform doc to text
-    console.log(teiData.doc.toString());
-    return teiData.doc.toString();
-}
-exports.generateTEI = generateTEI;
-function generateOneContent(eci, doc, current) {
-    var s = '';
-    // find or create element from XML file
-    var nodes = getChildrenByName(current, eci.element.name);
-    if (nodes.length > 0) {
-        if (nodes.length > 1) {
-            alert("Trop d'élements pour un One. Il faudrait supprimer les éléments en trop.");
-        }
-        s += generateElement(eci, doc, nodes[0]);
-    }
-    else {
-        // console.log("create new node", eci.element.name); // va générer le node si nécessaire
-        var newnode = doc.createElement(eci.element.name);
-        current.appendChild(newnode);
-        s += generateElement(eci, doc, newnode);
-    }
-    return s;
-}
-function generateXOrMoreContent(ec, doc, current, type) {
-    var s = '';
-    // find or create element from XML file
-    var nodes = getChildrenByName(current, ec[0].element.name);
-    // maintenant il faut d'abord utiliser tous les nodes pour les premiers ec
-    // et s'il n'y a pas la place rajouter des nodes
-    var iEC = 0; // pointeur sur l'élément dans ec
-    for (; iEC < nodes.length && iEC < ec.length; iEC++) {
-        s += generateElement(ec[iEC], doc, nodes[iEC]);
-    }
-    for (; iEC < ec.length; iEC++) {
-        // si on passe ici c'est qu'on a fini les nodes sans avoir fini les ec
-        var newnode = doc.createElement(ec[iEC].element.name);
-        current.appendChild(newnode);
-        s += generateElement(ec[iEC], doc, newnode);
-    }
-    return s;
-}
-function generateTEIContent(ct, doc, current) {
-    var s = '';
-    for (var i = 0; i < ct.one.length; i++) {
-        s += generateOneContent(ct.one[i].eCI[0], doc, current);
-    }
-    for (var i = 0; i < ct.oneOrMore.length; i++) {
-        s += generateXOrMoreContent(ct.oneOrMore[i].eCI, doc, current, true);
-    }
-    for (var i = 0; i < ct.zeroOrMore.length; i++) {
-        s += generateXOrMoreContent(ct.zeroOrMore[i].eCI, doc, current, false);
-    }
-    return s;
-}
-function generateElement(eci, doc, node) {
-    var s = '';
-    /*
-    s += (edit.values[ec[i].validatedID] === true)
-        ? "VALIDATED "
-        : ( (edit.values[ec[i].validatedID] === false) ? "unchecked " : "empty");
-    */
-    // console.log("geneElemts:",eci);
-    if (edit.values[eci.validatedID] === true) {
-        eci.element.textContent = edit.values[eci.element.textContentID];
-        if (doc !== null)
-            setTextNode(node, eci.element.textContent, doc);
-        else
-            node.textContent = eci.element.textContent;
-        s += '<' + eci.element.name + '>' + eci.element.textContent + '</' + eci.element.name + '>\n';
-        if (eci.element.content) {
-            s += generateTEIContent(eci.element.content, doc, node);
-        }
-    }
-    return s;
-}
-
+module.exports = {
+	"Aacute": "Á",
+	"aacute": "á",
+	"Abreve": "Ă",
+	"abreve": "ă",
+	"ac": "∾",
+	"acd": "∿",
+	"acE": "∾̳",
+	"Acirc": "Â",
+	"acirc": "â",
+	"acute": "´",
+	"Acy": "А",
+	"acy": "а",
+	"AElig": "Æ",
+	"aelig": "æ",
+	"af": "⁡",
+	"Afr": "𝔄",
+	"afr": "𝔞",
+	"Agrave": "À",
+	"agrave": "à",
+	"alefsym": "ℵ",
+	"aleph": "ℵ",
+	"Alpha": "Α",
+	"alpha": "α",
+	"Amacr": "Ā",
+	"amacr": "ā",
+	"amalg": "⨿",
+	"amp": "&",
+	"AMP": "&",
+	"andand": "⩕",
+	"And": "⩓",
+	"and": "∧",
+	"andd": "⩜",
+	"andslope": "⩘",
+	"andv": "⩚",
+	"ang": "∠",
+	"ange": "⦤",
+	"angle": "∠",
+	"angmsdaa": "⦨",
+	"angmsdab": "⦩",
+	"angmsdac": "⦪",
+	"angmsdad": "⦫",
+	"angmsdae": "⦬",
+	"angmsdaf": "⦭",
+	"angmsdag": "⦮",
+	"angmsdah": "⦯",
+	"angmsd": "∡",
+	"angrt": "∟",
+	"angrtvb": "⊾",
+	"angrtvbd": "⦝",
+	"angsph": "∢",
+	"angst": "Å",
+	"angzarr": "⍼",
+	"Aogon": "Ą",
+	"aogon": "ą",
+	"Aopf": "𝔸",
+	"aopf": "𝕒",
+	"apacir": "⩯",
+	"ap": "≈",
+	"apE": "⩰",
+	"ape": "≊",
+	"apid": "≋",
+	"apos": "'",
+	"ApplyFunction": "⁡",
+	"approx": "≈",
+	"approxeq": "≊",
+	"Aring": "Å",
+	"aring": "å",
+	"Ascr": "𝒜",
+	"ascr": "𝒶",
+	"Assign": "≔",
+	"ast": "*",
+	"asymp": "≈",
+	"asympeq": "≍",
+	"Atilde": "Ã",
+	"atilde": "ã",
+	"Auml": "Ä",
+	"auml": "ä",
+	"awconint": "∳",
+	"awint": "⨑",
+	"backcong": "≌",
+	"backepsilon": "϶",
+	"backprime": "‵",
+	"backsim": "∽",
+	"backsimeq": "⋍",
+	"Backslash": "∖",
+	"Barv": "⫧",
+	"barvee": "⊽",
+	"barwed": "⌅",
+	"Barwed": "⌆",
+	"barwedge": "⌅",
+	"bbrk": "⎵",
+	"bbrktbrk": "⎶",
+	"bcong": "≌",
+	"Bcy": "Б",
+	"bcy": "б",
+	"bdquo": "„",
+	"becaus": "∵",
+	"because": "∵",
+	"Because": "∵",
+	"bemptyv": "⦰",
+	"bepsi": "϶",
+	"bernou": "ℬ",
+	"Bernoullis": "ℬ",
+	"Beta": "Β",
+	"beta": "β",
+	"beth": "ℶ",
+	"between": "≬",
+	"Bfr": "𝔅",
+	"bfr": "𝔟",
+	"bigcap": "⋂",
+	"bigcirc": "◯",
+	"bigcup": "⋃",
+	"bigodot": "⨀",
+	"bigoplus": "⨁",
+	"bigotimes": "⨂",
+	"bigsqcup": "⨆",
+	"bigstar": "★",
+	"bigtriangledown": "▽",
+	"bigtriangleup": "△",
+	"biguplus": "⨄",
+	"bigvee": "⋁",
+	"bigwedge": "⋀",
+	"bkarow": "⤍",
+	"blacklozenge": "⧫",
+	"blacksquare": "▪",
+	"blacktriangle": "▴",
+	"blacktriangledown": "▾",
+	"blacktriangleleft": "◂",
+	"blacktriangleright": "▸",
+	"blank": "␣",
+	"blk12": "▒",
+	"blk14": "░",
+	"blk34": "▓",
+	"block": "█",
+	"bne": "=⃥",
+	"bnequiv": "≡⃥",
+	"bNot": "⫭",
+	"bnot": "⌐",
+	"Bopf": "𝔹",
+	"bopf": "𝕓",
+	"bot": "⊥",
+	"bottom": "⊥",
+	"bowtie": "⋈",
+	"boxbox": "⧉",
+	"boxdl": "┐",
+	"boxdL": "╕",
+	"boxDl": "╖",
+	"boxDL": "╗",
+	"boxdr": "┌",
+	"boxdR": "╒",
+	"boxDr": "╓",
+	"boxDR": "╔",
+	"boxh": "─",
+	"boxH": "═",
+	"boxhd": "┬",
+	"boxHd": "╤",
+	"boxhD": "╥",
+	"boxHD": "╦",
+	"boxhu": "┴",
+	"boxHu": "╧",
+	"boxhU": "╨",
+	"boxHU": "╩",
+	"boxminus": "⊟",
+	"boxplus": "⊞",
+	"boxtimes": "⊠",
+	"boxul": "┘",
+	"boxuL": "╛",
+	"boxUl": "╜",
+	"boxUL": "╝",
+	"boxur": "└",
+	"boxuR": "╘",
+	"boxUr": "╙",
+	"boxUR": "╚",
+	"boxv": "│",
+	"boxV": "║",
+	"boxvh": "┼",
+	"boxvH": "╪",
+	"boxVh": "╫",
+	"boxVH": "╬",
+	"boxvl": "┤",
+	"boxvL": "╡",
+	"boxVl": "╢",
+	"boxVL": "╣",
+	"boxvr": "├",
+	"boxvR": "╞",
+	"boxVr": "╟",
+	"boxVR": "╠",
+	"bprime": "‵",
+	"breve": "˘",
+	"Breve": "˘",
+	"brvbar": "¦",
+	"bscr": "𝒷",
+	"Bscr": "ℬ",
+	"bsemi": "⁏",
+	"bsim": "∽",
+	"bsime": "⋍",
+	"bsolb": "⧅",
+	"bsol": "\\",
+	"bsolhsub": "⟈",
+	"bull": "•",
+	"bullet": "•",
+	"bump": "≎",
+	"bumpE": "⪮",
+	"bumpe": "≏",
+	"Bumpeq": "≎",
+	"bumpeq": "≏",
+	"Cacute": "Ć",
+	"cacute": "ć",
+	"capand": "⩄",
+	"capbrcup": "⩉",
+	"capcap": "⩋",
+	"cap": "∩",
+	"Cap": "⋒",
+	"capcup": "⩇",
+	"capdot": "⩀",
+	"CapitalDifferentialD": "ⅅ",
+	"caps": "∩︀",
+	"caret": "⁁",
+	"caron": "ˇ",
+	"Cayleys": "ℭ",
+	"ccaps": "⩍",
+	"Ccaron": "Č",
+	"ccaron": "č",
+	"Ccedil": "Ç",
+	"ccedil": "ç",
+	"Ccirc": "Ĉ",
+	"ccirc": "ĉ",
+	"Cconint": "∰",
+	"ccups": "⩌",
+	"ccupssm": "⩐",
+	"Cdot": "Ċ",
+	"cdot": "ċ",
+	"cedil": "¸",
+	"Cedilla": "¸",
+	"cemptyv": "⦲",
+	"cent": "¢",
+	"centerdot": "·",
+	"CenterDot": "·",
+	"cfr": "𝔠",
+	"Cfr": "ℭ",
+	"CHcy": "Ч",
+	"chcy": "ч",
+	"check": "✓",
+	"checkmark": "✓",
+	"Chi": "Χ",
+	"chi": "χ",
+	"circ": "ˆ",
+	"circeq": "≗",
+	"circlearrowleft": "↺",
+	"circlearrowright": "↻",
+	"circledast": "⊛",
+	"circledcirc": "⊚",
+	"circleddash": "⊝",
+	"CircleDot": "⊙",
+	"circledR": "®",
+	"circledS": "Ⓢ",
+	"CircleMinus": "⊖",
+	"CirclePlus": "⊕",
+	"CircleTimes": "⊗",
+	"cir": "○",
+	"cirE": "⧃",
+	"cire": "≗",
+	"cirfnint": "⨐",
+	"cirmid": "⫯",
+	"cirscir": "⧂",
+	"ClockwiseContourIntegral": "∲",
+	"CloseCurlyDoubleQuote": "”",
+	"CloseCurlyQuote": "’",
+	"clubs": "♣",
+	"clubsuit": "♣",
+	"colon": ":",
+	"Colon": "∷",
+	"Colone": "⩴",
+	"colone": "≔",
+	"coloneq": "≔",
+	"comma": ",",
+	"commat": "@",
+	"comp": "∁",
+	"compfn": "∘",
+	"complement": "∁",
+	"complexes": "ℂ",
+	"cong": "≅",
+	"congdot": "⩭",
+	"Congruent": "≡",
+	"conint": "∮",
+	"Conint": "∯",
+	"ContourIntegral": "∮",
+	"copf": "𝕔",
+	"Copf": "ℂ",
+	"coprod": "∐",
+	"Coproduct": "∐",
+	"copy": "©",
+	"COPY": "©",
+	"copysr": "℗",
+	"CounterClockwiseContourIntegral": "∳",
+	"crarr": "↵",
+	"cross": "✗",
+	"Cross": "⨯",
+	"Cscr": "𝒞",
+	"cscr": "𝒸",
+	"csub": "⫏",
+	"csube": "⫑",
+	"csup": "⫐",
+	"csupe": "⫒",
+	"ctdot": "⋯",
+	"cudarrl": "⤸",
+	"cudarrr": "⤵",
+	"cuepr": "⋞",
+	"cuesc": "⋟",
+	"cularr": "↶",
+	"cularrp": "⤽",
+	"cupbrcap": "⩈",
+	"cupcap": "⩆",
+	"CupCap": "≍",
+	"cup": "∪",
+	"Cup": "⋓",
+	"cupcup": "⩊",
+	"cupdot": "⊍",
+	"cupor": "⩅",
+	"cups": "∪︀",
+	"curarr": "↷",
+	"curarrm": "⤼",
+	"curlyeqprec": "⋞",
+	"curlyeqsucc": "⋟",
+	"curlyvee": "⋎",
+	"curlywedge": "⋏",
+	"curren": "¤",
+	"curvearrowleft": "↶",
+	"curvearrowright": "↷",
+	"cuvee": "⋎",
+	"cuwed": "⋏",
+	"cwconint": "∲",
+	"cwint": "∱",
+	"cylcty": "⌭",
+	"dagger": "†",
+	"Dagger": "‡",
+	"daleth": "ℸ",
+	"darr": "↓",
+	"Darr": "↡",
+	"dArr": "⇓",
+	"dash": "‐",
+	"Dashv": "⫤",
+	"dashv": "⊣",
+	"dbkarow": "⤏",
+	"dblac": "˝",
+	"Dcaron": "Ď",
+	"dcaron": "ď",
+	"Dcy": "Д",
+	"dcy": "д",
+	"ddagger": "‡",
+	"ddarr": "⇊",
+	"DD": "ⅅ",
+	"dd": "ⅆ",
+	"DDotrahd": "⤑",
+	"ddotseq": "⩷",
+	"deg": "°",
+	"Del": "∇",
+	"Delta": "Δ",
+	"delta": "δ",
+	"demptyv": "⦱",
+	"dfisht": "⥿",
+	"Dfr": "𝔇",
+	"dfr": "𝔡",
+	"dHar": "⥥",
+	"dharl": "⇃",
+	"dharr": "⇂",
+	"DiacriticalAcute": "´",
+	"DiacriticalDot": "˙",
+	"DiacriticalDoubleAcute": "˝",
+	"DiacriticalGrave": "`",
+	"DiacriticalTilde": "˜",
+	"diam": "⋄",
+	"diamond": "⋄",
+	"Diamond": "⋄",
+	"diamondsuit": "♦",
+	"diams": "♦",
+	"die": "¨",
+	"DifferentialD": "ⅆ",
+	"digamma": "ϝ",
+	"disin": "⋲",
+	"div": "÷",
+	"divide": "÷",
+	"divideontimes": "⋇",
+	"divonx": "⋇",
+	"DJcy": "Ђ",
+	"djcy": "ђ",
+	"dlcorn": "⌞",
+	"dlcrop": "⌍",
+	"dollar": "$",
+	"Dopf": "𝔻",
+	"dopf": "𝕕",
+	"Dot": "¨",
+	"dot": "˙",
+	"DotDot": "⃜",
+	"doteq": "≐",
+	"doteqdot": "≑",
+	"DotEqual": "≐",
+	"dotminus": "∸",
+	"dotplus": "∔",
+	"dotsquare": "⊡",
+	"doublebarwedge": "⌆",
+	"DoubleContourIntegral": "∯",
+	"DoubleDot": "¨",
+	"DoubleDownArrow": "⇓",
+	"DoubleLeftArrow": "⇐",
+	"DoubleLeftRightArrow": "⇔",
+	"DoubleLeftTee": "⫤",
+	"DoubleLongLeftArrow": "⟸",
+	"DoubleLongLeftRightArrow": "⟺",
+	"DoubleLongRightArrow": "⟹",
+	"DoubleRightArrow": "⇒",
+	"DoubleRightTee": "⊨",
+	"DoubleUpArrow": "⇑",
+	"DoubleUpDownArrow": "⇕",
+	"DoubleVerticalBar": "∥",
+	"DownArrowBar": "⤓",
+	"downarrow": "↓",
+	"DownArrow": "↓",
+	"Downarrow": "⇓",
+	"DownArrowUpArrow": "⇵",
+	"DownBreve": "̑",
+	"downdownarrows": "⇊",
+	"downharpoonleft": "⇃",
+	"downharpoonright": "⇂",
+	"DownLeftRightVector": "⥐",
+	"DownLeftTeeVector": "⥞",
+	"DownLeftVectorBar": "⥖",
+	"DownLeftVector": "↽",
+	"DownRightTeeVector": "⥟",
+	"DownRightVectorBar": "⥗",
+	"DownRightVector": "⇁",
+	"DownTeeArrow": "↧",
+	"DownTee": "⊤",
+	"drbkarow": "⤐",
+	"drcorn": "⌟",
+	"drcrop": "⌌",
+	"Dscr": "𝒟",
+	"dscr": "𝒹",
+	"DScy": "Ѕ",
+	"dscy": "ѕ",
+	"dsol": "⧶",
+	"Dstrok": "Đ",
+	"dstrok": "đ",
+	"dtdot": "⋱",
+	"dtri": "▿",
+	"dtrif": "▾",
+	"duarr": "⇵",
+	"duhar": "⥯",
+	"dwangle": "⦦",
+	"DZcy": "Џ",
+	"dzcy": "џ",
+	"dzigrarr": "⟿",
+	"Eacute": "É",
+	"eacute": "é",
+	"easter": "⩮",
+	"Ecaron": "Ě",
+	"ecaron": "ě",
+	"Ecirc": "Ê",
+	"ecirc": "ê",
+	"ecir": "≖",
+	"ecolon": "≕",
+	"Ecy": "Э",
+	"ecy": "э",
+	"eDDot": "⩷",
+	"Edot": "Ė",
+	"edot": "ė",
+	"eDot": "≑",
+	"ee": "ⅇ",
+	"efDot": "≒",
+	"Efr": "𝔈",
+	"efr": "𝔢",
+	"eg": "⪚",
+	"Egrave": "È",
+	"egrave": "è",
+	"egs": "⪖",
+	"egsdot": "⪘",
+	"el": "⪙",
+	"Element": "∈",
+	"elinters": "⏧",
+	"ell": "ℓ",
+	"els": "⪕",
+	"elsdot": "⪗",
+	"Emacr": "Ē",
+	"emacr": "ē",
+	"empty": "∅",
+	"emptyset": "∅",
+	"EmptySmallSquare": "◻",
+	"emptyv": "∅",
+	"EmptyVerySmallSquare": "▫",
+	"emsp13": " ",
+	"emsp14": " ",
+	"emsp": " ",
+	"ENG": "Ŋ",
+	"eng": "ŋ",
+	"ensp": " ",
+	"Eogon": "Ę",
+	"eogon": "ę",
+	"Eopf": "𝔼",
+	"eopf": "𝕖",
+	"epar": "⋕",
+	"eparsl": "⧣",
+	"eplus": "⩱",
+	"epsi": "ε",
+	"Epsilon": "Ε",
+	"epsilon": "ε",
+	"epsiv": "ϵ",
+	"eqcirc": "≖",
+	"eqcolon": "≕",
+	"eqsim": "≂",
+	"eqslantgtr": "⪖",
+	"eqslantless": "⪕",
+	"Equal": "⩵",
+	"equals": "=",
+	"EqualTilde": "≂",
+	"equest": "≟",
+	"Equilibrium": "⇌",
+	"equiv": "≡",
+	"equivDD": "⩸",
+	"eqvparsl": "⧥",
+	"erarr": "⥱",
+	"erDot": "≓",
+	"escr": "ℯ",
+	"Escr": "ℰ",
+	"esdot": "≐",
+	"Esim": "⩳",
+	"esim": "≂",
+	"Eta": "Η",
+	"eta": "η",
+	"ETH": "Ð",
+	"eth": "ð",
+	"Euml": "Ë",
+	"euml": "ë",
+	"euro": "€",
+	"excl": "!",
+	"exist": "∃",
+	"Exists": "∃",
+	"expectation": "ℰ",
+	"exponentiale": "ⅇ",
+	"ExponentialE": "ⅇ",
+	"fallingdotseq": "≒",
+	"Fcy": "Ф",
+	"fcy": "ф",
+	"female": "♀",
+	"ffilig": "ﬃ",
+	"fflig": "ﬀ",
+	"ffllig": "ﬄ",
+	"Ffr": "𝔉",
+	"ffr": "𝔣",
+	"filig": "ﬁ",
+	"FilledSmallSquare": "◼",
+	"FilledVerySmallSquare": "▪",
+	"fjlig": "fj",
+	"flat": "♭",
+	"fllig": "ﬂ",
+	"fltns": "▱",
+	"fnof": "ƒ",
+	"Fopf": "𝔽",
+	"fopf": "𝕗",
+	"forall": "∀",
+	"ForAll": "∀",
+	"fork": "⋔",
+	"forkv": "⫙",
+	"Fouriertrf": "ℱ",
+	"fpartint": "⨍",
+	"frac12": "½",
+	"frac13": "⅓",
+	"frac14": "¼",
+	"frac15": "⅕",
+	"frac16": "⅙",
+	"frac18": "⅛",
+	"frac23": "⅔",
+	"frac25": "⅖",
+	"frac34": "¾",
+	"frac35": "⅗",
+	"frac38": "⅜",
+	"frac45": "⅘",
+	"frac56": "⅚",
+	"frac58": "⅝",
+	"frac78": "⅞",
+	"frasl": "⁄",
+	"frown": "⌢",
+	"fscr": "𝒻",
+	"Fscr": "ℱ",
+	"gacute": "ǵ",
+	"Gamma": "Γ",
+	"gamma": "γ",
+	"Gammad": "Ϝ",
+	"gammad": "ϝ",
+	"gap": "⪆",
+	"Gbreve": "Ğ",
+	"gbreve": "ğ",
+	"Gcedil": "Ģ",
+	"Gcirc": "Ĝ",
+	"gcirc": "ĝ",
+	"Gcy": "Г",
+	"gcy": "г",
+	"Gdot": "Ġ",
+	"gdot": "ġ",
+	"ge": "≥",
+	"gE": "≧",
+	"gEl": "⪌",
+	"gel": "⋛",
+	"geq": "≥",
+	"geqq": "≧",
+	"geqslant": "⩾",
+	"gescc": "⪩",
+	"ges": "⩾",
+	"gesdot": "⪀",
+	"gesdoto": "⪂",
+	"gesdotol": "⪄",
+	"gesl": "⋛︀",
+	"gesles": "⪔",
+	"Gfr": "𝔊",
+	"gfr": "𝔤",
+	"gg": "≫",
+	"Gg": "⋙",
+	"ggg": "⋙",
+	"gimel": "ℷ",
+	"GJcy": "Ѓ",
+	"gjcy": "ѓ",
+	"gla": "⪥",
+	"gl": "≷",
+	"glE": "⪒",
+	"glj": "⪤",
+	"gnap": "⪊",
+	"gnapprox": "⪊",
+	"gne": "⪈",
+	"gnE": "≩",
+	"gneq": "⪈",
+	"gneqq": "≩",
+	"gnsim": "⋧",
+	"Gopf": "𝔾",
+	"gopf": "𝕘",
+	"grave": "`",
+	"GreaterEqual": "≥",
+	"GreaterEqualLess": "⋛",
+	"GreaterFullEqual": "≧",
+	"GreaterGreater": "⪢",
+	"GreaterLess": "≷",
+	"GreaterSlantEqual": "⩾",
+	"GreaterTilde": "≳",
+	"Gscr": "𝒢",
+	"gscr": "ℊ",
+	"gsim": "≳",
+	"gsime": "⪎",
+	"gsiml": "⪐",
+	"gtcc": "⪧",
+	"gtcir": "⩺",
+	"gt": ">",
+	"GT": ">",
+	"Gt": "≫",
+	"gtdot": "⋗",
+	"gtlPar": "⦕",
+	"gtquest": "⩼",
+	"gtrapprox": "⪆",
+	"gtrarr": "⥸",
+	"gtrdot": "⋗",
+	"gtreqless": "⋛",
+	"gtreqqless": "⪌",
+	"gtrless": "≷",
+	"gtrsim": "≳",
+	"gvertneqq": "≩︀",
+	"gvnE": "≩︀",
+	"Hacek": "ˇ",
+	"hairsp": " ",
+	"half": "½",
+	"hamilt": "ℋ",
+	"HARDcy": "Ъ",
+	"hardcy": "ъ",
+	"harrcir": "⥈",
+	"harr": "↔",
+	"hArr": "⇔",
+	"harrw": "↭",
+	"Hat": "^",
+	"hbar": "ℏ",
+	"Hcirc": "Ĥ",
+	"hcirc": "ĥ",
+	"hearts": "♥",
+	"heartsuit": "♥",
+	"hellip": "…",
+	"hercon": "⊹",
+	"hfr": "𝔥",
+	"Hfr": "ℌ",
+	"HilbertSpace": "ℋ",
+	"hksearow": "⤥",
+	"hkswarow": "⤦",
+	"hoarr": "⇿",
+	"homtht": "∻",
+	"hookleftarrow": "↩",
+	"hookrightarrow": "↪",
+	"hopf": "𝕙",
+	"Hopf": "ℍ",
+	"horbar": "―",
+	"HorizontalLine": "─",
+	"hscr": "𝒽",
+	"Hscr": "ℋ",
+	"hslash": "ℏ",
+	"Hstrok": "Ħ",
+	"hstrok": "ħ",
+	"HumpDownHump": "≎",
+	"HumpEqual": "≏",
+	"hybull": "⁃",
+	"hyphen": "‐",
+	"Iacute": "Í",
+	"iacute": "í",
+	"ic": "⁣",
+	"Icirc": "Î",
+	"icirc": "î",
+	"Icy": "И",
+	"icy": "и",
+	"Idot": "İ",
+	"IEcy": "Е",
+	"iecy": "е",
+	"iexcl": "¡",
+	"iff": "⇔",
+	"ifr": "𝔦",
+	"Ifr": "ℑ",
+	"Igrave": "Ì",
+	"igrave": "ì",
+	"ii": "ⅈ",
+	"iiiint": "⨌",
+	"iiint": "∭",
+	"iinfin": "⧜",
+	"iiota": "℩",
+	"IJlig": "Ĳ",
+	"ijlig": "ĳ",
+	"Imacr": "Ī",
+	"imacr": "ī",
+	"image": "ℑ",
+	"ImaginaryI": "ⅈ",
+	"imagline": "ℐ",
+	"imagpart": "ℑ",
+	"imath": "ı",
+	"Im": "ℑ",
+	"imof": "⊷",
+	"imped": "Ƶ",
+	"Implies": "⇒",
+	"incare": "℅",
+	"in": "∈",
+	"infin": "∞",
+	"infintie": "⧝",
+	"inodot": "ı",
+	"intcal": "⊺",
+	"int": "∫",
+	"Int": "∬",
+	"integers": "ℤ",
+	"Integral": "∫",
+	"intercal": "⊺",
+	"Intersection": "⋂",
+	"intlarhk": "⨗",
+	"intprod": "⨼",
+	"InvisibleComma": "⁣",
+	"InvisibleTimes": "⁢",
+	"IOcy": "Ё",
+	"iocy": "ё",
+	"Iogon": "Į",
+	"iogon": "į",
+	"Iopf": "𝕀",
+	"iopf": "𝕚",
+	"Iota": "Ι",
+	"iota": "ι",
+	"iprod": "⨼",
+	"iquest": "¿",
+	"iscr": "𝒾",
+	"Iscr": "ℐ",
+	"isin": "∈",
+	"isindot": "⋵",
+	"isinE": "⋹",
+	"isins": "⋴",
+	"isinsv": "⋳",
+	"isinv": "∈",
+	"it": "⁢",
+	"Itilde": "Ĩ",
+	"itilde": "ĩ",
+	"Iukcy": "І",
+	"iukcy": "і",
+	"Iuml": "Ï",
+	"iuml": "ï",
+	"Jcirc": "Ĵ",
+	"jcirc": "ĵ",
+	"Jcy": "Й",
+	"jcy": "й",
+	"Jfr": "𝔍",
+	"jfr": "𝔧",
+	"jmath": "ȷ",
+	"Jopf": "𝕁",
+	"jopf": "𝕛",
+	"Jscr": "𝒥",
+	"jscr": "𝒿",
+	"Jsercy": "Ј",
+	"jsercy": "ј",
+	"Jukcy": "Є",
+	"jukcy": "є",
+	"Kappa": "Κ",
+	"kappa": "κ",
+	"kappav": "ϰ",
+	"Kcedil": "Ķ",
+	"kcedil": "ķ",
+	"Kcy": "К",
+	"kcy": "к",
+	"Kfr": "𝔎",
+	"kfr": "𝔨",
+	"kgreen": "ĸ",
+	"KHcy": "Х",
+	"khcy": "х",
+	"KJcy": "Ќ",
+	"kjcy": "ќ",
+	"Kopf": "𝕂",
+	"kopf": "𝕜",
+	"Kscr": "𝒦",
+	"kscr": "𝓀",
+	"lAarr": "⇚",
+	"Lacute": "Ĺ",
+	"lacute": "ĺ",
+	"laemptyv": "⦴",
+	"lagran": "ℒ",
+	"Lambda": "Λ",
+	"lambda": "λ",
+	"lang": "⟨",
+	"Lang": "⟪",
+	"langd": "⦑",
+	"langle": "⟨",
+	"lap": "⪅",
+	"Laplacetrf": "ℒ",
+	"laquo": "«",
+	"larrb": "⇤",
+	"larrbfs": "⤟",
+	"larr": "←",
+	"Larr": "↞",
+	"lArr": "⇐",
+	"larrfs": "⤝",
+	"larrhk": "↩",
+	"larrlp": "↫",
+	"larrpl": "⤹",
+	"larrsim": "⥳",
+	"larrtl": "↢",
+	"latail": "⤙",
+	"lAtail": "⤛",
+	"lat": "⪫",
+	"late": "⪭",
+	"lates": "⪭︀",
+	"lbarr": "⤌",
+	"lBarr": "⤎",
+	"lbbrk": "❲",
+	"lbrace": "{",
+	"lbrack": "[",
+	"lbrke": "⦋",
+	"lbrksld": "⦏",
+	"lbrkslu": "⦍",
+	"Lcaron": "Ľ",
+	"lcaron": "ľ",
+	"Lcedil": "Ļ",
+	"lcedil": "ļ",
+	"lceil": "⌈",
+	"lcub": "{",
+	"Lcy": "Л",
+	"lcy": "л",
+	"ldca": "⤶",
+	"ldquo": "“",
+	"ldquor": "„",
+	"ldrdhar": "⥧",
+	"ldrushar": "⥋",
+	"ldsh": "↲",
+	"le": "≤",
+	"lE": "≦",
+	"LeftAngleBracket": "⟨",
+	"LeftArrowBar": "⇤",
+	"leftarrow": "←",
+	"LeftArrow": "←",
+	"Leftarrow": "⇐",
+	"LeftArrowRightArrow": "⇆",
+	"leftarrowtail": "↢",
+	"LeftCeiling": "⌈",
+	"LeftDoubleBracket": "⟦",
+	"LeftDownTeeVector": "⥡",
+	"LeftDownVectorBar": "⥙",
+	"LeftDownVector": "⇃",
+	"LeftFloor": "⌊",
+	"leftharpoondown": "↽",
+	"leftharpoonup": "↼",
+	"leftleftarrows": "⇇",
+	"leftrightarrow": "↔",
+	"LeftRightArrow": "↔",
+	"Leftrightarrow": "⇔",
+	"leftrightarrows": "⇆",
+	"leftrightharpoons": "⇋",
+	"leftrightsquigarrow": "↭",
+	"LeftRightVector": "⥎",
+	"LeftTeeArrow": "↤",
+	"LeftTee": "⊣",
+	"LeftTeeVector": "⥚",
+	"leftthreetimes": "⋋",
+	"LeftTriangleBar": "⧏",
+	"LeftTriangle": "⊲",
+	"LeftTriangleEqual": "⊴",
+	"LeftUpDownVector": "⥑",
+	"LeftUpTeeVector": "⥠",
+	"LeftUpVectorBar": "⥘",
+	"LeftUpVector": "↿",
+	"LeftVectorBar": "⥒",
+	"LeftVector": "↼",
+	"lEg": "⪋",
+	"leg": "⋚",
+	"leq": "≤",
+	"leqq": "≦",
+	"leqslant": "⩽",
+	"lescc": "⪨",
+	"les": "⩽",
+	"lesdot": "⩿",
+	"lesdoto": "⪁",
+	"lesdotor": "⪃",
+	"lesg": "⋚︀",
+	"lesges": "⪓",
+	"lessapprox": "⪅",
+	"lessdot": "⋖",
+	"lesseqgtr": "⋚",
+	"lesseqqgtr": "⪋",
+	"LessEqualGreater": "⋚",
+	"LessFullEqual": "≦",
+	"LessGreater": "≶",
+	"lessgtr": "≶",
+	"LessLess": "⪡",
+	"lesssim": "≲",
+	"LessSlantEqual": "⩽",
+	"LessTilde": "≲",
+	"lfisht": "⥼",
+	"lfloor": "⌊",
+	"Lfr": "𝔏",
+	"lfr": "𝔩",
+	"lg": "≶",
+	"lgE": "⪑",
+	"lHar": "⥢",
+	"lhard": "↽",
+	"lharu": "↼",
+	"lharul": "⥪",
+	"lhblk": "▄",
+	"LJcy": "Љ",
+	"ljcy": "љ",
+	"llarr": "⇇",
+	"ll": "≪",
+	"Ll": "⋘",
+	"llcorner": "⌞",
+	"Lleftarrow": "⇚",
+	"llhard": "⥫",
+	"lltri": "◺",
+	"Lmidot": "Ŀ",
+	"lmidot": "ŀ",
+	"lmoustache": "⎰",
+	"lmoust": "⎰",
+	"lnap": "⪉",
+	"lnapprox": "⪉",
+	"lne": "⪇",
+	"lnE": "≨",
+	"lneq": "⪇",
+	"lneqq": "≨",
+	"lnsim": "⋦",
+	"loang": "⟬",
+	"loarr": "⇽",
+	"lobrk": "⟦",
+	"longleftarrow": "⟵",
+	"LongLeftArrow": "⟵",
+	"Longleftarrow": "⟸",
+	"longleftrightarrow": "⟷",
+	"LongLeftRightArrow": "⟷",
+	"Longleftrightarrow": "⟺",
+	"longmapsto": "⟼",
+	"longrightarrow": "⟶",
+	"LongRightArrow": "⟶",
+	"Longrightarrow": "⟹",
+	"looparrowleft": "↫",
+	"looparrowright": "↬",
+	"lopar": "⦅",
+	"Lopf": "𝕃",
+	"lopf": "𝕝",
+	"loplus": "⨭",
+	"lotimes": "⨴",
+	"lowast": "∗",
+	"lowbar": "_",
+	"LowerLeftArrow": "↙",
+	"LowerRightArrow": "↘",
+	"loz": "◊",
+	"lozenge": "◊",
+	"lozf": "⧫",
+	"lpar": "(",
+	"lparlt": "⦓",
+	"lrarr": "⇆",
+	"lrcorner": "⌟",
+	"lrhar": "⇋",
+	"lrhard": "⥭",
+	"lrm": "‎",
+	"lrtri": "⊿",
+	"lsaquo": "‹",
+	"lscr": "𝓁",
+	"Lscr": "ℒ",
+	"lsh": "↰",
+	"Lsh": "↰",
+	"lsim": "≲",
+	"lsime": "⪍",
+	"lsimg": "⪏",
+	"lsqb": "[",
+	"lsquo": "‘",
+	"lsquor": "‚",
+	"Lstrok": "Ł",
+	"lstrok": "ł",
+	"ltcc": "⪦",
+	"ltcir": "⩹",
+	"lt": "<",
+	"LT": "<",
+	"Lt": "≪",
+	"ltdot": "⋖",
+	"lthree": "⋋",
+	"ltimes": "⋉",
+	"ltlarr": "⥶",
+	"ltquest": "⩻",
+	"ltri": "◃",
+	"ltrie": "⊴",
+	"ltrif": "◂",
+	"ltrPar": "⦖",
+	"lurdshar": "⥊",
+	"luruhar": "⥦",
+	"lvertneqq": "≨︀",
+	"lvnE": "≨︀",
+	"macr": "¯",
+	"male": "♂",
+	"malt": "✠",
+	"maltese": "✠",
+	"Map": "⤅",
+	"map": "↦",
+	"mapsto": "↦",
+	"mapstodown": "↧",
+	"mapstoleft": "↤",
+	"mapstoup": "↥",
+	"marker": "▮",
+	"mcomma": "⨩",
+	"Mcy": "М",
+	"mcy": "м",
+	"mdash": "—",
+	"mDDot": "∺",
+	"measuredangle": "∡",
+	"MediumSpace": " ",
+	"Mellintrf": "ℳ",
+	"Mfr": "𝔐",
+	"mfr": "𝔪",
+	"mho": "℧",
+	"micro": "µ",
+	"midast": "*",
+	"midcir": "⫰",
+	"mid": "∣",
+	"middot": "·",
+	"minusb": "⊟",
+	"minus": "−",
+	"minusd": "∸",
+	"minusdu": "⨪",
+	"MinusPlus": "∓",
+	"mlcp": "⫛",
+	"mldr": "…",
+	"mnplus": "∓",
+	"models": "⊧",
+	"Mopf": "𝕄",
+	"mopf": "𝕞",
+	"mp": "∓",
+	"mscr": "𝓂",
+	"Mscr": "ℳ",
+	"mstpos": "∾",
+	"Mu": "Μ",
+	"mu": "μ",
+	"multimap": "⊸",
+	"mumap": "⊸",
+	"nabla": "∇",
+	"Nacute": "Ń",
+	"nacute": "ń",
+	"nang": "∠⃒",
+	"nap": "≉",
+	"napE": "⩰̸",
+	"napid": "≋̸",
+	"napos": "ŉ",
+	"napprox": "≉",
+	"natural": "♮",
+	"naturals": "ℕ",
+	"natur": "♮",
+	"nbsp": " ",
+	"nbump": "≎̸",
+	"nbumpe": "≏̸",
+	"ncap": "⩃",
+	"Ncaron": "Ň",
+	"ncaron": "ň",
+	"Ncedil": "Ņ",
+	"ncedil": "ņ",
+	"ncong": "≇",
+	"ncongdot": "⩭̸",
+	"ncup": "⩂",
+	"Ncy": "Н",
+	"ncy": "н",
+	"ndash": "–",
+	"nearhk": "⤤",
+	"nearr": "↗",
+	"neArr": "⇗",
+	"nearrow": "↗",
+	"ne": "≠",
+	"nedot": "≐̸",
+	"NegativeMediumSpace": "​",
+	"NegativeThickSpace": "​",
+	"NegativeThinSpace": "​",
+	"NegativeVeryThinSpace": "​",
+	"nequiv": "≢",
+	"nesear": "⤨",
+	"nesim": "≂̸",
+	"NestedGreaterGreater": "≫",
+	"NestedLessLess": "≪",
+	"NewLine": "\n",
+	"nexist": "∄",
+	"nexists": "∄",
+	"Nfr": "𝔑",
+	"nfr": "𝔫",
+	"ngE": "≧̸",
+	"nge": "≱",
+	"ngeq": "≱",
+	"ngeqq": "≧̸",
+	"ngeqslant": "⩾̸",
+	"nges": "⩾̸",
+	"nGg": "⋙̸",
+	"ngsim": "≵",
+	"nGt": "≫⃒",
+	"ngt": "≯",
+	"ngtr": "≯",
+	"nGtv": "≫̸",
+	"nharr": "↮",
+	"nhArr": "⇎",
+	"nhpar": "⫲",
+	"ni": "∋",
+	"nis": "⋼",
+	"nisd": "⋺",
+	"niv": "∋",
+	"NJcy": "Њ",
+	"njcy": "њ",
+	"nlarr": "↚",
+	"nlArr": "⇍",
+	"nldr": "‥",
+	"nlE": "≦̸",
+	"nle": "≰",
+	"nleftarrow": "↚",
+	"nLeftarrow": "⇍",
+	"nleftrightarrow": "↮",
+	"nLeftrightarrow": "⇎",
+	"nleq": "≰",
+	"nleqq": "≦̸",
+	"nleqslant": "⩽̸",
+	"nles": "⩽̸",
+	"nless": "≮",
+	"nLl": "⋘̸",
+	"nlsim": "≴",
+	"nLt": "≪⃒",
+	"nlt": "≮",
+	"nltri": "⋪",
+	"nltrie": "⋬",
+	"nLtv": "≪̸",
+	"nmid": "∤",
+	"NoBreak": "⁠",
+	"NonBreakingSpace": " ",
+	"nopf": "𝕟",
+	"Nopf": "ℕ",
+	"Not": "⫬",
+	"not": "¬",
+	"NotCongruent": "≢",
+	"NotCupCap": "≭",
+	"NotDoubleVerticalBar": "∦",
+	"NotElement": "∉",
+	"NotEqual": "≠",
+	"NotEqualTilde": "≂̸",
+	"NotExists": "∄",
+	"NotGreater": "≯",
+	"NotGreaterEqual": "≱",
+	"NotGreaterFullEqual": "≧̸",
+	"NotGreaterGreater": "≫̸",
+	"NotGreaterLess": "≹",
+	"NotGreaterSlantEqual": "⩾̸",
+	"NotGreaterTilde": "≵",
+	"NotHumpDownHump": "≎̸",
+	"NotHumpEqual": "≏̸",
+	"notin": "∉",
+	"notindot": "⋵̸",
+	"notinE": "⋹̸",
+	"notinva": "∉",
+	"notinvb": "⋷",
+	"notinvc": "⋶",
+	"NotLeftTriangleBar": "⧏̸",
+	"NotLeftTriangle": "⋪",
+	"NotLeftTriangleEqual": "⋬",
+	"NotLess": "≮",
+	"NotLessEqual": "≰",
+	"NotLessGreater": "≸",
+	"NotLessLess": "≪̸",
+	"NotLessSlantEqual": "⩽̸",
+	"NotLessTilde": "≴",
+	"NotNestedGreaterGreater": "⪢̸",
+	"NotNestedLessLess": "⪡̸",
+	"notni": "∌",
+	"notniva": "∌",
+	"notnivb": "⋾",
+	"notnivc": "⋽",
+	"NotPrecedes": "⊀",
+	"NotPrecedesEqual": "⪯̸",
+	"NotPrecedesSlantEqual": "⋠",
+	"NotReverseElement": "∌",
+	"NotRightTriangleBar": "⧐̸",
+	"NotRightTriangle": "⋫",
+	"NotRightTriangleEqual": "⋭",
+	"NotSquareSubset": "⊏̸",
+	"NotSquareSubsetEqual": "⋢",
+	"NotSquareSuperset": "⊐̸",
+	"NotSquareSupersetEqual": "⋣",
+	"NotSubset": "⊂⃒",
+	"NotSubsetEqual": "⊈",
+	"NotSucceeds": "⊁",
+	"NotSucceedsEqual": "⪰̸",
+	"NotSucceedsSlantEqual": "⋡",
+	"NotSucceedsTilde": "≿̸",
+	"NotSuperset": "⊃⃒",
+	"NotSupersetEqual": "⊉",
+	"NotTilde": "≁",
+	"NotTildeEqual": "≄",
+	"NotTildeFullEqual": "≇",
+	"NotTildeTilde": "≉",
+	"NotVerticalBar": "∤",
+	"nparallel": "∦",
+	"npar": "∦",
+	"nparsl": "⫽⃥",
+	"npart": "∂̸",
+	"npolint": "⨔",
+	"npr": "⊀",
+	"nprcue": "⋠",
+	"nprec": "⊀",
+	"npreceq": "⪯̸",
+	"npre": "⪯̸",
+	"nrarrc": "⤳̸",
+	"nrarr": "↛",
+	"nrArr": "⇏",
+	"nrarrw": "↝̸",
+	"nrightarrow": "↛",
+	"nRightarrow": "⇏",
+	"nrtri": "⋫",
+	"nrtrie": "⋭",
+	"nsc": "⊁",
+	"nsccue": "⋡",
+	"nsce": "⪰̸",
+	"Nscr": "𝒩",
+	"nscr": "𝓃",
+	"nshortmid": "∤",
+	"nshortparallel": "∦",
+	"nsim": "≁",
+	"nsime": "≄",
+	"nsimeq": "≄",
+	"nsmid": "∤",
+	"nspar": "∦",
+	"nsqsube": "⋢",
+	"nsqsupe": "⋣",
+	"nsub": "⊄",
+	"nsubE": "⫅̸",
+	"nsube": "⊈",
+	"nsubset": "⊂⃒",
+	"nsubseteq": "⊈",
+	"nsubseteqq": "⫅̸",
+	"nsucc": "⊁",
+	"nsucceq": "⪰̸",
+	"nsup": "⊅",
+	"nsupE": "⫆̸",
+	"nsupe": "⊉",
+	"nsupset": "⊃⃒",
+	"nsupseteq": "⊉",
+	"nsupseteqq": "⫆̸",
+	"ntgl": "≹",
+	"Ntilde": "Ñ",
+	"ntilde": "ñ",
+	"ntlg": "≸",
+	"ntriangleleft": "⋪",
+	"ntrianglelefteq": "⋬",
+	"ntriangleright": "⋫",
+	"ntrianglerighteq": "⋭",
+	"Nu": "Ν",
+	"nu": "ν",
+	"num": "#",
+	"numero": "№",
+	"numsp": " ",
+	"nvap": "≍⃒",
+	"nvdash": "⊬",
+	"nvDash": "⊭",
+	"nVdash": "⊮",
+	"nVDash": "⊯",
+	"nvge": "≥⃒",
+	"nvgt": ">⃒",
+	"nvHarr": "⤄",
+	"nvinfin": "⧞",
+	"nvlArr": "⤂",
+	"nvle": "≤⃒",
+	"nvlt": "<⃒",
+	"nvltrie": "⊴⃒",
+	"nvrArr": "⤃",
+	"nvrtrie": "⊵⃒",
+	"nvsim": "∼⃒",
+	"nwarhk": "⤣",
+	"nwarr": "↖",
+	"nwArr": "⇖",
+	"nwarrow": "↖",
+	"nwnear": "⤧",
+	"Oacute": "Ó",
+	"oacute": "ó",
+	"oast": "⊛",
+	"Ocirc": "Ô",
+	"ocirc": "ô",
+	"ocir": "⊚",
+	"Ocy": "О",
+	"ocy": "о",
+	"odash": "⊝",
+	"Odblac": "Ő",
+	"odblac": "ő",
+	"odiv": "⨸",
+	"odot": "⊙",
+	"odsold": "⦼",
+	"OElig": "Œ",
+	"oelig": "œ",
+	"ofcir": "⦿",
+	"Ofr": "𝔒",
+	"ofr": "𝔬",
+	"ogon": "˛",
+	"Ograve": "Ò",
+	"ograve": "ò",
+	"ogt": "⧁",
+	"ohbar": "⦵",
+	"ohm": "Ω",
+	"oint": "∮",
+	"olarr": "↺",
+	"olcir": "⦾",
+	"olcross": "⦻",
+	"oline": "‾",
+	"olt": "⧀",
+	"Omacr": "Ō",
+	"omacr": "ō",
+	"Omega": "Ω",
+	"omega": "ω",
+	"Omicron": "Ο",
+	"omicron": "ο",
+	"omid": "⦶",
+	"ominus": "⊖",
+	"Oopf": "𝕆",
+	"oopf": "𝕠",
+	"opar": "⦷",
+	"OpenCurlyDoubleQuote": "“",
+	"OpenCurlyQuote": "‘",
+	"operp": "⦹",
+	"oplus": "⊕",
+	"orarr": "↻",
+	"Or": "⩔",
+	"or": "∨",
+	"ord": "⩝",
+	"order": "ℴ",
+	"orderof": "ℴ",
+	"ordf": "ª",
+	"ordm": "º",
+	"origof": "⊶",
+	"oror": "⩖",
+	"orslope": "⩗",
+	"orv": "⩛",
+	"oS": "Ⓢ",
+	"Oscr": "𝒪",
+	"oscr": "ℴ",
+	"Oslash": "Ø",
+	"oslash": "ø",
+	"osol": "⊘",
+	"Otilde": "Õ",
+	"otilde": "õ",
+	"otimesas": "⨶",
+	"Otimes": "⨷",
+	"otimes": "⊗",
+	"Ouml": "Ö",
+	"ouml": "ö",
+	"ovbar": "⌽",
+	"OverBar": "‾",
+	"OverBrace": "⏞",
+	"OverBracket": "⎴",
+	"OverParenthesis": "⏜",
+	"para": "¶",
+	"parallel": "∥",
+	"par": "∥",
+	"parsim": "⫳",
+	"parsl": "⫽",
+	"part": "∂",
+	"PartialD": "∂",
+	"Pcy": "П",
+	"pcy": "п",
+	"percnt": "%",
+	"period": ".",
+	"permil": "‰",
+	"perp": "⊥",
+	"pertenk": "‱",
+	"Pfr": "𝔓",
+	"pfr": "𝔭",
+	"Phi": "Φ",
+	"phi": "φ",
+	"phiv": "ϕ",
+	"phmmat": "ℳ",
+	"phone": "☎",
+	"Pi": "Π",
+	"pi": "π",
+	"pitchfork": "⋔",
+	"piv": "ϖ",
+	"planck": "ℏ",
+	"planckh": "ℎ",
+	"plankv": "ℏ",
+	"plusacir": "⨣",
+	"plusb": "⊞",
+	"pluscir": "⨢",
+	"plus": "+",
+	"plusdo": "∔",
+	"plusdu": "⨥",
+	"pluse": "⩲",
+	"PlusMinus": "±",
+	"plusmn": "±",
+	"plussim": "⨦",
+	"plustwo": "⨧",
+	"pm": "±",
+	"Poincareplane": "ℌ",
+	"pointint": "⨕",
+	"popf": "𝕡",
+	"Popf": "ℙ",
+	"pound": "£",
+	"prap": "⪷",
+	"Pr": "⪻",
+	"pr": "≺",
+	"prcue": "≼",
+	"precapprox": "⪷",
+	"prec": "≺",
+	"preccurlyeq": "≼",
+	"Precedes": "≺",
+	"PrecedesEqual": "⪯",
+	"PrecedesSlantEqual": "≼",
+	"PrecedesTilde": "≾",
+	"preceq": "⪯",
+	"precnapprox": "⪹",
+	"precneqq": "⪵",
+	"precnsim": "⋨",
+	"pre": "⪯",
+	"prE": "⪳",
+	"precsim": "≾",
+	"prime": "′",
+	"Prime": "″",
+	"primes": "ℙ",
+	"prnap": "⪹",
+	"prnE": "⪵",
+	"prnsim": "⋨",
+	"prod": "∏",
+	"Product": "∏",
+	"profalar": "⌮",
+	"profline": "⌒",
+	"profsurf": "⌓",
+	"prop": "∝",
+	"Proportional": "∝",
+	"Proportion": "∷",
+	"propto": "∝",
+	"prsim": "≾",
+	"prurel": "⊰",
+	"Pscr": "𝒫",
+	"pscr": "𝓅",
+	"Psi": "Ψ",
+	"psi": "ψ",
+	"puncsp": " ",
+	"Qfr": "𝔔",
+	"qfr": "𝔮",
+	"qint": "⨌",
+	"qopf": "𝕢",
+	"Qopf": "ℚ",
+	"qprime": "⁗",
+	"Qscr": "𝒬",
+	"qscr": "𝓆",
+	"quaternions": "ℍ",
+	"quatint": "⨖",
+	"quest": "?",
+	"questeq": "≟",
+	"quot": "\"",
+	"QUOT": "\"",
+	"rAarr": "⇛",
+	"race": "∽̱",
+	"Racute": "Ŕ",
+	"racute": "ŕ",
+	"radic": "√",
+	"raemptyv": "⦳",
+	"rang": "⟩",
+	"Rang": "⟫",
+	"rangd": "⦒",
+	"range": "⦥",
+	"rangle": "⟩",
+	"raquo": "»",
+	"rarrap": "⥵",
+	"rarrb": "⇥",
+	"rarrbfs": "⤠",
+	"rarrc": "⤳",
+	"rarr": "→",
+	"Rarr": "↠",
+	"rArr": "⇒",
+	"rarrfs": "⤞",
+	"rarrhk": "↪",
+	"rarrlp": "↬",
+	"rarrpl": "⥅",
+	"rarrsim": "⥴",
+	"Rarrtl": "⤖",
+	"rarrtl": "↣",
+	"rarrw": "↝",
+	"ratail": "⤚",
+	"rAtail": "⤜",
+	"ratio": "∶",
+	"rationals": "ℚ",
+	"rbarr": "⤍",
+	"rBarr": "⤏",
+	"RBarr": "⤐",
+	"rbbrk": "❳",
+	"rbrace": "}",
+	"rbrack": "]",
+	"rbrke": "⦌",
+	"rbrksld": "⦎",
+	"rbrkslu": "⦐",
+	"Rcaron": "Ř",
+	"rcaron": "ř",
+	"Rcedil": "Ŗ",
+	"rcedil": "ŗ",
+	"rceil": "⌉",
+	"rcub": "}",
+	"Rcy": "Р",
+	"rcy": "р",
+	"rdca": "⤷",
+	"rdldhar": "⥩",
+	"rdquo": "”",
+	"rdquor": "”",
+	"rdsh": "↳",
+	"real": "ℜ",
+	"realine": "ℛ",
+	"realpart": "ℜ",
+	"reals": "ℝ",
+	"Re": "ℜ",
+	"rect": "▭",
+	"reg": "®",
+	"REG": "®",
+	"ReverseElement": "∋",
+	"ReverseEquilibrium": "⇋",
+	"ReverseUpEquilibrium": "⥯",
+	"rfisht": "⥽",
+	"rfloor": "⌋",
+	"rfr": "𝔯",
+	"Rfr": "ℜ",
+	"rHar": "⥤",
+	"rhard": "⇁",
+	"rharu": "⇀",
+	"rharul": "⥬",
+	"Rho": "Ρ",
+	"rho": "ρ",
+	"rhov": "ϱ",
+	"RightAngleBracket": "⟩",
+	"RightArrowBar": "⇥",
+	"rightarrow": "→",
+	"RightArrow": "→",
+	"Rightarrow": "⇒",
+	"RightArrowLeftArrow": "⇄",
+	"rightarrowtail": "↣",
+	"RightCeiling": "⌉",
+	"RightDoubleBracket": "⟧",
+	"RightDownTeeVector": "⥝",
+	"RightDownVectorBar": "⥕",
+	"RightDownVector": "⇂",
+	"RightFloor": "⌋",
+	"rightharpoondown": "⇁",
+	"rightharpoonup": "⇀",
+	"rightleftarrows": "⇄",
+	"rightleftharpoons": "⇌",
+	"rightrightarrows": "⇉",
+	"rightsquigarrow": "↝",
+	"RightTeeArrow": "↦",
+	"RightTee": "⊢",
+	"RightTeeVector": "⥛",
+	"rightthreetimes": "⋌",
+	"RightTriangleBar": "⧐",
+	"RightTriangle": "⊳",
+	"RightTriangleEqual": "⊵",
+	"RightUpDownVector": "⥏",
+	"RightUpTeeVector": "⥜",
+	"RightUpVectorBar": "⥔",
+	"RightUpVector": "↾",
+	"RightVectorBar": "⥓",
+	"RightVector": "⇀",
+	"ring": "˚",
+	"risingdotseq": "≓",
+	"rlarr": "⇄",
+	"rlhar": "⇌",
+	"rlm": "‏",
+	"rmoustache": "⎱",
+	"rmoust": "⎱",
+	"rnmid": "⫮",
+	"roang": "⟭",
+	"roarr": "⇾",
+	"robrk": "⟧",
+	"ropar": "⦆",
+	"ropf": "𝕣",
+	"Ropf": "ℝ",
+	"roplus": "⨮",
+	"rotimes": "⨵",
+	"RoundImplies": "⥰",
+	"rpar": ")",
+	"rpargt": "⦔",
+	"rppolint": "⨒",
+	"rrarr": "⇉",
+	"Rrightarrow": "⇛",
+	"rsaquo": "›",
+	"rscr": "𝓇",
+	"Rscr": "ℛ",
+	"rsh": "↱",
+	"Rsh": "↱",
+	"rsqb": "]",
+	"rsquo": "’",
+	"rsquor": "’",
+	"rthree": "⋌",
+	"rtimes": "⋊",
+	"rtri": "▹",
+	"rtrie": "⊵",
+	"rtrif": "▸",
+	"rtriltri": "⧎",
+	"RuleDelayed": "⧴",
+	"ruluhar": "⥨",
+	"rx": "℞",
+	"Sacute": "Ś",
+	"sacute": "ś",
+	"sbquo": "‚",
+	"scap": "⪸",
+	"Scaron": "Š",
+	"scaron": "š",
+	"Sc": "⪼",
+	"sc": "≻",
+	"sccue": "≽",
+	"sce": "⪰",
+	"scE": "⪴",
+	"Scedil": "Ş",
+	"scedil": "ş",
+	"Scirc": "Ŝ",
+	"scirc": "ŝ",
+	"scnap": "⪺",
+	"scnE": "⪶",
+	"scnsim": "⋩",
+	"scpolint": "⨓",
+	"scsim": "≿",
+	"Scy": "С",
+	"scy": "с",
+	"sdotb": "⊡",
+	"sdot": "⋅",
+	"sdote": "⩦",
+	"searhk": "⤥",
+	"searr": "↘",
+	"seArr": "⇘",
+	"searrow": "↘",
+	"sect": "§",
+	"semi": ";",
+	"seswar": "⤩",
+	"setminus": "∖",
+	"setmn": "∖",
+	"sext": "✶",
+	"Sfr": "𝔖",
+	"sfr": "𝔰",
+	"sfrown": "⌢",
+	"sharp": "♯",
+	"SHCHcy": "Щ",
+	"shchcy": "щ",
+	"SHcy": "Ш",
+	"shcy": "ш",
+	"ShortDownArrow": "↓",
+	"ShortLeftArrow": "←",
+	"shortmid": "∣",
+	"shortparallel": "∥",
+	"ShortRightArrow": "→",
+	"ShortUpArrow": "↑",
+	"shy": "­",
+	"Sigma": "Σ",
+	"sigma": "σ",
+	"sigmaf": "ς",
+	"sigmav": "ς",
+	"sim": "∼",
+	"simdot": "⩪",
+	"sime": "≃",
+	"simeq": "≃",
+	"simg": "⪞",
+	"simgE": "⪠",
+	"siml": "⪝",
+	"simlE": "⪟",
+	"simne": "≆",
+	"simplus": "⨤",
+	"simrarr": "⥲",
+	"slarr": "←",
+	"SmallCircle": "∘",
+	"smallsetminus": "∖",
+	"smashp": "⨳",
+	"smeparsl": "⧤",
+	"smid": "∣",
+	"smile": "⌣",
+	"smt": "⪪",
+	"smte": "⪬",
+	"smtes": "⪬︀",
+	"SOFTcy": "Ь",
+	"softcy": "ь",
+	"solbar": "⌿",
+	"solb": "⧄",
+	"sol": "/",
+	"Sopf": "𝕊",
+	"sopf": "𝕤",
+	"spades": "♠",
+	"spadesuit": "♠",
+	"spar": "∥",
+	"sqcap": "⊓",
+	"sqcaps": "⊓︀",
+	"sqcup": "⊔",
+	"sqcups": "⊔︀",
+	"Sqrt": "√",
+	"sqsub": "⊏",
+	"sqsube": "⊑",
+	"sqsubset": "⊏",
+	"sqsubseteq": "⊑",
+	"sqsup": "⊐",
+	"sqsupe": "⊒",
+	"sqsupset": "⊐",
+	"sqsupseteq": "⊒",
+	"square": "□",
+	"Square": "□",
+	"SquareIntersection": "⊓",
+	"SquareSubset": "⊏",
+	"SquareSubsetEqual": "⊑",
+	"SquareSuperset": "⊐",
+	"SquareSupersetEqual": "⊒",
+	"SquareUnion": "⊔",
+	"squarf": "▪",
+	"squ": "□",
+	"squf": "▪",
+	"srarr": "→",
+	"Sscr": "𝒮",
+	"sscr": "𝓈",
+	"ssetmn": "∖",
+	"ssmile": "⌣",
+	"sstarf": "⋆",
+	"Star": "⋆",
+	"star": "☆",
+	"starf": "★",
+	"straightepsilon": "ϵ",
+	"straightphi": "ϕ",
+	"strns": "¯",
+	"sub": "⊂",
+	"Sub": "⋐",
+	"subdot": "⪽",
+	"subE": "⫅",
+	"sube": "⊆",
+	"subedot": "⫃",
+	"submult": "⫁",
+	"subnE": "⫋",
+	"subne": "⊊",
+	"subplus": "⪿",
+	"subrarr": "⥹",
+	"subset": "⊂",
+	"Subset": "⋐",
+	"subseteq": "⊆",
+	"subseteqq": "⫅",
+	"SubsetEqual": "⊆",
+	"subsetneq": "⊊",
+	"subsetneqq": "⫋",
+	"subsim": "⫇",
+	"subsub": "⫕",
+	"subsup": "⫓",
+	"succapprox": "⪸",
+	"succ": "≻",
+	"succcurlyeq": "≽",
+	"Succeeds": "≻",
+	"SucceedsEqual": "⪰",
+	"SucceedsSlantEqual": "≽",
+	"SucceedsTilde": "≿",
+	"succeq": "⪰",
+	"succnapprox": "⪺",
+	"succneqq": "⪶",
+	"succnsim": "⋩",
+	"succsim": "≿",
+	"SuchThat": "∋",
+	"sum": "∑",
+	"Sum": "∑",
+	"sung": "♪",
+	"sup1": "¹",
+	"sup2": "²",
+	"sup3": "³",
+	"sup": "⊃",
+	"Sup": "⋑",
+	"supdot": "⪾",
+	"supdsub": "⫘",
+	"supE": "⫆",
+	"supe": "⊇",
+	"supedot": "⫄",
+	"Superset": "⊃",
+	"SupersetEqual": "⊇",
+	"suphsol": "⟉",
+	"suphsub": "⫗",
+	"suplarr": "⥻",
+	"supmult": "⫂",
+	"supnE": "⫌",
+	"supne": "⊋",
+	"supplus": "⫀",
+	"supset": "⊃",
+	"Supset": "⋑",
+	"supseteq": "⊇",
+	"supseteqq": "⫆",
+	"supsetneq": "⊋",
+	"supsetneqq": "⫌",
+	"supsim": "⫈",
+	"supsub": "⫔",
+	"supsup": "⫖",
+	"swarhk": "⤦",
+	"swarr": "↙",
+	"swArr": "⇙",
+	"swarrow": "↙",
+	"swnwar": "⤪",
+	"szlig": "ß",
+	"Tab": "\t",
+	"target": "⌖",
+	"Tau": "Τ",
+	"tau": "τ",
+	"tbrk": "⎴",
+	"Tcaron": "Ť",
+	"tcaron": "ť",
+	"Tcedil": "Ţ",
+	"tcedil": "ţ",
+	"Tcy": "Т",
+	"tcy": "т",
+	"tdot": "⃛",
+	"telrec": "⌕",
+	"Tfr": "𝔗",
+	"tfr": "𝔱",
+	"there4": "∴",
+	"therefore": "∴",
+	"Therefore": "∴",
+	"Theta": "Θ",
+	"theta": "θ",
+	"thetasym": "ϑ",
+	"thetav": "ϑ",
+	"thickapprox": "≈",
+	"thicksim": "∼",
+	"ThickSpace": "  ",
+	"ThinSpace": " ",
+	"thinsp": " ",
+	"thkap": "≈",
+	"thksim": "∼",
+	"THORN": "Þ",
+	"thorn": "þ",
+	"tilde": "˜",
+	"Tilde": "∼",
+	"TildeEqual": "≃",
+	"TildeFullEqual": "≅",
+	"TildeTilde": "≈",
+	"timesbar": "⨱",
+	"timesb": "⊠",
+	"times": "×",
+	"timesd": "⨰",
+	"tint": "∭",
+	"toea": "⤨",
+	"topbot": "⌶",
+	"topcir": "⫱",
+	"top": "⊤",
+	"Topf": "𝕋",
+	"topf": "𝕥",
+	"topfork": "⫚",
+	"tosa": "⤩",
+	"tprime": "‴",
+	"trade": "™",
+	"TRADE": "™",
+	"triangle": "▵",
+	"triangledown": "▿",
+	"triangleleft": "◃",
+	"trianglelefteq": "⊴",
+	"triangleq": "≜",
+	"triangleright": "▹",
+	"trianglerighteq": "⊵",
+	"tridot": "◬",
+	"trie": "≜",
+	"triminus": "⨺",
+	"TripleDot": "⃛",
+	"triplus": "⨹",
+	"trisb": "⧍",
+	"tritime": "⨻",
+	"trpezium": "⏢",
+	"Tscr": "𝒯",
+	"tscr": "𝓉",
+	"TScy": "Ц",
+	"tscy": "ц",
+	"TSHcy": "Ћ",
+	"tshcy": "ћ",
+	"Tstrok": "Ŧ",
+	"tstrok": "ŧ",
+	"twixt": "≬",
+	"twoheadleftarrow": "↞",
+	"twoheadrightarrow": "↠",
+	"Uacute": "Ú",
+	"uacute": "ú",
+	"uarr": "↑",
+	"Uarr": "↟",
+	"uArr": "⇑",
+	"Uarrocir": "⥉",
+	"Ubrcy": "Ў",
+	"ubrcy": "ў",
+	"Ubreve": "Ŭ",
+	"ubreve": "ŭ",
+	"Ucirc": "Û",
+	"ucirc": "û",
+	"Ucy": "У",
+	"ucy": "у",
+	"udarr": "⇅",
+	"Udblac": "Ű",
+	"udblac": "ű",
+	"udhar": "⥮",
+	"ufisht": "⥾",
+	"Ufr": "𝔘",
+	"ufr": "𝔲",
+	"Ugrave": "Ù",
+	"ugrave": "ù",
+	"uHar": "⥣",
+	"uharl": "↿",
+	"uharr": "↾",
+	"uhblk": "▀",
+	"ulcorn": "⌜",
+	"ulcorner": "⌜",
+	"ulcrop": "⌏",
+	"ultri": "◸",
+	"Umacr": "Ū",
+	"umacr": "ū",
+	"uml": "¨",
+	"UnderBar": "_",
+	"UnderBrace": "⏟",
+	"UnderBracket": "⎵",
+	"UnderParenthesis": "⏝",
+	"Union": "⋃",
+	"UnionPlus": "⊎",
+	"Uogon": "Ų",
+	"uogon": "ų",
+	"Uopf": "𝕌",
+	"uopf": "𝕦",
+	"UpArrowBar": "⤒",
+	"uparrow": "↑",
+	"UpArrow": "↑",
+	"Uparrow": "⇑",
+	"UpArrowDownArrow": "⇅",
+	"updownarrow": "↕",
+	"UpDownArrow": "↕",
+	"Updownarrow": "⇕",
+	"UpEquilibrium": "⥮",
+	"upharpoonleft": "↿",
+	"upharpoonright": "↾",
+	"uplus": "⊎",
+	"UpperLeftArrow": "↖",
+	"UpperRightArrow": "↗",
+	"upsi": "υ",
+	"Upsi": "ϒ",
+	"upsih": "ϒ",
+	"Upsilon": "Υ",
+	"upsilon": "υ",
+	"UpTeeArrow": "↥",
+	"UpTee": "⊥",
+	"upuparrows": "⇈",
+	"urcorn": "⌝",
+	"urcorner": "⌝",
+	"urcrop": "⌎",
+	"Uring": "Ů",
+	"uring": "ů",
+	"urtri": "◹",
+	"Uscr": "𝒰",
+	"uscr": "𝓊",
+	"utdot": "⋰",
+	"Utilde": "Ũ",
+	"utilde": "ũ",
+	"utri": "▵",
+	"utrif": "▴",
+	"uuarr": "⇈",
+	"Uuml": "Ü",
+	"uuml": "ü",
+	"uwangle": "⦧",
+	"vangrt": "⦜",
+	"varepsilon": "ϵ",
+	"varkappa": "ϰ",
+	"varnothing": "∅",
+	"varphi": "ϕ",
+	"varpi": "ϖ",
+	"varpropto": "∝",
+	"varr": "↕",
+	"vArr": "⇕",
+	"varrho": "ϱ",
+	"varsigma": "ς",
+	"varsubsetneq": "⊊︀",
+	"varsubsetneqq": "⫋︀",
+	"varsupsetneq": "⊋︀",
+	"varsupsetneqq": "⫌︀",
+	"vartheta": "ϑ",
+	"vartriangleleft": "⊲",
+	"vartriangleright": "⊳",
+	"vBar": "⫨",
+	"Vbar": "⫫",
+	"vBarv": "⫩",
+	"Vcy": "В",
+	"vcy": "в",
+	"vdash": "⊢",
+	"vDash": "⊨",
+	"Vdash": "⊩",
+	"VDash": "⊫",
+	"Vdashl": "⫦",
+	"veebar": "⊻",
+	"vee": "∨",
+	"Vee": "⋁",
+	"veeeq": "≚",
+	"vellip": "⋮",
+	"verbar": "|",
+	"Verbar": "‖",
+	"vert": "|",
+	"Vert": "‖",
+	"VerticalBar": "∣",
+	"VerticalLine": "|",
+	"VerticalSeparator": "❘",
+	"VerticalTilde": "≀",
+	"VeryThinSpace": " ",
+	"Vfr": "𝔙",
+	"vfr": "𝔳",
+	"vltri": "⊲",
+	"vnsub": "⊂⃒",
+	"vnsup": "⊃⃒",
+	"Vopf": "𝕍",
+	"vopf": "𝕧",
+	"vprop": "∝",
+	"vrtri": "⊳",
+	"Vscr": "𝒱",
+	"vscr": "𝓋",
+	"vsubnE": "⫋︀",
+	"vsubne": "⊊︀",
+	"vsupnE": "⫌︀",
+	"vsupne": "⊋︀",
+	"Vvdash": "⊪",
+	"vzigzag": "⦚",
+	"Wcirc": "Ŵ",
+	"wcirc": "ŵ",
+	"wedbar": "⩟",
+	"wedge": "∧",
+	"Wedge": "⋀",
+	"wedgeq": "≙",
+	"weierp": "℘",
+	"Wfr": "𝔚",
+	"wfr": "𝔴",
+	"Wopf": "𝕎",
+	"wopf": "𝕨",
+	"wp": "℘",
+	"wr": "≀",
+	"wreath": "≀",
+	"Wscr": "𝒲",
+	"wscr": "𝓌",
+	"xcap": "⋂",
+	"xcirc": "◯",
+	"xcup": "⋃",
+	"xdtri": "▽",
+	"Xfr": "𝔛",
+	"xfr": "𝔵",
+	"xharr": "⟷",
+	"xhArr": "⟺",
+	"Xi": "Ξ",
+	"xi": "ξ",
+	"xlarr": "⟵",
+	"xlArr": "⟸",
+	"xmap": "⟼",
+	"xnis": "⋻",
+	"xodot": "⨀",
+	"Xopf": "𝕏",
+	"xopf": "𝕩",
+	"xoplus": "⨁",
+	"xotime": "⨂",
+	"xrarr": "⟶",
+	"xrArr": "⟹",
+	"Xscr": "𝒳",
+	"xscr": "𝓍",
+	"xsqcup": "⨆",
+	"xuplus": "⨄",
+	"xutri": "△",
+	"xvee": "⋁",
+	"xwedge": "⋀",
+	"Yacute": "Ý",
+	"yacute": "ý",
+	"YAcy": "Я",
+	"yacy": "я",
+	"Ycirc": "Ŷ",
+	"ycirc": "ŷ",
+	"Ycy": "Ы",
+	"ycy": "ы",
+	"yen": "¥",
+	"Yfr": "𝔜",
+	"yfr": "𝔶",
+	"YIcy": "Ї",
+	"yicy": "ї",
+	"Yopf": "𝕐",
+	"yopf": "𝕪",
+	"Yscr": "𝒴",
+	"yscr": "𝓎",
+	"YUcy": "Ю",
+	"yucy": "ю",
+	"yuml": "ÿ",
+	"Yuml": "Ÿ",
+	"Zacute": "Ź",
+	"zacute": "ź",
+	"Zcaron": "Ž",
+	"zcaron": "ž",
+	"Zcy": "З",
+	"zcy": "з",
+	"Zdot": "Ż",
+	"zdot": "ż",
+	"zeetrf": "ℨ",
+	"ZeroWidthSpace": "​",
+	"Zeta": "Ζ",
+	"zeta": "ζ",
+	"zfr": "𝔷",
+	"Zfr": "ℨ",
+	"ZHcy": "Ж",
+	"zhcy": "ж",
+	"zigrarr": "⇝",
+	"zopf": "𝕫",
+	"Zopf": "ℤ",
+	"Zscr": "𝒵",
+	"zscr": "𝓏",
+	"zwj": "‍",
+	"zwnj": "‌"
+};
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports) {
+
+module.exports = {
+	"amp": "&",
+	"apos": "'",
+	"gt": ">",
+	"lt": "<",
+	"quot": "\""
+};
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 function DOMParser(options){
@@ -1350,15 +3408,15 @@ function appendElement (hander,node) {
 }//appendChild and setAttributeNS are preformance key
 
 //if(typeof require == 'function'){
-	var XMLReader = __webpack_require__(8).XMLReader;
-	var DOMImplementation = exports.DOMImplementation = __webpack_require__(5).DOMImplementation;
-	exports.XMLSerializer = __webpack_require__(5).XMLSerializer ;
+	var XMLReader = __webpack_require__(20).XMLReader;
+	var DOMImplementation = exports.DOMImplementation = __webpack_require__(6).DOMImplementation;
+	exports.XMLSerializer = __webpack_require__(6).XMLSerializer ;
 	exports.DOMParser = DOMParser;
 //}
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 /*
@@ -2608,7 +4666,7 @@ try{
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -7307,175 +9365,1213 @@ exports.select1 = function(e, doc) {
 
 
 /***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__teimeta_edit_ts__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__teimeta_edit_ts___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__teimeta_edit_ts__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__teimeta_odd_ts__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__teimeta_odd_ts___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__teimeta_odd_ts__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__systemcall_opensavelocal_js__ = __webpack_require__(2);
-/* unused harmony export tableElementKeys */
-/* unused harmony export test */
-/* harmony export (immutable) */ __webpack_exports__["a"] = open;
-/* harmony export (immutable) */ __webpack_exports__["d"] = newFile;
-/* unused harmony export openOddLoad */
-/* harmony export (immutable) */ __webpack_exports__["b"] = openOdd;
-/* unused harmony export emptyFile */
-/* unused harmony export saveAs */
-/* unused harmony export save */
-/* harmony export (immutable) */ __webpack_exports__["c"] = saveAsLocal;
-/* global teiEdit */
-/* global TableData */
-/* global $ */
+/**
+ *
+ */
 
-
-
-
-
-
-var teiData = {
+exports.__esModule = true;
+var edit = __webpack_require__(1);
+var odd = __webpack_require__(2);
+var tei = __webpack_require__(17);
+var system = __webpack_require__(0);
+exports.teiData = {
     oddName: '',
     fileName: '',
     dataOdd: null,
     dataTei: null,
     html: null,
-    new: true,
+    "new": true,
     parser: null,
-    doc: null,
+    doc: null
 };
-
-function tableElementKeys(e) {
-    /*
-    console.log('keyCode '+ e.keyCode);
-    console.log('charCode '+ e.charCode);
-    console.log('ctrl '+ e.ctrlKey);
-    console.log('alt '+ e.altKey);
-    console.log('shift '+ e.shiftKey);
-    console.log('meta '+ e.metaKey);
-    console.log('ident ' + e.keyIdentifier);
-    */
-    if (e.which === 117 && e.shiftKey !== true) {
-        e.preventDefault();
-        insertLine(e);
-    }
-    if (e.which === 117 && e.shiftKey === true) {
-        e.preventDefault();
-        deleteLine(e);
-    }
-};
-
-function test() {
-    newFile();
-};
-
-function open() {    
-    __WEBPACK_IMPORTED_MODULE_3__systemcall_opensavelocal_js__["b" /* chooseOpenFile */](function(err, name, data) {
+function finish(err, name, data) {
+    exports.teiData.fileName = name;
+    var el = document.getElementById('filename');
+    el.innerHTML = "Fichier: " + name;
+    tei.load(data, exports.teiData);
+    exports.teiData.html = edit.generateHTML(exports.teiData.dataTei);
+    el = document.getElementById('teidata');
+    el.innerHTML = exports.teiData.html;
+    exports.teiData["new"] = false;
+    //console.log("openfile TEI", teiData.dataTei);
+    //console.log(edit.values);
+}
+function open() {
+    system.chooseOpenFile(function (err, name, data) {
         if (!err) {
-            function finish(err) {
-                teiData.fileName = name;
-                $('#filename').html("Fichier: " + name);
-                __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__["load"](data, teiData);
-                teiData.html = __WEBPACK_IMPORTED_MODULE_0__teimeta_edit_ts__["generateHTML"](teiData.dataTei);
-                $('#teidata').html(teiData.html);
-                teiData.new = false;
-                console.log("openfile", teiData.dataTei);
+            if (!exports.teiData.dataOdd) {
+                newFile(function () { finish(1, null, null); });
             }
-            if (!teiData.dataOdd) {
-                newFile(finish);
-            } else {
-                finish(0);
+            else {
+                finish(0, name, data);
             }
-        } else
+        }
+        else
             console.log(name, err);
     });
-};
-
+}
+exports.open = open;
+;
 function newFile(callback) {
     try {
-        let ls = localStorage.getItem("previousODD");
+        var ls = localStorage.getItem("previousODD");
         if (ls) {
             var js = JSON.parse(ls);
             openOddLoad(js.oddName, js.data);
-            if (callback) callback(0);
-        } else {
+            if (callback)
+                callback(0);
+        }
+        else {
             emptyFile();
         }
-    } catch (error) {
+    }
+    catch (error) {
         emptyFile();
     }
 }
-
+exports.newFile = newFile;
 function openOddLoad(name, data) {
-    teiData.oddName = name;
-    $('#oddname').html("ODD: " + name);
-    teiData.dataOdd = __WEBPACK_IMPORTED_MODULE_1__teimeta_odd_ts__["loadOdd"](data);
-    __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__["load"](null, teiData);
-    teiData.html = __WEBPACK_IMPORTED_MODULE_0__teimeta_edit_ts__["generateHTML"](teiData.dataTei);
-    teiData.fileName = 'Pas de nom de fichier';
-    teiData.new = true;
-    $('#filename').html("Fichier: " + teiData.fileName);
-    $('#teidata').html(teiData.html);
-    console.log("openOddLoad", teiData.dataOdd);
-    console.log("openOddLoad", teiData.dataTei);
+    exports.teiData.oddName = name;
+    var el = document.getElementById('oddname');
+    el.innerHTML = "ODD: " + name;
+    exports.teiData.dataOdd = odd.loadOdd(data);
+    tei.load(null, exports.teiData);
+    exports.teiData.html = edit.generateHTML(exports.teiData.dataTei);
+    exports.teiData.fileName = 'nouveau-fichier.xml';
+    exports.teiData["new"] = true;
+    el = document.getElementById('filename');
+    el.innerHTML = "Fichier: " + exports.teiData.fileName;
+    el = document.getElementById('teidata');
+    el.innerHTML = exports.teiData.html;
+    //console.log("openOddLoad ODD", teiData.dataOdd);
+    //console.log("openOddLoad TEI", teiData.dataTei);
+    //console.log(edit.values);
 }
-
+exports.openOddLoad = openOddLoad;
 function openOdd() {
-    __WEBPACK_IMPORTED_MODULE_3__systemcall_opensavelocal_js__["b" /* chooseOpenFile */](function(err, name, data) {
+    system.chooseOpenFile(function (err, name, data) {
         if (!err) {
             openOddLoad(name, data);
-            let js = JSON.stringify({data: data, oddName: name});
+            var js = JSON.stringify({ data: data, oddName: name });
             localStorage.setItem("previousODD", js);
-        } else
+        }
+        else
             console.log(name, err);
     });
-};
-
-function emptyFile() {
-    var dt = $('#odddata');
-    dt.html('<p>ODD DATA VIDE</p>');
-    var dt = $('#teidata');
-    dt.html('<p>TEI DATA VIDE</p>');
-    teiData.oddName = "Pas de nom de fichier";
-    $('#oddname').html("ODD: " + name);
-    teiData.fileName = 'Pas de nom de fichier';
-    teiData.new = true;
-    $('#filename').html("Fichier: " + name);
 }
-
-function saveAs() {    
-    __WEBPACK_IMPORTED_MODULE_3__systemcall_opensavelocal_js__["chooseSaveFile"]('json', function(err, name) {
+exports.openOdd = openOdd;
+;
+function emptyFile() {
+    var dt = document.getElementById('teidata');
+    dt.innerHTML = '';
+    exports.teiData.oddName = "Pas de nom de fichier";
+    exports.teiData.fileName = 'Pas de nom de fichier';
+    exports.teiData["new"] = true;
+    var el = document.getElementById('oddname');
+    el.innerHTML = "ODD: " + exports.teiData.oddName;
+    el = document.getElementById('filename');
+    el.innerHTML = "Fichier: " + exports.teiData.fileName;
+}
+exports.emptyFile = emptyFile;
+function saveAs() {
+    system.chooseSaveFile('json', function (err, name) {
         if (!err) {
-            teiData.fileName = name;
-            $('#filename').html("Fichier: " + teiData.fileName);
-            var ed = __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__["generateTEI"](teiData);
-            __WEBPACK_IMPORTED_MODULE_3__systemcall_opensavelocal_js__["saveFile"](teiData.fileName, ed);
-        } else
+            exports.teiData.fileName = name;
+            var el = document.getElementById('filename');
+            el.innerHTML = "Fichier: " + exports.teiData.fileName;
+            var ed = tei.generateTEI(exports.teiData);
+            system.saveFile(exports.teiData.fileName, ed);
+        }
+        else
             console.log(name, err);
     });
-};
-
+}
+exports.saveAs = saveAs;
+;
 function save() {
     var fileok = true;
-    if (!teiData.fileName) {
-            var ed = __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__["generateTEI"](teiData);
-            __WEBPACK_IMPORTED_MODULE_3__systemcall_opensavelocal_js__["saveFile"](teiData.fileName, ed);
-    } else
+    if (!exports.teiData.fileName) {
+        var ed = tei.generateTEI(exports.teiData);
+        system.saveFile(exports.teiData.fileName, ed);
+    }
+    else
         saveAs();
+}
+exports.save = save;
+;
+function saveAsLocal() {
+    var ed = tei.generateTEI(exports.teiData);
+    // console.log(ed);
+    system.saveFileLocal('xml', exports.teiData.fileName, ed);
+}
+exports.saveAsLocal = saveAsLocal;
+;
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * help.ts
+ */
+
+exports.__esModule = true;
+// import * as system from '../system/opensave';
+var picoModal = __webpack_require__(21);
+exports.version = '0.1.0 - 25-03-2017';
+function about() {
+    var s = "Version prototype de TEIMETA javascript : " + exports.version + "</br></br>";
+    s += "\n<b>Usage:</b> Il faut d'abord charger un fichier ODD local (cliquer \"Ouvrir ODD\").</br>\nIl est possible d'\u00E9diter directement un nouveau fichier \u00E0 partir du ODD charg\u00E9 puis de \nle sauvegarder sous un nouveau nom (cliquer sur \"Sauver\").</br>\nIl est aussi possible de charger \u00E9galement un fichier XML (cliquer sur \"Ouvrir\").</br>\nDans ce cas, le fichier XML sera modifi\u00E9 selon les consignes de l'ODD. Les \u00E9l\u00E9ments XML non\nd\u00E9crits dans l'ODD ne seront pas modifi\u00E9s.</br>\nLa sauvegarde (cliquer sur \"Sauver\") se fait dans le r\u00E9pertoire de t\u00E9l\u00E9chargement (ou ailleurs selon les param\u00E8tres du navigateur web).</br>\n</br>\nPour toute information, aller sur la page <a href=\"http://ct3.ortolang.fr/teimeta/readme.html\" target=\"_blank\">http://ct3.ortolang.fr/teimeta/readme.html</a>\n";
+    // system.alertUser(s);
+    picoModal(s).show();
+}
+exports.about = about;
+;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var encode = __webpack_require__(13),
+    decode = __webpack_require__(11);
+
+exports.decode = function(data, level){
+	return (!level || level <= 0 ? decode.XML : decode.HTML)(data);
 };
 
-function saveAsLocal() {
-    var ed = __WEBPACK_IMPORTED_MODULE_2__teimeta_tei_ts__["generateTEI"](teiData);
-    // console.log(ed);
-    __WEBPACK_IMPORTED_MODULE_3__systemcall_opensavelocal_js__["e" /* saveFileLocal */]('xml', teiData.fileName, ed);
+exports.decodeStrict = function(data, level){
+	return (!level || level <= 0 ? decode.XML : decode.HTMLStrict)(data);
+};
+
+exports.encode = function(data, level){
+	return (!level || level <= 0 ? encode.XML : encode.HTML)(data);
+};
+
+exports.encodeXML = encode.XML;
+
+exports.encodeHTML4 =
+exports.encodeHTML5 =
+exports.encodeHTML  = encode.HTML;
+
+exports.decodeXML =
+exports.decodeXMLStrict = decode.XML;
+
+exports.decodeHTML4 =
+exports.decodeHTML5 =
+exports.decodeHTML = decode.HTML;
+
+exports.decodeHTML4Strict =
+exports.decodeHTML5Strict =
+exports.decodeHTMLStrict = decode.HTMLStrict;
+
+exports.escape = encode.escape;
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var entityMap = __webpack_require__(3),
+    legacyMap = __webpack_require__(15),
+    xmlMap    = __webpack_require__(4),
+    decodeCodePoint = __webpack_require__(12);
+
+var decodeXMLStrict  = getStrictDecoder(xmlMap),
+    decodeHTMLStrict = getStrictDecoder(entityMap);
+
+function getStrictDecoder(map){
+	var keys = Object.keys(map).join("|"),
+	    replace = getReplacer(map);
+
+	keys += "|#[xX][\\da-fA-F]+|#\\d+";
+
+	var re = new RegExp("&(?:" + keys + ");", "g");
+
+	return function(str){
+		return String(str).replace(re, replace);
+	};
+}
+
+var decodeHTML = (function(){
+	var legacy = Object.keys(legacyMap)
+		.sort(sorter);
+
+	var keys = Object.keys(entityMap)
+		.sort(sorter);
+
+	for(var i = 0, j = 0; i < keys.length; i++){
+		if(legacy[j] === keys[i]){
+			keys[i] += ";?";
+			j++;
+		} else {
+			keys[i] += ";";
+		}
+	}
+
+	var re = new RegExp("&(?:" + keys.join("|") + "|#[xX][\\da-fA-F]+;?|#\\d+;?)", "g"),
+	    replace = getReplacer(entityMap);
+
+	function replacer(str){
+		if(str.substr(-1) !== ";") str += ";";
+		return replace(str);
+	}
+
+	//TODO consider creating a merged map
+	return function(str){
+		return String(str).replace(re, replacer);
+	};
+}());
+
+function sorter(a, b){
+	return a < b ? 1 : -1;
+}
+
+function getReplacer(map){
+	return function replace(str){
+		if(str.charAt(1) === "#"){
+			if(str.charAt(2) === "X" || str.charAt(2) === "x"){
+				return decodeCodePoint(parseInt(str.substr(3), 16));
+			}
+			return decodeCodePoint(parseInt(str.substr(2), 10));
+		}
+		return map[str.slice(1, -1)];
+	};
+}
+
+module.exports = {
+	XML: decodeXMLStrict,
+	HTML: decodeHTML,
+	HTMLStrict: decodeHTMLStrict
+};
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var decodeMap = __webpack_require__(14);
+
+module.exports = decodeCodePoint;
+
+// modified version of https://github.com/mathiasbynens/he/blob/master/src/he.js#L94-L119
+function decodeCodePoint(codePoint){
+
+	if((codePoint >= 0xD800 && codePoint <= 0xDFFF) || codePoint > 0x10FFFF){
+		return "\uFFFD";
+	}
+
+	if(codePoint in decodeMap){
+		codePoint = decodeMap[codePoint];
+	}
+
+	var output = "";
+
+	if(codePoint > 0xFFFF){
+		codePoint -= 0x10000;
+		output += String.fromCharCode(codePoint >>> 10 & 0x3FF | 0xD800);
+		codePoint = 0xDC00 | codePoint & 0x3FF;
+	}
+
+	output += String.fromCharCode(codePoint);
+	return output;
+}
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var inverseXML = getInverseObj(__webpack_require__(4)),
+    xmlReplacer = getInverseReplacer(inverseXML);
+
+exports.XML = getInverse(inverseXML, xmlReplacer);
+
+var inverseHTML = getInverseObj(__webpack_require__(3)),
+    htmlReplacer = getInverseReplacer(inverseHTML);
+
+exports.HTML = getInverse(inverseHTML, htmlReplacer);
+
+function getInverseObj(obj){
+	return Object.keys(obj).sort().reduce(function(inverse, name){
+		inverse[obj[name]] = "&" + name + ";";
+		return inverse;
+	}, {});
+}
+
+function getInverseReplacer(inverse){
+	var single = [],
+	    multiple = [];
+
+	Object.keys(inverse).forEach(function(k){
+		if(k.length === 1){
+			single.push("\\" + k);
+		} else {
+			multiple.push(k);
+		}
+	});
+
+	//TODO add ranges
+	multiple.unshift("[" + single.join("") + "]");
+
+	return new RegExp(multiple.join("|"), "g");
+}
+
+var re_nonASCII = /[^\0-\x7F]/g,
+    re_astralSymbols = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
+
+function singleCharReplacer(c){
+	return "&#x" + c.charCodeAt(0).toString(16).toUpperCase() + ";";
+}
+
+function astralReplacer(c){
+	// http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
+	var high = c.charCodeAt(0);
+	var low  = c.charCodeAt(1);
+	var codePoint = (high - 0xD800) * 0x400 + low - 0xDC00 + 0x10000;
+	return "&#x" + codePoint.toString(16).toUpperCase() + ";";
+}
+
+function getInverse(inverse, re){
+	function func(name){
+		return inverse[name];
+	}
+
+	return function(data){
+		return data
+				.replace(re, func)
+				.replace(re_astralSymbols, astralReplacer)
+				.replace(re_nonASCII, singleCharReplacer);
+	};
+}
+
+var re_xmlChars = getInverseReplacer(inverseXML);
+
+function escapeXML(data){
+	return data
+			.replace(re_xmlChars, singleCharReplacer)
+			.replace(re_astralSymbols, astralReplacer)
+			.replace(re_nonASCII, singleCharReplacer);
+}
+
+exports.escape = escapeXML;
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
+
+module.exports = {
+	"0": 65533,
+	"128": 8364,
+	"130": 8218,
+	"131": 402,
+	"132": 8222,
+	"133": 8230,
+	"134": 8224,
+	"135": 8225,
+	"136": 710,
+	"137": 8240,
+	"138": 352,
+	"139": 8249,
+	"140": 338,
+	"142": 381,
+	"145": 8216,
+	"146": 8217,
+	"147": 8220,
+	"148": 8221,
+	"149": 8226,
+	"150": 8211,
+	"151": 8212,
+	"152": 732,
+	"153": 8482,
+	"154": 353,
+	"155": 8250,
+	"156": 339,
+	"158": 382,
+	"159": 376
+};
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+module.exports = {
+	"Aacute": "Á",
+	"aacute": "á",
+	"Acirc": "Â",
+	"acirc": "â",
+	"acute": "´",
+	"AElig": "Æ",
+	"aelig": "æ",
+	"Agrave": "À",
+	"agrave": "à",
+	"amp": "&",
+	"AMP": "&",
+	"Aring": "Å",
+	"aring": "å",
+	"Atilde": "Ã",
+	"atilde": "ã",
+	"Auml": "Ä",
+	"auml": "ä",
+	"brvbar": "¦",
+	"Ccedil": "Ç",
+	"ccedil": "ç",
+	"cedil": "¸",
+	"cent": "¢",
+	"copy": "©",
+	"COPY": "©",
+	"curren": "¤",
+	"deg": "°",
+	"divide": "÷",
+	"Eacute": "É",
+	"eacute": "é",
+	"Ecirc": "Ê",
+	"ecirc": "ê",
+	"Egrave": "È",
+	"egrave": "è",
+	"ETH": "Ð",
+	"eth": "ð",
+	"Euml": "Ë",
+	"euml": "ë",
+	"frac12": "½",
+	"frac14": "¼",
+	"frac34": "¾",
+	"gt": ">",
+	"GT": ">",
+	"Iacute": "Í",
+	"iacute": "í",
+	"Icirc": "Î",
+	"icirc": "î",
+	"iexcl": "¡",
+	"Igrave": "Ì",
+	"igrave": "ì",
+	"iquest": "¿",
+	"Iuml": "Ï",
+	"iuml": "ï",
+	"laquo": "«",
+	"lt": "<",
+	"LT": "<",
+	"macr": "¯",
+	"micro": "µ",
+	"middot": "·",
+	"nbsp": " ",
+	"not": "¬",
+	"Ntilde": "Ñ",
+	"ntilde": "ñ",
+	"Oacute": "Ó",
+	"oacute": "ó",
+	"Ocirc": "Ô",
+	"ocirc": "ô",
+	"Ograve": "Ò",
+	"ograve": "ò",
+	"ordf": "ª",
+	"ordm": "º",
+	"Oslash": "Ø",
+	"oslash": "ø",
+	"Otilde": "Õ",
+	"otilde": "õ",
+	"Ouml": "Ö",
+	"ouml": "ö",
+	"para": "¶",
+	"plusmn": "±",
+	"pound": "£",
+	"quot": "\"",
+	"QUOT": "\"",
+	"raquo": "»",
+	"reg": "®",
+	"REG": "®",
+	"sect": "§",
+	"shy": "­",
+	"sup1": "¹",
+	"sup2": "²",
+	"sup3": "³",
+	"szlig": "ß",
+	"THORN": "Þ",
+	"thorn": "þ",
+	"times": "×",
+	"Uacute": "Ú",
+	"uacute": "ú",
+	"Ucirc": "Û",
+	"ucirc": "û",
+	"Ugrave": "Ù",
+	"ugrave": "ù",
+	"uml": "¨",
+	"Uuml": "Ü",
+	"uuml": "ü",
+	"Yacute": "Ý",
+	"yacute": "ý",
+	"yen": "¥",
+	"yuml": "ÿ"
+};
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/* FileSaver.js
+ * A saveAs() FileSaver implementation.
+ * 1.3.2
+ * 2016-06-16 18:25:19
+ *
+ * By Eli Grey, http://eligrey.com
+ * License: MIT
+ *   See https://github.com/eligrey/FileSaver.js/blob/master/LICENSE.md
+ */
+
+/*global self */
+/*jslint bitwise: true, indent: 4, laxbreak: true, laxcomma: true, smarttabs: true, plusplus: true */
+
+/*! @source http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js */
+
+var saveAs = saveAs || (function(view) {
+	"use strict";
+	// IE <10 is explicitly unsupported
+	if (typeof view === "undefined" || typeof navigator !== "undefined" && /MSIE [1-9]\./.test(navigator.userAgent)) {
+		return;
+	}
+	var
+		  doc = view.document
+		  // only get URL when necessary in case Blob.js hasn't overridden it yet
+		, get_URL = function() {
+			return view.URL || view.webkitURL || view;
+		}
+		, save_link = doc.createElementNS("http://www.w3.org/1999/xhtml", "a")
+		, can_use_save_link = "download" in save_link
+		, click = function(node) {
+			var event = new MouseEvent("click");
+			node.dispatchEvent(event);
+		}
+		, is_safari = /constructor/i.test(view.HTMLElement) || view.safari
+		, is_chrome_ios =/CriOS\/[\d]+/.test(navigator.userAgent)
+		, throw_outside = function(ex) {
+			(view.setImmediate || view.setTimeout)(function() {
+				throw ex;
+			}, 0);
+		}
+		, force_saveable_type = "application/octet-stream"
+		// the Blob API is fundamentally broken as there is no "downloadfinished" event to subscribe to
+		, arbitrary_revoke_timeout = 1000 * 40 // in ms
+		, revoke = function(file) {
+			var revoker = function() {
+				if (typeof file === "string") { // file is an object URL
+					get_URL().revokeObjectURL(file);
+				} else { // file is a File
+					file.remove();
+				}
+			};
+			setTimeout(revoker, arbitrary_revoke_timeout);
+		}
+		, dispatch = function(filesaver, event_types, event) {
+			event_types = [].concat(event_types);
+			var i = event_types.length;
+			while (i--) {
+				var listener = filesaver["on" + event_types[i]];
+				if (typeof listener === "function") {
+					try {
+						listener.call(filesaver, event || filesaver);
+					} catch (ex) {
+						throw_outside(ex);
+					}
+				}
+			}
+		}
+		, auto_bom = function(blob) {
+			// prepend BOM for UTF-8 XML and text/* types (including HTML)
+			// note: your browser will automatically convert UTF-16 U+FEFF to EF BB BF
+			if (/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(blob.type)) {
+				return new Blob([String.fromCharCode(0xFEFF), blob], {type: blob.type});
+			}
+			return blob;
+		}
+		, FileSaver = function(blob, name, no_auto_bom) {
+			if (!no_auto_bom) {
+				blob = auto_bom(blob);
+			}
+			// First try a.download, then web filesystem, then object URLs
+			var
+				  filesaver = this
+				, type = blob.type
+				, force = type === force_saveable_type
+				, object_url
+				, dispatch_all = function() {
+					dispatch(filesaver, "writestart progress write writeend".split(" "));
+				}
+				// on any filesys errors revert to saving with object URLs
+				, fs_error = function() {
+					if ((is_chrome_ios || (force && is_safari)) && view.FileReader) {
+						// Safari doesn't allow downloading of blob urls
+						var reader = new FileReader();
+						reader.onloadend = function() {
+							var url = is_chrome_ios ? reader.result : reader.result.replace(/^data:[^;]*;/, 'data:attachment/file;');
+							var popup = view.open(url, '_blank');
+							if(!popup) view.location.href = url;
+							url=undefined; // release reference before dispatching
+							filesaver.readyState = filesaver.DONE;
+							dispatch_all();
+						};
+						reader.readAsDataURL(blob);
+						filesaver.readyState = filesaver.INIT;
+						return;
+					}
+					// don't create more object URLs than needed
+					if (!object_url) {
+						object_url = get_URL().createObjectURL(blob);
+					}
+					if (force) {
+						view.location.href = object_url;
+					} else {
+						var opened = view.open(object_url, "_blank");
+						if (!opened) {
+							// Apple does not allow window.open, see https://developer.apple.com/library/safari/documentation/Tools/Conceptual/SafariExtensionGuide/WorkingwithWindowsandTabs/WorkingwithWindowsandTabs.html
+							view.location.href = object_url;
+						}
+					}
+					filesaver.readyState = filesaver.DONE;
+					dispatch_all();
+					revoke(object_url);
+				}
+			;
+			filesaver.readyState = filesaver.INIT;
+
+			if (can_use_save_link) {
+				object_url = get_URL().createObjectURL(blob);
+				setTimeout(function() {
+					save_link.href = object_url;
+					save_link.download = name;
+					click(save_link);
+					dispatch_all();
+					revoke(object_url);
+					filesaver.readyState = filesaver.DONE;
+				});
+				return;
+			}
+
+			fs_error();
+		}
+		, FS_proto = FileSaver.prototype
+		, saveAs = function(blob, name, no_auto_bom) {
+			return new FileSaver(blob, name || blob.name || "download", no_auto_bom);
+		}
+	;
+	// IE 10+ (native saveAs)
+	if (typeof navigator !== "undefined" && navigator.msSaveOrOpenBlob) {
+		return function(blob, name, no_auto_bom) {
+			name = name || blob.name || "download";
+
+			if (!no_auto_bom) {
+				blob = auto_bom(blob);
+			}
+			return navigator.msSaveOrOpenBlob(blob, name);
+		};
+	}
+
+	FS_proto.abort = function(){};
+	FS_proto.readyState = FS_proto.INIT = 0;
+	FS_proto.WRITING = 1;
+	FS_proto.DONE = 2;
+
+	FS_proto.error =
+	FS_proto.onwritestart =
+	FS_proto.onprogress =
+	FS_proto.onwrite =
+	FS_proto.onabort =
+	FS_proto.onerror =
+	FS_proto.onwriteend =
+		null;
+
+	return saveAs;
+}(
+	   typeof self !== "undefined" && self
+	|| typeof window !== "undefined" && window
+	|| this.content
+));
+// `self` is undefined in Firefox for Android content script context
+// while `this` is nsIContentFrameMessageManager
+// with an attribute `content` that corresponds to the window
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports.saveAs = saveAs;
+} else if (("function" !== "undefined" && __webpack_require__(18) !== null) && (__webpack_require__(19) !== null)) {
+  !(__WEBPACK_AMD_DEFINE_RESULT__ = function() {
+    return saveAs;
+  }.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+}
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * @module tei.ts
+ * @author Christophe Parisse
+ * lecture d'un fichier xml et chargement des valeurs initiales
+ * si le fichier est vide (null) les valeurs initiales sont toutes mises à zéro
+ * la structrue résultat teiData est prête à être traitée
+ */
+
+exports.__esModule = true;
+var edit = __webpack_require__(1);
+var odd = __webpack_require__(2);
+var system = __webpack_require__(0);
+var entities = __webpack_require__(10);
+var dom = __webpack_require__(5).DOMParser;
+var xpath = __webpack_require__(7);
+var select = xpath.useNamespaces({
+    "tei": "http://www.tei-c.org/ns/1.0",
+    "xml": "",
+    "exm": "http://www.tei-c.org/ns/Examples",
+    "s": "http://purl.oclc.org/dsdl/schematron"
+});
+var basicTEI = '<?xml version="1.0" encoding="UTF-8"?>\
+<TEI xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:svg="http://www.w3.org/2000/svg"\
+     xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns="http://www.tei-c.org/ns/1.0">\
+</TEI>';
+/*
+ * CHARGEMENT DU FICHIER TEI
+ */
+/**
+ * @method getChildrenByName
+ * get list of immediate children nodes with a given tagname
+ * @param node
+ * @param name
+ * @returns [list of nodes]
+ */
+function getChildrenByName(node, name) {
+    var children = [];
+    for (var child in node.childNodes) {
+        if (node.childNodes[child].nodeType === 1) {
+            if (node.childNodes[child].tagName === name)
+                children.push(node.childNodes[child]);
+        }
+    }
+    return children;
+}
+/**
+ * @method load
+ * @param {*} data raw data content of TEI file
+ * @param {*} dataOdd array of ElementSpec from odd.ts - loadOdd
+ * @returns {*} true if ok
+ */
+function load(data, teiData) {
+    teiData.dataTei = [];
+    // get XML ready
+    teiData.parser = new DOMParser();
+    teiData.doc = data
+        ? new dom().parseFromString(data.toString(), 'text/xml')
+        : null;
+    for (var i in teiData.dataOdd) {
+        // copie pour mettre dans le tableau dataTei
+        var es = odd.copyESOdd(teiData.dataOdd[i]);
+        // load from TEI
+        var path = es.absolutepath.replace(/\//g, "/tei:"); // add namespace
+        path = path.replace(/\/tei:\/tei:/, "//tei:"); // si il y a un // dans le chemin
+        //console.log(path);
+        var nodes = void 0;
+        try {
+            nodes = teiData.doc ? select(path, teiData.doc) : [];
+        }
+        catch (err) {
+            console.log('caught at load: ', err);
+            continue;
+        }
+        // les nodes sont chargés et données sont prêtes à être traitées.
+        // on remplit dataTei
+        teiData.dataTei.push(es);
+        // et maintemant on charge les données autant de fois que nécessaire
+        // les valeurs du contenu des ElementSpec (tableau de valeurs)
+        // permettant de gérer un nombre quelconque d'éléments 
+        // si autorisé est initialisé
+        if (nodes.length > 0) {
+            // créer un tableau
+            // faire autant de copies que nécessaire pour mettre dans le tableau
+            for (var k = 0; k < nodes.length; k++) {
+                var esEC = odd.copyESOdd(es);
+                esEC.validatedES = true;
+                esEC.node = nodes[k];
+                // fill it with textContent and attributes TODO
+                fillElement(esEC.element, nodes[k]);
+                es.ec.push(esEC); // ajout de l'élément à liste
+                // il est prêt à être étudié et édité
+                if (es.content) {
+                    esEC.content = odd.copyContentOdd(es.content);
+                    loadContent(nodes[k], esEC.content, es.absolutepath);
+                }
+            }
+        }
+        else {
+            // nodes.length === 0
+            var esEC = odd.copyESOdd(es);
+            if (es.mode === 'replace' || es.mode === 'change')
+                esEC.validatedES = true;
+            esEC.node = null;
+            es.ec.push(esEC); // ajout de l'élément à liste
+            // il est prêt à être étudié et édité
+            if (es.content) {
+                esEC.content = odd.copyContentOdd(es.content);
+                loadContent(null, esEC.content, es.absolutepath);
+            }
+        }
+    }
+    return true;
+}
+exports.load = load;
+function loadContent(doc, ct, abspath) {
+    for (var i = 0; i < ct.one.length; i++) {
+        var ec = new odd.ElementCount();
+        ec.count = "one";
+        ec.model = ct.one[i]; // copy ?
+        ct.one[i] = ec;
+        loadOne(doc, ec, abspath); // read element editing info
+    }
+    for (var i = 0; i < ct.oneOrMore.length; i++) {
+        var ec = new odd.ElementCount();
+        ec.count = "oneOrMore";
+        ec.model = ct.oneOrMore[i]; // copy ?
+        ct.oneOrMore[i] = ec;
+        loadXOrMore(doc, ec, abspath, 1); // read element editing info
+    }
+    for (var i = 0; i < ct.zeroOrMore.length; i++) {
+        var ec = new odd.ElementCount();
+        ec.count = "zeroOrMoreone";
+        ec.model = ct.zeroOrMore[i]; // copy ?
+        ct.zeroOrMore[i] = ec;
+        loadXOrMore(doc, ec, abspath, 0); // read element editing info
+    }
+    for (var i = 0; i < ct.twoOrMore.length; i++) {
+        var ec = new odd.ElementCount();
+        ec.count = "twoOrMore";
+        ec.model = ct.twoOrMore[i]; // copy ?
+        ct.twoOrMore[i] = ec;
+        loadXOrMore(doc, ec, abspath, 2); // read element editing info
+    }
+}
+/**
+ * @method getNodeText
+ * get text of current node only
+ * @param node
+ * @returns value of text
+ */
+function getNodeText(node) {
+    var txt = '';
+    for (var child in node.childNodes) {
+        if (node.childNodes[child].nodeType === 3) {
+            txt += node.childNodes[child].textContent;
+        }
+        else if (node.childNodes[child].nodeType === 1 && node.childNodes[child].tagName === 'seg') {
+            txt += node.childNodes[child].textContent;
+        }
+    }
+    return txt;
+}
+function loadOne(node, ec, abspath) {
+    // préparer l'élément unique
+    // ec est un ElementCount
+    var eci = new odd.ElementCountItem();
+    eci.element = odd.copyElementOdd(ec.model);
+    eci.validatedEC = true;
+    ec.eCI.push(eci);
+    var elt = eci.element;
+    elt.absolutepath = abspath + '/' + elt.name;
+    // load from TEI
+    var nodes = node ? getChildrenByName(node, elt.name) : [];
+    // utiliser count TODO
+    if (nodes.length > 0) {
+        fillElement(elt, nodes[0]);
+        elt.textContent = getNodeText(nodes[0]).trim();
+    }
+    if (elt.content) {
+        loadContent(nodes.length > 0 ? nodes[0] : null, elt.content, elt.absolutepath);
+    }
+}
+function loadXOrMore(node, ec, abspath, count) {
+    ec.model.absolutepath = abspath + '/' + ec.model.name;
+    // load from TEI
+    var nodes = node ? getChildrenByName(node, ec.model.name) : [];
+    // utiliser count
+    if (nodes.length > 0) {
+        // on peut se baser sur ce qui existe pour construire les données
+        for (var i in nodes) {
+            // préparer l'élément
+            // ec ElementCount
+            var eci = new odd.ElementCountItem();
+            eci.element = odd.copyElementOdd(ec.model);
+            eci.validatedEC = true;
+            ec.eCI.push(eci);
+            // remplir avec le contenu
+            fillElement(eci.element, nodes[i]);
+            if (eci.element.content) {
+                loadContent(nodes[i], eci.element.content, ec.model.absolutepath);
+            }
+        }
+    }
+    var rest;
+    if (count === 0 && nodes.length < 1)
+        rest = 1;
+    else if (count === 1 && nodes.length < 1)
+        rest = 1;
+    else if (count === 2 && nodes.length < 1)
+        rest = 2;
+    else if (count === 2 && nodes.length === 1)
+        rest = 1;
+    else
+        rest = 0;
+    for (var i = 0; i < rest; i++) {
+        // il faut construire un ou des élément vides
+        // préparer l'élément unique
+        // ec est un ElementCount
+        var eci = new odd.ElementCountItem();
+        eci.element = odd.copyElementOdd(ec.model);
+        eci.validatedEC = (count === 0) ? false : true; // si x == false on est dans zeroOrMore sinon true (oneOrMore ou twoOrmore)
+        ec.eCI.push(eci);
+        if (eci.element.content) {
+            loadContent(null, eci.element.content, ec.model.absolutepath);
+        }
+    }
+}
+function fillElement(elt, node) {
+    elt.textContent = getNodeText(node).trim();
+    elt.node = node;
+    // attributs
+    for (var i = 0; i < elt.attr.length; i++) {
+        if (elt.attr[i].ident) {
+            var attr = node.getAttribute(elt.attr[i].ident);
+            if (attr)
+                elt.attr[i].value = attr;
+        }
+    }
+}
+/*
+ * SAUVEGARDE DU FICHIER TEI
+ */
+/**
+ * @method setTextNode
+ * set the value of the text node only, without touching the children (unlike textContent or innerHTML)
+ * @param node
+ * @param val
+ * @param doc
+ */
+function setTextNode(node, val, doc) {
+    if (!doc) {
+        node.textContent = val;
+        return;
+    }
+    var first = false;
+    for (var child in node.childNodes) {
+        if (node.childNodes[child].nodeType === 3) {
+            if (first === false) {
+                first = true;
+                node.childNodes[child].nodeValue = val;
+                node.childNodes[child].data = val;
+            }
+            else {
+                node.childNodes[child].nodeValue = '';
+                node.childNodes[child].data = '';
+            }
+        }
+    }
+    if (first === false) {
+        // pas de noeud texte rencontré
+        var nn = doc.createTextNode(val);
+        node.appendChild(nn);
+    }
+}
+/**
+ * @method createAbsolutePath
+ * creates a path from top of xml file and returns last node created
+ * @param path
+ * @param doc
+ * @returns node
+ */
+function createAbsolutePath(path, doc) {
+    var p = path.split('/').slice(1);
+    // le nom de l'élément racine est ignoré
+    // on pourrait controler si le nom de l'élément correspond au nom donné dans l'ODD
+    /*
+    if (p[0] !== 'TEI') {
+        let s = 'impossible de créer des chemins qui ne commencent pas par TEI';
+        system.alertUser(s);
+        return null;
+    }
+    */
+    var node = doc.documentElement;
+    for (var i = 1; i < p.length; i++) {
+        var nds = getChildrenByName(node, p[i]);
+        if (nds.length > 1) {
+            var s = p.slice(0, i).join('/');
+            s = 'attention element ' + s + " n'est pas unique.";
+            console.log(s);
+            system.alertUser(s);
+        }
+        if (nds.length > 0) {
+            node = nds[0];
+        }
+        else {
+            var newnode = doc.createElement(p[i]);
+            node.appendChild(newnode);
+            node = newnode;
+        }
+    }
+    return node;
+}
+function generateTEI(teiData) {
+    // get XML ready surtout si nouveau texte
+    if (teiData.doc === null) {
+        teiData.doc = new dom().parseFromString(basicTEI, 'text/xml');
+    }
+    var s = '';
+    for (var i in teiData.dataTei) {
+        for (var k = 0; k < teiData.dataTei[i].ec.length; k++) {
+            teiData.dataTei[i].ec[k].validatedES = edit.values[teiData.dataTei[i].ec[k].validatedESID];
+            s += '<element path="' + teiData.dataTei[i].absolutepath + '" name="'
+                + teiData.dataTei[i].ident + '" validated="' + teiData.dataTei[i].ec[k].validatedES + '">\n';
+            if (!teiData.dataTei[i].ec[k].validatedES) {
+                s += '</element>\n';
+                continue;
+            }
+            var current = teiData.dataTei[i].ec[k].node;
+            if (!current) {
+                current = createAbsolutePath(teiData.dataTei[i].absolutepath, teiData.doc);
+                teiData.dataTei[i].ec[k].node = current;
+            }
+            s += generateFilledElement(teiData.dataTei[i].ec[k].element, teiData.doc, current);
+            if (teiData.dataTei[i].ec[k].content) {
+                // si on edite quelque chose au niveau de l'élémentSpec il faut le mettre ici
+                s += generateTEIContent(teiData.dataTei[i].ec[k].content, teiData.doc, current);
+            }
+            s += '</element>\n';
+        }
+    }
+    console.log(s);
+    // transform doc to text
+    console.log(teiData.doc);
+    return teiData.doc.toString();
+}
+exports.generateTEI = generateTEI;
+function generateOneContent(eci, doc, current) {
+    var s = '';
+    // find or create element from XML file
+    /*
+    let nodes = getChildrenByName(current, eci.element.name);
+    if (nodes.length > 0) {
+        if (nodes.length > 1) {
+            system.alertUser("Trop d'élements pour un One. Il faudrait supprimer les éléments en trop.");
+        }
+        s += generateElement(eci, doc, nodes[0]);
+    } else {
+        // console.log("create new node", eci.element.name); // va générer le node si nécessaire
+        let newnode = doc.createElement(eci.element.name);
+        current.appendChild(newnode);
+        s += generateElement(eci, doc, newnode);
+    }
+    */
+    s += generateElement(eci, doc, current);
+    return s;
+}
+function generateXOrMoreContent(ec, doc, current, count) {
+    var s = '';
+    // find or create element from XML file
+    /*
+    let nodes = getChildrenByName(current, ec[0].element.name);
+    // maintenant il faut d'abord utiliser tous les nodes pour les premiers ec
+    // et s'il n'y a pas la place rajouter des nodes
+    let iEC = 0; // pointeur sur l'élément dans ec
+    for ( ; iEC < nodes.length && iEC < ec.length ; iEC++) {
+        s += generateElement(ec[iEC], doc, nodes[iEC]);
+    }
+    for ( ; iEC < ec.length ; iEC++) {
+        // si on passe ici c'est qu'on a fini les nodes sans avoir fini les ec
+        let newnode = doc.createElement(ec[iEC].element.name);
+        current.appendChild(newnode);
+        s += generateElement(ec[iEC], doc, newnode);
+    }
+    */
+    // pointeur sur l'élément dans ec
+    for (var iEC = 0; iEC < ec.length; iEC++) {
+        s += generateElement(ec[iEC], doc, current);
+    }
+    return s;
+}
+function generateTEIContent(ct, doc, current) {
+    var s = '';
+    for (var i = 0; i < ct.one.length; i++) {
+        s += generateOneContent(ct.one[i].eCI[0], doc, current);
+    }
+    for (var i = 0; i < ct.oneOrMore.length; i++) {
+        s += generateXOrMoreContent(ct.oneOrMore[i].eCI, doc, current, 1);
+    }
+    for (var i = 0; i < ct.zeroOrMore.length; i++) {
+        s += generateXOrMoreContent(ct.zeroOrMore[i].eCI, doc, current, 0);
+    }
+    for (var i = 0; i < ct.twoOrMore.length; i++) {
+        s += generateXOrMoreContent(ct.twoOrMore[i].eCI, doc, current, 2);
+    }
+    return s;
+}
+function generateElement(eci, doc, node) {
+    var s = '';
+    // console.log("geneElemts:",eci);
+    if (edit.values[eci.validatedECID] === true) {
+        // si node est vide en créer un en dernier fils du node d'au dessus
+        var current = eci.element.node;
+        if (!current) {
+            current = doc.createElement(eci.element.name);
+            node.appendChild(current);
+            eci.element.node = current;
+        }
+        s += generateFilledElement(eci.element, doc, current);
+        if (eci.element.content) {
+            s += generateTEIContent(eci.element.content, doc, current);
+        }
+    }
+    return s;
+}
+function generateFilledElement(elt, doc, node) {
+    var s = '';
+    if (elt.ana !== 'none') {
+        elt.textContent = entities.encodeXML(edit.values[elt.textContentID]);
+        setTextNode(node, elt.textContent, doc);
+        s += '<' + elt.name + '>' + elt.textContent + '</' + elt.name + '>\n';
+    }
+    // attributs
+    for (var i = 0; i < elt.attr.length; i++) {
+        if (elt.attr[i].ident && elt.attr[i].ana !== 'none') {
+            elt.attr[i].value = entities.encodeXML(edit.values[elt.attr[i].valueID]);
+            node.setAttribute(elt.attr[i].ident, elt.attr[i].value);
+        }
+    }
+    return s;
+}
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+module.exports = function() {
+	throw new Error("define cannot be used indirect");
 };
 
 
 /***/ }),
-/* 8 */
+/* 19 */
+/***/ (function(module, exports) {
+
+/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
+module.exports = __webpack_amd_options__;
+
+/* WEBPACK VAR INJECTION */}.call(exports, {}))
+
+/***/ }),
+/* 20 */
 /***/ (function(module, exports) {
 
 //[4]   	NameStartChar	   ::=   	":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
@@ -8114,83 +11210,696 @@ exports.XMLReader = XMLReader;
 
 
 /***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+(function (root, factory) {
+    "use strict";
+
+    if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    }
+    else if (typeof module === 'object' && module.exports) {
+        module.exports = factory();
+    }
+    else {
+        root.picoModal = factory();
+    }
+}(this, function () {
+
+    /**
+     * A self-contained modal library
+     */
+    "use strict";
+
+    /** Returns whether a value is a dom node */
+    function isNode(value) {
+        if ( typeof Node === "object" ) {
+            return value instanceof Node;
+        }
+        else {
+            return value && typeof value === "object" && typeof value.nodeType === "number";
+        }
+    }
+
+    /** Returns whether a value is a string */
+    function isString(value) {
+        return typeof value === "string";
+    }
+
+    /**
+     * Generates observable objects that can be watched and triggered
+     */
+    function observable() {
+        var callbacks = [];
+        return {
+            watch: callbacks.push.bind(callbacks),
+            trigger: function(context, detail) {
+
+                var unprevented = true;
+                var event = {
+                    detail: detail,
+                    preventDefault: function preventDefault () {
+                        unprevented = false;
+                    }
+                };
+
+                for (var i = 0; i < callbacks.length; i++) {
+                    callbacks[i](context, event);
+                }
+
+                return unprevented;
+            }
+        };
+    }
+
+
+    /** Whether an element is hidden */
+    function isHidden ( elem ) {
+        // @see http://stackoverflow.com/questions/19669786
+        return window.getComputedStyle(elem).display === 'none';
+    }
+
+
+    /**
+     * A small interface for creating and managing a dom element
+     */
+    function Elem( elem ) {
+        this.elem = elem;
+    }
+
+    /** Creates a new div */
+    Elem.make = function ( parent, tag ) {
+        if ( typeof parent === "string" ) {
+            parent = document.querySelector(parent);
+        }
+        var elem = document.createElement(tag || 'div');
+        (parent || document.body).appendChild(elem);
+        return new Elem(elem);
+    };
+
+    Elem.prototype = {
+
+        /** Creates a child of this node */
+        child: function (tag) {
+            return Elem.make(this.elem, tag);
+        },
+
+        /** Applies a set of styles to an element */
+        stylize: function(styles) {
+            styles = styles || {};
+
+            if ( typeof styles.opacity !== "undefined" ) {
+                styles.filter = "alpha(opacity=" + (styles.opacity * 100) + ")";
+            }
+
+            for (var prop in styles) {
+                if (styles.hasOwnProperty(prop)) {
+                    this.elem.style[prop] = styles[prop];
+                }
+            }
+
+            return this;
+        },
+
+        /** Adds a class name */
+        clazz: function (clazz) {
+            this.elem.className += " " + clazz;
+            return this;
+        },
+
+        /** Sets the HTML */
+        html: function (content) {
+            if ( isNode(content) ) {
+                this.elem.appendChild( content );
+            }
+            else {
+                this.elem.innerHTML = content;
+            }
+            return this;
+        },
+
+        /** Adds a click handler to this element */
+        onClick: function(callback) {
+            this.elem.addEventListener('click', callback);
+            return this;
+        },
+
+        /** Removes this element from the DOM */
+        destroy: function() {
+            this.elem.parentNode.removeChild(this.elem);
+        },
+
+        /** Hides this element */
+        hide: function() {
+            this.elem.style.display = "none";
+        },
+
+        /** Shows this element */
+        show: function() {
+            this.elem.style.display = "block";
+        },
+
+        /** Sets an attribute on this element */
+        attr: function ( name, value ) {
+            if (value !== undefined) {
+                this.elem.setAttribute(name, value);
+            }
+            return this;
+        },
+
+        /** Executes a callback on all the ancestors of an element */
+        anyAncestor: function ( predicate ) {
+            var elem = this.elem;
+            while ( elem ) {
+                if ( predicate( new Elem(elem) ) ) {
+                    return true;
+                }
+                else {
+                    elem = elem.parentNode;
+                }
+            }
+            return false;
+        },
+
+        /** Whether this element is visible */
+        isVisible: function () {
+            return !isHidden(this.elem);
+        }
+    };
+
+
+    /** Generates the grey-out effect */
+    function buildOverlay( getOption, close ) {
+        return Elem.make( getOption("parent") )
+            .clazz("pico-overlay")
+            .clazz( getOption("overlayClass", "") )
+            .stylize({
+                display: "none",
+                position: "fixed",
+                top: "0px",
+                left: "0px",
+                height: "100%",
+                width: "100%",
+                zIndex: 10000
+            })
+            .stylize(getOption('overlayStyles', {
+                opacity: 0.5,
+                background: "#000"
+            }))
+            .onClick(function () {
+                if ( getOption('overlayClose', true) ) {
+                    close();
+                }
+            });
+    }
+
+    // An auto incrementing ID assigned to each modal
+    var autoinc = 1;
+
+    /** Builds the content of a modal */
+    function buildModal( getOption, close ) {
+        var width = getOption('width', 'auto');
+        if ( typeof width === "number" ) {
+            width = "" + width + "px";
+        }
+
+        var id = getOption("modalId", "pico-" + autoinc++);
+
+        var elem = Elem.make( getOption("parent") )
+            .clazz("pico-content")
+            .clazz( getOption("modalClass", "") )
+            .stylize({
+                display: 'none',
+                position: 'fixed',
+                zIndex: 10001,
+                left: "50%",
+                top: "38.1966%",
+                maxHeight: '90%',
+                boxSizing: 'border-box',
+                width: width,
+                '-ms-transform': 'translate(-50%,-38.1966%)',
+                '-moz-transform': 'translate(-50%,-38.1966%)',
+                '-webkit-transform': 'translate(-50%,-38.1966%)',
+                '-o-transform': 'translate(-50%,-38.1966%)',
+                transform: 'translate(-50%,-38.1966%)'
+            })
+            .stylize(getOption('modalStyles', {
+                overflow: 'auto',
+                backgroundColor: "white",
+                padding: "20px",
+                borderRadius: "5px"
+            }))
+            .html( getOption('content') )
+            .attr("id", id)
+            .attr("role", "dialog")
+            .attr("aria-labelledby", getOption("ariaLabelledBy"))
+            .attr("aria-describedby", getOption("ariaDescribedBy", id))
+            .onClick(function (event) {
+                var isCloseClick = new Elem(event.target).anyAncestor(function (elem) {
+                    return /\bpico-close\b/.test(elem.elem.className);
+                });
+                if ( isCloseClick ) {
+                    close();
+                }
+            });
+
+        return elem;
+    }
+
+    /** Builds the close button */
+    function buildClose ( elem, getOption ) {
+        if ( getOption('closeButton', true) ) {
+            return elem.child('button')
+                .html( getOption('closeHtml', "&#xD7;") )
+                .clazz("pico-close")
+                .clazz( getOption("closeClass", "") )
+                .stylize( getOption('closeStyles', {
+                    borderRadius: "2px",
+                    border: 0,
+                    padding: 0,
+                    cursor: "pointer",
+                    height: "15px",
+                    width: "15px",
+                    position: "absolute",
+                    top: "5px",
+                    right: "5px",
+                    fontSize: "16px",
+                    textAlign: "center",
+                    lineHeight: "15px",
+                    background: "#CCC"
+                }) )
+                .attr("aria-label", getOption("close-label", "Close"));
+        }
+    }
+
+    /** Builds a method that calls a method and returns an element */
+    function buildElemAccessor( builder ) {
+        return function () {
+            return builder().elem;
+        };
+    }
+
+
+    // An observable that is triggered whenever the escape key is pressed
+    var escapeKey = observable();
+
+    // An observable that is triggered when the user hits the tab key
+    var tabKey = observable();
+
+    /** A global event handler to detect the escape key being pressed */
+    document.documentElement.addEventListener('keydown', function onKeyPress (event) {
+        var keycode = event.which || event.keyCode;
+
+        // If this is the escape key
+        if ( keycode === 27 ) {
+            escapeKey.trigger();
+        }
+
+        // If this is the tab key
+        else if ( keycode === 9 ) {
+            tabKey.trigger(event);
+        }
+    });
+
+
+    /** Attaches focus management events */
+    function manageFocus ( iface, isEnabled ) {
+
+        /** Whether an element matches a selector */
+        function matches ( elem, selector ) {
+            var fn = elem.msMatchesSelector || elem.webkitMatchesSelector || elem.matches;
+            return fn.call(elem, selector);
+        }
+
+        /**
+         * Returns whether an element is focusable
+         * @see http://stackoverflow.com/questions/18261595
+         */
+        function canFocus( elem ) {
+            if (
+                isHidden(elem) ||
+                matches(elem, ":disabled") ||
+                elem.hasAttribute("contenteditable")
+            ) {
+                return false;
+            }
+            else {
+                return elem.hasAttribute("tabindex") ||
+                    matches(elem, "input,select,textarea,button,a[href],area[href],iframe");
+            }
+        }
+
+        /** Returns the first descendant that can be focused */
+        function firstFocusable ( elem ) {
+            var items = elem.getElementsByTagName("*");
+            for (var i = 0; i < items.length; i++) {
+                if ( canFocus(items[i]) ) {
+                    return items[i];
+                }
+            }
+        }
+
+        /** Returns the last descendant that can be focused */
+        function lastFocusable ( elem ) {
+            var items = elem.getElementsByTagName("*");
+            for (var i = items.length; i--;) {
+                if ( canFocus(items[i]) ) {
+                    return items[i];
+                }
+            }
+        }
+
+        // The element focused before the modal opens
+        var focused;
+
+        // Records the currently focused element so state can be returned
+        // after the modal closes
+        iface.beforeShow(function getActiveFocus() {
+            focused = document.activeElement;
+        });
+
+        // Shift focus into the modal
+        iface.afterShow(function focusModal() {
+            if ( isEnabled() ) {
+                var focusable = firstFocusable(iface.modalElem());
+                if ( focusable ) {
+                    focusable.focus();
+                }
+            }
+        });
+
+        // Restore the previously focused element when the modal closes
+        iface.afterClose(function returnFocus() {
+            if ( isEnabled() && focused ) {
+                focused.focus();
+            }
+            focused = null;
+        });
+
+        // Capture tab key presses and loop them within the modal
+        tabKey.watch(function tabKeyPress (event) {
+            if ( isEnabled() && iface.isVisible() ) {
+                var first = firstFocusable(iface.modalElem());
+                var last = lastFocusable(iface.modalElem());
+
+                var from = event.shiftKey ? first : last;
+                if ( from === document.activeElement ) {
+                    (event.shiftKey ? last : first).focus();
+                    event.preventDefault();
+                }
+            }
+        });
+    }
+
+    /** Manages setting the 'overflow: hidden' on the body tag */
+    function manageBodyOverflow(iface, isEnabled) {
+        var origOverflow;
+        var body = new Elem(document.body);
+
+        iface.beforeShow(function () {
+            // Capture the current values so they can be restored
+            origOverflow = body.elem.style.overflow;
+
+            if (isEnabled()) {
+                body.stylize({ overflow: "hidden" });
+            }
+        });
+
+        iface.afterClose(function () {
+            body.stylize({ overflow: origOverflow });
+        });
+    }
+
+    /**
+     * Displays a modal
+     */
+    return function picoModal(options) {
+
+        if ( isString(options) || isNode(options) ) {
+            options = { content: options };
+        }
+
+        var afterCreateEvent = observable();
+        var beforeShowEvent = observable();
+        var afterShowEvent = observable();
+        var beforeCloseEvent = observable();
+        var afterCloseEvent = observable();
+
+        /**
+         * Returns a named option if it has been explicitly defined. Otherwise,
+         * it returns the given default value
+         */
+        function getOption ( opt, defaultValue ) {
+            var value = options[opt];
+            if ( typeof value === "function" ) {
+                value = value( defaultValue );
+            }
+            return value === undefined ? defaultValue : value;
+        }
+
+
+        // The various DOM elements that constitute the modal
+        var modalElem = build.bind(window, 'modal');
+        var shadowElem = build.bind(window, 'overlay');
+        var closeElem = build.bind(window, 'close');
+
+        // This will eventually contain the modal API returned to the user
+        var iface;
+
+
+        /** Hides this modal */
+        function forceClose (detail) {
+            shadowElem().hide();
+            modalElem().hide();
+            afterCloseEvent.trigger(iface, detail);
+        }
+
+        /** Gracefully hides this modal */
+        function close (detail) {
+            if ( beforeCloseEvent.trigger(iface, detail) ) {
+                forceClose(detail);
+            }
+        }
+
+        /** Wraps a method so it returns the modal interface */
+        function returnIface ( callback ) {
+            return function () {
+                callback.apply(this, arguments);
+                return iface;
+            };
+        }
+
+
+        // The constructed dom nodes
+        var built;
+
+        /** Builds a method that calls a method and returns an element */
+        function build (name, detail) {
+            if ( !built ) {
+                var modal = buildModal(getOption, close);
+                built = {
+                    modal: modal,
+                    overlay: buildOverlay(getOption, close),
+                    close: buildClose(modal, getOption)
+                };
+                afterCreateEvent.trigger(iface, detail);
+            }
+            return built[name];
+        }
+
+        iface = {
+
+            /** Returns the wrapping modal element */
+            modalElem: buildElemAccessor(modalElem),
+
+            /** Returns the close button element */
+            closeElem: buildElemAccessor(closeElem),
+
+            /** Returns the overlay element */
+            overlayElem: buildElemAccessor(shadowElem),
+
+            /** Builds the dom without showing the modal */
+            buildDom: returnIface(build.bind(null, null)),
+
+            /** Returns whether this modal is currently being shown */
+            isVisible: function () {
+                return !!(built && modalElem && modalElem().isVisible());
+            },
+
+            /** Shows this modal */
+            show: function (detail) {
+                if ( beforeShowEvent.trigger(iface, detail) ) {
+                    shadowElem().show();
+                    closeElem();
+                    modalElem().show();
+                    afterShowEvent.trigger(iface, detail);
+                }
+                return this;
+            },
+
+            /** Hides this modal */
+            close: returnIface(close),
+
+            /**
+             * Force closes this modal. This will not call beforeClose
+             * events and will just immediately hide the modal
+             */
+            forceClose: returnIface(forceClose),
+
+            /** Destroys this modal */
+            destroy: function () {
+                modalElem().destroy();
+                shadowElem().destroy();
+                shadowElem = modalElem = closeElem = undefined;
+            },
+
+            /**
+             * Updates the options for this modal. This will only let you
+             * change options that are re-evaluted regularly, such as
+             * `overlayClose`.
+             */
+            options: function ( opts ) {
+                Object.keys(opts).map(function (key) {
+                    options[key] = opts[key];
+                });
+            },
+
+            /** Executes after the DOM nodes are created */
+            afterCreate: returnIface(afterCreateEvent.watch),
+
+            /** Executes a callback before this modal is closed */
+            beforeShow: returnIface(beforeShowEvent.watch),
+
+            /** Executes a callback after this modal is shown */
+            afterShow: returnIface(afterShowEvent.watch),
+
+            /** Executes a callback before this modal is closed */
+            beforeClose: returnIface(beforeCloseEvent.watch),
+
+            /** Executes a callback after this modal is closed */
+            afterClose: returnIface(afterCloseEvent.watch)
+        };
+
+        manageFocus(iface, getOption.bind(null, "focus", true));
+
+        manageBodyOverflow(iface, getOption.bind(null, "bodyOverflow", true));
+
+        // If a user presses the 'escape' key, close the modal.
+        escapeKey.watch(function escapeKeyPress () {
+            if ( getOption("escCloses", true) && iface.isVisible() ) {
+                iface.close();
+            }
+        });
+
+        return iface;
+    };
+
+}));
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__events_js__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__teimeta_edit_ts__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__teimeta_edit_ts___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__teimeta_edit_ts__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__systemcall_opensavelocal_js__ = __webpack_require__(2);
-/* harmony export (immutable) */ __webpack_exports__["init"] = init;
 /**
  * initalone.js
  */
 
-
-
-
-
+exports.__esModule = true;
+var events = __webpack_require__(8);
+var edit = __webpack_require__(1);
+var syscall = __webpack_require__(0);
+var help = __webpack_require__(9);
 function bodyKeys(e) {
-/*    
-    console.log('keyCode '+ e.keyCode);
-    console.log('charCode '+ e.charCode);
-    console.log('ctrl '+ e.ctrlKey);
-    console.log('alt '+ e.altKey);
-    console.log('shift '+ e.shiftKey);
-    console.log('meta '+ e.metaKey);
-    console.log('ident ' + e.keyIdentifier);
-*/    
-/*    if (e.which === 117 && e.altKey !== true && e.ctrlKey !== true) {
+    /*
+        console.log('keyCode '+ e.keyCode);
+        console.log('charCode '+ e.charCode);
+        console.log('ctrl '+ e.ctrlKey);
+        console.log('alt '+ e.altKey);
+        console.log('shift '+ e.shiftKey);
+        console.log('meta '+ e.metaKey);
+        console.log('ident ' + e.keyIdentifier);
+    */
+    /*    if (e.which === 117 && e.altKey !== true && e.ctrlKey !== true) {
+            e.preventDefault();
+            teiEdit.insertLineAtEnd(e);
+        }
+    */
+    if (e.which === 79 && (e.ctrlKey === true || e.metaKey === true)) {
         e.preventDefault();
-        teiEdit.insertLineAtEnd(e);
+        events.open();
     }
-*/  
-    if (e.which === 79 && e.ctrlKey === true) { // ctrl O
+    if (e.which === 79 && (e.ctrlKey === true || e.metaKey === true) && e.shiftKey === true) {
         e.preventDefault();
-        __WEBPACK_IMPORTED_MODULE_0__events_js__["a" /* open */]();
+        events.openOdd();
     }
-    if (e.which === 79 && e.ctrlKey === true && e.shiftKey === true) { // ctrl shift O
+    if (e.which === 83 && (e.ctrlKey === true || e.metaKey === true)) {
         e.preventDefault();
-        __WEBPACK_IMPORTED_MODULE_0__events_js__["b" /* openOdd */]();
+        events.saveAsLocal();
     }
-    if (e.which === 83 && e.ctrlKey === true) { // ctrl S
+    if (e.which === 78 && (e.ctrlKey === true || e.metaKey === true)) {
         e.preventDefault();
-        __WEBPACK_IMPORTED_MODULE_0__events_js__["c" /* saveAsLocal */]();
-    }
-    if (e.which === 78 && e.ctrlKey === true) { // ctrl N
-        e.preventDefault();
-        __WEBPACK_IMPORTED_MODULE_0__events_js__["d" /* newFile */]();
+        events.newFile(null);
     }
 }
-
 function init() {
     // load previous data
-    __WEBPACK_IMPORTED_MODULE_0__events_js__["d" /* newFile */]();
-    let el;
+    events.newFile(null);
+    var el;
     el = document.getElementsByTagName('body');
     el[0].addEventListener("keydown", bodyKeys);
     el = document.getElementById('file-open');
-    el.addEventListener("click", __WEBPACK_IMPORTED_MODULE_0__events_js__["a" /* open */]);
+    el.addEventListener("click", events.open);
     el = document.getElementById('file-open-odd');
-    el.addEventListener("click", __WEBPACK_IMPORTED_MODULE_0__events_js__["b" /* openOdd */]);
+    el.addEventListener("click", events.openOdd);
     el = document.getElementById('file-saveas');
-    el.addEventListener("click", __WEBPACK_IMPORTED_MODULE_0__events_js__["c" /* saveAsLocal */]);
-    el = document.getElementById('file-new');
-    el.addEventListener("click", __WEBPACK_IMPORTED_MODULE_0__events_js__["d" /* newFile */]);
+    el.addEventListener("click", events.saveAsLocal);
+    //el = document.getElementById('file-new');
+    //el.addEventListener("click", events.newFile);
+    el = document.getElementById('help');
+    el.addEventListener("click", help.about);
     el = document.getElementById('upload-input-transcript');
-    el.addEventListener("change", __WEBPACK_IMPORTED_MODULE_2__systemcall_opensavelocal_js__["a" /* openLocalFile */]);
-    window.ui = {};
-    window.ui.setOnOff = __WEBPACK_IMPORTED_MODULE_1__teimeta_edit_ts__["setOnOff"];    
-    window.ui.setOnOffEC = __WEBPACK_IMPORTED_MODULE_1__teimeta_edit_ts__["setOnOffEC"];    
-    window.ui.setText = __WEBPACK_IMPORTED_MODULE_1__teimeta_edit_ts__["setText"];
-    window.ui.createEC = __WEBPACK_IMPORTED_MODULE_1__teimeta_edit_ts__["createEC"];    
-    window.ui.setAttr = __WEBPACK_IMPORTED_MODULE_1__teimeta_edit_ts__["setAttr"];
+    el.addEventListener("change", syscall.openLocalFile);
+    // for user interface in html pages
+    window['ui'] = {};
+    window['ui'].setOnOff = edit.setOnOff;
+    window['ui'].setOnOffEC = edit.setOnOffEC;
+    window['ui'].setText = edit.setText;
+    window['ui'].createEC = edit.createEC;
+    window['ui'].setAttr = edit.setAttr;
+    // for debugging purposes
+    window['dbg'] = {};
+    window['dbg'].tei = events.teiData;
+    window['dbg'].v = edit.values;
 }
-
+exports.init = init;
 // in case the document is already rendered
-if (document.readyState!='loading')
+if (document.readyState != 'loading')
     init();
 else if (document.addEventListener)
     document.addEventListener('DOMContentLoaded', init);
