@@ -4,14 +4,14 @@
 
 ## Description générale
 
-L'outil est conçu pour une utilisation TEI mais peut être étendu à d'autres fichiers XML 
+L'outil est conçu pour une utilisation TEI mais pourrait être étendu à d'autres fichiers XML
 à condition de gérer correctement les namespaces
 
 L'outil permet d'éditer un noeud XML où qu'il soit mais pas de le déplacer.
-Tout noeud édité garde sa position absolue. Un noeud inexistant peut être crée, mais dans une position absolue.
+Tout noeud édité garde sa position. Un noeud inexistant peut être créé, mais dans une position absolue.
 Toute l'arborescence sous un noeud peut être éditée si elle est décrite comme telle dans l'ODD.
 Les valeurs d'un fichier XML non décrites dans l'ODD ne doivent pas être modifiées.
-Les valeurs décrites pevuent être créées, modifiées et vidées (la suppression n'est pas possible 
+Les valeurs décrites pevuent être créées, modifiées et vidées (la suppression n'est pas possible
 s'il y a des enfants à un noeud pour respecter la conservation des éléments existants non-décrits).
 
 Les fonctions d'édition principales sont:
@@ -104,10 +104,10 @@ $ open teimeta.html
 
 ### Version application indépendante (pas encore implémentée)
 
-#### Application TEIMETA
+#### Application TEIMETA (pas encore implémentée)
 
 Le soft est intégré à Electron. Il présente les mêmes fonctionnalités que la version page html, mais peut être lancé
-depuis le gestionnaire de fichiers ou d'application, et être associé à une extension de programme. Possibilité d'avoir un menu 
+depuis le gestionnaire de fichiers ou d'application, et être associé à une extension de programme. Possibilité d'avoir un menu
 fichiers récents et une vraie sauvegarde.
 
 ```
@@ -115,10 +115,10 @@ npm run app
 # utiliser la librairie dans une autre application.
 ```
 
-#### AEEC
+#### AEEC (pas encore implémentée)
 Le soft est intégré à l'outil AEEC. Il est possible d'éditer un des fichiers listé dans la base.
 
-Note: Il pourrait être intéressant d'éditer une série de fichiers d'un coup. Par exemple on pourrait créer un fichier XML et 
+Note: Il pourrait être intéressant d'éditer une série de fichiers d'un coup. Par exemple on pourrait créer un fichier XML et
 fusionner le résultat avec un fichier XML quelconque pour modifier d'un coup une série de fichiers.
 
 ```
@@ -127,7 +127,6 @@ npm run lib
 ```
 
 ## Informations complémentaires
-Signaler erreurs et commentaires dans [issues](http://christopheparisse/tei-meta/issues/).
-Voir aussi [documentation](http://christopheparisse/tei-meta/wiki/).
+Signaler erreurs et commentaires dans [issues](https://github.com/christopheparisse/tei-meta/issues).
 
 #### License [CC0 (Public Domain)](LICENSE.md)
