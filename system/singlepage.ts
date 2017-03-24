@@ -2,9 +2,10 @@
  * initalone.js
  */
 
-import * as events from './events.js';
-import * as edit from '../teimeta/edit.ts';
-import * as syscall from '../systemcall/opensavelocal.js';
+import * as events from '../teiedit/events';
+import * as edit from '../teiedit/edit';
+import * as syscall from './opensave';
+import * as help from '../teiedit/help';
 
 function bodyKeys(e) {
 /*    
@@ -21,27 +22,27 @@ function bodyKeys(e) {
         teiEdit.insertLineAtEnd(e);
     }
 */  
-    if (e.which === 79 && e.ctrlKey === true) { // ctrl O
+    if (e.which === 79 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl O
         e.preventDefault();
         events.open();
     }
-    if (e.which === 79 && e.ctrlKey === true && e.shiftKey === true) { // ctrl shift O
+    if (e.which === 79 && (e.ctrlKey === true || e.metaKey === true) && e.shiftKey === true) { // ctrl shift O
         e.preventDefault();
         events.openOdd();
     }
-    if (e.which === 83 && e.ctrlKey === true) { // ctrl S
+    if (e.which === 83 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl S
         e.preventDefault();
         events.saveAsLocal();
     }
-    if (e.which === 78 && e.ctrlKey === true) { // ctrl N
+    if (e.which === 78 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl N
         e.preventDefault();
-        events.newFile();
+        events.newFile(null);
     }
 }
 
 export function init() {
     // load previous data
-    events.newFile();
+    events.newFile(null);
     let el;
     el = document.getElementsByTagName('body');
     el[0].addEventListener("keydown", bodyKeys);
@@ -51,16 +52,23 @@ export function init() {
     el.addEventListener("click", events.openOdd);
     el = document.getElementById('file-saveas');
     el.addEventListener("click", events.saveAsLocal);
-    el = document.getElementById('file-new');
-    el.addEventListener("click", events.newFile);
+    //el = document.getElementById('file-new');
+    //el.addEventListener("click", events.newFile);
+    el = document.getElementById('help');
+    el.addEventListener("click", help.about);
     el = document.getElementById('upload-input-transcript');
     el.addEventListener("change", syscall.openLocalFile);
-    window.ui = {};
-    window.ui.setOnOff = edit.setOnOff;    
-    window.ui.setOnOffEC = edit.setOnOffEC;    
-    window.ui.setText = edit.setText;
-    window.ui.createEC = edit.createEC;    
-    window.ui.setAttr = edit.setAttr;
+    // for user interface in html pages
+    window['ui'] = {};
+    window['ui'].setOnOff = edit.setOnOff;    
+    window['ui'].setOnOffEC = edit.setOnOffEC;    
+    window['ui'].setText = edit.setText;
+    window['ui'].createEC = edit.createEC;    
+    window['ui'].setAttr = edit.setAttr;
+    // for debugging purposes
+    window['dbg'] = {};
+    window['dbg'].tei = events.teiData;
+    window['dbg'].v = edit.values;
 }
 
 // in case the document is already rendered

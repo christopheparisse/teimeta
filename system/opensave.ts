@@ -5,6 +5,8 @@
  * @param {file} object
  */
 
+let saveAs = require('file-saver');
+
 export function openLocalFile(fn) {
     /*
     var nBytes = 0,
@@ -53,10 +55,20 @@ function readTranscriptObj(file) {
  */
 export function chooseOpenFile(callback) {
     readTranscriptObjCallback = callback;
-//    $("#upload-input-transcript").trigger();
     document.getElementById('upload-input-transcript').click();
-//    document.getElementById('divopenfile').style.display = 'block';
 };
+
+/**
+ * @method saveFile
+ * for compatibility purpose. Should not be used in a web navigator interface.
+ * @param name 
+ * @param data 
+ */
+export function saveFile(name, data) {
+    saveFileLocal('xml', name, data);
+}
+
+export function chooseSaveFile(type, fun) {}
 
 export function saveFileLocal(type, name, data) {
     var blob = new Blob([data], {
@@ -68,5 +80,10 @@ export function saveFileLocal(type, name, data) {
     if (p1 < p2) p1 = p2;
     if (p1 === -1) p1 = 0;
     var l = name.substr(p1);
-    saveAs(blob, l);
+    saveAs.saveAs(blob, l);
 };
+
+export function alertUser(s) {
+    alert(s);
+    //    dialog.showErrorBox('teiEdit', s);
+}
