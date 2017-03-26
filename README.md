@@ -5,7 +5,8 @@
 ## Description générale
 
 L'outil est conçu pour une utilisation TEI mais pourrait être étendu à d'autres fichiers XML
-à condition de gérer correctement les namespaces
+à condition de gérer correctement les namespaces. Le namespace principal est repéré automatiquement,
+mais le namespace inclus dans le tag egXML ne l'est pas.
 
 L'outil permet d'éditer un noeud XML où qu'il soit mais pas de le déplacer.
 Tout noeud édité garde sa position. Un noeud inexistant peut être créé, mais dans une position absolue.
@@ -33,6 +34,7 @@ Les fonctions d'édition principales sont:
 
 #### Format des "racines" et "arborenscence"
 
+Le contenu du ODD consiste en tous les éléments elementSpec inclus dans le tag egXML du fichier ODD.
 Seuls les éléments obligatoires sont listés. Les autres éléments sont ignorés.
 
 ```
@@ -99,31 +101,41 @@ La sauvegarde se fait dans le répertoire de téléchargement (ou ailleurs selon
 
 ```
 npm run page
-$ open teimeta.html
+# creation d'un sous-répertoire temp-page
+$ open temp-page/teimeta.html
 ```
 
-### Version application indépendante (pas encore implémentée)
+### Version application indépendante
 
-#### Application TEIMETA (pas encore implémentée)
+#### Application TEIMETA
 
 Le soft est intégré à Electron. Il présente les mêmes fonctionnalités que la version page html, mais peut être lancé
 depuis le gestionnaire de fichiers ou d'application, et être associé à une extension de programme. Possibilité d'avoir un menu
 fichiers récents et une vraie sauvegarde.
 
 ```
-npm run app
-# utiliser la librairie dans une autre application.
+npm run electron
+# creation d'un sous-répertoire temp-electron
+npm start
 ```
 
-#### AEEC (pas encore implémentée)
-Le soft est intégré à l'outil AEEC. Il est possible d'éditer un des fichiers listé dans la base.
+#### Utilisation en librairie dans un soft
+Inclure le repertoire teimeta/*.ts
+Toutes les instructions pour l'utilisation sont à la fin du fichier tei.ts
+
+##### AEEC et TRJS (pas encore implémentés)
+Le soft est intégré à l'outil AEEC et l'outil TRJS. Il est possible d'éditer un des fichiers listé dans la base.
 
 Note: Il pourrait être intéressant d'éditer une série de fichiers d'un coup. Par exemple on pourrait créer un fichier XML et
 fusionner le résultat avec un fichier XML quelconque pour modifier d'un coup une série de fichiers.
 
 ```
-npm run lib
 # utiliser la librairie dans une autre application.
+import * from 'teimeta/tei'
+... innerHTML = openODD(dataOdd)
+... innerHTML = openODDTEI(dataTei, dataOdd)
+... insérer innerHTML dans un éléement du navigateur
+... generateTEI(innerHTML)
 ```
 
 ## Informations complémentaires

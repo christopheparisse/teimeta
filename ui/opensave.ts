@@ -2,21 +2,18 @@
 
 /* use strict */
 
-var fs = require('fs');
-var path = require('path');
+let fs = require('fs');
+let path = require('path');
 // var dialog = require('electron').dialog;
-var remote = require('electron').remote;
+let remote = require('electron').remote;
 
-if (typeof windows === 'undefined')
-    var systemCall = module.exports;
-else if (typeof systemCall === 'undefined')
-    var systemCall = {};
-
+let saveAs = require('file-saver');
+let picoModal = require('../js/picoModal.js');
 
 /**
  * available in main
  */
-systemCall.chooseOpenFile = function(callback) {
+export function chooseOpenFile(callback) {
     try {
         var fl = remote.dialog.showOpenDialog({
             title: 'Open file',
@@ -29,7 +26,7 @@ systemCall.chooseOpenFile = function(callback) {
             properties: [ 'openFile' ]
         });
         if (fl) {
-            systemCall.openFile(fl[0], callback);
+            openFile(fl[0], callback);
         } else
             callback(1, 'cancelled', null);
     } catch (error) {
@@ -38,7 +35,7 @@ systemCall.chooseOpenFile = function(callback) {
     }
 };
 
-systemCall.chooseSaveFile = function(extension, callback) {
+export function chooseSaveFile(extension, callback) {
     var filter;
     if (extension === 'json')
         filter = [
@@ -74,7 +71,7 @@ systemCall.chooseSaveFile = function(extension, callback) {
 /**
  * available in renderer and main
  */
-systemCall.openFile = function(fname, callback) {
+export function openFile(fname, callback) {
     try {
         var tb = fs.readFileSync(fname, 'utf-8');
         callback(0, fname, tb);
@@ -84,7 +81,7 @@ systemCall.openFile = function(fname, callback) {
     }
 };
 
-systemCall.saveFile = function(fname, data, callback) {
+export function saveFile(fname, data, callback) {
     try {
         fs.writeFileSync(fname, data, 'utf-8');
         if (callback) callback(0, 'file saved');
@@ -93,3 +90,25 @@ systemCall.saveFile = function(fname, data, callback) {
         if (callback) callback(1, error);
     }
 };
+
+export function saveFileLocal(type, name, data) {
+    var blob = new Blob([data], {
+        type : "text/plain;charset=utf-8"
+    });
+    // {type: 'text/css'});
+    var p1 = name.lastIndexOf('/');
+    var p2 = name.lastIndexOf('\\');
+    if (p1 < p2) p1 = p2;
+    if (p1 === -1) p1 = 0;
+    var l = name.substr(p1);
+    saveAs.saveAs(blob, l);
+};
+
+export function alertUser(s) {
+    picoModal(s).show();
+    //    dialog.showErrorBox('teiEdit', s);
+}
+
+export function openLocalFile(fn) {
+    // for compatibility
+}

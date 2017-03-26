@@ -10,7 +10,7 @@
 let dom = require('xmldom').DOMParser;
 let xpath = require('xpath');
 let select;
-import * as system from '../system/opensave';
+// import * as system from '../system/opensave';
 
 export class ElementSpec {
     // Informations de l'ODD
@@ -448,8 +448,9 @@ export function loadOdd(data) {
         select = xpath.useNamespaces({"tei": ns, "exm": "http://www.tei-c.org/ns/Examples"});
         egxml = select("//exm:egXML", doc);
         if (egxml.length < 1) {
-            system.alertUser("Pas d'élément egXML dans le fichier ODD");
-            return;
+            let s = "Pas d'élément egXML dans le fichier ODD";
+            console.log(s);
+            return null;
         }
     }
     let eSpec = [];
@@ -468,7 +469,7 @@ export function loadOdd(data) {
         if (content.length > 1) {
             s = "content différent de 1 à " + ident + " seulement premier de traité.";
             console.log(s);
-            system.alertUser(s);
+            // system.alertUser(s);
         }
         if (content.length <= 0) continue;
         let esElt = new ElementSpec();

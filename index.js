@@ -3,7 +3,6 @@ const electron = require('electron');
 const app = electron.app;  // Module to control application life.
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 const Menu = electron.Menu;
-const help = require('./teiEdit/help.js');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -22,7 +21,7 @@ app.on('window-all-closed', function() {
 // initialization and is ready to create browser windows.
 app.on('ready', function() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600});
+  mainWindow = new BrowserWindow({width: 800, height: 800});
 
   // and load the index.html of the app.
   mainWindow.loadURL('file://' + __dirname + '/index.html');
@@ -42,10 +41,6 @@ app.on('ready', function() {
     {
         label: 'File',
         submenu: [
-        { label: 'New', accelerator: 'CmdOrCtrl+N', click: function () {
-            let window    = BrowserWindow.getFocusedWindow();
-            window.webContents.send('clear', 'main');
-        } },
         { label: 'Open ...', accelerator: 'CmdOrCtrl+O', click: function () {
             let window    = BrowserWindow.getFocusedWindow();
             window.webContents.send('open', 'main');
@@ -67,10 +62,6 @@ app.on('ready', function() {
     {
         label: 'Edit',
         submenu: [
-        { label: 'Test', accelerator: 'F6', click: function () {
-            let window    = BrowserWindow.getFocusedWindow();
-            window.webContents.send('test', 'main');
-        } },
         /*
         { label: 'Insert line', accelerator: 'F6', click: function () {
             let window    = BrowserWindow.getFocusedWindow();
@@ -94,9 +85,6 @@ app.on('ready', function() {
     {
         label: 'View',
         submenu: [
-        { label: 'Reload', accelerator: 'CmdOrCtrl+R', click: function(item, focusedWindow) {
-            if (focusedWindow) focusedWindow.reload();
-          }},
         { label: 'Toggle Full Screen', accelerator: (function() {
             if (process.platform == 'darwin')
                 return 'Ctrl+Command+F';
@@ -132,8 +120,8 @@ app.on('ready', function() {
     { label: 'Help', role: 'help', submenu: [
         { label: 'Learn More',
           click: function() {
-              help.shortHelp();
-              // require('electron').shell.openExternal('http://electron.atom.io');
+            let window = BrowserWindow.getFocusedWindow();
+            window.webContents.send('help', 'main');
           }
         },
         ]

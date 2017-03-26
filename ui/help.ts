@@ -2,8 +2,7 @@
  * help.ts
  */
 
-// import * as system from '../system/opensave';
-let picoModal = require('../system/picoModal.js');
+import * as system from './opensave';
 
 export let version = '0.1.0 - 25-03-2017';
 
@@ -21,5 +20,5 @@ La sauvegarde (cliquer sur "Sauver") se fait dans le répertoire de télécharge
 Pour toute information, aller sur la page <a href="http://ct3.ortolang.fr/teimeta/readme.html" target="_blank">http://ct3.ortolang.fr/teimeta/readme.html</a>
 `;
     // system.alertUser(s);
-    picoModal(s).show();
+    system.alertUser(s);
 };

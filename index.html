@@ -5,27 +5,44 @@
 	<link rel="shortcut icon" type="image/ico" href="favicon.ico">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 	<title></title>
-	<script type="text/javascript" language="javascript">
-		window.$ = window.jQuery = require('./js/jquery.min.js');
-		init = require('./teiedit/initelectron.js');
-		$(document).ready(function() {
-            init.init();
-		} );
-	</script>
+  <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="css/display.css">
-	<link rel="stylesheet" type="text/css" href="css/tables.css">
  </head>
-<body>
-    <h3 id="subtitle"></h3>
-    <h4 id="oddname">ODD: </h4>
-    <div id="odddata"></div>
-    <h4 id="filename">Fichier: </h4>
-    <div id="teidata"></div>
+<body style="margin-left:10px;">
+  <div id="title">Edition de métadonnées TEI / CORLI</div>
+  <div id="top">
+    <div class="headtop" id="file-open">
+    <i class="headtopi fa fa-folder-open-o fa-3x" title="Ouvrir Ficher TEI"></i>
+    <span class="headtopt">Ouvrir</span>
+    </div>
     <!--
-    <div id="datalist"></div>
-        <div class="epilogue">
-        <p>Copyright Ircom/Christophe Parisse.</p>
-      </div>
+    <div class="headtop" id="file-new">
+    <i class="headtopi fa fa-sticky-note-o fa-3x" title="Nouveau Ficher TEI"></i>
+    <span class="headtopt">Nouveau</span>
+    </div>
     -->
+    <div class="headtop" id="file-saveas">
+    <i class="headtopi fa fa-save fa-3x" title="Sauver le ficher TEI"></i>
+    <span class="headtopt">Sauver</span>
+    </div>
+    <div class="headtop" id="file-open-odd">
+    <i class="headtopi fa fa-cog fa-3x" title="Ouvrir Ficher ODD"></i>
+    <span class="headtopt">Ouvrir ODD</span>
+    </div>
+    <div class="headtop" id="help">
+    <i class="headtopi fa fa-question fa-3x" title="Aide"></i>
+    <span class="headtopt">Aide</span>
+    </div>
+  </div>
+  <!-- <h3 id="subtitle"></h3> -->
+  <div class="infofiles" id="oddname">ODD: </div>
+  <div class="infofiles" id="filename">Fichier TEI: </div>
+  <div id="teidata"></div>
+	<script type="text/javascript" language="javascript">
+		// window.$ = window.jQuery = require('./js/jquery.min.js');
+		init = require('./ui/init-electron.js');
+    init.init();
+	</script>
 </body>
 </html>

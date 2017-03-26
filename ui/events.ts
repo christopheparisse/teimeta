@@ -2,10 +2,10 @@
  * 
  */
 
-import * as edit from './edit';
-import * as odd from './odd';
-import * as tei from './tei';
-import * as system from '../system/opensave';
+import * as edit from '../teiedit/edit';
+import * as odd from '../teiedit/odd';
+import * as tei from '../teiedit/tei';
+import * as system from './opensave';
 
 export let teiData = {
     oddName: '',
@@ -108,7 +108,7 @@ export function saveAs() {
             let el = document.getElementById('filename');
             el.innerHTML = "Fichier: " + teiData.fileName;
             var ed = tei.generateTEI(teiData);
-            system.saveFile(teiData.fileName, ed);
+            system.saveFile(teiData.fileName, ed, null);
         } else
             console.log(name, err);
     });
@@ -118,7 +118,7 @@ export function save() {
     var fileok = true;
     if (!teiData.fileName) {
             var ed = tei.generateTEI(teiData);
-            system.saveFile(teiData.fileName, ed);
+            system.saveFile(teiData.fileName, ed, null);
     } else
         saveAs();
 };

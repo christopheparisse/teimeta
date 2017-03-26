@@ -6,6 +6,7 @@
  */
 
 let saveAs = require('file-saver');
+let picoModal = require('../js/picoModal.js');
 
 export function openLocalFile(fn) {
     /*
@@ -22,7 +23,8 @@ export function openLocalFile(fn) {
     */
     // end of optional code
     // document.getElementById("transcript-file-size").innerHTML = sOutput;
-    let oFiles = document.getElementById("upload-input-transcript").files;
+    let d: any = document.getElementById("upload-input-transcript");
+    let oFiles = d.files;
     readTranscriptObj(oFiles[0]);
 };
 
@@ -84,6 +86,6 @@ export function saveFileLocal(type, name, data) {
 };
 
 export function alertUser(s) {
-    alert(s);
+    picoModal(s).show();
     //    dialog.showErrorBox('teiEdit', s);
 }

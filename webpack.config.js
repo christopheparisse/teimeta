@@ -1,7 +1,8 @@
 module.exports = {
-  entry: './teiedit/singlepage.js',
+  entry: './temp-page/ui/init-singlepage.ts',
   output: {
-    filename: 'bundle.js'
+    filename: './temp-page/bundle.js',
+    path: __dirname
   },
   resolve: {
     // Add `.ts` and `.tsx` as a resolvable extension.

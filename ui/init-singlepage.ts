@@ -2,10 +2,10 @@
  * initalone.js
  */
 
-import * as events from '../teiedit/events';
+import * as events from './events';
 import * as edit from '../teiedit/edit';
 import * as syscall from './opensave';
-import * as help from '../teiedit/help';
+import * as help from './help';
 
 function bodyKeys(e) {
 /*    
@@ -58,13 +58,6 @@ export function init() {
     el.addEventListener("click", help.about);
     el = document.getElementById('upload-input-transcript');
     el.addEventListener("change", syscall.openLocalFile);
-    // for user interface in html pages
-    window['ui'] = {};
-    window['ui'].setOnOff = edit.setOnOff;    
-    window['ui'].setOnOffEC = edit.setOnOffEC;    
-    window['ui'].setText = edit.setText;
-    window['ui'].createEC = edit.createEC;    
-    window['ui'].setAttr = edit.setAttr;
     // for debugging purposes
     window['dbg'] = {};
     window['dbg'].tei = events.teiData;

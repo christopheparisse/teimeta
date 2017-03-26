@@ -82,6 +82,14 @@ export function setAttr(event, id) {
  * @param {*} elist 
  */
 export function generateHTML(dataTei) {
+    // for user interface in html pages
+    window['ui'] = {};
+    window['ui'].setOnOff = setOnOff;    
+    window['ui'].setOnOffEC = setOnOffEC;    
+    window['ui'].setText = setText;
+    window['ui'].createEC = createEC;    
+    window['ui'].setAttr = setAttr;
+    
     let s = '';
     let nth = 0;
     for (let i in dataTei) {

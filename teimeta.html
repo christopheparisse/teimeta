@@ -4,25 +4,30 @@
 	<meta charset="utf-8">
 	<link rel="shortcut icon" type="image/ico" href="favicon.ico">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
-	<title></title>
+	<title>Edition de métadonnées TEI / CORLI</title>
+  <!--  
   <script src="js/jquery.min.js"></script>
   <script src="js/bootstrap.js"></script>
   <script src="js/filesaver.js"></script>
+  -->
 	<script src="bundle.js"></script>
-  <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="css/display.css">
  </head>
 <body style="margin-left:10px;">
+  <div id="title">Edition de métadonnées TEI / CORLI</div>
   <div id="top">
     <div class="headtop" id="file-open">
     <i class="headtopi fa fa-folder-open-o fa-3x" title="Ouvrir Ficher TEI"></i>
     <span class="headtopt">Ouvrir</span>
     </div>
+    <!--
     <div class="headtop" id="file-new">
     <i class="headtopi fa fa-sticky-note-o fa-3x" title="Nouveau Ficher TEI"></i>
     <span class="headtopt">Nouveau</span>
     </div>
+    -->
     <div class="headtop" id="file-saveas">
     <i class="headtopi fa fa-save fa-3x" title="Sauver le ficher TEI"></i>
     <span class="headtopt">Sauver</span>
@@ -37,9 +42,9 @@
     </div>
   </div>
   <input style="display:none;" id="upload-input-transcript" type="file" name="file-transcript" />
-  <h3 id="subtitle"></h3>
-  <h4 id="oddname">ODD: </h4>
-  <h4 id="filename">Fichier TEI: </h4>
+  <!-- <h3 id="subtitle"></h3> -->
+  <div class="infofiles" id="oddname">ODD: </div>
+  <div class="infofiles" id="filename">Fichier TEI: </div>
   <div id="teidata"></div>
 </body>
 </html>

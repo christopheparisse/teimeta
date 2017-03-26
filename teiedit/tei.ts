@@ -8,7 +8,7 @@
 
 import * as edit from './edit';
 import * as odd from './odd';
-import * as system from '../system/opensave';
+// import * as system from '../system/opensave';
 
 let entities = require("entities");
 let dom = require('xmldom').DOMParser;
@@ -303,7 +303,7 @@ function createAbsolutePath(path, doc) {
             let s = p.slice(0,i).join('/');
             s = 'attention element ' + s + " n'est pas unique.";
             console.log(s);
-            system.alertUser(s);
+            // system.alertUser(s);
         }
         if (nds.length > 0) {
             node = nds[0];
@@ -448,3 +448,46 @@ function generateFilledElement(elt, doc, node) {
     }
     return s;
 }
+
+/*
+ * useful example functions for the library
+ */
+
+/**
+ * @method openODD
+ * @param data : entire odd file in a variable
+ * @returns html content or null if error in ODD
+ */
+// var data = fs.readFileSync(fnameODD, 'utf-8');
+export function openODD(data) {
+    let oddLoaded = odd.loadOdd(data);
+    if (!oddLoaded) return null;
+    let teiLoaded = load(null, oddLoaded);
+    return edit.generateHTML(teiLoaded);
+}
+// elt.innerHTML = retvalue
+
+/**
+ * @method openODDTEI
+ * @param dataOdd : entire odd file in a variable
+ * @param dataTei : entire tei file in a variable
+ * @returns html content or null if error in ODD
+ */
+// var dataOdd = fs.readFileSync(fnameODD, 'utf-8');
+// var dataTei = fs.readFileSync(fnameTEI, 'utf-8');
+export function openODDTEI(dataOdd, dataTei) {
+    let oddLoaded = odd.loadOdd(dataOdd);
+    if (!oddLoaded) return null;
+    let teiLoaded = load(dataTei, oddLoaded);
+    return edit.generateHTML(teiLoaded);
+}
+// elt.innerHTML = retvalue
+
+/**
+ * @method generateTEI
+ * @param html : html content once edited
+ * @returns string : content of the tei file
+ */
+// USE the function directly
+// data = generateTEI(innerHtml);
+// fs.writeFileSync(fnameTEI, data, 'utf-8');

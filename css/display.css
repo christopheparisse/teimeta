@@ -1,11 +1,24 @@
+#title {
+    width: 99%;
+    text-align: center; 
+    color: white;
+    background-color: darkblue;
+    font-size: large;
+    border-bottom: 2px solid white;
+}
+
 #top {
     margin: 0;
     padding: 0;
     border-collapse: collapse;
 }
 
+.infofiles {
+    font-size: 110%;
+}
+
 .headtop {
-    width: 19%;
+    width: 24.5%;
     display: inline-block;
     color: white;
     background-color: darkblue;
@@ -25,12 +38,16 @@
 
 .elementSpec {
     width:"100%";
-    border: 1px solid blue;
+    border: 2px solid blue;
     border-collapse: collapse;
 	border-radius: 2px;
-    margin-top: 1px;
-    margin-bottom: 1px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     padding: 2px;
+}
+
+.odd {
+    border: 2px solid brown;
 }
 
 .divESpec {
@@ -61,41 +78,90 @@
     margin-left: 10px;
 }
 
+.elementSpec .attrESpec {
+    font-style: italic;
+    margin-left: 10px;
+}
+
 .elementSpec .descESpec {
     font-style: italic;
-    font-size: smaller;
+    font-size: initial;
     margin-left: 15px;
 }
 
 .elementSpec .usageESpec {
-    font-size: smaller;
+    font-size: initial;
     margin-left: 15px;
+}
+
+/*
+.groupCountOne {
+    border: 1px solid black;
+	border-radius: 4px;
+}
+*/
+
+.groupCountMany {
+    border: 1px solid black;
+	border-radius: 4px;
+}
+
+.plusCM {
+    float: left;
+    margin-right: 5px;
+    border: 1px solid blue;
+	border-radius: 4px;
+}
+
+.elementBlock {
+    display: inline-block;
+    font-size: large;
+    background-color: #f0f0f0;
 }
 
 .eltName {
     display: inline-block;
-    font-size: large;
+    margin-left: 5px;
+    margin-right: 5px;
+    border: 1px solid grey;
+	border-radius: 4px;
     background-color: #f0f0f0;
+    font-size: large;
+    font-weight: bold;
+}
+
+.attrs {
+    display: inline-block;
+    font-size: initial;
+}
+
+.attrs label {
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .innerContent {
     margin-left: 10px;
 }
 
-.eltName label {
+.elementBlock label {
     margin-left: 5px;
     margin-right: 5px;
     border: 1px solid blue;
 	border-radius: 4px;
 }
 
-.eltName em {
+.elementBlock em {
     margin-left: 5px;
     margin-right: 5px;
 }
 
 .validate {
     display: inline-block;
+}
+
+input {
+    background-color: #F7F7F7;
 }
 
 /*
