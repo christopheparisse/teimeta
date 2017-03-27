@@ -139,6 +139,8 @@ import * from 'teimeta/tei'
 ```
 
 ## Informations complémentaires
+Téléchargement du code source: [https://github.com/christopheparisse/tei-meta/](https://github.com/christopheparisse/tei-meta/)
+
 Signaler erreurs et commentaires dans [issues](https://github.com/christopheparisse/tei-meta/issues).
 
 #### License [CC0 (Public Domain)](LICENSE.md)

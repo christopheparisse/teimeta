@@ -56,6 +56,10 @@ export function init() {
     //el.addEventListener("click", events.newFile);
     el = document.getElementById('help');
     el.addEventListener("click", help.about);
+    el = document.getElementById('showall');
+    el.addEventListener("click", edit.showAll);
+    el = document.getElementById('hideall');
+    el.addEventListener("click", edit.hideAll);
     el = document.getElementById('upload-input-transcript');
     el.addEventListener("change", syscall.openLocalFile);
     // for debugging purposes

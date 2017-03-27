@@ -77,6 +77,36 @@ export function setAttr(event, id) {
     //console.log(event);
 }
 
+function toggle(el, value) {
+    var display = (window.getComputedStyle ? getComputedStyle(el, null) : el.currentStyle).display;
+    if (display == 'none') el.style.display = value;
+    else el.style.display = 'none';
+}
+
+export function showOnOff(event, id) {
+    //console.log(event, id);
+    // toggle
+    let node = document.getElementById('show' + id);
+    // if (el.classList) el.classList.contains(className);
+    // if (el.classList) el.classList.add(className);
+    // if (el.classList) el.classList.remove(className);
+	toggle(node, "block");    
+}
+
+export function showAll() {
+    let nodes: any = document.getElementsByClassName('showonoff');
+    for (let i in nodes) {
+        nodes[i].style.display =  "block";
+    }
+}
+
+export function hideAll() {
+    let nodes: any = document.getElementsByClassName('showonoff');
+    for (let i in nodes) {
+        nodes[i].style.display =  "none";
+    }
+}
+
 /**
  * @function generateHtml
  * @param {*} elist 
@@ -89,6 +119,7 @@ export function generateHTML(dataTei) {
     window['ui'].setText = setText;
     window['ui'].createEC = createEC;    
     window['ui'].setAttr = setAttr;
+    window['ui'].showOnOff = showOnOff;
     
     let s = '';
     let nth = 0;
@@ -111,9 +142,12 @@ export function generateHTML(dataTei) {
                     s += '<i class="validate fa fa-2x fa-bookmark-o fa-red" '
                         + 'onclick="window.ui.setOnOff(event, \'' + uniq + '\')"></i>';
                 }
+                s += '<i class="hidebutton fa fa-2x fa-star-half-o fa-cyan" '
+                    + 'onclick="window.ui.showOnOff(event, \'' + uniq + '\')"></i>';
+                s += '<div class="tagnameESpec" title="' + es.absolutepath + '">' + es.ident + '</div>';
+                s += '<div class="showonoff" id="show' + uniq + '">';
                 values[uniq] = es.ec[k].validatedES;
                 es.ec[k].validatedESID = uniq;
-                s += '<div class="tagnameESpec" title="' + es.absolutepath + '">' + es.ident + '</div>';
 
                 s += generateElement(es.ec[k].element, "ESpec");
 
@@ -124,7 +158,8 @@ export function generateHTML(dataTei) {
 
                 if (es.ec[k].content)
                     s += generateContent(es.ec[k].content);
-                s += '</div>';
+                s += '</div>'; // pour le showOnOff
+                s += '</div>'; // pour le elementSpec
             }
         } else {
             s += '<div class="elementSpec">';

@@ -61,6 +61,9 @@
 .fa-red { color: red; }
 .fa-green { color: green; }
 .fa-blue { color: blue; }
+.fa-cyan { color: #26cdd9; }
+.fa-lightgreen { color: #01feaa; }
+.fa-blueklein { color: #2803fc; }
 
 .elementSpec .tagnameESpec {
     display: inline-block;
@@ -69,6 +72,10 @@
     border: 2px solid blue;
 	border-radius: 6px;
     margin-left: 10px;
+}
+
+.showonoff {
+    display: block;
 }
 
 .elementSpec .pathESpec {
