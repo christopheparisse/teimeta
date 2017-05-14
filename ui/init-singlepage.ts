@@ -40,6 +40,37 @@ function bodyKeys(e) {
     }
 }
 
+function readTextFile(file, callback) {
+    var rawFile:any = new XMLHttpRequest();
+    // rawFile.overrideMimeType("text/xml");
+    rawFile.responseType = "text";
+    rawFile.open("GET", file, true);
+    rawFile.onload = function(e) {
+        if (rawFile.readyState === 4 && rawFile.status == "200") {
+            callback(rawFile.responseText);
+        }
+    }
+    rawFile.send(null);
+}
+
+function oddMedia() {
+    readTextFile('http://ct3.ortolang.fr/teimeta/media.odd', function(text) {
+        events.openOddLoad('Odd prédéfini Média', text);
+    });
+}
+
+function oddFileDesc() {
+    readTextFile('http://ct3.ortolang.fr/teimeta/filedesc.odd', function(text) {
+        events.openOddLoad('Odd prédéfini Média', text);
+    });
+}
+
+function oddPartDesc() {
+    readTextFile('http://ct3.ortolang.fr/teimeta/partdesc.odd', function(text) {
+        events.openOddLoad('Odd prédéfini Média', text);
+    });
+}
+
 export function init() {
     // load previous data
     events.newFile(null);
@@ -56,6 +87,14 @@ export function init() {
     //el.addEventListener("click", events.newFile);
     el = document.getElementById('help');
     el.addEventListener("click", help.about);
+
+    el = document.getElementById('odd-media');
+    el.addEventListener("click", oddMedia);
+    el = document.getElementById('odd-filedesc');
+    el.addEventListener("click", oddFileDesc);
+    el = document.getElementById('odd-partdesc');
+    el.addEventListener("click", oddPartDesc);
+    
     el = document.getElementById('showall');
     el.addEventListener("click", edit.showAll);
     el = document.getElementById('hideall');

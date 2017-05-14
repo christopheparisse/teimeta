@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+
+<TEI xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:svg="http://www.w3.org/2000/svg"
+    xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns="http://www.tei-c.org/ns/1.0"
+    xmlns:exm="http://www.tei-c.org/ns/Examples">
+
+    <egXML xmlns="http://www.tei-c.org/ns/Examples">
+        <!-- recordingStmt : recording et medias-->
+        <elementSpec ident="sourceDesc" module="header" mode="replace"
+            predeclare="/TEI/teiHeader/fileDesc">
+            <desc>Recording information</desc>
+            <content>
+                <element name="recordingStmt" module="spoken">
+                    <content>
+                        <oneOrMore>
+                            <element name="recording" module="spoken">
+                                <content>
+                                    <element name="media" usage="req" module="spoken">
+                                        <attList>
+                                            <attDef ident="type" usage="req" mode="change">
+                                                <valList type="closed" mode="replace">
+                                                  <valItem ident="audio"/>
+                                                  <valItem ident="video"/>
+                                                </valList>
+                                            </attDef>
+                                            <attDef ident="mimeType" usage="req" mode="change">
+                                                <valList type="closed" mode="replace">
+                                                  <valItem ident="audio/wav"/>
+                                                  <valItem ident="audio/mp3"/>
+                                                  <valItem ident="video/mp4"/>
+                                                  <valItem ident="video/mov"/>
+                                                  <valItem ident="video/wmv"/>
+                                                </valList>
+                                            </attDef>
+                                            <attDef ident="dur-iso" usage="req" mode="change"/>
+                                            <attDef ident="url" usage="req" mode="change"/>
+                                        </attList>
+                                        <content>
+                                            <twoOrMore>
+                                                <element name="desc">
+                                                  <attList>
+                                                  <attDef ident="type" usage="req" mode="change">
+                                                  <valList type="closed" mode="replace">
+                                                  <valItem ident="quality"/>
+                                                  <valItem ident="anonymization"/>
+                                                  </valList>
+                                                  </attDef>
+                                                  </attList>
+                                                </element>
+                                            </twoOrMore>
+                                        </content>
+                                    </element>
+                                </content>
+                            </element>
+                        </oneOrMore>
+                    </content>
+                </element>
+            </content>
+        </elementSpec>
+        <elementSpec ident="media" module="header" mode="add"
+            xmlns:s="http://purl.oclc.org/dsdl/schematron">
+            <desc>Contraintes sur les médias</desc>
+            <constraintSpec mode="add" ident="mediaDef" scheme="isoschematron">
+                <constraint>
+                    <s:assert
+                        test="tei:desc/@type='anonymisation' and tei:div/@type='qualite' and count(tei:desc)>=2"
+                        > l'élément média doit contenir au moins une description de l'anonymisation
+                        et une de la qualité </s:assert>
+                </constraint>
+            </constraintSpec>
+        </elementSpec>
+    </egXML>
+</TEI>

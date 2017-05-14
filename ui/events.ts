@@ -5,6 +5,7 @@
 import * as edit from '../teiedit/edit';
 import * as odd from '../teiedit/odd';
 import * as tei from '../teiedit/tei';
+import * as load from '../teiedit/load';
 import * as system from './opensave';
 
 export let teiData = {
@@ -22,7 +23,7 @@ function finish(err, name, data) {
     teiData.fileName = name;
     let el = document.getElementById('filename');
     el.innerHTML = "Fichier: " + name;
-    tei.load(data, teiData);
+    load.loadTei(data, teiData);
     teiData.html = edit.generateHTML(teiData.dataTei);
     el = document.getElementById('teidata');
     el.innerHTML = teiData.html;
@@ -55,6 +56,7 @@ export function newFile(callback) {
             emptyFile();
         }
     } catch (error) {
+        console.log(error);
         emptyFile();
     }
 }
@@ -64,7 +66,7 @@ export function openOddLoad(name, data) {
     let el = document.getElementById('oddname');
     el.innerHTML = "ODD: " + name;
     teiData.dataOdd = odd.loadOdd(data);
-    tei.load(null, teiData);
+    load.loadTei(null, teiData);
     teiData.html = edit.generateHTML(teiData.dataTei);
     teiData.fileName = 'nouveau-fichier.xml';
     teiData.new = true;
@@ -108,6 +110,7 @@ export function saveAs() {
             let el = document.getElementById('filename');
             el.innerHTML = "Fichier: " + teiData.fileName;
             var ed = tei.generateTEI(teiData);
+            console.log(ed);
             system.saveFile(teiData.fileName, ed, null);
         } else
             console.log(name, err);

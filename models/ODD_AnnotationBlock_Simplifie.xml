@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<TEI xmlns="http://www.teicorpo.fr">
+    <egXML>
+        <!-- title : idno, bibl, desc obligatoires-->
+        <elementSpec ident="annotationBlock" module="core" mode="replace" predeclare="//" ana="none">
+            <desc>annotations !!! </desc>
+            <attList>
+                <attDef ident="who" usage="req" mode="change"/>
+            </attList>
+            <content>
+                <oneOrMore>
+                    <element name="u" module="header"> </element>
+                </oneOrMore>
+            </content>
+        </elementSpec>
+    </egXML>
+</TEI>

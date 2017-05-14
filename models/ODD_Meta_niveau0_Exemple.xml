@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+
+<TEI xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:svg="http://www.w3.org/2000/svg"
+    xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns="http://www.tei-c.org/ns/1.0"
+    xmlns:exm="http://www.tei-c.org/ns/Examples">
+
+    <egXML xmlns="http://www.tei-c.org/ns/Examples">
+        <!-- title : idno, bibl, desc obligatoires-->
+        <elementSpec ident="title" module="core" mode="replace"
+            predeclare="/TEI/teiHeader/fileDesc/titleStmt" ana="none">
+            <desc>general informations: a title (idno), bibl : a reference to cite the ressource,
+                desc : a short description </desc>
+            <content>
+                <element name="idno" module="header">
+                    <attList>
+                        <attDef ident="type" usage="req" value="title" mode="change" ana="none"/>
+                    </attList>
+                </element>
+                <element name="bibl" usage="req" module="core"/>
+                <element name="desc" usage="req" module="core"/>
+            </content>
+        </elementSpec>
+        <!-- titleStmt : un principal, de 0 à n respStmt (collecteur, transcripteur, collecteur, ...) -->
+        <elementSpec ident="titleStmt" module="header" mode="replace"
+            predeclare="/TEI/teiHeader/fileDesc" ana="none">
+            <desc>Responsible(s) of the ressource and contributors : collectors, transcriptors,
+                annotators, translators, ... persons and/or organisms or search projects </desc>
+            <content>
+                <oneOrMore>
+                    <element name="principal" usage="req" module="header" ana="none">
+                        <desc>Responsable(s) de la ressource : personne et/ou organismes</desc>
+                        <content>
+                            <element name="name" usage="req" module="core">
+                                <attList>
+                                    <attDef ident="type" usage="req" mode="change">
+                                        <valList type="closed" mode="replace">
+                                            <valItem ident="person">
+                                                <desc>Personne</desc>
+                                            </valItem>
+                                            <valItem ident="organism">
+                                                <desc>Laboratoire ou Institution</desc>
+                                            </valItem>
+                                            <valItem ident="project">
+                                                <desc>Project</desc>
+                                            </valItem>
+                                        </valList>
+                                    </attDef>
+                                </attList>
+                            </element>
+                        </content>
+                    </element>
+                </oneOrMore>
+                <zeroOrMore>
+                    <element name="respStmt" module="core">
+                        <desc>List of contributors made of both a role and a list of persons or
+                            oeganism who assume this role </desc>
+                        <content>
+                            <oneOrMore>
+                                <element name="resp" usage="req" module="core">
+                                    <category xml:id="contributor.annotator">
+                                        <catDesc xml:lang="fr">annotateur</catDesc>
+                                        <catDesc xml:lang="en">annotator</catDesc>
+                                    </category>
+                                    <category xml:id="contributor.compiler">
+                                        <catDesc xml:lang="fr">coordinateur</catDesc>
+                                        <catDesc xml:lang="en">compiler</catDesc>
+                                    </category>
+                                    <category xml:id="contributor.interviewer">
+                                        <catDesc xml:lang="fr">interviewer</catDesc>
+                                        <catDesc xml:lang="en">interviewer</catDesc>
+                                    </category>
+                                    <category xml:id="contributor.recorder">
+                                        <catDesc xml:lang="fr">collecteur</catDesc>
+                                        <catDesc xml:lang="en">recorder</catDesc>
+                                    </category>
+                                    <category xml:id="contributor.transcriber">
+                                        <catDesc xml:lang="fr">transcripteur</catDesc>
+                                        <catDesc xml:lang="en">transcriber</catDesc>
+                                    </category>
+                                    <category xml:id="contributor.translator">
+                                        <catDesc xml:lang="fr">traducteur</catDesc>
+                                        <catDesc xml:lang="en">translator</catDesc>
+                                    </category>
+                                </element>
+                                <element name="name" usage="req" module="core">
+                                    <attList>
+                                        <attDef ident="type" usage="req" mode="change">
+                                            <valList type="closed" mode="replace">
+                                                <valItem ident="person">
+                                                  <desc>Personne</desc>
+                                                </valItem>
+                                                <valItem ident="organism">
+                                                  <desc>Laboratoire ou Institution</desc>
+                                                </valItem>
+                                                <valItem ident="project">
+                                                  <desc>Project</desc>
+                                                </valItem>
+                                            </valList>
+                                        </attDef>
+                                    </attList>
+                                </element>
+                            </oneOrMore>
+                        </content>
+                    </element>
+                </zeroOrMore>
+            </content>
+        </elementSpec>
+        <!-- publicationStmt : au moins un , un handle et une licence
+          par defaut Creative Common CC BY-NC-SA 2.0 FR c'est à dire "Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions"-->
+        <elementSpec ident="publicationStmt" module="header" mode="replace"
+            predeclare="/TEI/teiHeader/fileDesc" ana="none">
+            <desc xml:lang="fr" rendition="Aide en français">Information sur la diffusion : handle,
+                publisher, pubPlace, licence </desc>
+            <desc xml:lang="en">Information on diffusion : handle, publisher, pubPlace,
+                licence</desc>
+            <content>
+                <oneOrMore>
+                    <element name="publisher" usage="req" module="core"/>
+                </oneOrMore>
+                <zeroOrMore>
+                    <element name="pubPlace" module="core">
+                        <desc>publication website of this ressource : archive , database, research
+                            project </desc>
+                        <content>
+                            <oneOrMore>
+                                <element name="ref" usage="req">
+                                    <attList>
+                                        <attDef ident="target" usage="req" mode="change">
+                                            <desc>the ressource uri or website url</desc>
+                                        </attDef>
+                                    </attList>
+                                </element>
+                            </oneOrMore>
+                        </content>
+                    </element>
+                </zeroOrMore>
+                <oneOrMore>
+                    <element name="idno" usage="req" module="header"/>
+                </oneOrMore>
+                <oneOrMore>
+                    <element name="availability" usage="req" module="header">
+                        <attDef ident="status" usage="req" value="restricted" mode="change"/>
+                        <content>
+                            <oneOrMore>
+                                <element name="licence" usage="req" module="header">
+                                    <content>
+                                        <element name="idno" usage="req" module="header">
+                                            <attList>
+                                                <attDef ident="type" usage="req" mode="change">
+                                                  <valList type="closed" mode="replace">
+                                                  <valItem ident="licence.BY">
+                                                  <desc xml:lang="fr">Attribution</desc>
+                                                  <desc xml:lang="en">Attribution</desc>
+                                                  </valItem>
+                                                  <valItem ident="licence.BY_ND">
+                                                  <desc xml:lang="fr">Attribution sans modification </desc>
+                                                  <desc xml:lang="en">Attribution and no
+                                                  modification </desc>
+                                                  </valItem>
+                                                  <valItem ident="licence.BY_NC_ND">
+                                                  <desc xml:lang="fr">Attribution sans usage
+                                                  commercial et sans modification </desc>
+                                                  <desc xml:lang="en">Attribution and no commercial
+                                                  use and no modification </desc>
+                                                  </valItem>
+                                                  <valItem ident="licence.BY_NC">
+                                                  <desc xml:lang="fr">Attribution sans usage
+                                                  commercial </desc>
+                                                  <desc xml:lang="en">Attribution and no commercial
+                                                  use </desc>
+                                                  </valItem>
+                                                  <valItem ident="licence.BY_NC_SA">
+                                                  <desc xml:lang="fr">Attribution sans usage
+                                                  commercial et partage suivant les mêmes modalités </desc>
+                                                  <desc xml:lang="en">Attribution and no Commercial
+                                                  use and share in the same way </desc>
+                                                  </valItem>
+                                                  <valItem ident="licence.BY_SA">
+                                                  <desc xml:lang="fr">Attribution et partage suivant
+                                                  les mêmes modalités </desc>
+                                                  <desc xml:lang="en">Attribution and share in the
+                                                  same way </desc>
+                                                  </valItem>
+                                                  </valList>
+                                                </attDef>
+                                            </attList>
+                                        </element>
+                                    </content>
+                                </element>
+                            </oneOrMore>
+                        </content>
+                    </element>
+                </oneOrMore>
+            </content>
+        </elementSpec>
+        <elementSpec ident="listPerson" predeclare="/TEI/teiHeader/profileDesc/particDesc"
+            ana="none">
+            <desc>Description des participants et locuteurs</desc>
+            <content>
+                <oneOrMore>
+                    <element name="person" module="spoken" ana="none">
+                        <attList>
+                            <attDef ident="age" usage="req" mode="change"/>
+                        </attList>
+                        <content>
+                            <element name="persName" module="spoken"/>
+                            <zeroOrMore>
+                                <element name="langKnowledge">
+                                    <content>
+                                        <oneOrMore>
+                                            <element name="langKnown"/>
+                                        </oneOrMore>
+                                    </content>
+                                </element>
+                            </zeroOrMore>
+                        </content>
+                    </element>
+                </oneOrMore>
+            </content>
+        </elementSpec>
+        <!-- recordingStmt : recording et medias-->
+        <elementSpec ident="sourceDesc" module="header" mode="replace"
+            predeclare="/TEI/teiHeader/fileDesc">
+            <desc>Recording information</desc>
+            <content>
+                <element name="recordingStmt" module="spoken">
+                    <content>
+                        <oneOrMore>
+                            <element name="recording" module="spoken">
+                                <content>
+                                    <element name="media" usage="req" module="spoken">
+                                        <attList>
+                                            <attDef ident="type" usage="req" mode="change">
+                                                <valList type="closed" mode="replace">
+                                                  <valItem ident="audio"/>
+                                                  <valItem ident="video"/>
+                                                </valList>
+                                            </attDef>
+                                            <attDef ident="mimeType" usage="req" mode="change">
+                                                <valList type="closed" mode="replace">
+                                                  <valItem ident="audio/wav"/>
+                                                  <valItem ident="audio/mp3"/>
+                                                  <valItem ident="video/mp4"/>
+                                                  <valItem ident="video/mov"/>
+                                                  <valItem ident="video/wmv"/>
+                                                </valList>
+                                            </attDef>
+                                            <attDef ident="dur-iso" usage="req" mode="change"/>
+                                            <attDef ident="url" usage="req" mode="change"/>
+                                        </attList>
+                                        <content>
+                                            <twoOrMore>
+                                                <element name="desc">
+                                                  <attList>
+                                                  <attDef ident="type" usage="req" mode="change">
+                                                  <valList type="closed" mode="replace">
+                                                  <valItem ident="quality"/>
+                                                  <valItem ident="anonymization"/>
+                                                  </valList>
+                                                  </attDef>
+                                                  </attList>
+                                                </element>
+                                            </twoOrMore>
+                                        </content>
+                                    </element>
+                                </content>
+                            </element>
+                        </oneOrMore>
+                    </content>
+                </element>
+            </content>
+        </elementSpec>
+        <elementSpec ident="media" module="header" mode="add"
+            xmlns:s="http://purl.oclc.org/dsdl/schematron">
+            <desc>Contraintes sur les médias</desc>
+            <constraintSpec mode="add" ident="mediaDef" scheme="isoschematron">
+                <constraint>
+                    <s:assert
+                        test="tei:desc/@type='anonymisation' and tei:div/@type='qualite' and count(tei:desc)>=2"
+                        > l'élément média doit contenir au moins une description de l'anonymisation
+                        et une de la qualité </s:assert>
+                </constraint>
+            </constraintSpec>
+        </elementSpec>
+    </egXML>
+</TEI>

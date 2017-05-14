@@ -7,92 +7,324 @@
  * @exports Element ElementCount ElementCountItem ElementSpec Content Attr Val ValItem
  */
 
+import * as system from '../ui/opensave';
+
 let dom = require('xmldom').DOMParser;
 let xpath = require('xpath');
 let select;
 // import * as system from '../system/opensave';
 
+class ODD {
+    listElementSpec = {}; // avoir tous les elementSpec sous la main et les controler
+    listElementRef = {}; // avoir tous les elementRef sous la main et les controler
+    rootTEI = null; // pointeur de base du schema (attribut start de schemaSpec)
+    rootIdent = ''; // valeur de l'attribut ident du schemaSpec de root
+    defaultNewElement = 'ok'; // si OK les éléments non existants sont inclus par défaut
+    // si '' ou 'del ils ne sont pas conservés.
+}
+
+export let odd : ODD = null;
+
+function tagES(k, c) {
+    return (c) ? k + '/' + c : k;    
+}
+
+/**
+ * @method getChildrenByName
+ * get list of immediate children nodes with a given tagname
+ * @param node
+ * @param name 
+ * @returns [list of nodes]
+ */
+export function getChildrenByName(node, name) {
+    let children = [];
+    for (let child in node.childNodes) {
+        if (node.childNodes[child].nodeType === 1) {
+            if (node.childNodes[child].tagName === name) children.push(node.childNodes[child]);
+        }
+    }
+    return children;
+}
+
 export class ElementSpec {
     // Informations de l'ODD
     ident = ''; // nom de l'élément
-    predeclare = ''; // path dans le fichier XML
-    desc = '';
-    module = '';
-    mode = ''; // change=oneOrMore, replace=one, add=zeroOrMore
-    ana = 'text'; // mode d'édtion - texte par défaut
+    corresp = ''; // complément du nom pour unicité dans le fichier XML
+    access = ''; // combinaison unique ident+corresp indentifiant de manière unique les elementSpec
+    desc = null; // structure de type Desc
+    module = ''; // non utilisé
+    mode = ''; // non utilisé
     content = null; // pointeur sur les enfants.
+    attr = []; // les attributs
+    usage = ''; // champ indiquant l'usage: obligatory (req), recommended (rec), optional (opt ou '')
     // Informations pour éditer la TEI
     absolutepath = '';
-    ec = []; // si plusieurs elementSpec,
-    // cela permet de les mettre dans un tableau
-    // cette partie est initialisée dans load() dans le module tei()
-    // chaque ec est une copie de l'élément principal
-    element = null; // contenu pour l'édtion du noeud lui même, champ texte, attributs et categories
-    validatedES = false; // is false element not used, si non element used
+    validatedES = ''; // champ indiquant le statut de la part de l'utilisateur
+    // '' (vide) champ pas validé ou effacé
+    // 'del' = champ à effacer
+    // 'ok' = champ validé
+    // 'edit' = champ à conserver mais en cours d'édition
     validatedESID = '';
     node = null; // utilisé pour retrouver les éléments orignaux
-    // si null alors création ex nihilo dans un emplacement absoulu
-    // si d'autres créations, alors frères
-    // dans la version courante on ne peut pas créer de frères
+    // si null alors création ex nihilo dans un emplacement absolu
+    readOdd(node) {
+        // console.log(nodes);
+        // find all about elementSpec
+
+        // récupérer tous les attributs potentiels
+        this.ident = node.getAttribute("ident");
+        this.corresp = node.getAttribute("corresp");
+        this.module = node.getAttribute("module");
+        this.mode = node.getAttribute("mode");
+        // les autres attributs sont ignorés
+        this.access = tagES(this.ident, this.corresp);
+
+        // le champ desc
+        let d =  new Desc();
+        if (d.readOdd(node)) this.desc = d;
+
+        // le champ content
+        let c =  new Content();
+        if (c.readOdd(node)) this.content = c;
+
+        // le champ attr
+        let a = getChildrenByName(node, 'attList');
+        if (a.length > 0) {
+            let ad = getChildrenByName(a[0], 'attDef');
+            for (let i in ad) {
+                let adv = new AttrDef();
+                adv.readOdd(ad[i]);
+                adv.valList(ad[i]);
+                this.attr.push(adv);
+            }
+        }
+    }
+}
+
+function getDataRef(node) : string {
+    let d = getChildrenByName(node, 'dataRef');
+    if (d.length < 1) return '';
+    let n = d[0].getAttribute('name');
+    if (!n) return '';
+    switch(n) {
+        case 'string':
+            return 'string';
+        case 'decimal':
+            return 'decimal';
+        case 'NCName':
+            return 'NCName';
+        case 'integer':
+            return 'integer';
+        case 'anyURI':
+            return 'anyURI';
+        case 'duration':
+            return 'duration';
+        default:
+            console.log('unknow type for dataRef:', n, 'in', node.tagName);
+            return 'string';
+    }
 }
 
 export class Content {
-    // les tableaux contiennent des éléments étendus
-    // un élément étendu est un objet qui permet de gérer
-    // un nombre quelconque d'éléments dupliqués et validés ou non 
-    one = [];
-    zeroOrMore = [];
-    oneOrMore = [];
-    twoOrMore = [];
+    sequencesRefs = []; // des ElementCount contenant des sequence ou des elementRef
+    datatype = ''; // infos pour l'edition
+    vallist = null; // utilisé si ensemble de valeurs prédéfinies
+    textContent = ''; // value pour le texte si nécessaire
+    textContentID = ''; // ID pour le texte si nécessaire
+    // obligatory = false; // true if element cannot be removed
+    readOdd(node) {
+        let d = getChildrenByName(node, 'content');
+        if (d.length > 1) {
+            // standard syntax is not more than one content ?
+            console.log('more than one content in node: only first is processed', node.tagName);
+        }
+        if (d.length > 0) {
+            // find elementRef
+            let e = getChildrenByName(d[0], 'elementRef');
+            for (let ei in e) {
+                let ec = new ElementCount();
+                ec.getElementRef(e[ei]);
+                this.sequencesRefs.push(ec);
+            }
+            // find sequence
+            e = getChildrenByName(d[0], 'sequence');
+            for (let ei in e) {
+                let ec = new ElementCount();
+                ec.getSequence(e[ei]);
+                this.sequencesRefs.push(ec);
+            }
+            // find dataRef
+            this.datatype = getDataRef(d[0]); // si rien alors datatype === ''
+            // find textNode
+            let t = getChildrenByName(d[0], 'textNode');
+            if (t.length > 0) {
+                if (this.datatype === '') {
+                    this.datatype = 'string'; // type par defaut
+                }
+                // sinon on respecte le type de dataRef
+            }
+            // find if there are values predefined
+            let vl = new AttrDef();
+            let n = vl.valList(d[0]);
+            if (n > 0) {
+                this.vallist = vl;
+                // mettre une valeur par défaut s'il y en a une
+                this.datatype = 'list';
+            }
+        }
+        return d.length;
+    }
 }
 
 export class ElementCount {
-    count = ''; // oneOrMore, one, zeroOrMore, twoOrMore
-    model = null;
+    // les tableaux contiennent des éléments étendus
+    // un élément étendu est un objet qui permet de gérer
+    // un nombre quelconque d'éléments dupliqués et validés ou non
+    minOccurs = '1'; // 0, 1, 2, unbounded
+    maxOccurs = '1'; // 0, 1, 2, unbounded
+    model = null; // nom de l'elementSpec de référence (elementRef) ou des elementSpec (tableau pour la sequence)
+    ident = null; //
+    type = ''; // elementRef or sequence
     eCI = []; // element Count Items
+    parent = null; // utilisé pour retrouver les éléments orignaux et les nouveaux nodes
+    // si null alors un élément doit être créé et ajouté au node parent
+    getMinMax(node) {
+        let a = node.getAttribute('minOccurs');
+        if (a) this.minOccurs = a;
+        a = node.getAttribute('maxOccurs');
+        if (a) this.maxOccurs = a;
+    }
+    getElementRef(node) {
+        this.getMinMax(node);
+        this.model = this.tagElementSpec(node);
+        this.ident = this.keyElementSpec(node);
+        this.type = 'elementRef';
+        if (odd.listElementRef[this.model] === undefined)
+            odd.listElementRef[this.model] = 1;
+        else
+            odd.listElementRef[this.model]++;
+    }
+    getSequence(node) {
+        this.getMinMax(node);
+        this.type = 'sequence';
+        let s = getChildrenByName(node, 'elementRef');
+        this.model = [];
+        this.ident = [];
+        for (let i in s) {
+            let t = this.keyElementSpec(s[i]);
+            this.ident.push(t);
+            t = this.tagElementSpec(s[i]);
+            this.model.push(t);
+            if (odd.listElementRef[t] === undefined)
+                odd.listElementRef[t] = 1;
+            else
+                odd.listElementRef[t]++;
+        }
+    }
+    tagElementSpec(node) {
+        let k = node.getAttribute('key');
+        let c = node.getAttribute('corresp');
+        return tagES(k, c);
+    }
+    keyElementSpec(node) {
+        return node.getAttribute('key');
+    }
 }
 
 export class ElementCountItem {
-    validatedEC = false; // is false element not used, si non element used
+    validatedEC = true; // is false element not used, si true element used
     validatedECID = '';
     // obligatory = false; // true if element cannot be removed
-    element = null; // seulement utilisé pour les noeuds internes
-}
-
-export class Element {
-    // Informations de l'ODD
-    name = ''; // nom de l'élément
-    module = '';
-    usage = ''; // req ou rien
-    mode = '';
-    desc = '';
-    ana = 'text'; // mode d'édtion - texte par défaut - si none pas modifiable
-    attr = [];
-    category = [];
-    content = null;
-    // Informations pour éditer la TEI
-    absolutepath = '';
-    textContent = ''; // value pour le texte si nécessaire
-    textContentID = ''; // ID pour le texte si nécessaire
-    useTextContent = true; // is false element not used, si non element used
-    // obligatory = false; // true if element cannot be removed
-    node = null; // utilisé pour retrouver les éléments orignaux
+    type = '';
+    model = null; // pour la copie du modèle dans le parent
+    element = null; // pointeur ElementSpec vers des elementSpec ou sur des Sequence
+    node = null; // utilisé pour retrouver les éléments orignaux et les nouveaux nodes
     // si null alors un élément doit être créé et ajouté au node parent
 }
 
-export class Attr {
+export class Desc {
+    // Informations de l'ODD
+    langs = []; // langues codées
+    texts = []; // autant que de langues
+    renditions = []; // autant que de langues
+    text(lg) {
+        if (lg === undefined) return this.texts.length > 0 ? this.texts[0] : '';
+        for (let i=0; i<this.langs.length; i++) {
+            if (lg === this.langs[i]) return this.texts[i];
+        }
+        return this.texts.length > 0 ? this.texts[0] : '';
+    }
+    rendition(lg) {
+        if (lg === undefined) return this.rendition.length > 0 ? this.rendition[0] : '';
+        for (let i=0; i<this.langs.length; i++) {
+            if (lg === this.langs[i]) return this.rendition[i];
+        }
+        return this.rendition.length > 0 ? this.rendition[0] : '';
+    }
+    readOdd(node) {
+        let d = getChildrenByName(node, 'desc');
+        for (let i in d) {
+            this.texts.push(d[i].textContent);
+            this.langs.push(d[i].getAttribute('xml:lang'));
+            this.renditions.push(d[i].getAttribute('rendition'));
+        }
+        return d.length;
+    }
+}
+
+export class AttrDef {
     // Informations de l'ODD
     ident = '';
-    value = '';
-    usage = '';
+    rend = '';
+    usage = ''; // champ indiquant l'usage: obligatory (req), recommanded (rec), optional (opt ou '')
     mode = '';
-    desc = '';
-    ana = 'text'; // mode d'édtion - texte par défaut - si none pas modifiable
-    type = '';
+    desc = null;
     items = [];
     // Informations pour éditer la TEI
     editing = '';
     valueID = '';
+    value = '';
+
+    readOdd(node) {
+        this.ident = node.getAttribute('ident');
+        this.usage = node.getAttribute('usage');
+        this.mode = node.getAttribute('mode');
+        this.rend = node.getAttribute('rend');
+
+        // le champ desc
+        let d =  new Desc();
+        if (d.readOdd(node)) this.desc = d;
+
+        // le champ datatype
+        let a = getChildrenByName(node, 'datatype');
+        if (a.length > 0) {
+            this.editing = getDataRef(a[0]);
+        }
+    }
+    /**
+     * @method valList
+     * fonction de traitement des listes de valeurs pour les attributs
+     * @param Attr structure 
+     * @param node 
+     */
+    valList(node) {
+        let valList = node.getElementsByTagName("valList");
+        if (valList.length > 0) {
+            // find all about element
+            let valItem = node.getElementsByTagName("valItem");
+            for (let k=0; k < valItem.length; k++) {
+                let vi = new ValItem();
+                let attr = valItem[k].getAttribute("ident");
+                if (attr) vi.ident = attr;
+                let desc = valItem[k].getElementsByTagName("desc");
+                if (desc.length>0) vi.desc = desc[0].textContent;
+                if (!vi.desc) vi.desc = vi.ident;
+                this.items.push(vi);
+            }
+            this.editing = 'list';
+        }
+        return valList.length;
+    }
 }
 
 export class ValItem {
@@ -101,168 +333,146 @@ export class ValItem {
     desc = '';
 }
 
-export function copyESOdd(obj): any {
+/**
+ * @method loadOdd
+ * parse tous les elementSpec du odd et appele sous-fonction pour les champs Content
+ * @param data : contenu d'un fichier xml
+ * @returns structure teiOdd (modèle de données du ODD)
+ */
+export function loadOdd(data) {
+    let error = '';
+    // get XML ready
+    let parser = new DOMParser();
+    // let doc = parser.parseFromString(data, "text/xml");
+    let doc = new dom().parseFromString(data.toString(), 'text/xml');
+    let ns = doc.documentElement.namespaceURI;
+    select = xpath.useNamespaces({"tei": ns});
+    let schemaSpec = select("//tei:schemaSpec", doc);
+    if (schemaSpec.length < 1) {
+        let s = "Pas d'élément schemaSpec dans le fichier ODD";
+        system.alertUser(s);
+        return null;
+    }
+    // récupérer attribut start
+    let attr = schemaSpec[0].getAttribute("start");
+    // valeur retour de la fonction
+    if (attr) {
+        odd = new ODD();
+        odd.rootTEI = attr;
+    } else {
+        let s = "Pas d'attribut racine (@start) dans le fichier ODD";
+        system.alertUser(s);
+        odd = null;
+        return null;
+    }
+    // récupérer attribut ident
+    odd.rootIdent = schemaSpec[0].getAttribute("ident");
+    let eSpec = getChildrenByName(schemaSpec[0], 'elementSpec');
+    // lire les elementSpec
+    for (let i=0; i < eSpec.length ; i++) {
+        var es = new ElementSpec();
+        es.readOdd(eSpec[i]);
+        if (odd.listElementSpec[es.access]) {
+            error += 'ERREUR: redefinition de ' + es.access;
+        }
+        odd.listElementSpec[es.access] = es;
+    }
+    for (let i in odd.listElementRef) {
+        // check if all elementRef exist as elementSpec
+        if (!odd.listElementSpec[i]) {
+            error += 'ERREUR: elementRef ' + i + " n'est pas défini";
+        }
+    }
+    let rootElt = odd.listElementSpec[odd.rootTEI];
+    if (!rootElt) {
+        error += "Pas de définition pour l'élément racine " + odd.rootTEI;
+    } else {
+        rootElt.usage = 'req';
+    }
+    console.log(odd);
+    if (error) {
+        system.alertUser(error);
+        return null;
+    }
+    return odd;
+}
+
+export function copyElementSpec(obj): any {
     let cp: any = {};
     cp.ident = obj.ident; // nom de l'élément
-    cp.predeclare = obj.predeclare; // path dans le fichier XML
     cp.desc = obj.desc;
+    cp.corresp = obj.corresp;
+    cp.access = obj.access;
     cp.module = obj.module;
     cp.mode = obj.mode; // change=oneOrMore, replace=one, add=zeroOrMore
-    cp.ana = obj.ana; // mode d'édtion - texte par défaut
-    cp.absolutepath = obj.absolutepath;
     cp.validatedES = obj.validatedES; // is false element not used, si non element used
     cp.validatedESID = obj.validatedESID;
     cp.content = (obj.content !== null)
         ? copyContentOdd(obj.content)
         : null; // pointeur sur les enfants.
-    cp.element = (obj.element !== null)
-        ? copyElementOdd(obj.element)
-        : null; // contenu pour l'édtion du noeud lui même, champ texte, attributs et categories
-    cp.ec = []; // si plusieurs elementSpec: normalement pas besoin de copie récursive, la copie sert à cela
+    cp.attr = (obj.attr !== null)
+        ? copyAttrOdd(obj.attr)
+        : null; // contenu pour l'édition du noeud lui même, champ texte, attributs et categories
+    cp.absolutepath = obj.absolutepath;
     cp.node = null; // utilisé pour retrouver les éléments orignaux
+    return cp;
+}
+
+export function copyContentOdd(obj): any {
+    let cp: any = {};
+    cp.datatype = obj.datatype;
+    cp.textContent = obj.textContent;
+    cp.textContentID = obj.textContentID;
+    cp.vallist = obj.vallist; // pas de duplication necessaire car ces elements ne sont pas modifiés
+    cp.sequencesRefs = [];
+    cpBloc(cp.sequencesRefs, obj.sequencesRefs);
     return cp;
 }
 
 function cpBloc(cp, obj) {
     for (let i in obj) {
-        if (obj[i].count !== undefined) {
-            let inner: any = {};
-            inner.count = obj[i].count; // oneOrMore, one, zeroOrMore, twoOrMore
-            inner.model = obj[i].model;
-            inner.eCI = []; // element Count Items
-            for (let k in obj[i].eCI) {
-                let eci = new ElementCountItem();
-                let e = obj[i].eCI[k];
-                eci.validatedEC = e.validatedEC;
-                eci.validatedECID = e.validatedECID;
-                eci.element = copyElementOdd(e.element);
-                inner.eCI.push(eci);
-            }
-            cp.push(inner);
-        } else {
-            cp.push(copyElementOdd(obj[i]));
+        let inner: any = {};
+        inner.minOccurs = obj[i].minOccurs; // oneOrMore, one, zeroOrMore, twoOrMore
+        inner.maxOccurs = obj[i].maxOccurs; // oneOrMore, one, zeroOrMore, twoOrMore
+        inner.model = obj[i].model; // model ne sera jamais modifié
+        inner.ident = obj[i].ident; // model ne sera jamais modifié
+        inner.type = obj[i].type;
+        inner.parent = obj[i].parent;
+        inner.eCI = []; // element Count Items
+        // pas besoin de copier, n'est pas utilisé dans ODD et sont générés dans load
+        /*
+        for (let k in obj[i].eCI) {
+            let eci = new ElementCountItem();
+            let e = obj[i].eCI[k];
+            eci.validatedEC = e.validatedEC;
+            eci.validatedECID = e.validatedECID;
+            eci.type = e.type;
+            inner.eCI.push(eci);
         }
+        */
+        cp.push(inner);
     }
 }
 
-export function copyContentOdd(obj): any {
-    let cp: any = {};
-    cp.one = [];
-    cpBloc(cp.one, obj.one);
-    cp.zeroOrMore = [];
-    cpBloc(cp.zeroOrMore, obj.zeroOrMore);
-    cp.oneOrMore = [];
-    cpBloc(cp.oneOrMore, obj.oneOrMore);
-    cp.twoOrMore = [];
-    cpBloc(cp.twoOrMore, obj.twoOrMore);
-    /*
-    cp.one = [];
-    for (let i in obj.one) {
-        if (obj.one[i].count !== undefined) {
-            let inner: any = {};
-            inner.count = obj.one[i].count; // oneOrMore, one, zeroOrMore, twoOrMore
-            inner.model = obj.one[i].model;
-            inner.eCI = []; // element Count Items
-            for (let k in obj.one[i].eCI) {
-                let eci = new ElementCountItem();
-                let e = obj.one[i].eCI[k];
-                eci.validatedEC = e.validatedEC;
-                eci.validatedECID = e.validatedECID;
-                eci.element = copyElementOdd(e.element);
-                inner.eCI.push(eci);
-            }
-            cp.one.push(inner);
-        } else {
-            cp.one.push(copyElementOdd(obj.one[i]));
-        }
+export function copyAttrOdd(oldattr): any {
+    let newattr = [];
+    for (let obj of oldattr) {
+        let cp: any = {};
+        cp.ident = obj.ident; // nom de l'élément
+        cp.rend = obj.rend;
+        cp.usage = obj.usage; // req ou rien
+        cp.mode = obj.mode;
+        cp.desc = obj.desc;
+        cp.items = obj.items; // les items ne sont pas modifiés
+        cp.editing = obj.editing;
+        cp.valueID = obj.valueID;
+        cp.value = obj.value;
+        newattr.push(cp);
     }
-    cp.oneOrMore = [];
-    for (let i in obj.oneOrMore) {
-        if (obj.oneOrMore[i].count !== undefined) {
-            let inner: any = {};
-            inner.count = obj.oneOrMore[i].count; // oneOrMore, one, zeroOrMore, twoOrMore
-            inner.model = obj.oneOrMore[i].model;
-            inner.eCI = []; // element Count Items
-            for (let k in obj.oneOrMore[i].eCI) {
-                let eci = new ElementCountItem();
-                let e = obj.oneOrMore[i].eCI[k];
-                eci.validatedEC = e.validatedEC;
-                eci.validatedECID = e.validatedECID;
-                eci.element = copyElementOdd(e.element);
-                inner.eCI.push(eci);
-            }
-            cp.oneOrMore.push(inner);
-        } else {
-            cp.oneOrMore.push(copyElementOdd(obj.oneOrMore[i]));
-        }
-    }
-    cp.zeroOrMore = [];
-    for (let i in obj.zeroOrMore) {
-        if (obj.zeroOrMore[i].count !== undefined) {
-            let inner: any = {};
-            inner.count = obj.zeroOrMore[i].count; // oneOrMore, one, zeroOrMore, twoOrMore
-            inner.model = obj.zeroOrMore[i].model;
-            inner.eCI = []; // element Count Items
-            for (let k in obj.zeroOrMore[i].eCI) {
-                let eci = new ElementCountItem();
-                let e = obj.zeroOrMore[i].eCI[k];
-                eci.validatedEC = e.validatedEC;
-                eci.validatedECID = e.validatedECID;
-                eci.element = copyElementOdd(e.element);
-                inner.eCI.push(eci);
-            }
-            cp.zeroOrMore.push(inner);
-        } else {
-            cp.zeroOrMore.push(copyElementOdd(obj.zeroOrMore[i]));
-        }
-    }
-    cp.twoOrMore = [];
-    for (let i in obj.twoOrMore) {
-        if (obj.twoOrMore[i].count !== undefined) {
-            let inner: any = {};
-            inner.count = obj.twoOrMore[i].count; // oneOrMore, one, zeroOrMore, twoOrMore
-            inner.model = obj.twoOrMore[i].model;
-            inner.eCI = []; // element Count Items
-            for (let k in obj.twoOrMore[i].eCI) {
-                let eci = new ElementCountItem();
-                let e = obj.twoOrMore[i].eCI[k];
-                eci.validatedEC = e.validatedEC;
-                eci.validatedECID = e.validatedECID;
-                eci.element = copyElementOdd(e.element);
-                inner.eCI.push(eci);
-            }
-            cp.twoOrMore.push(inner);
-        } else {
-            cp.twoOrMore.push(copyElementOdd(obj.twoOrMore[i]));
-        }
-    }
-    */
-    return cp;
+    return newattr;
 }
 
-export function copyElementOdd(obj): any {
-    let cp: any = {};
-    cp.name = obj.name; // nom de l'élément
-    cp.module = obj.module;
-    cp.usage = obj.usage; // req ou rien
-    cp.mode = obj.mode;
-    cp.desc = obj.desc;
-    cp.ana = obj.ana; // mode d'édtion - texte par défaut - si none pas modifiable
-    cp.absolutepath = obj.absolutepath;
-    cp.textContent = obj.textContent; // value pour le texte si nécessaire
-    cp.textContentID = obj.textContentID; // ID pour le texte si nécessaire
-    cp.useTextContent = obj.useTextContent; // is false element not used, si non element used
-    let p = JSON.stringify(obj.attr);
-    cp.attr = JSON.parse(p);
-    cp.category = JSON.parse(JSON.stringify(obj.category));
-    cp.content = (obj.content !== null)
-        ? copyContentOdd(obj.content)
-        : null; // pointeur sur les enfants.
-    // Informations pour éditer la TEI
-    cp.node = null; // utilisé pour retrouver les éléments orignaux
-    return cp;
-}
-
+/*
 export function setNodesToNullCT(obj) {
     for (let i in obj.one) {
         for (let k in obj.one[i].eCI)
@@ -287,220 +497,4 @@ export function setNodesToNull(obj) {
     if (obj.content)
         setNodesToNullCT(obj.content);
 }
-
-/**
- * @method valList
- * fonction de traitement des listes de valeurs pour les attributs
- * @param Attr structure 
- * @param node 
- */
-function valList(attrdef, node) {
-    let valList = node.getElementsByTagName("valList");
-    if (valList.length) {
-        // find all about element
-        let attr = valList[0].getAttribute("type");
-        if (attr.length) attrdef.type = attr[0].textContent;
-        attr = valList[0].getAttribute("mode");
-        if (attr.length) attrdef.mode = attr[0].textContent;
-        let valItem = node.getElementsByTagName("valItem");
-        for (let k=0; k < valItem.length; k++) {
-            let vi = new ValItem();
-            attr = valItem[k].getAttribute("ident");
-            if (attr) vi.ident = attr;
-            let desc = valItem[k].getElementsByTagName("desc");
-            if (desc.length>0) vi.desc = desc[0].textContent;
-            if (!vi.desc) vi.desc = vi.ident;
-            attrdef.items.push(vi);
-        }
-    }
-}
-
-/**
- * @method parseElement
- * traite tout le contenu d'un élément de description
- * @param doc
- * @returns structure Element()
- */
-function parseElement(doc, eltSpec) {
-    let hp = (eltSpec) ? '/exm:elementSpec' : '/exm:element';
-    // DOM method
-    // initialize DOM
-    let doc1 = new dom().parseFromString(doc, 'text/xml');
-    let el = new Element();
-    // find all about element
-    let attr;
-    if (eltSpec)
-        attr = select(hp + '/@ident', doc1); // .value;
-    else
-        attr = select(hp + '/@name', doc1); // .value;
-    if (attr.length) el.name = attr[0].textContent;
-    attr = select(hp + '/@module', doc1); // .value;
-    if (attr.length) el.module = attr[0].textContent;
-    attr = select(hp + '/@ana', doc1); // .value;
-    if (attr.length) el.ana = attr[0].textContent;
-    attr = select(hp + '/@usage', doc1); // .value;
-    if (attr.length) el.usage = attr[0].textContent;
-
-    let attList = select(hp + '/exm:attList', doc1);
-    for (let k=0; k < attList.length; k++) {
-        let attDef = attList[k].getElementsByTagName("attDef");
-        for (let l=0; l < attDef.length; l++) {
-            let a = new Attr();
-            attr = attDef[l].getAttribute("ident");
-            if (attr) a.ident = attr;
-            attr = attDef[l].getAttribute("usage");
-            if (attr) a.usage = attr;
-            attr = attDef[l].getAttribute("value");
-            if (attr) a.value = attr;
-            attr = attDef[l].getAttribute("mode");
-            if (attr) a.mode = attr;
-            attr = attDef[l].getAttribute("ana");
-            if (attr) a.ana = attr;
-            let desc = attDef[l].getElementsByTagName("desc");
-            if (desc.length>0) a.desc = desc[0].textContent;
-            if (!a.desc) a.desc = a.ident;
-            valList(a, attDef[l]);
-            el.attr.push(a);
-        }
-    }
-
-    let category = select(hp + '/exm:category', doc1);
-    for (let k=0; k < category.length; k++) {
-        let cat = category[k].getElementsByTagName("catDesc");
-        let vi = new ValItem();
-        for (let l=0; l < cat.length; l++) {
-            attr = cat[l].getAttribute("xml:lang");
-            if (attr && attr === 'fr') {
-                vi.desc = cat[l].textContent;
-            }
-            if (!vi.desc) vi.desc = cat[l].textContent;
-        }
-        attr = category[k].getAttribute("xml:id");
-        if (attr) vi.ident = attr;
-        if (!vi.desc) vi.desc = vi.ident;
-        el.category.push(vi);
-    }
- 
-    let desc = select(hp + '/exm:desc', doc1);
-    if (desc.length>0) el.desc = desc[0].textContent;
-
-    if (eltSpec) return el; // fin du calcul pour elementSpec
-
-    let content = select(hp + '/exm:content', doc1);
-    if (content.length > 1) {
-        console.log("content différent de 1 at ", el.name);
-    }
-    if (content.length > 0)
-        el.content = parseContent(content[0].toString());
-    return el;
-}
-
-/**
- * @method parseContent
- * liste tous les elements d'un content et lance leur traitement
- * @param doc chaime contenant du xml
- * @returns structure Content()
- */
-function parseContent(doc) {
-    // DOM method
-    // initialize DOM
-    let doc1 = new dom().parseFromString(doc, 'text/xml');
-    let ei = new Content();
-    // find all elements
-    let content = select('/exm:content/exm:element', doc1);
-    for (let k=0; k < content.length; k++)
-        ei.one.push(parseElement(content[k].toString(), false));
-    content = select('/exm:content/exm:one/exm:element', doc1);
-    for (let k=0; k < content.length; k++)
-        ei.one.push(parseElement(content[k].toString(), false));
-    content = select('/exm:content/exm:oneOrMore/exm:element', doc1);
-    for (let k=0; k < content.length; k++)
-        ei.oneOrMore.push(parseElement(content[k].toString(), false));
-    content = select('/exm:content/exm:zeroOrMore/exm:element', doc1);
-    for (let k=0; k < content.length; k++)
-        ei.zeroOrMore.push(parseElement(content[k].toString(), false));
-    content = select('/exm:content/exm:twoOrMore/exm:element', doc1);
-    for (let k=0; k < content.length; k++)
-        ei.twoOrMore.push(parseElement(content[k].toString(), false));
-    /*
-    content = select('/exm:content/exm:twoOrMore/exm:element', doc1);
-    for (let k=0; k < content.length; k++)
-        ei.twoOrMore.push(parseElement(content[k].toString()));
-    */
-    return ei;
-}
-
-/**
- * @method loadOdd
- * parse tous les elementSpec du odd et appele sous-fonction pour les champs Content
- * @param data : contenu d'un fichier xml
- * @returns structure teiOdd (modèle de données du ODD)
- */
-export function loadOdd(data) {
-    // get XML ready
-    let parser = new DOMParser();
-    // let doc = parser.parseFromString(data, "text/xml");
-    let doc = new dom().parseFromString(data.toString(), 'text/xml');
-    let ns = doc.documentElement.namespaceURI;
-    select = xpath.useNamespaces({"tei": ns, "exm": ns});
-    let egxml = select("//exm:egXML", doc);
-    if (egxml.length < 1) {
-        select = xpath.useNamespaces({"tei": ns, "exm": "http://www.tei-c.org/ns/Examples"});
-        egxml = select("//exm:egXML", doc);
-        if (egxml.length < 1) {
-            let s = "Pas d'élément egXML dans le fichier ODD";
-            console.log(s);
-            return null;
-        }
-    }
-    let eSpec = [];
-    let nodes = select("//exm:elementSpec", doc);
-    for (let i=0; i < nodes.length ; i++) {
-        // console.log(nodes[i]);
-        let s = nodes[i].toString();
-        // DOM method
-        // initialize DOM
-        let doc1 = new dom().parseFromString(s, 'text/xml');
-        // find all about elementSpec
-        let content = select('/exm:elementSpec/exm:content', doc1);
-        let attr = select('/exm:elementSpec/@ident', doc1); // .value;
-        let ident = '?';
-        if (attr.length) ident = attr[0].textContent;
-        if (content.length > 1) {
-            s = "content différent de 1 à " + ident + " seulement premier de traité.";
-            console.log(s);
-            // system.alertUser(s);
-        }
-        if (content.length <= 0) continue;
-        let esElt = new ElementSpec();
-        // insertion des données attribut du ElementSpec
-        esElt.ident = ident;
-        attr = select('/exm:elementSpec/@ident', doc1); // .value;
-        if (attr.length) esElt.ident = attr[0].textContent;
-        attr = select('/exm:elementSpec/@module', doc1); // .value;
-        if (attr.length) esElt.module = attr[0].textContent;
-        attr = select('/exm:elementSpec/@ana', doc1); // .value;
-        if (attr.length) esElt.ana = attr[0].textContent;
-        attr = select('/exm:elementSpec/@mode', doc1); // .value;
-        if (attr.length) esElt.mode = attr[0].textContent;
-        attr = select('/exm:elementSpec/@predeclare', doc1); // .value;
-        if (attr.length) esElt.predeclare = attr[0].textContent;
-
-        let e = esElt.predeclare.substring(esElt.predeclare.length-1);
-        if (e === '/') esElt.predeclare = esElt.predeclare.substring(0,esElt.predeclare.length-1);
-        // if (!es.predeclare) es.predeclare = '***NEPASEDITER***';
-        esElt.absolutepath = esElt.predeclare + '/' + esElt.ident;
-
-        let desc = select('/exm:elementSpec/exm:desc', doc1);
-        if (desc.length>0) esElt.desc = desc[0].textContent;
-
-        // décryptage des valeurs possible pour les attributs et les catégories
-        esElt.element = parseElement(s, true);
-
-        // décryptage du champ Content
-        esElt.content = parseContent(content[0].toString());
-        eSpec.push(esElt);
-    }
-    // console.log(eSpec);
-    return eSpec;
-}
+*/

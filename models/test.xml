@@ -1,0 +1,1435 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<div id="teidata">
+    <div class="nodeField" title="/TEI">
+        <span class="nodeIdent">TEI</span>
+        <div class="nodeContent">
+            <div class="headCM">
+                <div class="nodeField" title="/TEI/teiHeader">
+                    <span class="nodeIdent">teiHeader</span>
+                    <div class="nodeContent">
+                        <div class="headCM">
+                            <div class="nodeField" title="/TEI/teiHeader/fileDesc">
+                                <span class="nodeIdent">fileDesc</span>
+                                <div class="eltDesc">Titre, diffusion et données primaires</div>
+                                <div class="nodeContent">
+                                    <div class="headCM">
+                                        <div class="nodeField" title="/TEI/teiHeader/fileDesc/titleStmt">
+                                            <span class="nodeIdent">titleStmt</span>
+                                            <div class="eltDesc">Titre, Responsable(s) de la ressource et contributeurs
+                                                :
+                                                collecteurs, transcripteurs, annotateurs, traducteurs, ... personnes
+                                                et/ou
+                                                organismes et/ou projets de recherche
+                                            </div>
+                                            <div class="nodeContent">
+                                                <div class="headCM">
+                                                    <div class="nodeField"
+                                                         title="/TEI/teiHeader/fileDesc/titleStmt/title">
+                                                        <span class="nodeIdent">title</span>
+                                                        <div class="eltDesc">informations generales: idno = titre, bibl
+                                                            : la
+                                                            reference pour citer la ressource, desc : une courte
+                                                            description
+                                                        </div>
+                                                        <div class="nodeContent">
+                                                            <div class="headCM">
+                                                                <div class="nodeField"
+                                                                     title="/TEI/teiHeader/fileDesc/titleStmt/title/desc">
+                                                                    <span class="nodeIdent">desc</span>
+                                                                    <div class="nodeEdit">
+                                                                        <input name="id0" id="id0"
+                                                                               onchange="window.ui.setText(event, 'id0');">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="nodeField"
+                                                                     title="/TEI/teiHeader/fileDesc/titleStmt/title/idno">
+                                                                    <span class="nodeIdent">idno</span>
+                                                                    <div class="nodeEdit">
+                                                                        <input name="id1" id="id1"
+                                                                               onchange="window.ui.setText(event, 'id1');">
+                                                                    </div>
+                                                                    <div class="nodeAttr">
+                                                                        <label for="id2">
+                                                                            <select class="listattr" id="id2"
+                                                                                    onchange="window.ui.setAttr(event, 'id2');">
+                                                                                <option value="title"
+                                                                                        selected="selected">title
+                                                                                </option>
+                                                                            </select>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="nodeField"
+                                                                     title="/TEI/teiHeader/fileDesc/titleStmt/title/bibl">
+                                                                    <span class="nodeIdent">bibl</span>
+                                                                    <div class="nodeEdit">
+                                                                        <input name="id3" id="id3"
+                                                                               onchange="window.ui.setText(event, 'id3');">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="contentCountMany" id="id4">
+                                                    <div class="plusCM">
+                                                        <i class="create fa fa-plus fa-choice-expand"
+                                                           onclick="window.ui.createEC(event, 'id4')"></i>
+                                                    </div>
+                                                    <div class="headCM">
+                                                        <i class="validate fa fa-circle fa-choice-set"
+                                                           onclick="window.ui.setOnOffEC(event, 'id5')"></i>
+                                                        <div class="nodeField"
+                                                             title="/TEI/teiHeader/fileDesc/titleStmt/principal">
+                                                            <span class="nodeIdent">principal</span>
+                                                            <div class="nodeEdit">
+                                                                <input name="id6" id="id6"
+                                                                       onchange="window.ui.setText(event, 'id6');">
+                                                            </div>
+                                                            <div class="eltDesc">Responsable(s) de la ressource :
+                                                                personne et/ou
+                                                                organismes et/ou projets de recherche
+                                                            </div>
+                                                            <div class="nodeContent">
+                                                                <div class="headCM">
+                                                                    <div class="nodeField"
+                                                                         title="/TEI/teiHeader/fileDesc/titleStmt/principal/name">
+                                                                        <span class="nodeIdent">name</span>
+                                                                        <div class="nodeEdit">
+                                                                            <input name="id7" id="id7"
+                                                                                   onchange="window.ui.setText(event, 'id7');">
+                                                                        </div>
+                                                                        <div class="nodeAttr">
+                                                                            <label for="id8">
+                                                                                <select class="listattr" id="id8"
+                                                                                        onchange="window.ui.setAttr(event, 'id8');">
+                                                                                    <option value="person"
+                                                                                            selected="selected">Personne
+                                                                                    </option>
+                                                                                    <option value="organism">Laboratoire
+                                                                                        ou Institution
+                                                                                    </option>
+                                                                                    <option value="project">Projet
+                                                                                    </option>
+                                                                                    <option value="other">Autre</option>
+                                                                                </select>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="contentCountMany" id="id9">
+                                                    <div class="plusCM">
+                                                        <i class="create fa fa-plus fa-choice-expand"
+                                                           onclick="window.ui.createEC(event, 'id9')"></i>
+                                                    </div>
+                                                    <div class="headCM">
+                                                        <i class="validate fa fa-circle-o fa-choice-not-set"
+                                                           onclick="window.ui.setOnOffEC(event, 'id10')"></i>
+                                                        <div class="nodeField"
+                                                             title="/TEI/teiHeader/fileDesc/titleStmt/respStmt">
+                                                            <span class="nodeIdent">respStmt</span>
+                                                            <div class="eltDesc">Liste des contributeurs composé d'une
+                                                                fonction
+                                                                resp et d'une liste de noms qui remplissent cette
+                                                                fonction
+                                                            </div>
+                                                            <div class="nodeContent">
+                                                                <div class="contentCountMany" id="id11">
+                                                                    <div class="plusCM">
+                                                                        <i class="create fa fa-plus fa-choice-expand"
+                                                                           onclick="window.ui.createEC(event, 'id11')"></i>
+                                                                    </div>
+                                                                    <div class="headCM">
+                                                                        <i class="validate fa fa-circle fa-choice-set"
+                                                                           onclick="window.ui.setOnOffEC(event, 'id12')"></i>
+                                                                        <div class="nodeField"
+                                                                             title="/TEI/teiHeader/fileDesc/titleStmt/respStmt/resp">
+                                                                            <span class="nodeIdent">resp</span>
+                                                                            <div class="nodeEdit">
+                                                                                <select class="listattr" id="id13"
+                                                                                        onchange="window.ui.setAttr(event, 'id13');">
+                                                                                    <option value="annotateur">
+                                                                                        annotateur
+                                                                                    </option>
+                                                                                    <option value="coordinateur">
+                                                                                        coordinateur
+                                                                                    </option>
+                                                                                    <option value="interviewer">
+                                                                                        interviewer
+                                                                                    </option>
+                                                                                    <option value="collecteur">
+                                                                                        collecteur
+                                                                                    </option>
+                                                                                    <option value="transcripteur">
+                                                                                        transcripteur
+                                                                                    </option>
+                                                                                    <option value="traducteur">
+                                                                                        traducteur
+                                                                                    </option>
+                                                                                    <option value="normalisation">
+                                                                                        normalisation
+                                                                                    </option>
+                                                                                    <option value="Autre">Autre</option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="nodeField"
+                                                                             title="/TEI/teiHeader/fileDesc/titleStmt/respStmt/name">
+                                                                            <span class="nodeIdent">name</span>
+                                                                            <div class="nodeEdit">
+                                                                                <input name="id14" id="id14"
+                                                                                       onchange="window.ui.setText(event, 'id14');">
+                                                                            </div>
+                                                                            <div class="nodeAttr">
+                                                                                <label for="id15">
+                                                                                    <select class="listattr" id="id15"
+                                                                                            onchange="window.ui.setAttr(event, 'id15');">
+                                                                                        <option value="person"
+                                                                                                selected="selected">
+                                                                                            Personne
+                                                                                        </option>
+                                                                                        <option value="organism">
+                                                                                            Laboratoire ou Institution
+                                                                                        </option>
+                                                                                        <option value="project">Projet
+                                                                                        </option>
+                                                                                        <option value="other">Autre
+                                                                                        </option>
+                                                                                    </select>
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="nodeField" title="/TEI/teiHeader/fileDesc/publicationStmt">
+                                            <span class="nodeIdent">publicationStmt</span>
+                                            <div class="eltDesc">Information de diffusion : identifiant unique, site de
+                                                réféence pour la distribution de la ressource, liste des sites web
+                                                publiant
+                                                la ressource, licence
+                                            </div>
+                                            <div class="nodeContent">
+                                                <div class="contentCountMany" id="id16">
+                                                    <div class="plusCM">
+                                                        <i class="create fa fa-plus fa-choice-expand"
+                                                           onclick="window.ui.createEC(event, 'id16')"></i>
+                                                    </div>
+                                                    <div class="headCM">
+                                                        <i class="validate fa fa-circle fa-choice-set"
+                                                           onclick="window.ui.setOnOffEC(event, 'id17')"></i>
+                                                        <div class="nodeField"
+                                                             title="/TEI/teiHeader/fileDesc/publicationStmt/publisher">
+                                                            <span class="nodeIdent">publisher</span>
+                                                            <div class="nodeEdit">
+                                                                <input name="id18" id="id18"
+                                                                       onchange="window.ui.setText(event, 'id18');">
+                                                            </div>
+                                                            <div class="eltDesc">site de référence pour la distribution
+                                                                de la
+                                                                ressource
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="contentCountMany" id="id19">
+                                                    <div class="plusCM">
+                                                        <i class="create fa fa-plus fa-choice-expand"
+                                                           onclick="window.ui.createEC(event, 'id19')"></i>
+                                                    </div>
+                                                    <div class="headCM">
+                                                        <i class="validate fa fa-circle-o fa-choice-not-set"
+                                                           onclick="window.ui.setOnOffEC(event, 'id20')"></i>
+                                                        <div class="nodeField"
+                                                             title="/TEI/teiHeader/fileDesc/publicationStmt/pubPlace">
+                                                            <span class="nodeIdent">pubPlace</span>
+                                                            <div class="eltDesc">liste des sites web publiant la
+                                                                ressource :
+                                                                archive, bases de données, projets de recherche
+                                                            </div>
+                                                            <div class="nodeContent">
+                                                                <div class="contentCountMany" id="id21">
+                                                                    <div class="plusCM">
+                                                                        <i class="create fa fa-plus fa-choice-expand"
+                                                                           onclick="window.ui.createEC(event, 'id21')"></i>
+                                                                    </div>
+                                                                    <div class="headCM">
+                                                                        <i class="validate fa fa-circle fa-choice-set"
+                                                                           onclick="window.ui.setOnOffEC(event, 'id22')"></i>
+                                                                        <div class="nodeField"
+                                                                             title="/TEI/teiHeader/fileDesc/publicationStmt/pubPlace/ref">
+                                                                            <span class="nodeIdent">ref</span>
+                                                                            <div class="nodeAttr">
+                                                                                <label for="id23">
+                                                                                    <b>l'uri ou l'url</b>
+                                                                                </label>
+                                                                                <input name="id23" id="id23"
+                                                                                       onchange="window.ui.setText(event, 'id23');">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="contentCountMany" id="id24">
+                                                    <div class="plusCM">
+                                                        <i class="create fa fa-plus fa-choice-expand"
+                                                           onclick="window.ui.createEC(event, 'id24')"></i>
+                                                    </div>
+                                                    <div class="headCM">
+                                                        <i class="validate fa fa-circle-o fa-choice-not-set"
+                                                           onclick="window.ui.setOnOffEC(event, 'id25')"></i>
+                                                        <div class="nodeField"
+                                                             title="/TEI/teiHeader/fileDesc/publicationStmt/idno">
+                                                            <span class="nodeIdent">idno</span>
+                                                            <div class="nodeEdit">
+                                                                <input name="id26" id="id26"
+                                                                       onchange="window.ui.setText(event, 'id26');">
+                                                            </div>
+                                                            <div class="nodeAttr">
+                                                                <label for="id27">
+                                                                    <select class="listattr" id="id27"
+                                                                            onchange="window.ui.setAttr(event, 'id27');">
+                                                                        <option value="handle" selected="selected">
+                                                                            handle
+                                                                        </option>
+                                                                    </select>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="contentCountMany" id="id28">
+                                                    <div class="plusCM">
+                                                        <i class="create fa fa-plus fa-choice-expand"
+                                                           onclick="window.ui.createEC(event, 'id28')"></i>
+                                                    </div>
+                                                    <div class="headCM">
+                                                        <i class="validate fa fa-circle fa-choice-set"
+                                                           onclick="window.ui.setOnOffEC(event, 'id29')"></i>
+                                                        <div class="nodeField"
+                                                             title="/TEI/teiHeader/fileDesc/publicationStmt/availability">
+                                                            <span class="nodeIdent">availability</span>
+                                                            <div class="nodeAttr">
+                                                                <label for="id30">
+                                                                    <select class="listattr" id="id30"
+                                                                            onchange="window.ui.setAttr(event, 'id30');">
+                                                                        <option value="restricted" selected="selected">
+                                                                            restricted
+                                                                        </option>
+                                                                    </select>
+                                                                </label>
+                                                            </div>
+                                                            <div class="nodeContent">
+                                                                <div class="contentCountMany" id="id31">
+                                                                    <div class="plusCM">
+                                                                        <i class="create fa fa-plus fa-choice-expand"
+                                                                           onclick="window.ui.createEC(event, 'id31')"></i>
+                                                                    </div>
+                                                                    <div class="headCM">
+                                                                        <i class="validate fa fa-circle fa-choice-set"
+                                                                           onclick="window.ui.setOnOffEC(event, 'id32')"></i>
+                                                                        <div class="nodeField"
+                                                                             title="/TEI/teiHeader/fileDesc/publicationStmt/availability/licence">
+                                                                            <span class="nodeIdent">licence</span>
+                                                                            <div class="nodeEdit">
+                                                                                <input name="id33" id="id33"
+                                                                                       onchange="window.ui.setText(event, 'id33');">
+                                                                            </div>
+                                                                            <div class="nodeAttr">
+                                                                                <label for="id34">
+                                                                                    <select class="listattr" id="id34"
+                                                                                            onchange="window.ui.setAttr(event, 'id34');">
+                                                                                        <option value="BY"
+                                                                                                selected="selected">
+                                                                                            Attribution
+                                                                                        </option>
+                                                                                        <option value="BY_ND">
+                                                                                            Attribution sans
+                                                                                            modification
+                                                                                        </option>
+                                                                                        <option value="BY_NC_ND">
+                                                                                            Attribution sans usage
+                                                                                            commercial et sans
+                                                                                            modification
+                                                                                        </option>
+                                                                                        <option value="BY_NC">
+                                                                                            Attribution sans usage
+                                                                                            commercial
+                                                                                        </option>
+                                                                                        <option value="BY_NC_SA">
+                                                                                            Attribution sans usage
+                                                                                            commercial et partage
+                                                                                            suivant les mêmes modalités
+                                                                                        </option>
+                                                                                        <option value="BY_SA">
+                                                                                            Attribution et partage
+                                                                                            suivant
+                                                                                            les mêmes modalités
+                                                                                        </option>
+                                                                                        <option value="OTHER">Autre
+                                                                                        </option>
+                                                                                    </select>
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="nodeField" title="/TEI/teiHeader/fileDesc/sourceDesc">
+                                            <span class="nodeIdent">sourceDesc</span>
+                                            <div class="eltDesc">Enregistrement, données primaires</div>
+                                            <div class="nodeContent">
+                                                <div class="headCM">
+                                                    <div class="nodeField"
+                                                         title="/TEI/teiHeader/fileDesc/sourceDesc/recordingStmt">
+                                                        <span class="nodeIdent">recordingStmt</span>
+                                                        <div class="nodeContent">
+                                                            <div class="contentCountMany" id="id35">
+                                                                <div class="plusCM">
+                                                                    <i class="create fa fa-plus fa-choice-expand"
+                                                                       onclick="window.ui.createEC(event, 'id35')"></i>
+                                                                </div>
+                                                                <div class="headCM">
+                                                                    <i class="validate fa fa-circle fa-choice-set"
+                                                                       onclick="window.ui.setOnOffEC(event, 'id36')"></i>
+                                                                    <div class="nodeField"
+                                                                         title="/TEI/teiHeader/fileDesc/sourceDesc/recordingStmt/recording">
+                                                                        <span class="nodeIdent">recording</span>
+                                                                        <div class="nodeContent">
+                                                                            <div class="headCM">
+                                                                                <div class="nodeField"
+                                                                                     title="/TEI/teiHeader/fileDesc/sourceDesc/recordingStmt/recording/media">
+                                                                                    <span class="nodeIdent">media</span>
+                                                                                    <div class="nodeAttr">
+                                                                                        <label for="id37">
+                                                                                            <select class="listattr"
+                                                                                                    id="id37"
+                                                                                                    onchange="window.ui.setAttr(event, 'id37');">
+                                                                                                <option value="audio"
+                                                                                                        selected="selected">
+                                                                                                    audio
+                                                                                                </option>
+                                                                                                <option value="video">
+                                                                                                    video
+                                                                                                </option>
+                                                                                                <option value="other">
+                                                                                                    other
+                                                                                                </option>
+                                                                                            </select>
+                                                                                            <label for="id38">
+                                                                                                <select class="listattr"
+                                                                                                        id="id38"
+                                                                                                        onchange="window.ui.setAttr(event, 'id38');">
+                                                                                                    <option value="audio/wav"
+                                                                                                            selected="selected">
+                                                                                                        audio/wav
+                                                                                                    </option>
+                                                                                                    <option value="audio/mp3">
+                                                                                                        audio/mp3
+                                                                                                    </option>
+                                                                                                    <option value="video/mp4">
+                                                                                                        video/mp4
+                                                                                                    </option>
+                                                                                                    <option value="video/mov">
+                                                                                                        video/mov
+                                                                                                    </option>
+                                                                                                    <option value="video/wmv">
+                                                                                                        video/wmv
+                                                                                                    </option>
+                                                                                                    <option value="video/avi">
+                                                                                                        video/avi
+                                                                                                    </option>
+                                                                                                    <option value="other">
+                                                                                                        other
+                                                                                                    </option>
+                                                                                                </select>
+                                                                                                <label for="id39">
+                                                                                                    <b>durée du média :
+                                                                                                        chaque medias
+                                                                                                        peut avoir une
+                                                                                                        durée différente
+                                                                                                    </b>
+                                                                                                </label>
+                                                                                                <input name="id39"
+                                                                                                       id="id39"
+                                                                                                       onchange="window.ui.setText(event, 'id39');">
+                                                                                                <label for="id40">
+                                                                                                    <input name="id40"
+                                                                                                           id="id40"
+                                                                                                           onchange="window.ui.setText(event, 'id40');">
+                                                                                                </label>
+                                                                                            </label>
+                                                                                        </label>
+                                                                                    </div>
+                                                                                    <div class="nodeContent">
+                                                                                        <div class="headCM">
+                                                                                            <div class="nodeField"
+                                                                                                 title="/TEI/teiHeader/fileDesc/sourceDesc/recordingStmt/recording/media/desc">
+                                                                                                <span class="nodeIdent">
+                                                                                                    desc
+                                                                                                </span>
+                                                                                                <div class="nodeAttr">
+                                                                                                    <label for="id41">
+                                                                                                        <select class="listattr"
+                                                                                                                id="id41"
+                                                                                                                onchange="window.ui.setAttr(event, 'id41');">
+                                                                                                            <option value="quality"
+                                                                                                                    selected="selected">
+                                                                                                                quality
+                                                                                                            </option>
+                                                                                                        </select>
+                                                                                                        <label for="id42">
+                                                                                                            <select class="listattr"
+                                                                                                                    id="id42"
+                                                                                                                    onchange="window.ui.setAttr(event, 'id42');">
+                                                                                                                <option value="less_noisy"
+                                                                                                                        selected="selected">
+                                                                                                                    inaudible
+                                                                                                                    ou
+                                                                                                                    bruité
+                                                                                                                    moins
+                                                                                                                    de
+                                                                                                                    5%
+                                                                                                                </option>
+                                                                                                                <option value="noisy">
+                                                                                                                    inaudible
+                                                                                                                    ou
+                                                                                                                    bruité
+                                                                                                                    plus
+                                                                                                                    de
+                                                                                                                    5%
+                                                                                                                </option>
+                                                                                                                <option value="soundproof_room">
+                                                                                                                    chambre
+                                                                                                                    sourde
+                                                                                                                </option>
+                                                                                                                <option value="OTHER">
+                                                                                                                    Autre
+                                                                                                                </option>
+                                                                                                            </select>
+                                                                                                        </label>
+                                                                                                    </label>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="nodeField"
+                                                                                                 title="/TEI/teiHeader/fileDesc/sourceDesc/recordingStmt/recording/media/desc">
+                                                                                                <span class="nodeIdent">
+                                                                                                    desc
+                                                                                                </span>
+                                                                                                <div class="nodeAttr">
+                                                                                                    <label for="id43">
+                                                                                                        <select class="listattr"
+                                                                                                                id="id43"
+                                                                                                                onchange="window.ui.setAttr(event, 'id43');">
+                                                                                                            <option value="anonymization"
+                                                                                                                    selected="selected">
+                                                                                                                anonymization
+                                                                                                            </option>
+                                                                                                        </select>
+                                                                                                        <label for="id44">
+                                                                                                            <select class="listattr"
+                                                                                                                    id="id44"
+                                                                                                                    onchange="window.ui.setAttr(event, 'id44');">
+                                                                                                                <option value="anonymization"
+                                                                                                                        selected="selected">
+                                                                                                                    anonymisée
+                                                                                                                </option>
+                                                                                                                <option value="no_anonymization">
+                                                                                                                    non
+                                                                                                                    anonymisée
+                                                                                                                </option>
+                                                                                                                <option value="partially_anonymized">
+                                                                                                                    anonymisation
+                                                                                                                    partielle
+                                                                                                                </option>
+                                                                                                                <option value="OTHER">
+                                                                                                                    Autre
+                                                                                                                </option>
+                                                                                                            </select>
+                                                                                                        </label>
+                                                                                                    </label>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="nodeField" title="/TEI/teiHeader/profileDesc">
+                                <span class="nodeIdent">profileDesc</span>
+                                <div class="eltDesc">Catégorie, participants, contexte, langue</div>
+                                <div class="nodeContent">
+                                    <div class="headCM">
+                                        <div class="nodeField" title="/TEI/teiHeader/profileDesc/textDesc">
+                                            <span class="nodeIdent">textDesc</span>
+                                            <div class="eltDesc">Quel type de corpus oraus, un autre module
+                                                Situation/setting
+                                                commplètera cette partie (artefact, plan, ...)
+                                            </div>
+                                            <div class="nodeContent">
+                                                <div class="headCM">
+                                                    <div class="nodeField"
+                                                         title="/TEI/teiHeader/profileDesc/textDesc/channel">
+                                                        <span class="nodeIdent">channel</span>
+                                                        <div class="nodeAttr">
+                                                            <label for="id45">
+                                                                <select class="listattr" id="id45"
+                                                                        onchange="window.ui.setAttr(event, 'id45');">
+                                                                    <option value="s" selected="selected">s</option>
+                                                                </select>
+                                                                <label for="id46">
+                                                                    <select class="listattr" id="id46"
+                                                                            onchange="window.ui.setAttr(event, 'id46');">
+                                                                        <option value="face_to_face"
+                                                                                selected="selected">tous les locuteurs
+                                                                            sont
+                                                                            présents
+                                                                        </option>
+                                                                        <option value="radio">à la radio</option>
+                                                                        <option value="tv">à la télévisison</option>
+                                                                        <option value="telephone">au téléphone</option>
+                                                                        <option value="visioconference">en
+                                                                            visioconference
+                                                                        </option>
+                                                                    </select>
+                                                                </label>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="nodeField"
+                                                         title="/TEI/teiHeader/profileDesc/textDesc/constitution">
+                                                        <span class="nodeIdent">constitution</span>
+                                                        <div class="nodeAttr">
+                                                            <label for="id47">
+                                                                <select class="listattr" id="id47"
+                                                                        onchange="window.ui.setAttr(event, 'id47');">
+                                                                    <option value="single" selected="selected">
+                                                                        autonome
+                                                                    </option>
+                                                                    <option value="composite">partie d'un autre corpus
+                                                                    </option>
+                                                                    <option value="frags">extrait</option>
+                                                                    <option value="unknown">inconnu</option>
+                                                                </select>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="nodeField"
+                                                         title="/TEI/teiHeader/profileDesc/textDesc/derivation">
+                                                        <span class="nodeIdent">derivation</span>
+                                                        <div class="nodeAttr">
+                                                            <label for="id48">
+                                                                <select class="listattr" id="id48"
+                                                                        onchange="window.ui.setAttr(event, 'id48');">
+                                                                    <option value="derivation.original"
+                                                                            selected="selected">original
+                                                                    </option>
+                                                                    <option value="derivation.revision">revision
+                                                                    </option>
+                                                                    <option value="derivation.translation">translation
+                                                                    </option>
+                                                                </select>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="nodeField"
+                                                         title="/TEI/teiHeader/profileDesc/textDesc/domain">
+                                                        <span class="nodeIdent">domain</span>
+                                                        <div class="nodeAttr">
+                                                            <label for="id49">
+                                                                <select class="listattr" id="id49"
+                                                                        onchange="window.ui.setAttr(event, 'id49');">
+                                                                    <option value="nature_type.professional"
+                                                                            selected="selected">professionnel - au moins
+                                                                        un
+                                                                        locuteur est en situation professionnelle
+                                                                    </option>
+                                                                    <option value="nature_type.private">privée: tous les
+                                                                        locuteurs en
+                                                                        situation privée
+                                                                    </option>
+                                                                    <option value="unknown">inconnu</option>
+                                                                </select>
+                                                                <label for="id50">
+                                                                    <select class="listattr" id="id50"
+                                                                            onchange="window.ui.setAttr(event, 'id50');">
+                                                                        <option value="nature.interview"
+                                                                                selected="selected">entretien
+                                                                        </option>
+                                                                        <option value="nature.consultation">
+                                                                            consultation
+                                                                        </option>
+                                                                        <option value="nature.meeting">réunion</option>
+                                                                        <option value="nature.lessons">cours</option>
+                                                                        <option value="nature.speech">discours</option>
+                                                                        <option value="nature.presentation">
+                                                                            présentation
+                                                                        </option>
+                                                                        <option value="nature.narration">récit</option>
+                                                                        <option value="nature.transaction">transaction
+                                                                        </option>
+                                                                        <option value="nature.tabletalk">repas</option>
+                                                                        <option value="nature.talk">conversation
+                                                                        </option>
+                                                                        <option value="nature.activity">les locuteurs
+                                                                            sont engagés dans
+                                                                            une activité : jeu vidéo, montage de meuble,
+                                                                            visite, tâche, ...
+                                                                        </option>
+                                                                        <option value="unknown">inconnu</option>
+                                                                    </select>
+                                                                </label>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="nodeField"
+                                                         title="/TEI/teiHeader/profileDesc/textDesc/factuality">
+                                                        <span class="nodeIdent">factuality</span>
+                                                    </div>
+                                                    <div class="nodeField"
+                                                         title="/TEI/teiHeader/profileDesc/textDesc/interaction">
+                                                        <span class="nodeIdent">interaction</span>
+                                                        <div class="nodeAttr">
+                                                            <label for="id51">
+                                                                <input name="id51" id="id51"
+                                                                       onchange="window.ui.setText(event, 'id51');">
+                                                                <label for="id52">
+                                                                    <input name="id52" id="id52"
+                                                                           onchange="window.ui.setText(event, 'id52');">
+                                                                    <label for="id53">
+                                                                        <input name="id53" id="id53"
+                                                                               onchange="window.ui.setText(event, 'id53');">
+                                                                    </label>
+                                                                </label>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="nodeField"
+                                                         title="/TEI/teiHeader/profileDesc/textDesc/preparedness">
+                                                        <span class="nodeIdent">preparedness</span>
+                                                        <div class="nodeAttr">
+                                                            <label for="id54">
+                                                                <select class="listattr" id="id54"
+                                                                        onchange="window.ui.setAttr(event, 'id54');">
+                                                                    <option value="instruction.prepared"
+                                                                            selected="selected">
+                                                                        conf/cours/discours/presentation
+                                                                    </option>
+                                                                    <option value="instruction.read">lecture, lecture de
+                                                                        mots
+                                                                    </option>
+                                                                    <option value="instruction.instruction">thème
+                                                                        initial/ordre du
+                                                                        jour/consigne donnée aux locuteurs sur le
+                                                                        contenu
+                                                                        ou les modalités de l'échange
+                                                                    </option>
+                                                                    <option value="instruction.spontaneous">no
+                                                                        instruction
+                                                                    </option>
+                                                                    <option value="unknown">inconnu</option>
+                                                                </select>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="nodeField"
+                                                         title="/TEI/teiHeader/profileDesc/textDesc/purpose">
+                                                        <span class="nodeIdent">purpose</span>
+                                                        <div class="nodeAttr">
+                                                            <label for="id55">
+                                                                <select class="listattr" id="id55"
+                                                                        onchange="window.ui.setAttr(event, 'id55');">
+                                                                    <option value="context.educational"
+                                                                            selected="selected">scolaire
+                                                                    </option>
+                                                                    <option value="context.academic">académique</option>
+                                                                    <option value="context.commercial">commercial
+                                                                    </option>
+                                                                    <option value="context.medical">médical</option>
+                                                                    <option value="context.political">politique</option>
+                                                                    <option value="context.associative">associatif
+                                                                    </option>
+                                                                    <option value="context.religious">religieux</option>
+                                                                    <option value="context.sports">sportif</option>
+                                                                    <option value="context.family">familial</option>
+                                                                    <option value="context.friendly">amical</option>
+                                                                    <option value="unknown">inconnu</option>
+                                                                </select>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="nodeField" title="/TEI/teiHeader/profileDesc/particDesc">
+                                            <span class="nodeIdent">particDesc</span>
+                                            <div class="eltDesc">informations sur les locuteurs, pour ce prmeier niveau
+                                                de
+                                                métadonnées peu d'informations sont demnadées, voir ultériurement les
+                                                modules sociolinguistiques
+                                            </div>
+                                            <div class="nodeContent">
+                                                <div class="headCM">
+                                                    <div class="nodeField"
+                                                         title="/TEI/teiHeader/profileDesc/particDesc/listPerson">
+                                                        <span class="nodeIdent">listPerson</span>
+                                                        <div class="nodeContent">
+                                                            <div class="contentCountMany" id="id56">
+                                                                <div class="plusCM">
+                                                                    <i class="create fa fa-plus fa-choice-expand"
+                                                                       onclick="window.ui.createEC(event, 'id56')"></i>
+                                                                </div>
+                                                                <div class="headCM">
+                                                                    <i class="validate fa fa-circle fa-choice-set"
+                                                                       onclick="window.ui.setOnOffEC(event, 'id57')"></i>
+                                                                    <div class="nodeField"
+                                                                         title="/TEI/teiHeader/profileDesc/particDesc/listPerson/person">
+                                                                        <span class="nodeIdent">person</span>
+                                                                        <div class="nodeAttr">
+                                                                            <label for="id58">
+                                                                                <input name="id58" id="id58"
+                                                                                       onchange="window.ui.setText(event, 'id58');">
+                                                                                <label for="id59">
+                                                                                    <select class="listattr" id="id59"
+                                                                                            onchange="window.ui.setAttr(event, 'id59');">
+                                                                                        <option value="1"
+                                                                                                selected="selected">
+                                                                                            masculin
+                                                                                        </option>
+                                                                                        <option value="2">feminin
+                                                                                        </option>
+                                                                                        <option value="9">inconnu (voix
+                                                                                            au téléphone, foule,
+                                                                                            locuteur générique
+                                                                                            élève/public/...)
+                                                                                        </option>
+                                                                                    </select>
+                                                                                </label>
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="nodeContent">
+                                                                            <div class="contentCountMany" id="id60">
+                                                                                <div class="plusCM">
+                                                                                    <i class="create fa fa-plus fa-choice-expand"
+                                                                                       onclick="window.ui.createEC(event, 'id60')"></i>
+                                                                                </div>
+                                                                                <div class="headCM">
+                                                                                    <i class="validate fa fa-circle-o fa-choice-not-set"
+                                                                                       onclick="window.ui.setOnOffEC(event, 'id61')"></i>
+                                                                                    <div class="nodeField"
+                                                                                         title="/TEI/teiHeader/profileDesc/particDesc/listPerson/person/langKnowledge">
+                                                                                        <span class="nodeIdent">
+                                                                                            langKnowledge
+                                                                                        </span>
+                                                                                        <div class="nodeContent">
+                                                                                            <div class="contentCountMany"
+                                                                                                 id="id62">
+                                                                                                <div class="plusCM">
+                                                                                                    <i class="create fa fa-plus fa-choice-expand"
+                                                                                                       onclick="window.ui.createEC(event, 'id62')"></i>
+                                                                                                </div>
+                                                                                                <div class="headCM">
+                                                                                                    <i class="validate fa fa-circle fa-choice-set"
+                                                                                                       onclick="window.ui.setOnOffEC(event, 'id63')"></i>
+                                                                                                    <div class="nodeField"
+                                                                                                         title="/TEI/teiHeader/profileDesc/particDesc/listPerson/person/langKnowledge/langKnown">
+                                                                                                        <span class="nodeIdent">
+                                                                                                            langKnown
+                                                                                                        </span>
+                                                                                                        <div class="nodeAttr">
+                                                                                                            <label for="id64">
+                                                                                                                <input name="id64"
+                                                                                                                       id="id64"
+                                                                                                                       onchange="window.ui.setText(event, 'id64');">
+                                                                                                                <label for="id65">
+                                                                                                                    <select class="listattr"
+                                                                                                                            id="id65"
+                                                                                                                            onchange="window.ui.setAttr(event, 'id65');">
+                                                                                                                        <option value="language.first"
+                                                                                                                                selected="selected">
+                                                                                                                            maternelle
+                                                                                                                        </option>
+                                                                                                                        <option value="language.seconde">
+                                                                                                                            seconde
+                                                                                                                        </option>
+                                                                                                                        <option value="language.unknown">
+                                                                                                                            inconnu
+                                                                                                                        </option>
+                                                                                                                    </select>
+                                                                                                                </label>
+                                                                                                            </label>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="contentCountMany" id="id66">
+                                                                                <div class="plusCM">
+                                                                                    <i class="create fa fa-plus fa-choice-expand"
+                                                                                       onclick="window.ui.createEC(event, 'id66')"></i>
+                                                                                </div>
+                                                                                <div class="headCM">
+                                                                                    <i class="validate fa fa-circle-o fa-choice-not-set"
+                                                                                       onclick="window.ui.setOnOffEC(event, 'id67')"></i>
+                                                                                    <div class="nodeField"
+                                                                                         title="/TEI/teiHeader/profileDesc/particDesc/listPerson/person/persName">
+                                                                                        <span class="nodeIdent">
+                                                                                            persName
+                                                                                        </span>
+                                                                                    </div>
+                                                                                    <div class="nodeField"
+                                                                                         title="/TEI/teiHeader/profileDesc/particDesc/listPerson/person/age">
+                                                                                        <span class="nodeIdent">age
+                                                                                        </span>
+                                                                                        <div class="nodeAttr">
+                                                                                            <label for="id68">
+                                                                                                <select class="listattr"
+                                                                                                        id="id68"
+                                                                                                        onchange="window.ui.setAttr(event, 'id68');">
+                                                                                                    <option value="age.child"
+                                                                                                            selected="selected">
+                                                                                                        moins de 15 ans
+                                                                                                    </option>
+                                                                                                    <option value="age.youth">
+                                                                                                        de 16 à 20 ans
+                                                                                                    </option>
+                                                                                                    <option value="age.adult">
+                                                                                                        de 21 à 60 ans
+                                                                                                    </option>
+                                                                                                    <option value="age.senior">
+                                                                                                        plus de 61 ans
+                                                                                                    </option>
+                                                                                                    <option value="age.unknown">
+                                                                                                        inconnu
+                                                                                                    </option>
+                                                                                                </select>
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="nodeField"
+                                                                                         title="/TEI/teiHeader/profileDesc/particDesc/listPerson/person/occupation">
+                                                                                        <span class="nodeIdent">
+                                                                                            occupation
+                                                                                        </span>
+                                                                                        <div class="nodeAttr">
+                                                                                            <label for="id69">
+                                                                                                <select class="listattr"
+                                                                                                        id="id69"
+                                                                                                        onchange="window.ui.setAttr(event, 'id69');">
+                                                                                                    <option value="occupation.before_school"
+                                                                                                            selected="selected">
+                                                                                                        avant la
+                                                                                                        scolarisation
+                                                                                                    </option>
+                                                                                                    <option value="occupation.at_school">
+                                                                                                        en scolarité
+                                                                                                    </option>
+                                                                                                    <option value="occupation.professional_activity">
+                                                                                                        en activite
+                                                                                                    </option>
+                                                                                                    <option value="occupation.retirement">
+                                                                                                        retraite
+                                                                                                    </option>
+                                                                                                    <option value="occupation.without_job">
+                                                                                                        sans emploi
+                                                                                                        (chomage, H/F au
+                                                                                                        foyer)
+                                                                                                    </option>
+                                                                                                    <option value="occupation.unknown">
+                                                                                                        inconnu
+                                                                                                    </option>
+                                                                                                </select>
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="nodeField" title="/TEI/teiHeader/profileDesc/settingDesc">
+                                            <span class="nodeIdent">settingDesc</span>
+                                            <div class="eltDesc">lieu, langue et date d'enregistrement obligatoire au
+                                                moins
+                                                pour la langue de l'enregistrement et le pays cf Module additionnel
+                                                contexte
+                                                et sociliolinguistique (Informe sur le lieu de recueil. S'il y en a
+                                                plusieurs, il faut répéter l'élément "place")
+                                            </div>
+                                            <div class="nodeContent">
+                                                <div class="headCM">
+                                                    <div class="nodeField"
+                                                         title="/TEI/teiHeader/profileDesc/settingDesc/listPlace">
+                                                        <span class="nodeIdent">listPlace</span>
+                                                        <div class="nodeContent">
+                                                            <div class="contentCountMany" id="id70">
+                                                                <div class="plusCM">
+                                                                    <i class="create fa fa-plus fa-choice-expand"
+                                                                       onclick="window.ui.createEC(event, 'id70')"></i>
+                                                                </div>
+                                                                <div class="headCM">
+                                                                    <i class="validate fa fa-circle fa-choice-set"
+                                                                       onclick="window.ui.setOnOffEC(event, 'id71')"></i>
+                                                                    <div class="nodeField"
+                                                                         title="/TEI/teiHeader/profileDesc/settingDesc/listPlace/place">
+                                                                        <span class="nodeIdent">place</span>
+                                                                        <div class="nodeContent">
+                                                                            <div class="headCM">
+                                                                                <div class="nodeField"
+                                                                                     title="/TEI/teiHeader/profileDesc/settingDesc/listPlace/place/country">
+                                                                                    <span class="nodeIdent">country
+                                                                                    </span>
+                                                                                    <div class="nodeAttr">
+                                                                                        <label for="id72">
+                                                                                            <input name="id72" id="id72"
+                                                                                                   onchange="window.ui.setText(event, 'id72');">
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="contentCountMany" id="id73">
+                                                                                <div class="plusCM">
+                                                                                    <i class="create fa fa-plus fa-choice-expand"
+                                                                                       onclick="window.ui.createEC(event, 'id73')"></i>
+                                                                                </div>
+                                                                                <div class="headCM">
+                                                                                    <i class="validate fa fa-circle-o fa-choice-not-set"
+                                                                                       onclick="window.ui.setOnOffEC(event, 'id74')"></i>
+                                                                                    <div class="nodeField"
+                                                                                         title="/TEI/teiHeader/profileDesc/settingDesc/listPlace/place/settlement">
+                                                                                        <span class="nodeIdent">
+                                                                                            settlement
+                                                                                        </span>
+                                                                                        <div class="nodeAttr">
+                                                                                            <label for="id75">
+                                                                                                <input name="id75"
+                                                                                                       id="id75"
+                                                                                                       onchange="window.ui.setText(event, 'id75');">
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="contentCountMany" id="id76">
+                                                                                <div class="plusCM">
+                                                                                    <i class="create fa fa-plus fa-choice-expand"
+                                                                                       onclick="window.ui.createEC(event, 'id76')"></i>
+                                                                                </div>
+                                                                                <div class="headCM">
+                                                                                    <i class="validate fa fa-circle-o fa-choice-not-set"
+                                                                                       onclick="window.ui.setOnOffEC(event, 'id77')"></i>
+                                                                                    <div class="nodeField"
+                                                                                         title="/TEI/teiHeader/profileDesc/settingDesc/listPlace/place/district">
+                                                                                        <span class="nodeIdent">
+                                                                                            district
+                                                                                        </span>
+                                                                                        <div class="nodeAttr">
+                                                                                            <label for="id78">
+                                                                                                <input name="id78"
+                                                                                                       id="id78"
+                                                                                                       onchange="window.ui.setText(event, 'id78');">
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="contentCountMany" id="id79">
+                                                                                <div class="plusCM">
+                                                                                    <i class="create fa fa-plus fa-choice-expand"
+                                                                                       onclick="window.ui.createEC(event, 'id79')"></i>
+                                                                                </div>
+                                                                                <div class="headCM">
+                                                                                    <i class="validate fa fa-circle-o fa-choice-not-set"
+                                                                                       onclick="window.ui.setOnOffEC(event, 'id80')"></i>
+                                                                                    <div class="nodeField"
+                                                                                         title="/TEI/teiHeader/profileDesc/settingDesc/listPlace/place/desc">
+                                                                                        <span class="nodeIdent">desc
+                                                                                        </span>
+                                                                                        <div class="nodeEdit">
+                                                                                            <input name="id81" id="id81"
+                                                                                                   onchange="window.ui.setText(event, 'id81');">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="nodeField"
+                                                         title="/TEI/teiHeader/profileDesc/settingDesc/setting">
+                                                        <span class="nodeIdent">setting</span>
+                                                        <div class="nodeContent">
+                                                            <div class="contentCountMany" id="id82">
+                                                                <div class="plusCM">
+                                                                    <i class="create fa fa-plus fa-choice-expand"
+                                                                       onclick="window.ui.createEC(event, 'id82')"></i>
+                                                                </div>
+                                                                <div class="headCM">
+                                                                    <i class="validate fa fa-circle-o fa-choice-not-set"
+                                                                       onclick="window.ui.setOnOffEC(event, 'id83')"></i>
+                                                                    <div class="nodeField"
+                                                                         title="/TEI/teiHeader/profileDesc/settingDesc/setting/date">
+                                                                        <span class="nodeIdent">date</span>
+                                                                        <div class="nodeAttr">
+                                                                            <label for="id84">
+                                                                                <input name="id84" id="id84"
+                                                                                       onchange="window.ui.setText(event, 'id84');">
+                                                                                <label for="id85">
+                                                                                    <input name="id85" id="id85"
+                                                                                           onchange="window.ui.setText(event, 'id85');">
+                                                                                    <label for="id86">
+                                                                                        <input name="id86" id="id86"
+                                                                                               onchange="window.ui.setText(event, 'id86');">
+                                                                                    </label>
+                                                                                </label>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="contentCountMany" id="id87">
+                                                                <div class="plusCM">
+                                                                    <i class="create fa fa-plus fa-choice-expand"
+                                                                       onclick="window.ui.createEC(event, 'id87')"></i>
+                                                                </div>
+                                                                <div class="headCM">
+                                                                    <i class="validate fa fa-circle-o fa-choice-not-set"
+                                                                       onclick="window.ui.setOnOffEC(event, 'id88')"></i>
+                                                                    <div class="nodeField"
+                                                                         title="/TEI/teiHeader/profileDesc/settingDesc/setting/activity">
+                                                                        <span class="nodeIdent">activity</span>
+                                                                        <div class="nodeEdit">
+                                                                            <input name="id89" id="id89"
+                                                                                   onchange="window.ui.setText(event, 'id89');">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="nodeField"
+                                                         title="/TEI/teiHeader/profileDesc/settingDesc/langUsage">
+                                                        <span class="nodeIdent">langUsage</span>
+                                                        <div class="eltDesc">Langue(s) de l'enregistrement, attribut
+                                                            usage
+                                                            avec le % d'utilisation si plusieurs langues
+                                                        </div>
+                                                        <div class="nodeContent">
+                                                            <div class="contentCountMany" id="id90">
+                                                                <div class="plusCM">
+                                                                    <i class="create fa fa-plus fa-choice-expand"
+                                                                       onclick="window.ui.createEC(event, 'id90')"></i>
+                                                                </div>
+                                                                <div class="headCM">
+                                                                    <i class="validate fa fa-circle fa-choice-set"
+                                                                       onclick="window.ui.setOnOffEC(event, 'id91')"></i>
+                                                                    <div class="nodeField"
+                                                                         title="/TEI/teiHeader/profileDesc/settingDesc/langUsage/language">
+                                                                        <span class="nodeIdent">language</span>
+                                                                        <div class="nodeAttr">
+                                                                            <label for="id92">
+                                                                                <input name="id92" id="id92"
+                                                                                       onchange="window.ui.setText(event, 'id92');">
+                                                                                <label for="id93">
+                                                                                    <input name="id93" id="id93"
+                                                                                           onchange="window.ui.setText(event, 'id93');">
+                                                                                </label>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="nodeField" title="/TEI/teiHeader/profileDesc/langUsage">
+                                            <span class="nodeIdent">langUsage</span>
+                                            <div class="eltDesc">Langue(s) de l'enregistrement, attribut usage
+                                                avec le % d'utilisation si plusieurs langues
+                                            </div>
+                                            <div class="nodeContent">
+                                                <div class="contentCountMany" id="id94">
+                                                    <div class="plusCM">
+                                                        <i class="create fa fa-plus fa-choice-expand"
+                                                           onclick="window.ui.createEC(event, 'id94')"></i>
+                                                    </div>
+                                                    <div class="headCM">
+                                                        <i class="validate fa fa-circle fa-choice-set"
+                                                           onclick="window.ui.setOnOffEC(event, 'id95')"></i>
+                                                        <div class="nodeField"
+                                                             title="/TEI/teiHeader/profileDesc/langUsage/language">
+                                                            <span class="nodeIdent">language</span>
+                                                            <div class="nodeAttr">
+                                                                <label for="id96">
+                                                                    <input name="id96" id="id96"
+                                                                           onchange="window.ui.setText(event, 'id96');">
+                                                                    <label for="id97">
+                                                                        <input name="id97" id="id97"
+                                                                               onchange="window.ui.setText(event, 'id97');">
+                                                                    </label>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="nodeField" title="/TEI/teiHeader/encodingDesc">
+                                <span class="nodeIdent">encodingDesc</span>
+                                <div class="eltDesc">Logiciel, projet, annotations</div>
+                                <div class="nodeContent">
+                                    <div class="contentCountMany" id="id98">
+                                        <div class="plusCM">
+                                            <i class="create fa fa-plus fa-choice-expand"
+                                               onclick="window.ui.createEC(event, 'id98')"></i>
+                                        </div>
+                                        <div class="headCM">
+                                            <i class="validate fa fa-circle-o fa-choice-not-set"
+                                               onclick="window.ui.setOnOffEC(event, 'id99')"></i>
+                                            <div class="nodeField" title="/TEI/teiHeader/encodingDesc/appInfo">
+                                                <span class="nodeIdent">appInfo</span>
+                                                <div class="eltDesc">TEI_CORPO + release ou autre "convertisseur maison"
+                                                    (C'est
+                                                    ici qu'on indique la référence à l'application ayant généré le
+                                                    fichier TEI)
+                                                    Description obligatoire en TEI donc générique de l'application , evt
+                                                    options
+                                                    de traitement pour elan, praat, choix des locuteurs, ...
+                                                </div>
+                                                <div class="nodeContent">
+                                                    <div class="contentCountMany" id="id100">
+                                                        <div class="plusCM">
+                                                            <i class="create fa fa-plus fa-choice-expand"
+                                                               onclick="window.ui.createEC(event, 'id100')"></i>
+                                                        </div>
+                                                        <div class="headCM">
+                                                            <i class="validate fa fa-circle-o fa-choice-not-set"
+                                                               onclick="window.ui.setOnOffEC(event, 'id101')"></i>
+                                                            <div class="nodeField"
+                                                                 title="/TEI/teiHeader/encodingDesc/appInfo/application">
+                                                                <span class="nodeIdent">application</span>
+                                                                <div class="nodeAttr">
+                                                                    <label for="id102">
+                                                                        <input name="id102" id="id102"
+                                                                               onchange="window.ui.setText(event, 'id102');">
+                                                                        <label for="id103">
+                                                                            <select class="listattr" id="id103"
+                                                                                    onchange="window.ui.setAttr(event, 'id103');">
+                                                                                <option value="teiCorpo"
+                                                                                        selected="selected">teiCorpo
+                                                                                </option>
+                                                                                <option value="other">other</option>
+                                                                                <option value="unknown">unknown</option>
+                                                                            </select>
+                                                                        </label>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="nodeField"
+                                                                 title="/TEI/teiHeader/encodingDesc/appInfo/desc">
+                                                                <span class="nodeIdent">desc</span>
+                                                                <div class="nodeEdit">
+                                                                    <input name="id104" id="id104"
+                                                                           onchange="window.ui.setText(event, 'id104');">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="nodeField" title="/TEI/teiHeader/encodingDesc/projectDesc">
+                                                <span class="nodeIdent">projectDesc</span>
+                                                <div class="eltDesc">texte libre sur le projet, attention aux
+                                                    redondances avec
+                                                    les autres champs
+                                                </div>
+                                                <div class="nodeContent">
+                                                    <div class="contentCountMany" id="id105">
+                                                        <div class="plusCM">
+                                                            <i class="create fa fa-plus fa-choice-expand"
+                                                               onclick="window.ui.createEC(event, 'id105')"></i>
+                                                        </div>
+                                                        <div class="headCM">
+                                                            <i class="validate fa fa-circle fa-choice-set"
+                                                               onclick="window.ui.setOnOffEC(event, 'id106')"></i>
+                                                            <div class="nodeField"
+                                                                 title="/TEI/teiHeader/encodingDesc/projectDesc/p">
+                                                                <span class="nodeIdent">p</span>
+                                                                <div class="nodeEdit">
+                                                                    <input name="id107" id="id107"
+                                                                           onchange="window.ui.setText(event, 'id107');">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="nodeField"
+                                                 title="/TEI/teiHeader/encodingDesc/transcriptionDesc">
+                                                <span class="nodeIdent">transcriptionDesc</span>
+                                                <div class="eltDesc">informations sur le logiciel
+                                                    d'alignement/annotation, la
+                                                    convention de transcription, les annotations et l'anonymisation
+                                                </div>
+                                                <div class="nodeContent">
+                                                    <div class="contentCountMany" id="id108">
+                                                        <div class="plusCM">
+                                                            <i class="create fa fa-plus fa-choice-expand"
+                                                               onclick="window.ui.createEC(event, 'id108')"></i>
+                                                        </div>
+                                                        <div class="headCM">
+                                                            <i class="validate fa fa-circle fa-choice-set"
+                                                               onclick="window.ui.setOnOffEC(event, 'id109')"></i>
+                                                            <div class="nodeField"
+                                                                 title="/TEI/teiHeader/encodingDesc/transcriptionDesc/desc">
+                                                                <span class="nodeIdent">desc</span>
+                                                                <div class="nodeAttr">
+                                                                    <label for="id110">
+                                                                        <select class="listattr" id="id110"
+                                                                                onchange="window.ui.setAttr(event, 'id110');">
+                                                                            <option value="annotation"
+                                                                                    selected="selected">annotation
+                                                                            </option>
+                                                                            <option value="transcript_convention">
+                                                                                transcript_convention
+                                                                            </option>
+                                                                            <option value="annotation_software">
+                                                                                annotation_software
+                                                                            </option>
+                                                                            <option value="anonymization_transcription">
+                                                                                anonymization_transcription
+                                                                            </option>
+                                                                        </select>
+                                                                        <label for="id111">
+                                                                            <select class="listattr" id="id111"
+                                                                                    onchange="window.ui.setAttr(event, 'id111');">
+                                                                                <option value="annotation.orthographic"
+                                                                                        selected="selected">prosodie
+                                                                                </option>
+                                                                                <option value="annotation.prosodical">
+                                                                                    prosodique
+                                                                                </option>
+                                                                                <option value="annotation.syntactic">
+                                                                                    syntaxique
+                                                                                </option>
+                                                                                <option value="annotation.interactional">
+                                                                                    interaction
+                                                                                </option>
+                                                                                <option value="annotation.phonological">
+                                                                                    phonologique
+                                                                                </option>
+                                                                                <option value="annotation.translation">
+                                                                                    traduction
+                                                                                </option>
+                                                                                <option value="annotation.gesture">
+                                                                                    geste
+                                                                                </option>
+                                                                                <option value="annotation.gaze">regard
+                                                                                </option>
+                                                                                <option value="annotation.unknown">
+                                                                                    inconnu
+                                                                                </option>
+                                                                                <option value="annotation_software.transcriber">
+                                                                                    annotation_software.transcriber
+                                                                                </option>
+                                                                                <option value="annotation_software.praat">
+                                                                                    annotation_software.praat
+                                                                                </option>
+                                                                                <option value="annotation_software.elan">
+                                                                                    annotation_software.elan
+                                                                                </option>
+                                                                                <option value="annotation_software.exmaralda">
+                                                                                    annotation_software.exmaralda
+                                                                                </option>
+                                                                                <option value="annotation_software.anvil">
+                                                                                    annotation_software.anvil
+                                                                                </option>
+                                                                                <option value="annotation_software.ilex">
+                                                                                    annotation_software.ilex
+                                                                                </option>
+                                                                                <option value="annotation_software.phon">
+                                                                                    annotation_software.phon
+                                                                                </option>
+                                                                                <option value="annotation_software.transana">
+                                                                                    annotation_software.transana
+                                                                                </option>
+                                                                                <option value="annotation_software.unknown">
+                                                                                    annotation_software.unknown
+                                                                                </option>
+                                                                                <option value="anonymization_transcription.anonymization">
+                                                                                    anonymization_transcription.anonymization
+                                                                                </option>
+                                                                                <option value="anonymization_transcription.no_anonymization">
+                                                                                    anonymization_transcription.no_anonymization
+                                                                                </option>
+                                                                                <option value="anonymization_transcription.unknown">
+                                                                                    anonymization_transcription.unknown
+                                                                                </option>
+                                                                            </select>
+                                                                        </label>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nodeField" title="/TEI/text">
+                    <span class="nodeIdent">text</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
