@@ -19,8 +19,13 @@ class ODD {
     listElementRef = {}; // avoir tous les elementRef sous la main et les controler
     rootTEI = null; // pointeur de base du schema (attribut start de schemaSpec)
     rootIdent = ''; // valeur de l'attribut ident du schemaSpec de root
-    defaultNewElement = 'ok'; // si OK les éléments non existants sont inclus par défaut
-    // si '' ou 'del ils ne sont pas conservés.
+    // PARAMETRES
+    defaultNewElement = true; // si true les éléments non existants sont inclus par défaut
+    leftShift = 5; // taille en pixel du décalage des imbrications
+    groupingStyle = 'border';
+    validateRequired = false;
+    language = 'fr';
+    displayFullpath = true;
 }
 
 export let odd : ODD = null;

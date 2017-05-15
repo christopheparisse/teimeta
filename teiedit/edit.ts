@@ -21,28 +21,33 @@ export function createID() {
     return id;
 }
 
-export function setOnOff(event, id) {
-    if (event.target.className.indexOf('fa-choice-not-set') >= 0) {
-        event.target.className = 'validate fa fa-size2 fa-bookmark fa-choice-set';
-        values[id] = 'ok';
+// affichage de la validation ou non des elementSpec
+// la validation ou non passe par un changement de forme
+// la couleur dépend seulement du fait que c'est obligatoire ou optionnel 
+// elle n'est pas modifiée dans cette fonction mais dans l'affichage initial
+// les classes fa-choice-validated et fa-choice-not-validated sont des pseudo-classes pour connaitre l'état de l'élément
+export function setOnOff(event, id, styleOn, styleOff) {
+    if (event.target.className.indexOf('fa-choice-not-validated') >= 0) {
+        event.target.className = 'validate fa fa-size2 fa-choice-validated ' + styleOn;
+        values[id] = true;
         // ici il faut mettre à 'ok' les parents.
     } else {
-        event.target.className = 'validate fa fa-size2 fa-bookmark-o fa-choice-not-set';
-        values[id] = 'del';
+        event.target.className = 'validate fa fa-size2 fa-choice-not-validated ' + styleOff;
+        values[id] = false;
         // ici il faut mette à 'del' les enfants
     }
     //console.log(event);
 }
 
+export function setOnOffES(event, id, usage) {
+    if (usage === 'req')
+        setOnOff(event, id, 'fa-bookmark fa-color-required', 'fa-bookmark-o fa-color-required');
+    else
+        setOnOff(event, id, 'fa-bookmark fa-color-optional', 'fa-bookmark-o fa-color-optional');
+}
+
 export function setOnOffEC(event, id) {
-    if (event.target.className.indexOf('fa-choice-not-set') >= 0) {
-        event.target.className = 'validate fa fa-circle fa-choice-set';
-        values[id] = true;
-    } else {
-        event.target.className = 'validate fa fa-circle-o fa-choice-not-set';
-        values[id] = false;
-    }
-    //console.log(event, id);
+    setOnOff(event, id, 'fa-circle fa-color-expand', 'fa-circle-o fa-color-expand');
 }
 
 export function createEC(event, id) {
@@ -73,7 +78,7 @@ export function createEC(event, id) {
     values[eci.validatedECID] = false;
     c.tab.push(eci);
     let s = '<div class="headCM">\n';
-    s += '<i class="validate fa fa-circle-o fa-choice-not-set" '
+    s += '<i class="validate fa fa-circle-o fa-choice-not-validated fa-color-expand " '
         + 'onclick="window.ui.setOnOffEC(event, \'' + eci.validatedECID + '\')"></i>\n';
     s += '<div class="content">\n';
     if (eci.type === 'elementRef') {
@@ -111,7 +116,7 @@ function toggle(el, value) {
     else el.style.display = 'none';
 }
 
-export function showOnOff(event, id) {
+export function toggleES(event, id) {
     //console.log(event, id);
     // toggle
     let node = document.getElementById('show' + id);
@@ -122,14 +127,14 @@ export function showOnOff(event, id) {
 }
 
 export function showAll() {
-    let nodes: any = document.getElementsByClassName('showonoff');
+    let nodes: any = document.getElementsByClassName('toggle');
     for (let i=0; i<nodes.length; i++) {
         nodes[i].style.display =  "block";
     }
 }
 
 export function hideAll() {
-    let nodes: any = document.getElementsByClassName('showonoff');
+    let nodes: any = document.getElementsByClassName('toggle');
     for (let i=0; i<nodes.length; i++) {
         nodes[i].style.display =  "none";
     }
@@ -142,12 +147,13 @@ export function hideAll() {
 export function generateHTML(dataTei) {
     // for user interface in html pages
     window['ui'] = {};
-    window['ui'].setOnOff = setOnOff;    
+    window['ui'].setOnOffES = setOnOffES;    
     window['ui'].setOnOffEC = setOnOffEC;    
     window['ui'].setText = setText;
     window['ui'].createEC = createEC;    
     window['ui'].setAttr = setAttr;
-    window['ui'].showOnOff = showOnOff;
+    window['ui'].toggleES = toggleES;
+    window['ui'].odd = odd.odd;
 
     return generateElement(dataTei);
 }
@@ -178,7 +184,7 @@ function generateMultiple(ec) {
     let uniqCreate = createID();
     s += '<div class="contentCountMany" id="' + uniqCreate + '" >\n';
     // on peut en rajouter ... ou supprimer
-    s += '<div class="plusCM"><i class="create fa fa-plus fa-choice-expand" '
+    s += '<div class="plusCM"><i class="create fa fa-plus fa-color-expand" '
         + 'onclick="window.ui.createEC(event, \'' + uniqCreate + '\')"></i></div>\n';
     values[uniqCreate] = {elt: ec.eCI[0], tab: ec.eCI, id: uniqCreate};
     for (let i in ec.eCI) {
@@ -188,10 +194,10 @@ function generateMultiple(ec) {
         values[uniq] = ec.eCI[i].validatedEC;
         // l'élément peut être validé ou non
         if (values[uniq])
-            s += '<i class="validate fa fa-circle fa-choice-set" '
+            s += '<i class="validate fa fa-circle fa-choice-validated fa-color-expand" '
                 + 'onclick="window.ui.setOnOffEC(event, \'' + uniq + '\')"></i>\n';
         else
-            s += '<i class="validate fa fa-circle-o fa-choice-not-set" '
+            s += '<i class="validate fa fa-circle-o fa-choice-not-validated fa-color-expand" '
                 + 'onclick="window.ui.setOnOffEC(event, \'' + uniq + '\')"></i>\n';
         if (ec.eCI[i].type === 'elementRef') {
             s += generateElement(ec.eCI[i].element);
@@ -256,16 +262,16 @@ function editDataType(elt) {
 function classOf(usage) {
     switch(usage) {
         case 'req':
-            return 'obligatory';
+            return 'color-required';
         case 'rec':
-            return 'recommended';
+            return 'color-recommended';
         default:
-            return 'optional';
+            return 'color-optional';
     }
 }
 
 function editAttr(elt) {
-    let s = '<div class="nodeAttr ' + classOf(elt.usage) + '">\n';
+    let s = '<div class="nodeAttr attr-' + classOf(elt.usage) + '">\n';
     for (let i in elt.attr) {
         if (!elt.attr[i].editing) continue; // pas d'édition de la valeur
         if (elt.attr[i].editing === 'list') {
@@ -282,7 +288,7 @@ function editAttr(elt) {
             elt.attr[i].valueID = uniq;
             if (elt.attr[i].desc) {
                 s += '<label for="' + uniq + '">';
-                s += '<b>' + elt.attr[i].desc.text('fr') + '</b>';
+                s += '<b>' + elt.attr[i].desc.text(odd.odd.language) + '</b>';
                 s +='</label>\n';
             }
             s +='<select class="listattr" id="' + uniq + '" ';
@@ -303,7 +309,7 @@ function editAttr(elt) {
             elt.attr[i].valueID = uniq;
             if (elt.attr[i].desc) {
                 s += '<label for="' + uniq + '">';
-                s += '<b>' + elt.attr[i].desc.text('fr') + '</b>';
+                s += '<b>' + elt.attr[i].desc.text(odd.odd.language) + '</b>';
                 s += '</label>\n';
             }
             s += '<input name="' + uniq + '" id="' + uniq + '"';
@@ -320,25 +326,49 @@ function editAttr(elt) {
 function generateElement(elt) {
     // let s = '<div class="element">';
     let s = '';
-    // contenu (node principal)
     let uniq = createID();
-    values[uniq] = elt.validatedES;
-    elt.validatedESID = uniq;
-    s += '<div class="nodeField ' + classOf(elt.usage) + '" title="' + elt.absolutepath + '">\n';
-    if (elt.validatedES) {
-        s += '<i class="validate fa fa-size2 fa-bookmark fa-choice-set" '
-            + 'onclick="window.ui.setOnOff(event, \'' + uniq + '\')"></i>';
+    let prof = (elt.absolutepath.match(/\//g) || []).length - 1;
+    s += '<div class="nodeField node-' + classOf(elt.usage) + '" title="' + elt.absolutepath + '" style="margin-left: ' + prof*odd.odd.leftShift + 'px;">\n';
+    if (odd.odd.validateRequired) {
+        // on peut tout valider donc on ne se pose pas de question
+        values[uniq] = elt.validatedES;
+        elt.validatedESID = uniq;
+        if (elt.validatedES) {
+            s += '<i class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
+                + classOf(elt.usage)
+                + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+        } else {
+            s += '<i class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
+                + classOf(elt.usage)
+                + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+        }
     } else {
-        s += '<i class="validate fa fa-size2 fa-bookmark-o fa-choice-not-set" '
-            + 'onclick="window.ui.setOnOff(event, \'' + uniq + '\')"></i>';
+        // on ne peut pas valider les req - ils sont toujours à validatedES === true
+        if (elt.usage === 'req')
+            elt.validatedES = true;
+        values[uniq] = elt.validatedES;
+        elt.validatedESID = uniq;
+        if (elt.usage !== 'req') {
+            if (elt.validatedES) {
+                s += '<i class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
+                    + classOf(elt.usage)
+                    + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+            } else {
+                s += '<i class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
+                    + classOf(elt.usage)
+                    + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+            }
+        }
     }
-    s += '<i class="hidebutton fa fa-size2 fa-star-half-o fa-choice-toggle" '
-        + 'onclick="window.ui.showOnOff(event, \'' + uniq + '\')"></i>';
+    // contenu (node principal)
+    s += '<i class="hidebutton fa fa-size2 fa-star-half-o fa-color-toggle" '
+        + 'onclick="window.ui.toggleES(event, \'' + uniq + '\')"></i>';
     s += '<span class="nodeIdent">' + elt.ident + '</span>\n';
-    s += '<span class="nodeAbspath">' + elt.absolutepath + '</span>\n';
-    s += '<div class="showonoff" id="show' + uniq + '">';
+    if (odd.odd.displayFullpath)
+        s += '<span class="nodeAbspath">' + elt.absolutepath + '</span>\n';
+    s += '<div class="toggle" id="show' + uniq + '">';
     // description
-    if (elt.desc) s += '<div class="eltDesc">' + elt.desc.text('fr') + '</div>\n';
+    if (elt.desc) s += '<div class="eltDesc">' + elt.desc.text(odd.odd.language) + '</div>\n';
     // champ texte du noeud
     if (elt.content && elt.content.datatype) s += editDataType(elt);
     // Attributes

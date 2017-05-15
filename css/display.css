@@ -56,10 +56,10 @@
     border: 2px solid brown;
 }
 
-.fa-choice-not-set { color: #fb1820; }
-.fa-choice-set { color: #2d8924; }
-.fa-choice-expand { color: #551cd9; }
-.fa-choice-toggle { color: #26cdd9; }
+.fa-color-required { color: #fb1820; }
+.fa-color-optional { color: #2d8924; }
+.fa-color-expand { color: #551cd9; }
+.fa-color-toggle { color: #26cdd9; }
 
 /*
 .fa-choice-toggle { color: #099ff6; }
@@ -87,10 +87,10 @@
 
 .nodeContent {
     width:"100%";
-/*
+    /*
     border: 2px solid blue;
 	border-radius: 2px;
-*/
+    */
     border-collapse: collapse;
     margin-top: 5px;
     margin-bottom: 5px;
@@ -102,12 +102,18 @@
     font-style: italic;
     font-size: smaller;
     background-color: lightgray;
-    margin-left: 10px;
 }
 
 .contentCountMany {
+    /*
+        ici optionel pour les blocs à ajouter
+    */
     border: 1px solid black;
 	border-radius: 4px;
+
+    /*
+    background-color: #88AAFF;
+    */
 }
 
 .plusCM {
@@ -142,8 +148,10 @@
 .nodeField label {
     margin-left: 5px;
     margin-right: 5px;
+    /*
     border: 1px solid blue;
 	border-radius: 4px;
+    */
     font-style: italic;
     font-size: smaller;
     background-color: lightgray;

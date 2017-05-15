@@ -24,7 +24,7 @@ export function generateTEI(teiData) {
 function generateElement(espec, doc, node) {
     let s = '';
     // console.log("geneElemts:",eci);
-    if (edit.values[espec.validatedESID] === 'ok' || edit.values[espec.validatedESID] === 'edit') {
+    if (edit.values[espec.validatedESID]) {
         // si node est vide en créer un en dernier fils du node d'au dessus
         let current = espec.node;
         if (!current) {

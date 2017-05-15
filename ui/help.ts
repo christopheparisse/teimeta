@@ -17,7 +17,9 @@ Dans ce cas, le fichier XML sera modifié selon les consignes de l'ODD. Les él�
 décrits dans l'ODD ne seront pas modifiés.</br>
 La sauvegarde (cliquer sur "Sauver") se fait dans le répertoire de téléchargement (ou ailleurs selon les paramètres du navigateur web).</br>
 </br>
-Pour toute information, aller sur la page <a href="http://ct3.ortolang.fr/teimeta/readme.html" target="_blank">http://ct3.ortolang.fr/teimeta/readme.html</a>
+Pour toute information, aller sur <a href="http://ct3.ortolang.fr/teimeta/readme.php" target="_blank">http://ct3.ortolang.fr/teimeta/readme.php</a><br/>
+Pour télécharger ce logiciel, aller sur <a href="https://github.com/christopheparisse/tei-meta" target="_blank">https://github.com/christopheparisse/tei-meta</a><br/>
+Pour signaler une erreur ou proposer une fonctionnalité, aller sur <a href="https://github.com/christopheparisse/tei-meta/issues" target="_blank">https://github.com/christopheparisse/tei-meta/issues</a><br/>
 `;
     // system.alertUser(s);
     system.alertUser(s);

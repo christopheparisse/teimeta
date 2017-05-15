@@ -1,15 +1,15 @@
 <h1><a id="user-content-tei-meta-edit" class="deep-link" href="#tei-meta-edit"><svg aria-hidden="true" class="deep-link-icon" height="16" version="1.1" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>tei-meta-edit</h1>
 <p><strong>Outil d'édition de champs xml dans un fichier xml à partir d'une description odd</strong></p>
 <h2><a id="user-content-description-générale" class="deep-link" href="#description-générale"><svg aria-hidden="true" class="deep-link-icon" height="16" version="1.1" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Description générale</h2>
-<p>L'outil est conçu pour une utilisation TEI mais pourrait être étendu à d'autres fichiers XML
-à condition de gérer correctement les namespaces. Le namespace principal est repéré automatiquement,
-mais le namespace inclus dans le tag egXML ne l'est pas.</p>
+<p>L'outil est conçu pour une utilisation TEI mais peut être utilsé pour d'autres fichiers XML.
+Dans ce cas il faut éditer un fichier ayant un namespace correct ou modifier le namespace du fichier final à la main.
+L'édition du namespace destination n'est pas encore implémentée.</p>
 <p>L'outil permet d'éditer un noeud XML où qu'il soit mais pas de le déplacer.
-Tout noeud édité garde sa position. Un noeud inexistant peut être créé, mais dans une position absolue.
-Toute l'arborescence sous un noeud peut être éditée si elle est décrite comme telle dans l'ODD.
+Tout noeud édité garde sa position. Un noeud inexistant peut être créé, mais selon la position décrite dans l'ODD.
+L'ODD doit décrire toute l'arborescence depuis la racine.
 Les valeurs d'un fichier XML non décrites dans l'ODD ne doivent pas être modifiées.
-Les valeurs décrites pevuent être créées, modifiées et vidées (la suppression n'est pas possible
-s'il y a des enfants à un noeud pour respecter la conservation des éléments existants non-décrits).</p>
+Les valeurs décrites pevuent être créées, modifiées et vidées. La suppression est possible en désactivant les noeuds non-obligatoires.
+Il est possible en option (pas encore implémentée d'autoriser la suppression des noeuds obligatoires).</p>
 <p>Les fonctions d'édition principales sont:</p>
 <ul>
 <li>création d'un noeud (si on y ajoute une valeur)</li>
@@ -17,28 +17,82 @@ s'il y a des enfants à un noeud pour respecter la conservation des éléments e
 <ul>
 <li>texte libre</li>
 <li>vocabulaire</li>
-<li>nombre?</li>
-<li>date?</li>
+<li>nombre (à faire)</li>
+<li>date (à faire)</li>
 </ul>
 </li>
 <li>édition d'un des attributs d'un noeud avec un format
 <ul>
 <li>texte libre</li>
 <li>vocabulaire</li>
-<li>nombre?</li>
-<li>date?</li>
+<li>nombre (à faire)</li>
+<li>date (à faire)</li>
 </ul>
 </li>
 </ul>
 <h2><a id="user-content-edition-de-lodd-et-exemples-xml" class="deep-link" href="#edition-de-lodd-et-exemples-xml"><svg aria-hidden="true" class="deep-link-icon" height="16" version="1.1" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Edition de l'ODD et exemples XML</h2>
+<p>L'ODD respecte le format de la TEI prévu pour ajouter des tags à la TEI.
+On utilise les champs desc pour fournir des informations.
+Les champs corresp, rend et rendition ont une fonctionnalité supplémentaire par rapport à la TEI pour notre implémentation.
+Les autres champs respectent complétement le format TEI.</p>
 <h3><a id="user-content-format-de-description-des-noeuds-xml" class="deep-link" href="#format-de-description-des-noeuds-xml"><svg aria-hidden="true" class="deep-link-icon" height="16" version="1.1" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Format de description des noeuds XML</h3>
-<h4><a id="user-content-format-des-racines-et-arborenscence" class="deep-link" href="#format-des-racines-et-arborenscence"><svg aria-hidden="true" class="deep-link-icon" height="16" version="1.1" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Format des &quot;racines&quot; et &quot;arborenscence&quot;</h4>
-<p>Le contenu du ODD consiste en tous les éléments elementSpec inclus dans le tag egXML du fichier ODD.
-Seuls les éléments obligatoires sont listés. Les autres éléments sont ignorés.</p>
-<div class="highlight"><pre class="editor editor-colors"><div class="line"><span class="text"><span>&lt;elementSpec ident=&quot;nom_du_noeud&quot; mode=&quot;replace/change/add&quot; predeclare=&quot;/emplacement_du_noeud&quot; ana=&quot;mode_d_edition/none/text/number/date&quot;&gt;</span></span></div><div class="line"><span class="text"><span>    &lt;desc&gt;</span></span></div><div class="line"><span class="text"><span>        Texte de description du noeud</span></span></div><div class="line"><span class="text"><span>    &lt;/desc&gt;</span></span></div><div class="line"><span class="text"><span>    &lt;content&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;element name=&quot;nom_du_sous_noeud&quot; usage=&quot;req/vide&quot;&gt;</span></span></div><div class="line"><span class="text"><span>            &lt;content&gt;</span></span></div><div class="line"><span class="text"><span>                ... structure récursive sur le tag &quot;content&quot; ...</span></span></div><div class="line"><span class="text"><span>            &lt;/content&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;/element&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;one&gt;</span></span></div><div class="line"><span class="text"><span>            ... même chose que élément seul ...</span></span></div><div class="line"><span class="text"><span>            ... le champ doit être présent et est le seul qui existe ...</span></span></div><div class="line"><span class="text"><span>        &lt;/one&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;oneOrMore&gt;</span></span></div><div class="line"><span class="text"><span>            ... le champ doit être présent et il peut y en avoir d'autres ...</span></span></div><div class="line"><span class="text"><span>        &lt;/oneOrMore&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;zeroOrMore&gt;</span></span></div><div class="line"><span class="text"><span>            ... le champ n'est pas obligatoire et il peut en avoir pluieurs ...</span></span></div><div class="line"><span class="text"><span>        &lt;/zeroOrMore&gt;</span></span></div><div class="line"><span class="text"><span>    &lt;/content&gt;</span></span></div><div class="line"><span class="text"><span>&lt;/elementSpec&gt;</span></span></div></pre></div>
-<h4><a id="user-content-format-des-éléments" class="deep-link" href="#format-des-éléments"><svg aria-hidden="true" class="deep-link-icon" height="16" version="1.1" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Format des &quot;éléments&quot;</h4>
-<p>Seuls les éléments obligatoires sont listés. Les autres éléments sont ignorés.</p>
-<div class="highlight"><pre class="editor editor-colors"><div class="line"><span class="text"><span>&lt;element name=&quot;nom_du_noeud&quot; usage=&quot;req/vide&quot; ana=&quot;mode_d_edition/list/none/text/number/date&quot;&gt;</span></span></div><div class="line"><span class="text"><span>    &lt;desc&gt;</span></span></div><div class="line"><span class="text"><span>        Texte de description du noeud</span></span></div><div class="line"><span class="text"><span>    &lt;/desc&gt;</span></span></div><div class="line"><span class="text"><span>    ... si category choix dans cette liste ...</span></span></div><div class="line"><span class="text"><span>    &lt;category&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;catDesc xml:lang=&quot;fr&quot;&gt;nom_en_francais&lt;/catDesc&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;catDesc xml:lang=&quot;en&quot;&gt;nom_en_anglais&lt;/catDesc&gt;</span></span></div><div class="line"><span class="text"><span>    &lt;/category&gt;</span></span></div><div class="line"><span class="text"><span>    ... répétition d'autant de catégories que nécessaire</span></span></div><div class="line"><span class="text"><span>    &lt;attList&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;attDef ident=&quot;nom_attribut&quot; usage=&quot;req/vide&quot; mode=&quot;change&quot; value=&quot;valeur obligatoire&quot; ana=&quot;mode_d_edition/list/none/text/number/date&quot;&gt;</span></span></div><div class="line"><span class="text"><span>            ... si valList choix des valeurs du vocabulaire ...</span></span></div><div class="line"><span class="text"><span>            &lt;valList type=&quot;nom_du_type&quot; mode=&quot;replace&quot;&gt;</span></span></div><div class="line"><span class="text"><span>                &lt;valItem ident=&quot;id_a_mettre_dans_fichier_TEI&quot;&gt;</span></span></div><div class="line"><span class="text"><span>                    &lt;desc&gt;Description du champ à coder&lt;/desc&gt;</span></span></div><div class="line"><span class="text"><span>                &lt;/valItem&gt;</span></span></div><div class="line"><span class="text"><span>                ... autres valitems ...</span></span></div><div class="line"><span class="text"><span>            &lt;/valList&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;/attDef&gt;</span></span></div><div class="line"><span class="text"><span>    &lt;/attList&gt;</span></span></div><div class="line"><span class="text"><span>&lt;/elementSpec&gt;</span></span></div></pre></div>
+<p>Le contenu du ODD consiste en des éléments elementSpec qui peuvent référencer d'autres éléments avec elementRef.
+Les moduleRef ne sont pas utilisés pour l'instant: ils sont là pour les autres usages des ODD.</p>
+<ul>
+<li>
+<p>elementSpec</p>
+<ul>
+<li>ident=&quot;nom du tag dans la TEI&quot; corresp=&quot;tag optionel à utiliser si ident n'est pas unique&quot;</li>
+<li>desc: multilingue possible voir champ xml:lang</li>
+<li>content: contenu du noeud y compris partie texte</li>
+<li>attList: listes des attributs</li>
+</ul>
+</li>
+<li>
+<p>content</p>
+<ul>
+<li>sequence minOccurs maxOccurs (s'il y a plus d'un élément)
+<ul>
+<li>elementRef key=&quot;nom du tag dans la TEI&quot; corresp=&quot;tag optionel à utiliser si ident n'est pas unique&quot;</li>
+<li>elementRef key=...</li>
+<li>elementRef minOccurs maxOccurs (min et max sont optionels: omis ils valent 1)</li>
+</ul>
+</li>
+<li>textNode
+<ul>
+<li>dataRef : pour indiquer le format du noeud (à la place de textNode)</li>
+<li>integer decimal NCName string duration anyURI data - si rien pas de contrôle de format exemple titre</li>
+<li>valList : si le node ne peut prendre que certaines valeurs prédéfinies</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>attList</p>
+<ul>
+<li>attDef ident=&quot;attribut-dans-TEI&quot; rend=&quot;valeur par défaut de l'attribut dans les valeurs de la liste&quot; usage=&quot;rec ou req&quot;
+<ul>
+<li>desc (multilingue)</li>
+<li>desc = nom de la rubrique pour les sections, les élements à saisir, pour les valList =bulle d'aide</li>
+</ul>
+</li>
+<li>datatype
+<ul>
+<li>dataRef : format de l'attribut</li>
+<li>... ou sinon une liste de valeurs: si une seule pas de choix valeur obigatoire</li>
+</ul>
+</li>
+<li>valList ==&gt; choix multiples type ascenseur
+<ul>
+<li>valItem ident=&quot;valeur-dans-TEI&quot;</li>
+<li>desc (multilingue) + rendition (champ aide optionel ? - emplacement à affiner)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4><a id="user-content-exemple" class="deep-link" href="#exemple"><svg aria-hidden="true" class="deep-link-icon" height="16" version="1.1" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Exemple</h4>
+<div class="highlight"><pre class="editor editor-colors"><div class="line"><span class="text"><span>&lt;elementSpec ident=&quot;tag_TEI&quot; module=&quot;header&quot;</span></span></div><div class="line"><span class="text"><span>    corresp=&quot;nom_pour_identification_unique&quot;&gt;</span></span></div><div class="line"><span class="text"><span>    &lt;desc xml:lang=&quot;fr&quot;&gt;... en français ... - partie affichée pour décrire</span></span></div><div class="line"><span class="text"><span>        l'élément&lt;/desc&gt;</span></span></div><div class="line"><span class="text"><span>    &lt;desc xml:lang=&quot;en&quot;&gt;... en anglais ...&lt;/desc&gt;</span></span></div><div class="line"><span class="text"><span>    &lt;content&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;sequence minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;&gt;</span></span></div><div class="line"><span class="text"><span>            &lt;elementRef key=&quot;sous_tag_1&quot;</span></span></div><div class="line"><span class="text"><span>                corresp=&quot;autre_nom_pour_identification_unique&quot;/&gt;</span></span></div><div class="line"><span class="text"><span>            &lt;elementRef key=&quot;sous_tag_2&quot;/&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;/sequence&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;elementRef key=&quot;idno&quot; corresp=&quot;handle&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;unbounded&quot;/&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;textNode/&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;dataRef name=&quot;NCName&quot;/&gt;</span></span></div><div class="line"><span class="text"><span>    &lt;/content&gt;</span></span></div><div class="line"><span class="text"><span>    &lt;attList&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;attDef ident=&quot;mimeType&quot; usage=&quot;req&quot; mode=&quot;change&quot;&gt;</span></span></div><div class="line"><span class="text"><span>            &lt;valList type=&quot;closed&quot;&gt;</span></span></div><div class="line"><span class="text"><span>                &lt;valItem ident=&quot;audio/wav&quot;/&gt;</span></span></div><div class="line"><span class="text"><span>                &lt;valItem ident=&quot;audio/mp3&quot;/&gt;</span></span></div><div class="line"><span class="text"><span>                &lt;valItem ident=&quot;other&quot;/&gt;</span></span></div><div class="line"><span class="text"><span>            &lt;/valList&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;/attDef&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;attDef ident=&quot;dur-iso&quot; usage=&quot;req&quot; mode=&quot;change&quot;&gt;</span></span></div><div class="line"><span class="text"><span>            &lt;desc xml:lang=&quot;fr&quot;&gt;durée du média : chaque medias peut avoir une durée</span></span></div><div class="line"><span class="text"><span>                différente&lt;/desc&gt;</span></span></div><div class="line"><span class="text"><span>            &lt;desc xml:lang=&quot;en&quot;&gt;media duration : each media could have a different</span></span></div><div class="line"><span class="text"><span>                duration &lt;/desc&gt;</span></span></div><div class="line"><span class="text"><span>            &lt;datatype&gt;</span></span></div><div class="line"><span class="text"><span>                &lt;dataRef name=&quot;duration&quot;/&gt;</span></span></div><div class="line"><span class="text"><span>            &lt;/datatype&gt;</span></span></div><div class="line"><span class="text"><span>        &lt;/attDef&gt;</span></span></div><div class="line"><span class="text"><span>    &lt;/attList&gt;</span></span></div><div class="line"><span class="text"><span>&lt;/elementSpec&gt;</span></span></div></pre></div>
 <h2><a id="user-content-utilisation" class="deep-link" href="#utilisation"><svg aria-hidden="true" class="deep-link-icon" height="16" version="1.1" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Utilisation</h2>
 <h3><a id="user-content-version-page-html-fonctionnelle" class="deep-link" href="#version-page-html-fonctionnelle"><svg aria-hidden="true" class="deep-link-icon" height="16" version="1.1" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Version Page Html (fonctionnelle)</h3>
 <p>Le soft comprend une page html autonome pouvant être utilisée localement ou à distance.
