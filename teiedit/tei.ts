@@ -14,6 +14,10 @@ let basicTEI = '<?xml version="1.0" encoding="UTF-8"?>\
 </TEI>';
 
 export function generateTEI(teiData) {
+    if (!teiData.doc) {
+        teiData.doc = new dom().parseFromString(basicTEI, 'text/xml');
+        teiData.root = teiData.doc.documentElement;
+    }
     let s = generateElement(teiData.dataTei, teiData.doc, teiData.root);
     console.log(s);
     // transform doc to text

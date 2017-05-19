@@ -89,3 +89,7 @@ export function alertUser(s) {
     picoModal(s).show();
     //    dialog.showErrorBox('teiEdit', s);
 }
+
+export function alertUserModal(s, fun: any) {
+    picoModal(s).afterClose(() => fun()).show();
+}

@@ -14,21 +14,32 @@ let xpath = require('xpath');
 let select;
 // import * as system from '../system/opensave';
 
+export class PARAMS {
+    // Default PARAMETRES
+    defaultNewElement = true; // si true les éléments non existants sont inclus par défaut
+    leftShift = 5; // taille en pixel du décalage des imbrications
+    groupingStyle = 'border'; // style d'affichage des groupes d'éléments duplicables
+    validateRequired = false; // si true on a le droit de ne pas valider (de supprimer) les éléments obligatoires
+    language = 'fr'; // nom de la langue des champs desc
+    displayFullpath = true; // affichage ou non du chemin complet des tags
+}
+
 class ODD {
     listElementSpec = {}; // avoir tous les elementSpec sous la main et les controler
     listElementRef = {}; // avoir tous les elementRef sous la main et les controler
     rootTEI = null; // pointeur de base du schema (attribut start de schemaSpec)
     rootIdent = ''; // valeur de l'attribut ident du schemaSpec de root
-    // PARAMETRES
-    defaultNewElement = true; // si true les éléments non existants sont inclus par défaut
-    leftShift = 5; // taille en pixel du décalage des imbrications
-    groupingStyle = 'border';
-    validateRequired = false;
-    language = 'fr';
-    displayFullpath = true;
+    params =  new PARAMS();
+
+    init() {
+        this.listElementSpec = {}; // avoir tous les elementSpec sous la main et les controler
+        this.listElementRef = {}; // avoir tous les elementRef sous la main et les controler
+        this.rootTEI = null; // pointeur de base du schema (attribut start de schemaSpec)
+        this.rootIdent = ''; // valeur de l'attribut ident du schemaSpec de root
+    }
 }
 
-export let odd : ODD = null;
+export let odd : ODD = new ODD();
 
 function tagES(k, c) {
     return (c) ? k + '/' + c : k;    
@@ -346,6 +357,7 @@ export class ValItem {
  */
 export function loadOdd(data) {
     let error = '';
+    let warning = '';
     // get XML ready
     let parser = new DOMParser();
     // let doc = parser.parseFromString(data, "text/xml");
@@ -362,12 +374,11 @@ export function loadOdd(data) {
     let attr = schemaSpec[0].getAttribute("start");
     // valeur retour de la fonction
     if (attr) {
-        odd = new ODD();
+        odd.init();
         odd.rootTEI = attr;
     } else {
         let s = "Pas d'attribut racine (@start) dans le fichier ODD";
         system.alertUser(s);
-        odd = null;
         return null;
     }
     // récupérer attribut ident
@@ -378,19 +389,25 @@ export function loadOdd(data) {
         var es = new ElementSpec();
         es.readOdd(eSpec[i]);
         if (odd.listElementSpec[es.access]) {
-            error += 'ERREUR: redefinition de ' + es.access;
+            error += 'ERREUR: redefinition de ' + es.access + "\n";
         }
         odd.listElementSpec[es.access] = es;
     }
     for (let i in odd.listElementRef) {
         // check if all elementRef exist as elementSpec
         if (!odd.listElementSpec[i]) {
-            error += 'ERREUR: elementRef ' + i + " n'est pas défini";
+            error += 'ERREUR: elementRef ' + i + " n'est pas défini\n";
+        }
+    }
+    for (let i in odd.listElementSpec) {
+        // check if all elementRef exist as elementSpec
+        if (odd.listElementSpec[i].access !== odd.rootTEI && !odd.listElementRef[odd.listElementSpec[i].access]) {
+            warning += 'ATTENTION: elementSpec ' + odd.listElementSpec[i].access + " n'est pas utilisé<br/>\n";
         }
     }
     let rootElt = odd.listElementSpec[odd.rootTEI];
     if (!rootElt) {
-        error += "Pas de définition pour l'élément racine " + odd.rootTEI;
+        error += "Pas de définition pour l'élément racine " + odd.rootTEI + "\n";
     } else {
         rootElt.usage = 'req';
     }
@@ -398,6 +415,10 @@ export function loadOdd(data) {
     if (error) {
         system.alertUser(error);
         return null;
+    }
+    if (warning) {
+        system.alertUser(warning);
+        console.log(warning);
     }
     return odd;
 }
@@ -477,29 +498,3 @@ export function copyAttrOdd(oldattr): any {
     return newattr;
 }
 
-/*
-export function setNodesToNullCT(obj) {
-    for (let i in obj.one) {
-        for (let k in obj.one[i].eCI)
-            setNodesToNull(obj.one[i].eCI[k].element);
-    }
-    for (let i in obj.zeroOrMore) {
-        for (let k in obj.zeroOrMore[i].eCI)
-            setNodesToNull(obj.zeroOrMore[i].eCI[k].element);
-    }
-    for (let i in obj.oneOrMore) {
-        for (let k in obj.oneOrMore[i].eCI)
-            setNodesToNull(obj.oneOrMore[i].eCI[k].element);
-    }
-    for (let i in obj.twoOrMore) {
-        for (let k in obj.twoOrMore[i].eCI)
-            setNodesToNull(obj.twoOrMore[i].eCI[k].element);
-    }
-}
-
-export function setNodesToNull(obj) {
-    obj.node = null;
-    if (obj.content)
-        setNodesToNullCT(obj.content);
-}
-*/

@@ -144,18 +144,8 @@ export function hideAll() {
  * @function generateHtml
  * @param elist 
  */
-export function generateHTML(dataTei) {
-    // for user interface in html pages
-    window['ui'] = {};
-    window['ui'].setOnOffES = setOnOffES;    
-    window['ui'].setOnOffEC = setOnOffEC;    
-    window['ui'].setText = setText;
-    window['ui'].createEC = createEC;    
-    window['ui'].setAttr = setAttr;
-    window['ui'].toggleES = toggleES;
-    window['ui'].odd = odd.odd;
-
-    return generateElement(dataTei);
+export function generateHTML(teiData) {
+    return generateElement(teiData.dataTei);
 }
 
 function generateContent(ct) {
@@ -288,7 +278,7 @@ function editAttr(elt) {
             elt.attr[i].valueID = uniq;
             if (elt.attr[i].desc) {
                 s += '<label for="' + uniq + '">';
-                s += '<b>' + elt.attr[i].desc.text(odd.odd.language) + '</b>';
+                s += '<b>' + elt.attr[i].desc.text(odd.odd.params.language) + '</b>';
                 s +='</label>\n';
             }
             s +='<select class="listattr" id="' + uniq + '" ';
@@ -309,7 +299,7 @@ function editAttr(elt) {
             elt.attr[i].valueID = uniq;
             if (elt.attr[i].desc) {
                 s += '<label for="' + uniq + '">';
-                s += '<b>' + elt.attr[i].desc.text(odd.odd.language) + '</b>';
+                s += '<b>' + elt.attr[i].desc.text(odd.odd.params.language) + '</b>';
                 s += '</label>\n';
             }
             s += '<input name="' + uniq + '" id="' + uniq + '"';
@@ -328,8 +318,8 @@ function generateElement(elt) {
     let s = '';
     let uniq = createID();
     let prof = (elt.absolutepath.match(/\//g) || []).length - 1;
-    s += '<div class="nodeField node-' + classOf(elt.usage) + '" title="' + elt.absolutepath + '" style="margin-left: ' + prof*odd.odd.leftShift + 'px;">\n';
-    if (odd.odd.validateRequired) {
+    s += '<div class="nodeField node-' + classOf(elt.usage) + '" title="' + elt.absolutepath + '" style="margin-left: ' + prof*odd.odd.params.leftShift + 'px;">\n';
+    if (odd.odd.params.validateRequired) {
         // on peut tout valider donc on ne se pose pas de question
         values[uniq] = elt.validatedES;
         elt.validatedESID = uniq;
@@ -364,11 +354,11 @@ function generateElement(elt) {
     s += '<i class="hidebutton fa fa-size2 fa-star-half-o fa-color-toggle" '
         + 'onclick="window.ui.toggleES(event, \'' + uniq + '\')"></i>';
     s += '<span class="nodeIdent">' + elt.ident + '</span>\n';
-    if (odd.odd.displayFullpath)
+    if (odd.odd.params.displayFullpath)
         s += '<span class="nodeAbspath">' + elt.absolutepath + '</span>\n';
     s += '<div class="toggle" id="show' + uniq + '">';
     // description
-    if (elt.desc) s += '<div class="eltDesc">' + elt.desc.text(odd.odd.language) + '</div>\n';
+    if (elt.desc) s += '<div class="eltDesc">' + elt.desc.text(odd.odd.params.language) + '</div>\n';
     // champ texte du noeud
     if (elt.content && elt.content.datatype) s += editDataType(elt);
     // Attributes

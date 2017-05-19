@@ -1,75 +1,252 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
-<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
+    <?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+    <?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
 
 <TEI xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:svg="http://www.w3.org/2000/svg"
-    xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns="http://www.tei-c.org/ns/1.0"
-    xmlns:exm="http://www.tei-c.org/ns/Examples">
+	xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns="http://www.tei-c.org/ns/1.0"
+	xmlns:rng="http://relaxng.org/ns/structure/1.0">
 
-    <egXML xmlns="http://www.tei-c.org/ns/Examples">
-        <!-- recordingStmt : recording et medias-->
-        <elementSpec ident="sourceDesc" module="header" mode="replace"
-            predeclare="/TEI/teiHeader/fileDesc">
-            <desc>Recording information</desc>
-            <content>
-                <element name="recordingStmt" module="spoken">
-                    <content>
-                        <oneOrMore>
-                            <element name="recording" module="spoken">
-                                <content>
-                                    <element name="media" usage="req" module="spoken">
-                                        <attList>
-                                            <attDef ident="type" usage="req" mode="change">
-                                                <valList type="closed" mode="replace">
-                                                  <valItem ident="audio"/>
-                                                  <valItem ident="video"/>
-                                                </valList>
-                                            </attDef>
-                                            <attDef ident="mimeType" usage="req" mode="change">
-                                                <valList type="closed" mode="replace">
-                                                  <valItem ident="audio/wav"/>
-                                                  <valItem ident="audio/mp3"/>
-                                                  <valItem ident="video/mp4"/>
-                                                  <valItem ident="video/mov"/>
-                                                  <valItem ident="video/wmv"/>
-                                                </valList>
-                                            </attDef>
-                                            <attDef ident="dur-iso" usage="req" mode="change"/>
-                                            <attDef ident="url" usage="req" mode="change"/>
-                                        </attList>
-                                        <content>
-                                            <twoOrMore>
-                                                <element name="desc">
-                                                  <attList>
-                                                  <attDef ident="type" usage="req" mode="change">
-                                                  <valList type="closed" mode="replace">
-                                                  <valItem ident="quality"/>
-                                                  <valItem ident="anonymization"/>
-                                                  </valList>
-                                                  </attDef>
-                                                  </attList>
-                                                </element>
-                                            </twoOrMore>
-                                        </content>
-                                    </element>
-                                </content>
-                            </element>
-                        </oneOrMore>
-                    </content>
-                </element>
-            </content>
-        </elementSpec>
-        <elementSpec ident="media" module="header" mode="add"
-            xmlns:s="http://purl.oclc.org/dsdl/schematron">
-            <desc>Contraintes sur les médias</desc>
-            <constraintSpec mode="add" ident="mediaDef" scheme="isoschematron">
-                <constraint>
-                    <s:assert
-                        test="tei:desc/@type='anonymisation' and tei:div/@type='qualite' and count(tei:desc)>=2"
-                        > l'élément média doit contenir au moins une description de l'anonymisation
-                        et une de la qualité </s:assert>
-                </constraint>
-            </constraintSpec>
-        </elementSpec>
-    </egXML>
+	<teiHeader>
+		<fileDesc>
+			<titleStmt>
+      <title>
+        <idno type="title">Personnalisation ODD pour les médias</idno>
+        <bibl> CORLI et IRCOM media.odd </bibl>
+        <desc> Ne pas encombrer l'écran et ne gérer que les médias </desc>
+      </title>
+      <principal>
+        <name type="org"> CORLI - IRCOM </name>
+        <name type="org"> Carole Etienne, Loic Liégeois, Christophe Parisse ... </name>
+      </principal>
+			</titleStmt>
+			<publicationStmt>
+				<publisher>CORLI wiki</publisher>
+			</publicationStmt>
+			<sourceDesc>
+				<p>written from IRCOM recommandations</p>
+			</sourceDesc>
+		</fileDesc>
+	</teiHeader>
+
+	<text>
+		<body>
+			<!-- definition de TEI_CORPO_METADATA-->
+			<schemaSpec ident="TEI_CORPO_METADATA" start="TEI">
+				<!-- ajouter teiCorpus par la suite si collections -->
+
+				<!-- required modules -->
+				<moduleRef key="tei"/>
+				<!-- à compléter par : reg choice orig pour l'orthographe adapté -->
+				<moduleRef key="core"
+					include="title bibl desc name respStmt resp publisher pubPlace ref p media date "/>
+				<moduleRef key="header"
+					include="teiHeader fileDesc titleStmt idno principal publicationStmt availability licence sourceDesc profileDesc langUsage language
+					 encodingDesc appInfo application projectDesc classDecl taxonomy catDesc category"/>
+				<!-- à compléter par : body div text-->
+				<moduleRef key="textstructure" include="TEI text body div "/>
+				<!-- optional modules -->
+				<!-- à compléter par : u annotationBlock incident kinesic pause shift vocal-->
+				<moduleRef key="spoken"
+					include="recordingStmt recording transcriptionDesc annotationBlock u vocal kinesic incident pause"/>
+				<moduleRef key="namesdates"
+					include="persName surname listPerson person age occupation langKnowledge langKnown listPlace place country settlement district "/>
+				<moduleRef key="corpus"
+					include="activity textDesc channel constitution derivation domain factuality interaction preparedness purpose particDesc settingDesc setting"/>
+				<!-- à compléter par Christophe P -->
+				<moduleRef key="linking" include="anchor seg timeline when"/>
+				<moduleRef key="analysis" include=" w span spanGrp"/>
+				<!-- ajouter interp interpGrp-->
+				<moduleRef key="transcr"/>
+				<!-- utilisé ???-->
+
+				<!-- structure generale TEI -->
+				<elementSpec ident="TEI" module="textstructure" mode="change">
+					<content>
+						<sequence minOccurs="1" maxOccurs="1">
+							<elementRef key="teiHeader"/>
+						</sequence>
+					</content>
+				</elementSpec>
+
+				<!-- structure generale teiHeader -->
+				<elementSpec ident="teiHeader" module="header" mode="change">
+					<content>
+						<sequence minOccurs="1" maxOccurs="1">
+							<elementRef key="fileDesc"/>
+						</sequence>
+					</content>
+				</elementSpec>
+
+				<elementSpec ident="fileDesc" module="header">
+					<desc xml:lang="fr">Titre, diffusion et données primaires</desc>
+					<desc xml:lang="en">Title, diffusion and primary data</desc>
+					<content>
+						<sequence minOccurs="1" maxOccurs="1">
+							<elementRef key="sourceDesc"/>
+						</sequence>
+					</content>
+				</elementSpec>
+
+				<!-- recordingStmt : recording et medias-->
+				<elementSpec ident="sourceDesc" module="header" mode="change">
+					<desc xml:lang="fr">Enregistrement, données primaires</desc>
+					<desc xml:lang="en">Recording information, primary data </desc>
+					<content>
+						<elementRef key="recordingStmt" minOccurs="1" maxOccurs="1"/>
+					</content>
+				</elementSpec>
+
+				<elementSpec ident="recordingStmt" module="spoken">
+					<content>
+						<elementRef key="recording" minOccurs="1" maxOccurs="unbounded"/>
+					</content>
+
+					<!--  Des exemples  -->
+					<exemplum versionDate="2016-10-04" xml:lang="fr">
+						<egXML xmlns="http://www.tei-c.org/ns/Examples">
+							<sourceDesc>
+								<recordingStmt>
+									<recording>
+										<p> une balise media par enregistrement</p>
+										<media type="audio" mimeType="audio/wav" dur-iso="P36M"
+											url="xxx">
+											<p> un signal audio anonymisé</p>
+											<desc type="anonymisation" subtype="oui"/>
+											<desc type="qualite" subtype="peu_bruite"/>
+										</media>
+									</recording>
+									<recording>
+										<media type="video" mimeType="video/mp4" dur-iso="P36M"
+											url="xxx">
+											<p> un signal video anonymisé</p>
+											<desc type="anonymisation" subtype="oui"/>
+											<desc type="qualite" subtype="peu_bruite"/>
+										</media>
+									</recording>
+									<recording>
+										<media type="audio" mimeType="audio/wav" dur-iso="P36M"
+											url="xxx">
+											<p> un signal audio non anonymisé</p>
+											<desc type="anonymisation" subtype="non"/>
+											<desc type="qualite" subtype="peu_bruite"/>
+										</media>
+									</recording>
+								</recordingStmt>
+							</sourceDesc>
+						</egXML>
+					</exemplum>
+				</elementSpec>
+
+				<elementSpec ident="recording" module="spoken">
+					<content>
+						<elementRef key="media" minOccurs="1" maxOccurs="1"/>
+					</content>
+				</elementSpec>
+
+				<elementSpec ident="media" module="spoken">
+					<content>
+						<sequence minOccurs="2" maxOccurs="unbound">
+							<elementRef key="desc" corresp="quality"/>
+							<elementRef key="desc" corresp="anonymization"/>
+						</sequence>
+					</content>
+					<attList>
+						<attDef ident="type" usage="req" mode="change">
+							<valList type="closed">
+								<valItem ident="audio"/>
+								<valItem ident="video"/>
+								<valItem ident="other"/>
+							</valList>
+						</attDef>
+						<attDef ident="mimeType" usage="req" mode="change">
+							<valList type="closed">
+								<valItem ident="audio/wav"/>
+								<valItem ident="audio/mp3"/>
+								<valItem ident="video/mp4"/>
+								<valItem ident="video/mov"/>
+								<valItem ident="video/wmv"/>
+								<valItem ident="video/avi"/>
+								<valItem ident="other"/>
+							</valList>
+						</attDef>
+						<attDef ident="dur-iso" usage="req" mode="change">
+							<desc xml:lang="fr">durée du média : chaque medias peut avoir une durée
+								différente</desc>
+							<desc xml:lang="en">media duration : each media could have a different
+								duration </desc>
+							<datatype>
+								<dataRef name="duration"/>
+							</datatype>
+						</attDef>
+						<attDef ident="url" mode="change">
+							<datatype>
+								<dataRef name="anyURI"/>
+							</datatype>
+						</attDef>
+					</attList>
+				</elementSpec>
+
+				<elementSpec ident="desc" corresp="quality">
+					<attList>
+						<attDef ident="type" usage="req" mode="change">
+							<valList>
+								<valItem ident="quality"/>
+							</valList>
+						</attDef>
+						<attDef ident="subtype" usage="req" mode="change">
+							<valList>
+								<valItem ident="less_noisy">
+									<desc xml:lang="fr">inaudible ou bruité moins de 5%</desc>
+									<desc xml:lang="en">inaudible or noisy less than 5%</desc>
+								</valItem>
+								<valItem ident="noisy">
+									<desc xml:lang="fr">inaudible ou bruité plus de 5%</desc>
+									<desc xml:lang="en">inaudible or noisy more than 5%</desc>
+								</valItem>
+								<valItem ident="soundproof_room">
+									<desc xml:lang="fr">chambre sourde</desc>
+									<desc xml:lang="en">soundproof</desc>
+								</valItem>
+								<valItem ident="OTHER">
+									<desc xml:lang="fr">Autre</desc>
+									<desc xml:lang="en">Other</desc>
+								</valItem>
+							</valList>
+						</attDef>
+					</attList>
+				</elementSpec>
+
+				<elementSpec ident="desc" corresp="anonymization">
+					<attList>
+						<attDef ident="type" usage="req" mode="change">
+							<valList>
+								<valItem ident="anonymization"/>
+							</valList>
+						</attDef>
+						<attDef ident="subtype" usage="req" mode="change">
+							<valList>
+								<valItem ident="anonymization">
+									<desc xml:lang="fr">anonymisée</desc>
+									<desc xml:lang="en">anonymized</desc>
+								</valItem>
+								<valItem ident="no_anonymization">
+									<desc xml:lang="fr">non anonymisée</desc>
+									<desc xml:lang="en">no anonymization</desc>
+								</valItem>
+								<valItem ident="partially_anonymized">
+									<desc xml:lang="fr">anonymisation partielle</desc>
+									<desc xml:lang="en">partially anonymized</desc>
+								</valItem>
+								<valItem ident="OTHER">
+									<desc xml:lang="fr">Autre</desc>
+									<desc xml:lang="en">Other</desc>
+								</valItem>
+							</valList>
+						</attDef>
+					</attList>
+				</elementSpec>
+
+			</schemaSpec>
+		</body>
+	</text>
 </TEI>

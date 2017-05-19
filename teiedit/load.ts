@@ -142,7 +142,7 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc) {
         /* ICI on applique un paramètre de l'application
          * les éléments non renseignés sont inclus pas défaut ou non
          */
-        c.validatedES = odd.odd.defaultNewElement ? 'ok' : ''; // l'élément n'existait pas et il n'est pas validé par l'utilisateur
+        c.validatedES = odd.odd.params.defaultNewElement ? 'ok' : ''; // l'élément n'existait pas et il n'est pas validé par l'utilisateur
         for (let ec of c.content.sequencesRefs) {
             // ec au format ElementCount
             // load content

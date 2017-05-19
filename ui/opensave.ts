@@ -109,6 +109,10 @@ export function alertUser(s) {
     //    dialog.showErrorBox('teiEdit', s);
 }
 
+export function alertUserModal(s, fun: any) {
+    picoModal(s).afterClose(() => fun()).show();
+}
+
 export function openLocalFile(fn) {
     // for compatibility
 }

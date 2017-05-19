@@ -7,6 +7,7 @@ import * as odd from '../teiedit/odd';
 import * as edit from '../teiedit/edit';
 import * as syscall from './opensave';
 import * as help from './help';
+let picoModal = require('../js/picoModal.js');
 
 function bodyKeys(e) {
 /*    
@@ -72,23 +73,164 @@ function oddPartDesc() {
     });
 }
 
+// to check if parameters are changed
+let changeParams = false;
+
 function setLeftShift(e) {
 //    console.log('leftshift', e);
     let v = parseInt(e.target.value);
-    if (!isNaN(v) && v >= 0 && v <= 50) odd.odd.leftShift = v;
+    if (!isNaN(v) && v >= 0 && v <= 100) {
+        if (odd.odd.params.leftShift !== v) {
+            changeParams = true;
+            odd.odd.params.leftShift = v;
+        }
+    }
 }
 
+function setDispFPath(e) {
+    let s = document.getElementById('toggleDispFPath');
+    if (odd.odd.params.displayFullpath) {
+        s.innerHTML = '<i class="fa fa-toggle-off" aria-hidden="true"></i>';
+        odd.odd.params.displayFullpath = false;
+    } else {
+        s.innerHTML = '<i class="fa fa-toggle-on" aria-hidden="true"></i>';
+        odd.odd.params.displayFullpath = true;
+    }
+    changeParams = true;
+}
+
+function setDefNewElt(e) {
+    let s = document.getElementById('toggleDefNewElt');
+    if (odd.odd.params.defaultNewElement) {
+        s.innerHTML = '<i class="fa fa-toggle-off" aria-hidden="true"></i>';
+        odd.odd.params.defaultNewElement = false;
+    } else {
+        s.innerHTML = '<i class="fa fa-toggle-on" aria-hidden="true"></i>';
+        odd.odd.params.defaultNewElement = true;
+    }
+    changeParams = true;
+}
+
+function setValReq(e) {
+    let s = document.getElementById('toggleDefValReq');
+    if (odd.odd.params.validateRequired) {
+        s.innerHTML = '<i class="fa fa-toggle-off" aria-hidden="true"></i>';
+        odd.odd.params.validateRequired = false;
+    } else {
+        s.innerHTML = '<i class="fa fa-toggle-on" aria-hidden="true"></i>';
+        odd.odd.params.validateRequired = true;
+    }
+    changeParams = true;
+}
+
+function setLgEng(e) {
+    let s = document.getElementById('toggleLgEng');
+    if (odd.odd.params.language === 'en') {
+        s.innerHTML = '<i class="fa fa-toggle-off" aria-hidden="true"></i>';
+        odd.odd.params.language = 'fr';
+    } else {
+        s.innerHTML = '<i class="fa fa-toggle-on" aria-hidden="true"></i>';
+        odd.odd.params.language = 'en';
+    }
+    changeParams = true;
+}
+
+let paramsPicomodal = null;
+
 function oddParams() {
-    syscall.alertUser(`
-<h2>Paramètres</h2>
+    if (!paramsPicomodal) {
+        // for the first time do not used DOM functions
+        // use only picoModal initiatilisation of a HTML string
+let userInfo = `
+<h2 style="margin-top: 0">Paramètres</h2>
 <ul>
-    <li>Afficher les chemins complets <i class="fa fa-toggle-on" aria-hidden="true"></i></li>
-    <li>Décalage en pixels des imbrications: <input type="text" name="leftshift" onchange="window.ui.setLeftShift(event);"/></li>
+    <li onclick="window.ui.setDispFPath();">Afficher les chemins complets <span id="toggleDispFPath">`
+    + ((odd.odd.params.displayFullpath)
+        ? '<i class="fa fa-toggle-on" aria-hidden="true"></i>'
+        : '<i class="fa fa-toggle-off" aria-hidden="true"></i>')
++ `</span></li>
+    <li>Décalage en pixels des imbrications: <input type="number" min="0" max="100" value="`
+    + odd.odd.params.leftShift 
++ `" name="leftshift" onchange="window.ui.setLeftShift(event);"/></li>
+    <li onclick="window.ui.setDefNewElt();">Elements vides ou absents inclus automatiquement <span id="toggleDefNewElt">`
+    + ((odd.odd.params.defaultNewElement)
+        ? '<i class="fa fa-toggle-on" aria-hidden="true"></i>'
+        : '<i class="fa fa-toggle-off" aria-hidden="true"></i>')
++ `</span></li>
+    <li onclick="window.ui.setValReq();">Autoriser la suppression des éléments obligatoires <span id="toggleDefValReq">`
+    + ((odd.odd.params.validateRequired)
+        ? '<i class="fa fa-toggle-on" aria-hidden="true"></i>'
+        : '<i class="fa fa-toggle-off" aria-hidden="true"></i>')
++ `</span></li>
+    <li onclick="window.ui.setLgEng();">English version of ODD <span id="toggleLgEng">`
+    + ((odd.odd.params.language === 'en')
+        ? '<i class="fa fa-toggle-on" aria-hidden="true"></i>'
+        : '<i class="fa fa-toggle-off" aria-hidden="true"></i>')
++ `</span></li>
 </ul>
-`);
+`;
+        changeParams = false;
+        paramsPicomodal = picoModal({
+            content: userInfo,
+            closeHtml: '<span>Ok</span>',
+            closeStyles: {
+//                position: "absolute",
+                top: "-10px",
+                right: "-10px",
+                background: "#eee",
+                padding: "5px 10px",
+                cursor: "pointer",
+                borderRadius: "5px",
+                border: "1px solid #ccc"
+            }
+        });
+    }
+    paramsPicomodal.afterClose( () => {
+        if (changeParams) {
+            saveParams();
+            events.saveStorage();
+            events.reLoad(null);
+        }
+    }).show();
+}
+
+function saveParams() {
+    localStorage.setItem("defaultNewElement", odd.odd.params.defaultNewElement.toString());
+    localStorage.setItem("leftShift", odd.odd.params.leftShift.toString());
+    localStorage.setItem("validateRequired", odd.odd.params.validateRequired.toString());
+    localStorage.setItem("language", odd.odd.params.language);
+    localStorage.setItem("displayFullpath", odd.odd.params.displayFullpath.toString());
+    localStorage.setItem("groupingStyle", odd.odd.params.groupingStyle);
+}
+
+function loadParams() {
+    // load params.
+    let v = localStorage.getItem("defaultNewElement");
+    if (v === 'false')
+        odd.odd.params.defaultNewElement = false;
+    v = localStorage.getItem("validateRequired");
+    if (v === 'true')
+        odd.odd.params.validateRequired = true;
+    v = localStorage.getItem("displayFullpath");
+    if (v === 'false')
+        odd.odd.params.displayFullpath = false;
+    v = localStorage.getItem("groupingStyle");
+    if (v)
+        odd.odd.params.groupingStyle = v;
+    v = localStorage.getItem("language");
+    if (v === 'en')
+        odd.odd.params.language = v;
+    v = localStorage.getItem("leftShift");
+    if (v !== '') {
+        let vi = parseInt(v);
+        if (!isNaN(vi) && vi >= 0 && vi <= 100)
+            odd.odd.params.leftShift = vi;
+    }
 }
 
 export function init() {
+    // load params
+    loadParams();
     // load previous data
     events.newFile(null);
     let el;
@@ -121,7 +263,20 @@ export function init() {
     el = document.getElementById('upload-input-transcript');
     el.addEventListener("change", syscall.openLocalFile);
     //
+    // for user interface in html pages
+    window['ui'] = {};
+    window['ui'].setOnOffES = edit.setOnOffES;    
+    window['ui'].setOnOffEC = edit.setOnOffEC;    
+    window['ui'].setText = edit.setText;
+    window['ui'].createEC = edit.createEC;    
+    window['ui'].setAttr = edit.setAttr;
+    window['ui'].toggleES = edit.toggleES;
+    window['ui'].odd = odd.odd;
     window['ui'].setLeftShift = setLeftShift;
+    window['ui'].setDispFPath = setDispFPath;
+    window['ui'].setDefNewElt = setDefNewElt;
+    window['ui'].setValReq = setValReq;
+    window['ui'].setLgEng = setLgEng;
     // for debugging purposes
     window['dbg'] = {};
     window['dbg'].tei = events.teiData;

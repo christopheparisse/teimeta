@@ -551,7 +551,7 @@
 
 				<elementSpec ident="media" module="spoken">
 					<content>
-						<sequence minOccurs="2" maxOccurs="unbounded">
+						<sequence minOccurs="2" maxOccurs="unbound">
 							<elementRef key="desc" corresp="quality"/>
 							<elementRef key="desc" corresp="anonymization"/>
 						</sequence>

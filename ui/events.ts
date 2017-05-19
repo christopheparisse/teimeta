@@ -19,12 +19,12 @@ export let teiData = {
     doc: null,
 };
 
-function finish(err, name, data) {
+function finishLoad(err, name, data) {
     teiData.fileName = name;
     let el = document.getElementById('filename');
     el.innerHTML = "Fichier: " + name;
     load.loadTei(data, teiData);
-    teiData.html = edit.generateHTML(teiData.dataTei);
+    teiData.html = edit.generateHTML(teiData);
     el = document.getElementById('teidata');
     el.innerHTML = teiData.html;
     teiData.new = false;
@@ -36,9 +36,9 @@ export function open() {
     system.chooseOpenFile(function(err, name, data) {
         if (!err) {
             if (!teiData.dataOdd) {
-                newFile(function() { finish(1, null, null); } );
+                newFile(function() { finishLoad(1, null, null); } );
             } else {
-                finish(0, name, data);
+                finishLoad(0, name, data);
             }
         } else
             console.log(name, err);
@@ -61,13 +61,32 @@ export function newFile(callback) {
     }
 }
 
+export function reLoad(callback) {
+    try {
+        let ls = localStorage.getItem("previousODD");
+        let lx = localStorage.getItem("previousXML");
+        let lxname = localStorage.getItem("previousXMLName");
+        if (ls && lx) {
+            var js = JSON.parse(ls);
+            openOddLoad(js.oddName, js.data);
+            finishLoad(0, lxname, lx);
+            if (callback) callback(0);
+        } else {
+            emptyFile();
+        }
+    } catch (error) {
+        console.log(error);
+        emptyFile();
+    }
+}
+
 export function openOddLoad(name, data) {
     teiData.oddName = name;
     let el = document.getElementById('oddname');
     el.innerHTML = "ODD: " + name;
     teiData.dataOdd = odd.loadOdd(data);
     load.loadTei(null, teiData);
-    teiData.html = edit.generateHTML(teiData.dataTei);
+    teiData.html = edit.generateHTML(teiData);
     teiData.fileName = 'nouveau-fichier.xml';
     teiData.new = true;
 
@@ -117,8 +136,13 @@ export function saveAs() {
     });
 };
 
+export function saveStorage() {
+    var ed = tei.generateTEI(teiData);
+    localStorage.setItem("previousXML", ed);
+    localStorage.setItem("previousXMLName", teiData.fileName);
+};
+
 export function save() {
-    var fileok = true;
     if (!teiData.fileName) {
             var ed = tei.generateTEI(teiData);
             system.saveFile(teiData.fileName, ed, null);
