@@ -50,6 +50,12 @@ export function newFile(callback) {
         let ls = localStorage.getItem("previousODD");
         if (ls) {
             var js = JSON.parse(ls);
+            if (!js.version || js.version !== odd.version) {
+                console.log('ancienne version de localstorage');
+                emptyFile();
+                if (callback) callback(0);
+                return;
+            }
             openOddLoad(js.oddName, js.data);
             if (callback) callback(0);
         } else {
@@ -58,6 +64,7 @@ export function newFile(callback) {
     } catch (error) {
         console.log(error);
         emptyFile();
+        if (callback) callback(0);
     }
 }
 
@@ -68,6 +75,12 @@ export function reLoad(callback) {
         let lxname = localStorage.getItem("previousXMLName");
         if (ls && lx) {
             var js = JSON.parse(ls);
+            if (!js.version || js.version !== odd.version) {
+                console.log('ancienne version de localstorage');
+                emptyFile();
+                if (callback) callback(0);
+                return;
+            }
             openOddLoad(js.oddName, js.data);
             finishLoad(0, lxname, lx);
             if (callback) callback(0);
@@ -94,17 +107,14 @@ export function openOddLoad(name, data) {
     el.innerHTML = "Fichier: " + teiData.fileName;
     el = document.getElementById('teidata');
     el.innerHTML = teiData.html;
-    //console.log("openOddLoad ODD", teiData.dataOdd);
-    //console.log("openOddLoad TEI", teiData.dataTei);
-    //console.log(edit.values);
+    let js = JSON.stringify({data: data, oddName: name, version: odd.version});
+    localStorage.setItem("previousODD", js);
 }
 
 export function openOdd() {
     system.chooseOpenFile(function(err, name, data) {
         if (!err) {
             openOddLoad(name, data);
-            let js = JSON.stringify({data: data, oddName: name});
-            localStorage.setItem("previousODD", js);
         } else
             console.log(name, err);
     });

@@ -9,6 +9,8 @@
 
 import * as system from '../ui/opensave';
 
+export let version = "2"; // version du format
+
 let dom = require('xmldom').DOMParser;
 let xpath = require('xpath');
 let select;

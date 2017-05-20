@@ -90,10 +90,10 @@ function setLeftShift(e) {
 function setDispFPath(e) {
     let s = document.getElementById('toggleDispFPath');
     if (odd.odd.params.displayFullpath) {
-        s.innerHTML = '<i class="fa fa-toggle-off" aria-hidden="true"></i>';
+        s.innerHTML = '<i class="fa fa-square-o" aria-hidden="true"></i>';
         odd.odd.params.displayFullpath = false;
     } else {
-        s.innerHTML = '<i class="fa fa-toggle-on" aria-hidden="true"></i>';
+        s.innerHTML = '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
         odd.odd.params.displayFullpath = true;
     }
     changeParams = true;
@@ -102,10 +102,10 @@ function setDispFPath(e) {
 function setDefNewElt(e) {
     let s = document.getElementById('toggleDefNewElt');
     if (odd.odd.params.defaultNewElement) {
-        s.innerHTML = '<i class="fa fa-toggle-off" aria-hidden="true"></i>';
+        s.innerHTML = '<i class="fa fa-square-o" aria-hidden="true"></i>';
         odd.odd.params.defaultNewElement = false;
     } else {
-        s.innerHTML = '<i class="fa fa-toggle-on" aria-hidden="true"></i>';
+        s.innerHTML = '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
         odd.odd.params.defaultNewElement = true;
     }
     changeParams = true;
@@ -114,10 +114,10 @@ function setDefNewElt(e) {
 function setValReq(e) {
     let s = document.getElementById('toggleDefValReq');
     if (odd.odd.params.validateRequired) {
-        s.innerHTML = '<i class="fa fa-toggle-off" aria-hidden="true"></i>';
+        s.innerHTML = '<i class="fa fa-square-o" aria-hidden="true"></i>';
         odd.odd.params.validateRequired = false;
     } else {
-        s.innerHTML = '<i class="fa fa-toggle-on" aria-hidden="true"></i>';
+        s.innerHTML = '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
         odd.odd.params.validateRequired = true;
     }
     changeParams = true;
@@ -126,10 +126,10 @@ function setValReq(e) {
 function setLgEng(e) {
     let s = document.getElementById('toggleLgEng');
     if (odd.odd.params.language === 'en') {
-        s.innerHTML = '<i class="fa fa-toggle-off" aria-hidden="true"></i>';
+        s.innerHTML = '<i class="fa fa-square-o" aria-hidden="true"></i>';
         odd.odd.params.language = 'fr';
     } else {
-        s.innerHTML = '<i class="fa fa-toggle-on" aria-hidden="true"></i>';
+        s.innerHTML = '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
         odd.odd.params.language = 'en';
     }
     changeParams = true;
@@ -146,26 +146,26 @@ let userInfo = `
 <ul>
     <li onclick="window.ui.setDispFPath();">Afficher les chemins complets <span id="toggleDispFPath">`
     + ((odd.odd.params.displayFullpath)
-        ? '<i class="fa fa-toggle-on" aria-hidden="true"></i>'
-        : '<i class="fa fa-toggle-off" aria-hidden="true"></i>')
+        ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
+        : '<i class="fa fa-square-o" aria-hidden="true"></i>')
 + `</span></li>
     <li>Décalage en pixels des imbrications: <input type="number" min="0" max="100" value="`
     + odd.odd.params.leftShift 
 + `" name="leftshift" onchange="window.ui.setLeftShift(event);"/></li>
     <li onclick="window.ui.setDefNewElt();">Elements vides ou absents inclus automatiquement <span id="toggleDefNewElt">`
     + ((odd.odd.params.defaultNewElement)
-        ? '<i class="fa fa-toggle-on" aria-hidden="true"></i>'
-        : '<i class="fa fa-toggle-off" aria-hidden="true"></i>')
+        ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
+        : '<i class="fa fa-square-o" aria-hidden="true"></i>')
 + `</span></li>
     <li onclick="window.ui.setValReq();">Autoriser la suppression des éléments obligatoires <span id="toggleDefValReq">`
     + ((odd.odd.params.validateRequired)
-        ? '<i class="fa fa-toggle-on" aria-hidden="true"></i>'
-        : '<i class="fa fa-toggle-off" aria-hidden="true"></i>')
+        ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
+        : '<i class="fa fa-square-o" aria-hidden="true"></i>')
 + `</span></li>
     <li onclick="window.ui.setLgEng();">English version of ODD <span id="toggleLgEng">`
     + ((odd.odd.params.language === 'en')
-        ? '<i class="fa fa-toggle-on" aria-hidden="true"></i>'
-        : '<i class="fa fa-toggle-off" aria-hidden="true"></i>')
+        ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
+        : '<i class="fa fa-square-o" aria-hidden="true"></i>')
 + `</span></li>
 </ul>
 `;
