@@ -8,6 +8,7 @@
  */
 
 import * as odd from './odd';
+import * as schema from './schema';
 import * as tei from './tei';
 import * as load from './load';
 import * as system from '../ui/opensave';
@@ -20,6 +21,10 @@ export function createID() {
     lastId++;
     return id;
 }
+
+// variantes de forme des icones
+// fa-circle-o fa-minus-circle fa-minus-square-o
+// fa-circle fa-thumbs-o-up fa-check-square
 
 // affichage de la validation ou non des elementSpec
 // la validation ou non passe par un changement de forme
@@ -47,25 +52,25 @@ export function setOnOffES(event, id, usage) {
 }
 
 export function setOnOffEC(event, id) {
-    setOnOff(event, id, 'fa-circle fa-color-expand', 'fa-circle-o fa-color-expand');
+    setOnOff(event, id, 'fa-check-square fa-color-expand', 'fa-minus-square-o fa-color-expand');
 }
 
 export function createEC(event, id) {
     let c = values[id];
-    // values[uniqCreate] = {elt: ec.model, tab: ec.eCI, id: uniqCreate};
-    let eci = new odd.ElementCountItem();
+    // values[uniqCreate] = {elt: ec.model, tab: ec.eCI, id: uniqCreate, path: ec.absolutepath};
+    let eci = new schema.ElementCountItem();
     eci.type = c.elt.type;
     if (c.elt.type === 'elementRef') {
         eci.model = c.elt.model;
         let h = load.ptrListElementSpec[eci.model];
-        eci.element = load.loadElementSpec(h, null, "///", "0", "unbounded");
+        eci.element = load.loadElementSpec(h, null, c.path + '/' + eci.model, "0", "unbounded");
     } else {
         eci.model = [];
         eci.element = [];
         for (let ece of c.elt.model) {
             eci.model.push(ece);
             let h = load.ptrListElementSpec[ece];
-            eci.element.push(load.loadElementSpec(h, null, "///", "0", "unbounded"));
+            eci.element.push(load.loadElementSpec(h, null, c.path + '/' + ece, "0", "unbounded"));
         }
     }
     
@@ -77,8 +82,8 @@ export function createEC(event, id) {
     eci.validatedECID = createID();
     values[eci.validatedECID] = false;
     c.tab.push(eci);
-    let s = '<div class="headCM">\n';
-    s += '<i class="validate fa fa-circle-o fa-choice-not-validated fa-color-expand " '
+    let s = '<div class="headSequence">\n';
+    s += '<i class="validate fa fa-minus-square-o fa-choice-not-validated fa-color-expand " '
         + 'onclick="window.ui.setOnOffEC(event, \'' + eci.validatedECID + '\')"></i>\n';
     s += '<div class="content">\n';
     if (eci.type === 'elementRef') {
@@ -148,7 +153,7 @@ export function generateHTML(teiData) {
     return generateElement(teiData.dataTei);
 }
 
-function generateContent(ct) {
+function generateContent(ct, abspath) {
     let s = '';
     for (let ec of ct.sequencesRefs) {
         if (ec.minOccurs === '1' && ec.maxOccurs === '1') {
@@ -162,21 +167,21 @@ function generateContent(ct) {
             }
             s += '</div>';
         } else {
-            s += generateMultiple(ec);
+            s += generateMultiple(ec, abspath);
         }
     }
     return s;
 }
 
-function generateMultiple(ec) {
+function generateMultiple(ec, abspath) {
     // ec est un ElementCount
     let s = '';
     let uniqCreate = createID();
     s += '<div class="contentCountMany" id="' + uniqCreate + '" >\n';
     // on peut en rajouter ... ou supprimer
-    s += '<div class="plusCM"><i class="create fa fa-plus fa-color-expand" '
+    s += '<div class="plusCM"><i class="create fa fa-plus-square fa-color-expand" '
         + 'onclick="window.ui.createEC(event, \'' + uniqCreate + '\')"></i></div>\n';
-    values[uniqCreate] = {elt: ec.eCI[0], tab: ec.eCI, id: uniqCreate};
+    values[uniqCreate] = {elt: ec.eCI[0], tab: ec.eCI, id: uniqCreate, path: abspath};
     for (let i in ec.eCI) {
         let uniq = createID();
         ec.eCI[i].validatedECID = uniq;
@@ -184,11 +189,12 @@ function generateMultiple(ec) {
         values[uniq] = ec.eCI[i].validatedEC;
         // l'élément peut être validé ou non
         if (values[uniq])
-            s += '<i class="validate fa fa-circle fa-choice-validated fa-color-expand" '
+            s += '<i class="validate fa fa-check-square fa-choice-validated fa-color-expand" '
                 + 'onclick="window.ui.setOnOffEC(event, \'' + uniq + '\')"></i>\n';
         else
-            s += '<i class="validate fa fa-circle-o fa-choice-not-validated fa-color-expand" '
+            s += '<i class="validate fa fa-minus-square-o fa-choice-not-validated fa-color-expand" '
                 + 'onclick="window.ui.setOnOffEC(event, \'' + uniq + '\')"></i>\n';
+        s += '<div class="content">\n';
         if (ec.eCI[i].type === 'elementRef') {
             s += generateElement(ec.eCI[i].element);
         } else {
@@ -196,6 +202,7 @@ function generateMultiple(ec) {
                 s += generateElement(ece);
             }
         }
+        s += '</div>\n';
         s += '</div>\n';
     }
     s += '</div>\n';
@@ -278,7 +285,7 @@ function editAttr(elt) {
             elt.attr[i].valueID = uniq;
             if (elt.attr[i].desc) {
                 s += '<label for="' + uniq + '">';
-                s += '<b>' + elt.attr[i].desc.text(odd.odd.params.language) + '</b>';
+                s += '<b>' + odd.textDesc(elt.attr[i].desc, odd.odd.params.language) + '</b>';
                 s +='</label>\n';
             }
             s +='<select class="listattr" id="' + uniq + '" ';
@@ -299,7 +306,7 @@ function editAttr(elt) {
             elt.attr[i].valueID = uniq;
             if (elt.attr[i].desc) {
                 s += '<label for="' + uniq + '">';
-                s += '<b>' + elt.attr[i].desc.text(odd.odd.params.language) + '</b>';
+                s += '<b>' + odd.textDesc(elt.attr[i].desc, odd.odd.params.language) + '</b>';
                 s += '</label>\n';
             }
             s += '<input name="' + uniq + '" id="' + uniq + '"';
@@ -358,7 +365,7 @@ function generateElement(elt) {
         s += '<span class="nodeAbspath">' + elt.absolutepath + '</span>\n';
     s += '<div class="toggle" id="show' + uniq + '">';
     // description
-    if (elt.desc) s += '<div class="eltDesc">' + elt.desc.text(odd.odd.params.language) + '</div>\n';
+    if (elt.desc) s += '<div class="eltDesc">' + odd.textDesc(elt.desc, odd.odd.params.language) + '</div>\n';
     // champ texte du noeud
     if (elt.content && elt.content.datatype) s += editDataType(elt);
     // Attributes
@@ -366,7 +373,7 @@ function generateElement(elt) {
     // enfants
     if (elt.content && elt.content.sequencesRefs.length > 0) {
         s += '<div class="nodeContent">';
-        s += generateContent(elt.content);
+        s += generateContent(elt.content, elt.absolutepath);
         s += '</div>\n';
     }
     s += '</div>\n';

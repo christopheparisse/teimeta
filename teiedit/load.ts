@@ -8,6 +8,7 @@
 
 import * as edit from './edit';
 import * as odd from './odd';
+import * as schema from './schema';
 import * as system from '../ui/opensave';
 
 let dom = require('xmldom').DOMParser;
@@ -92,7 +93,7 @@ export function loadTei(data, teiData) {
 }
 
 export function loadElementSpec(es, node, path, minOcc, maxOcc) {
-    let c = odd.copyElementSpec(es);
+    let c = schema.copyElementSpec(es);
     // creation d'un élément initial vide pour le noeud courant
     c.node = node;
     if (minOcc === '1')
@@ -159,7 +160,7 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc) {
 function loadElementRef(ec, node, path) {
     // ec est un ElementCount
     // préparer le premier élément ElementCountItem
-    let eci = new odd.ElementCountItem();
+    let eci = new schema.ElementCountItem();
     // ec.model contient le nom de l'elementSpec
     eci.type = 'elementRef';
     if (ec.minOccurs === '1')
@@ -190,7 +191,7 @@ function loadElementRef(ec, node, path) {
         }
         // préparer les nouveaux éléments
         // ec est un ElementCount
-        eci = new odd.ElementCountItem();
+        eci = new schema.ElementCountItem();
         eci.type = 'elementRef';
         if (ec.minOccurs === '2')
             eci.validatedEC = true;
@@ -212,21 +213,24 @@ function loadSequence(ec, node, path) {
     let maxlg = 0;
     for (let k = 0; k < nnodes.length ; k++)
         if (maxlg < nnodes[k].length) maxlg = nnodes[k].length;
-    if (maxlg > 1 && ec.maxOccurs === '1') {
+    /*
+    if (nnodes.length > 1 && ec.maxOccurs === '1') {
         for (let k = 0; k < nnodes.length ; k++) {
             if (nnodes[k].length > 1) {
                 system.alertUser("Attention: trop d'éléments pour " + ec.model[k] + " dans " + path + '/' + ec.model[k]);
             }
         }
     }
+    */
 
+    
     // initialiser le tableau des descendants
     ec.eCI = [];
    // remplir un node s'il n'y en a aucun
     if (!node || maxlg === 0) {
         // préparer la première séquence
         // ec est un ElementCount
-        let eci = new odd.ElementCountItem();
+        let eci = new schema.ElementCountItem();
         eci.type = 'sequence';
         if (ec.minOccurs === '1') eci.validatedEC = true; // ce node doit exister
         ec.eCI.push(eci);
@@ -243,7 +247,7 @@ function loadSequence(ec, node, path) {
             // cas particulier des noeuds avec 2 éléments obligatoires
             // préparer la deuxième séquence
             // ec est un ElementCount
-            let eci = new odd.ElementCountItem();
+            let eci = new schema.ElementCountItem();
             eci.type = 'sequence';
             eci.validatedEC = true; // ce node doit exister
             ec.eCI.push(eci);
@@ -262,7 +266,7 @@ function loadSequence(ec, node, path) {
 
     // générer un ensemble de eci dans ec.eCI
     for (let i=0; i < maxlg ; i++) {            
-        let eci = new odd.ElementCountItem();
+        let eci = new schema.ElementCountItem();
         eci.type = 'sequence';
         eci.validatedEC = true; // comme les nodes existent ils sont tous considérés comme valides
         eci.element = [];

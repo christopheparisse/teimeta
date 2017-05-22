@@ -63,13 +63,13 @@ function oddMedia() {
 
 function oddTeiOral() {
     readTextFile('http://ct3.ortolang.fr/teimeta/teioral.odd', function(text) {
-        events.openOddLoad('Odd prédéfini Média', text);
+        events.openOddLoad('Odd prédéfini Tei Oral', text);
     });
 }
 
 function oddPartDesc() {
     readTextFile('http://ct3.ortolang.fr/teimeta/partdesc.odd', function(text) {
-        events.openOddLoad('Odd prédéfini Média', text);
+        events.openOddLoad('Odd prédéfini Participants', text);
     });
 }
 

@@ -140,12 +140,15 @@
 				<elementSpec ident="recording" module="spoken">
 					<content>
 						<elementRef key="media" minOccurs="1" maxOccurs="1"/>
+						<elementRef key="p" minOccurs="0" maxOccurs="1"/>
 					</content>
 				</elementSpec>
 
 				<elementSpec ident="media" module="spoken">
+                    <desc xml:lang="fr">Média : chaque media peut avoir une durée différente</desc>
+                    <desc xml:lang="en">Media: each media could have a different duration </desc>
 					<content>
-						<sequence minOccurs="2" maxOccurs="unbound">
+						<sequence minOccurs="1" maxOccurs="1">
 							<elementRef key="desc" corresp="quality"/>
 							<elementRef key="desc" corresp="anonymization"/>
 						</sequence>
@@ -170,15 +173,15 @@
 							</valList>
 						</attDef>
 						<attDef ident="dur-iso" usage="req" mode="change">
-							<desc xml:lang="fr">durée du média : chaque medias peut avoir une durée
-								différente</desc>
-							<desc xml:lang="en">media duration : each media could have a different
-								duration </desc>
+							<desc xml:lang="fr">durée du média</desc>
+							<desc xml:lang="en">media duration</desc>
 							<datatype>
 								<dataRef name="duration"/>
 							</datatype>
 						</attDef>
 						<attDef ident="url" mode="change">
+							<desc xml:lang="fr">url du média</desc>
+							<desc xml:lang="en">media url</desc>
 							<datatype>
 								<dataRef name="anyURI"/>
 							</datatype>
@@ -244,6 +247,12 @@
 							</valList>
 						</attDef>
 					</attList>
+				</elementSpec>
+
+				<elementSpec ident="p" module="core">
+					<content>
+						<textNode/>
+					</content>
 				</elementSpec>
 
 			</schemaSpec>

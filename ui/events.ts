@@ -4,6 +4,7 @@
 
 import * as edit from '../teiedit/edit';
 import * as odd from '../teiedit/odd';
+import * as schema from '../teiedit/schema';
 import * as tei from '../teiedit/tei';
 import * as load from '../teiedit/load';
 import * as system from './opensave';
@@ -50,7 +51,7 @@ export function newFile(callback) {
         let ls = localStorage.getItem("previousODD");
         if (ls) {
             var js = JSON.parse(ls);
-            if (!js.version || js.version !== odd.version) {
+            if (!js.version || js.version !== schema.version) {
                 console.log('ancienne version de localstorage');
                 emptyFile();
                 if (callback) callback(0);
@@ -75,7 +76,7 @@ export function reLoad(callback) {
         let lxname = localStorage.getItem("previousXMLName");
         if (ls && lx) {
             var js = JSON.parse(ls);
-            if (!js.version || js.version !== odd.version) {
+            if (!js.version || js.version !== schema.version) {
                 console.log('ancienne version de localstorage');
                 emptyFile();
                 if (callback) callback(0);
@@ -107,7 +108,7 @@ export function openOddLoad(name, data) {
     el.innerHTML = "Fichier: " + teiData.fileName;
     el = document.getElementById('teidata');
     el.innerHTML = teiData.html;
-    let js = JSON.stringify({data: data, oddName: name, version: odd.version});
+    let js = JSON.stringify({data: data, oddName: name, version: schema.version});
     localStorage.setItem("previousODD", js);
 }
 
