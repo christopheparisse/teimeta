@@ -24,6 +24,8 @@ export class SCHEMA {
     rootTEI = null; // pointeur de base du schema (attribut start de schemaSpec)
     rootIdent = ''; // valeur de l'attribut ident du schemaSpec de root
     params =  new PARAMS();
+    namespace = ''; // namespace of the resulting xml
+    entries = null; // entry points other than rootTEI
 
     init() {
         this.listElementSpec = {}; // avoir tous les elementSpec sous la main et les controler

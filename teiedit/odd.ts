@@ -287,6 +287,15 @@ export function loadOdd(data) {
     // récupérer attribut ident
     odd.rootIdent = schemaSpec[0].getAttribute("ident");
     let eSpec = getChildrenByName(schemaSpec[0], 'elementSpec');
+    // récupérer attribut namespace
+    odd.namespace = schemaSpec[0].getAttribute("ns");
+    // récupérer attribut other entries (corresp)
+    attr = schemaSpec[0].getAttribute("corresp");
+    if (attr) {
+        let n = attr.split(' ');
+        if (n>1)
+            odd.entries = n;
+    }
     // lire les elementSpec
     for (let i=0; i < eSpec.length ; i++) {
         var es = new schema.ElementSpec();

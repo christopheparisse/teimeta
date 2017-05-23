@@ -106,7 +106,7 @@
 			</egXML>
 
 			<!-- definition de TEI_CORPO_METADATA-->
-			<schemaSpec ident="TEI_CORPO_METADATA" start="TEI" ns="http://www.tei-c.org/ns/1.0">
+			<schemaSpec ident="TEI_CORPO_METADATA" start="TEI" ns="http://www.tei-c.org/ns/1.0" corresp="/TEI/profileDesc/particDesc /TEI/fileDesc/sourceDesc">
 				<!-- ajouter teiCorpus par la suite si collections -->
 
 				<!-- required modules -->
@@ -134,6 +134,11 @@
 				<moduleRef key="transcr"/>
 				<!-- utilisé ???-->
 
+				<!-- exemple d'include pour une implémentation future
+					<specGrpRef target="media.odd"/>
+					<specGrpRef target="partdesc.odd"/>
+				-->
+				
 				<!-- structure generale TEI -->
 				<elementSpec ident="TEI" module="textstructure" mode="change">
 					<content>
@@ -548,6 +553,7 @@
 
 				<elementSpec ident="recording" module="spoken">
 					<content>
+						<elementRef key="p" minOccurs="0" maxOccurs="1"/>
 						<elementRef key="media" minOccurs="1" maxOccurs="1"/>
 					</content>
 				</elementSpec>

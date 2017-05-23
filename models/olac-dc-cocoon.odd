@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml"
+	schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+  <teiHeader>
+      <fileDesc>
+         <titleStmt>
+            <title>Exemple d'édition de fichier Olac</title>
+         </titleStmt>
+         <publicationStmt>
+            <p>Base pour l'édition des documents au format olac pour oai-pmh</p>
+         </publicationStmt>
+         <sourceDesc>
+            <p>Groupe de travail exploration/interopérabilité CORLI</p>
+         </sourceDesc>
+      </fileDesc>
+  </teiHeader>
+  <text>
+      <body>
+         <schemaSpec ident="OLAC" ns="http://www.language-archives.org/OLAC/1.1/" start="olac:olac">
+            <altIdent type="xmlns:olac">http://www.language-archives.org/OLAC/1.1/</altIdent>
+            <altIdent type="xmlns:dc">http://purl.org/dc/elements/1.1/</altIdent>
+            <altIdent type="xmlns:dcterms">http://purl.org/dc/terms/</altIdent>
+            <altIdent type="xsi:schemaLocation">http://www.language-archives.org/OLAC/1.1/ http://www.language-archives.org/OLAC/1.1/olac.xsd</altIdent>
+            <elementSpec ident="olac:olac">
+               
+            </elementSpec>
+      </schemaSpec>
+      </body>
+  </text>
+</TEI>

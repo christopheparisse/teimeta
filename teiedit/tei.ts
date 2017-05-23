@@ -2,6 +2,7 @@
  * SAUVEGARDE DU FICHIER TEI
  */
 
+import * as system from '../ui/opensave';
 import * as odd from './odd';
 import * as edit from './edit';
 
@@ -14,11 +15,29 @@ let basicTEI = '<?xml version="1.0" encoding="UTF-8"?>\
 </TEI>';
 
 export function generateTEI(teiData) {
-    if (!teiData.doc) {
-        teiData.doc = new dom().parseFromString(basicTEI, 'text/xml');
-        teiData.root = teiData.doc.documentElement;
+    let eltspec = teiData.dataTei;
+    if (!edit.values[eltspec.validatedESID]) {
+        console.log(eltspec.absolutepath, " racine non imprimé car non validée ? >", edit.values[eltspec.validatedESID], "<");
+        system.alertUser(eltspec.absolutepath + " racine non imprimé car non validée ? >" + edit.values[eltspec.validatedESID] + "<");
+        return;
     }
-    let s = generateElement(teiData.dataTei, teiData.doc, teiData.root);
+    if (!teiData.doc) {
+        if (teiData.dataOdd.namespace) {
+            let s = '<?xml version="1.0" encoding="UTF-8"?>';
+            s += '<' + teiData.dataOdd.rootTEI + ' xmlns="' + teiData.dataOdd.namespace + '"></' + teiData.dataOdd.rootTEI + '>'
+            teiData.doc = new dom().parseFromString(s, 'text/xml');
+        } else {
+            teiData.doc = new dom().parseFromString(basicTEI, 'text/xml');
+        }
+        teiData.root = teiData.doc.documentElement;
+        eltspec.node = teiData.root;
+    }
+    // first generate the root otherwise it would be duplicated
+    let s = '';
+    s += '<!-- ajout de ' + eltspec.absolutepath + ' -->\n';
+    s += generateFilledElement(eltspec, teiData.doc, eltspec.node);
+    if (eltspec.content)
+        s += generateTEIContent(eltspec.content, teiData.doc, eltspec.node);
     console.log(s);
     // transform doc to text
     console.log(teiData.doc);
