@@ -14,12 +14,36 @@ let basicTEI = '<?xml version="1.0" encoding="UTF-8"?>\
      xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns="http://www.tei-c.org/ns/1.0">\
 </TEI>';
 
+function clean(node) {
+    var nodes=[], values=[];
+    for (let att, i = 0, atts = node.attributes, n = atts.length; i < n; i++) {
+            att = atts[i];
+//            nodes.push(att.nodeName);
+//            values.push(att.nodeValue);
+            if (!/\S/.test(att.nodeValue)) {
+                node.removeAttribute(att.nodeName);
+                i --;
+            }
+    }
+    for (let n = 0; n < node.childNodes.length; n ++) {
+        let child = node.childNodes[n];
+        if (  child.nodeType === 8 
+           || (child.nodeType === 3 && !/\S/.test(child.nodeValue))
+           ) {
+            node.removeChild(child);
+            n --;
+        } else if(child.nodeType === 1) {
+            clean(child);
+        }
+    }
+}
+
 export function generateTEI(teiData) {
     let eltspec = teiData.dataTei;
     if (!edit.values[eltspec.validatedESID]) {
-        console.log(eltspec.absolutepath, " racine non imprimé car non validée ? >", edit.values[eltspec.validatedESID], "<");
-        system.alertUser(eltspec.absolutepath + " racine non imprimé car non validée ? >" + edit.values[eltspec.validatedESID] + "<");
-        return;
+        console.log(eltspec.absolutepath, " racine imprimée bien que non validée");
+        //system.alertUser(eltspec.absolutepath + " racine non imprimé car non validée ? >" + edit.values[eltspec.validatedESID] + "<");
+        //return;
     }
     if (!teiData.doc) {
         if (teiData.dataOdd.namespace) {
@@ -41,6 +65,11 @@ export function generateTEI(teiData) {
     console.log(s);
     // transform doc to text
     console.log(teiData.doc);
+    /*
+    var sr = new XMLSerializer();
+    var str = sr.serializeToString(teiData.doc.documentElement);
+    return str;
+    */
     return teiData.doc.toString();
 }
 
@@ -61,7 +90,12 @@ function generateElement(espec, doc, node) {
             s += generateTEIContent(espec.content, doc, current);
         }
     } else {
+        // supprimer le noeud si c'est autorisé
         console.log(espec.absolutepath, " non imprimé car non validé: ", edit.values[espec.validatedESID]);
+        if (espec.node && odd.odd.params.canRemove) {
+            espec.node.parentNode.removeChild(espec.node);
+            espec.node = null;
+        }
     }
     return s;
 }
@@ -189,7 +223,7 @@ function generateFilledElement(elt, doc, node) {
     // attributs
     for (let i = 0; i < elt.attr.length; i++) {
         if (elt.attr[i].ident) {
-            if (!elt.attr[i].editing) {
+            if (!elt.attr[i].datatype) {
                 elt.attr[i].value = elt.attr[i].rend;
             } else {
                 elt.attr[i].value = entities.encodeXML(edit.values[elt.attr[i].valueID]);

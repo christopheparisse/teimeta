@@ -16,6 +16,7 @@ export class PARAMS {
     validateRequired = false; // si true on a le droit de ne pas valider (de supprimer) les éléments obligatoires
     language = 'fr'; // nom de la langue des champs desc
     displayFullpath = true; // affichage ou non du chemin complet des tags
+    canRemove = false; // allows to remove existing nodes
 }
 
 export class SCHEMA {
@@ -107,8 +108,8 @@ export class AttrDef {
     mode = '';
     desc = null;
     items = [];
+    datatype = '';
     // Informations pour éditer la TEI
-    editing = '';
     valueID = '';
     value = '';
 }
@@ -186,7 +187,7 @@ function copyAttr(oldattr): any {
         cp.mode = obj.mode;
         cp.desc = obj.desc;
         cp.items = obj.items; // les items ne sont pas modifiés
-        cp.editing = obj.editing;
+        cp.datatype = obj.datatype;
         cp.valueID = obj.valueID;
         cp.value = obj.value;
         newattr.push(cp);

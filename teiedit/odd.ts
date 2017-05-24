@@ -65,7 +65,12 @@ function readElementSpec(elementspec, node) {
         for (let i in ad) {
             let adv = new schema.AttrDef();
             readAttrDef(adv, ad[i]);
-            valList(adv, ad[i]);
+            let n = valList(adv, ad[i]);
+            if (n > 0) {
+                // mettre une valeur par défaut s'il y en a une
+                if (adv.datatype !== 'openlist')
+                    adv.datatype = 'list';
+            }
             elementspec.attr.push(adv);
         }
     }
@@ -80,15 +85,25 @@ function getDataRef(node) : string {
         case 'string':
             return 'string';
         case 'decimal':
-            return 'decimal';
+            return 'number';
         case 'NCName':
             return 'NCName';
         case 'integer':
-            return 'integer';
+            return 'number';
+        case 'number':
+            return 'number';
         case 'anyURI':
             return 'anyURI';
         case 'duration':
             return 'duration';
+        case 'list':
+            return 'list';
+        case 'openlist':
+            return 'openlist';
+        case 'date':
+            return 'date';
+        case 'languagecode':
+            return 'languagecode';
         default:
             console.log('unknow type for dataRef:', n, 'in', node.tagName);
             return 'string';
@@ -132,7 +147,8 @@ function readContent(content, node) {
         if (n > 0) {
             content.vallist = vl;
             // mettre une valeur par défaut s'il y en a une
-            content.datatype = 'list';
+            if (content.datatype !== 'openlist')
+                content.datatype = 'list';
         }
     }
     return d.length;
@@ -223,7 +239,7 @@ function readAttrDef(attrDef, node) {
     // le champ datatype
     let a = getChildrenByName(node, 'datatype');
     if (a.length > 0) {
-        attrDef.editing = getDataRef(a[0]);
+        attrDef.datatype = getDataRef(a[0]);
     }
 }
 
@@ -247,7 +263,6 @@ function valList(attrDef, node) {
             if (!vi.desc) vi.desc = vi.ident;
             attrDef.items.push(vi);
         }
-        attrDef.editing = 'list';
     }
     return valList.length;
 }

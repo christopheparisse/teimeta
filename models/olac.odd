@@ -62,7 +62,10 @@
                <attList>
                   <attDef ident="refine">
                      <desc>refine</desc>
-                     <valList type="closed">
+                     <datatype>
+                        <dataRef name="openlist"/>
+                     </datatype>
+                     <valList type="open">
                         <valItem ident="annotator" />
                         <valItem ident="author" />
                         <valItem ident="compiler" />
@@ -140,7 +143,10 @@
                <attList>
                   <attDef ident="refine">
                      <desc>refine</desc>
-                     <valList type="closed">
+                     <datatype>
+                        <dataRef name="openlist"/>
+                     </datatype>
+                     <valList type="open">
                         <valItem ident="annotator" />
                         <valItem ident="author" />
                         <valItem ident="compiler" />
@@ -194,11 +200,14 @@
                   <attDef ident="code">
                      <desc>code</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="date"/>
                      </datatype>
                   </attDef>
                   <attDef ident="refine">
                      <desc>refine</desc>
+                     <datatype>
+                        <dataRef name="list"/>
+                     </datatype>
                      <valList type="closed">
                         <valItem ident="created" />
                         <valItem ident="valid" />
@@ -437,7 +446,7 @@
                   <attDef ident="code">
                      <desc>code</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
                   </attDef>
                   <attDef ident="language">
@@ -686,8 +695,22 @@
                   <attDef ident="code">
                      <desc>code</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="openlist"/>
                      </datatype>
+                     <valList type="open">
+                        <valItem ident="collection" />
+                        <valItem ident="dataset" />
+                        <valItem ident="event" />
+                        <valItem ident="image" />
+                        <valItem ident="interactiveresource" />
+                        <valItem ident="movingimage" />
+                        <valItem ident="physicalobject" />
+                        <valItem ident="service" />
+                        <valItem ident="software" />
+                        <valItem ident="sound" />
+                        <valItem ident="stillimage" />
+                        <valItem ident="text" />
+                     </valList>
                   </attDef>
                   <attDef ident="language">
                      <desc>language</desc>
@@ -705,15 +728,24 @@
             </elementSpec>
 
             <elementSpec ident="type.linguistic">
+               <desc>Type de données linguistiques</desc>
                <content>
                   <textNode/>
                </content>
                <attList>
                   <attDef ident="code">
                      <desc>code</desc>
-                     <datatype>
-                        <dataRef name="string"/>
-                     </datatype>
+                     <valList type="closed">
+                        <valItem ident="lexicon">
+                           <desc>Lexicon</desc>
+                        </valItem>
+                        <valItem ident="primary_text">
+                           <desc>Primary Text</desc>
+                        </valItem>
+                        <valItem ident="language_description">
+                           <desc>Language Description</desc>
+                        </valItem>
+                     </valList>
                   </attDef>
                   <attDef ident="language">
                      <desc>language</desc>

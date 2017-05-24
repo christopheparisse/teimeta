@@ -50,10 +50,11 @@ export function setOnOffES(event, id, usage) {
     else
         setOnOff(event, id, 'fa-bookmark fa-color-optional', 'fa-bookmark-o fa-color-optional');
 }
-
+/*
 export function setOnOffEC(event, id) {
     setOnOff(event, id, 'fa-check-square fa-color-expand', 'fa-minus-square-o fa-color-expand');
 }
+*/
 
 export function createEC(event, id) {
     let c = values[id];
@@ -83,14 +84,16 @@ export function createEC(event, id) {
     values[eci.validatedECID] = false;
     c.tab.push(eci);
     let s = '<div class="headSequence">\n';
+    /*
     s += '<i class="validate fa fa-minus-square-o fa-choice-not-validated fa-color-expand " '
         + 'onclick="window.ui.setOnOffEC(event, \'' + eci.validatedECID + '\')"></i>\n';
+    */
     s += '<div class="content">\n';
     if (eci.type === 'elementRef') {
-        s += generateElement(eci.element);
+        s += generateElement(eci.element, 'single');
     } else {
         for (let ece of eci.element) {
-            s += generateElement(ece);
+            s += generateElement(ece, 'single');
         }
     }
     s += '</div>';
@@ -150,7 +153,7 @@ export function hideAll() {
  * @param elist 
  */
 export function generateHTML(teiData) {
-    return generateElement(teiData.dataTei);
+    return generateElement(teiData.dataTei, 'root');
 }
 
 function generateContent(ct, abspath) {
@@ -159,10 +162,10 @@ function generateContent(ct, abspath) {
         if (ec.minOccurs === '1' && ec.maxOccurs === '1') {
             s = '<div class="headHRef">';
             if (ec.type === 'elementRef') {
-                s += generateElement(ec.eCI[0].element);
+                s += generateElement(ec.eCI[0].element, 'single');
             } else {
                 for (let ece of ec.eCI[0].element) {
-                    s += generateElement(ece);
+                    s += generateElement(ece, 'single');
                 }
             }
             s += '</div>';
@@ -187,6 +190,7 @@ function generateMultiple(ec, abspath) {
         ec.eCI[i].validatedECID = uniq;
         s += '<div class="headSequence">\n';
         values[uniq] = ec.eCI[i].validatedEC;
+        /*
         // l'élément peut être validé ou non
         if (values[uniq])
             s += '<i class="validate fa fa-check-square fa-choice-validated fa-color-expand" '
@@ -194,12 +198,13 @@ function generateMultiple(ec, abspath) {
         else
             s += '<i class="validate fa fa-minus-square-o fa-choice-not-validated fa-color-expand" '
                 + 'onclick="window.ui.setOnOffEC(event, \'' + uniq + '\')"></i>\n';
+        */
         s += '<div class="content">\n';
         if (ec.eCI[i].type === 'elementRef') {
-            s += generateElement(ec.eCI[i].element);
+            s += generateElement(ec.eCI[i].element, 'multiple');
         } else {
             for (let ece of ec.eCI[i].element) {
-                s += generateElement(ece);
+                s += generateElement(ece, 'multiple');
             }
         }
         s += '</div>\n';
@@ -270,8 +275,8 @@ function classOf(usage) {
 function editAttr(elt) {
     let s = '<div class="nodeAttr attr-' + classOf(elt.usage) + '">\n';
     for (let i in elt.attr) {
-        if (!elt.attr[i].editing) continue; // pas d'édition de la valeur
-        if (elt.attr[i].editing === 'list') {
+        if (!elt.attr[i].datatype) continue; // pas d'édition de la valeur
+        if (elt.attr[i].datatype === 'list') {
             if (!elt.attr[i].items || elt.attr[i].items.length <= 0) {
                 // grosse erreur ou manque liste vide
                 system.alertUser("pas de liste de valeurs pour l'attribut: " + elt.attr.ident);
@@ -299,6 +304,35 @@ function editAttr(elt) {
                     s += '</option>\n';
             }
             s += '</select>\n';                    
+        } else if (elt.attr[i].datatype === 'openlist') {
+            if (!elt.attr[i].items || elt.attr[i].items.length <= 0) {
+                // grosse erreur ou manque liste vide
+                system.alertUser("pas de liste de valeurs pour l'attribut: " + elt.attr.ident);
+                continue;
+            }
+            // attributs avec liste
+            let uniq = createID();
+            if (!elt.attr[i].value) // si vide mettre le premier de la liste
+                elt.attr[i].value =  elt.attr[i].items[0].ident;
+            values[uniq] = elt.attr[i].value;
+            elt.attr[i].valueID = uniq;
+            if (elt.attr[i].desc) {
+                s += '<label for="' + uniq + '">';
+                s += '<b>' + odd.textDesc(elt.attr[i].desc, odd.odd.params.language) + '</b>';
+                s +='</label>\n';
+            }
+            s +='<input type=text class="listattr" list="' + uniq + '" ';
+            s +='onchange="window.ui.setAttr(event, \'' + uniq + '\');"/>\n';
+            s +='<datalist id="' + uniq + '">';
+            for (let k in elt.attr[i].items) {
+                s += '<option value="' +
+                    elt.attr[i].items[k].ident + '" ';
+                    if (elt.attr[i].value === elt.attr[i].items[k].ident)
+                        s  += 'selected="selected" ';
+                    s += '>' + elt.attr[i].items[k].desc;
+                    s += '</option>\n';
+            }
+            s += '</datalist>\n';
         } else {
             // attribut sans liste: edition de la valeur
             let uniq = createID();
@@ -309,7 +343,24 @@ function editAttr(elt) {
                 s += '<b>' + odd.textDesc(elt.attr[i].desc, odd.odd.params.language) + '</b>';
                 s += '</label>\n';
             }
-            s += '<input name="' + uniq + '" id="' + uniq + '"';
+            let type = 'text';
+            switch (elt.attr[i].datatype) {
+                case 'month':
+                    type = 'month';
+                    break;
+                case 'date':
+                    type = 'date';
+                    break;
+                case 'number':
+                    type = 'number';
+                    break;
+                case 'anyURI':
+                case 'uri':
+                case 'url':
+                    type = 'url';
+                    break;
+            }
+            s += '<input type = "' + type + '" name="' + uniq + '" id="' + uniq + '"';
             s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
             if (elt.attr[i].value) s += ' value="' + elt.attr[i].value + '"';
             values[uniq] = (elt.attr[i].value) ? elt.attr[i].value : '';
@@ -320,13 +371,13 @@ function editAttr(elt) {
     return s;
 }
 
-function generateElement(elt) {
+function generateElement(elt, validatedStyle) {
     // let s = '<div class="element">';
     let s = '';
     let uniq = createID();
     let prof = (elt.absolutepath.match(/\//g) || []).length - 1;
     s += '<div class="nodeField node-' + classOf(elt.usage) + '" title="' + elt.absolutepath + '" style="margin-left: ' + prof*odd.odd.params.leftShift + 'px;">\n';
-    if (odd.odd.params.validateRequired) {
+    if (odd.odd.params.validateRequired && validatedStyle !== 'root') {
         // on peut tout valider donc on ne se pose pas de question
         values[uniq] = elt.validatedES;
         elt.validatedESID = uniq;
@@ -341,11 +392,11 @@ function generateElement(elt) {
         }
     } else {
         // on ne peut pas valider les req - ils sont toujours à validatedES === true
-        if (elt.usage === 'req')
+        if ((elt.usage === 'req' && validatedStyle !== 'multiple') || validatedStyle === 'root')
             elt.validatedES = true;
         values[uniq] = elt.validatedES;
         elt.validatedESID = uniq;
-        if (elt.usage !== 'req') {
+        if (validatedStyle !== 'root' && (elt.usage !== 'req' || validatedStyle === 'multiple')) {
             if (elt.validatedES) {
                 s += '<i class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
                     + classOf(elt.usage)

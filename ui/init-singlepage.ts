@@ -123,6 +123,18 @@ function setValReq(e) {
     changeParams = true;
 }
 
+function setCanRm(e) {
+    let s = document.getElementById('toggleDefCanRm');
+    if (odd.odd.params.canRemove) {
+        s.innerHTML = '<i class="fa fa-square-o" aria-hidden="true"></i>';
+        odd.odd.params.canRemove = false;
+    } else {
+        s.innerHTML = '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
+        odd.odd.params.canRemove = true;
+    }
+    changeParams = true;
+}
+
 function setLgEng(e) {
     let s = document.getElementById('toggleLgEng');
     if (odd.odd.params.language === 'en') {
@@ -162,6 +174,11 @@ let userInfo = `
         ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
         : '<i class="fa fa-square-o" aria-hidden="true"></i>')
 + `</span></li>
+    <li onclick="window.ui.setCanRm();">Autoriser la suppression d'éléments (sinon seulement modification) <span id="toggleDefCanRm">`
+    + ((odd.odd.params.canRemove)
+        ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
+        : '<i class="fa fa-square-o" aria-hidden="true"></i>')
++ `</span></li>
     <li onclick="window.ui.setLgEng();">English version of ODD <span id="toggleLgEng">`
     + ((odd.odd.params.language === 'en')
         ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
@@ -198,6 +215,7 @@ function saveParams() {
     localStorage.setItem("defaultNewElement", odd.odd.params.defaultNewElement.toString());
     localStorage.setItem("leftShift", odd.odd.params.leftShift.toString());
     localStorage.setItem("validateRequired", odd.odd.params.validateRequired.toString());
+    localStorage.setItem("canRemove", odd.odd.params.canRemove.toString());
     localStorage.setItem("language", odd.odd.params.language);
     localStorage.setItem("displayFullpath", odd.odd.params.displayFullpath.toString());
     localStorage.setItem("groupingStyle", odd.odd.params.groupingStyle);
@@ -211,6 +229,9 @@ function loadParams() {
     v = localStorage.getItem("validateRequired");
     if (v === 'true')
         odd.odd.params.validateRequired = true;
+    v = localStorage.getItem("canRemove");
+    if (v === 'true')
+        odd.odd.params.canRemove = true;
     v = localStorage.getItem("displayFullpath");
     if (v === 'false')
         odd.odd.params.displayFullpath = false;
@@ -276,6 +297,7 @@ export function init() {
     window['ui'].setDispFPath = setDispFPath;
     window['ui'].setDefNewElt = setDefNewElt;
     window['ui'].setValReq = setValReq;
+    window['ui'].setCanRm = setCanRm;
     window['ui'].setLgEng = setLgEng;
     // for debugging purposes
     window['dbg'] = {};
