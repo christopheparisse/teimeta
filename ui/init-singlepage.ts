@@ -4,6 +4,7 @@
 
 import * as events from './events';
 import * as odd from '../teiedit/odd';
+import * as schema from '../teiedit/schema';
 import * as edit from '../teiedit/edit';
 import * as syscall from './opensave';
 import * as help from './help';
@@ -56,19 +57,19 @@ function readTextFile(file, callback) {
 }
 
 function oddMedia() {
-    readTextFile('http://ct3.ortolang.fr/teimeta/media.odd', function(text) {
+    readTextFile('http://ct3.ortolang.fr/teimeta/media.odd?v=' + schema.version, function(text) {
         events.openOddLoad('Odd prédéfini Média', text);
     });
 }
 
 function oddTeiOral() {
-    readTextFile('http://ct3.ortolang.fr/teimeta/teioral.odd', function(text) {
+    readTextFile('http://ct3.ortolang.fr/teimeta/teioral.odd?v=' + schema.version, function(text) {
         events.openOddLoad('Odd prédéfini Tei Oral', text);
     });
 }
 
 function oddPartDesc() {
-    readTextFile('http://ct3.ortolang.fr/teimeta/partdesc.odd', function(text) {
+    readTextFile('http://ct3.ortolang.fr/teimeta/partdesc.odd?v=' + schema.version, function(text) {
         events.openOddLoad('Odd prédéfini Participants', text);
     });
 }

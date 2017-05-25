@@ -321,14 +321,12 @@ function editAttr(elt) {
                 s += '<b>' + odd.textDesc(elt.attr[i].desc, odd.odd.params.language) + '</b>';
                 s +='</label>\n';
             }
-            s +='<input type=text class="listattr" list="' + uniq + '" ';
+            s +='<input type=text class="listattr" list="' + uniq + '" value="' + elt.attr[i].value + '" ';
             s +='onchange="window.ui.setAttr(event, \'' + uniq + '\');"/>\n';
             s +='<datalist id="' + uniq + '">';
             for (let k in elt.attr[i].items) {
                 s += '<option value="' +
                     elt.attr[i].items[k].ident + '" ';
-                    if (elt.attr[i].value === elt.attr[i].items[k].ident)
-                        s  += 'selected="selected" ';
                     s += '>' + elt.attr[i].items[k].desc;
                     s += '</option>\n';
             }

@@ -104,7 +104,6 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc) {
     // chercher tous les elements existant dans le DOM
     // sous cet élément
     c.absolutepath = path;
-    if (!c.content) return c;
     let nbElt = 0;
     if (node) {
         c.validatedES = 'ok'; // l'élément existait donc il est validé par l'utilisateur
@@ -122,11 +121,16 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc) {
                     if (c.attr[a].rend) c.attr[a].value = c.attr[a].rend;
                 } else {
                     let attr = node.getAttribute(c.attr[a].ident);
-                    if (attr) c.attr[a].value = attr;
+                    if (attr) {
+                        c.attr[a].value = attr;
+                    } else {
+                        if (c.attr[a].rend) c.attr[a].value = c.attr[a].rend;
+                    }
                 }
             }
         }
         // load content
+        if (!c.content) return c;
         for (let ec of c.content.sequencesRefs) {
             // ec au format ElementCount
             if (ec.type === 'elementRef') {
@@ -143,6 +147,7 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc) {
         /* ICI on applique un paramètre de l'application
          * les éléments non renseignés sont inclus pas défaut ou non
          */
+        if (!c.content) return c;
         c.validatedES = odd.odd.params.defaultNewElement ? 'ok' : ''; // l'élément n'existait pas et il n'est pas validé par l'utilisateur
         for (let ec of c.content.sequencesRefs) {
             // ec au format ElementCount

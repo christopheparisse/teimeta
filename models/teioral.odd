@@ -28,6 +28,9 @@
 				<p>written from IRCOM recommandations</p>
 			</sourceDesc>
 		</fileDesc>
+		<xenoData>
+			<rng:data>http://www.tei-c.org/ns/1.0</rng:data>
+		</xenoData>
 	</teiHeader>
 
 	<text>
@@ -103,7 +106,7 @@
 			</egXML>
 
 			<!-- definition de TEI_CORPO_METADATA-->
-			<schemaSpec ident="TEI_CORPO_METADATA" start="TEI">
+			<schemaSpec ident="TEI_CORPO_METADATA" start="TEI" ns="http://www.tei-c.org/ns/1.0" corresp="/TEI/profileDesc/particDesc /TEI/fileDesc/sourceDesc">
 				<!-- ajouter teiCorpus par la suite si collections -->
 
 				<!-- required modules -->
@@ -131,6 +134,11 @@
 				<moduleRef key="transcr"/>
 				<!-- utilisé ???-->
 
+				<!-- exemple d'include pour une implémentation future
+					<specGrpRef target="media.odd"/>
+					<specGrpRef target="partdesc.odd"/>
+				-->
+				
 				<!-- structure generale TEI -->
 				<elementSpec ident="TEI" module="textstructure" mode="change">
 					<content>
@@ -545,13 +553,16 @@
 
 				<elementSpec ident="recording" module="spoken">
 					<content>
+						<elementRef key="p" minOccurs="0" maxOccurs="1"/>
 						<elementRef key="media" minOccurs="1" maxOccurs="1"/>
 					</content>
 				</elementSpec>
 
 				<elementSpec ident="media" module="spoken">
+					<desc xml:lang="fr">Média : chaque media peut avoir une durée différente</desc>
+					<desc xml:lang="en">Media: each media could have a different duration </desc>
 					<content>
-						<sequence minOccurs="2" maxOccurs="unbound">
+						<sequence minOccurs="1" maxOccurs="1">
 							<elementRef key="desc" corresp="quality"/>
 							<elementRef key="desc" corresp="anonymization"/>
 						</sequence>
@@ -576,15 +587,15 @@
 							</valList>
 						</attDef>
 						<attDef ident="dur-iso" usage="req" mode="change">
-							<desc xml:lang="fr">durée du média : chaque medias peut avoir une durée
-								différente</desc>
-							<desc xml:lang="en">media duration : each media could have a different
-								duration </desc>
+							<desc xml:lang="fr">durée du média</desc>
+							<desc xml:lang="en">media duration</desc>
 							<datatype>
 								<dataRef name="duration"/>
 							</datatype>
 						</attDef>
 						<attDef ident="url" mode="change">
+							<desc xml:lang="fr">url du média</desc>
+							<desc xml:lang="en">media url</desc>
 							<datatype>
 								<dataRef name="anyURI"/>
 							</datatype>
@@ -964,14 +975,26 @@
 						<sequence minOccurs="0" maxOccurs="unbounded">
 							<elementRef key="persName"/>
 							<elementRef key="age"/>
+							<elementRef key="altGrp"/>
 							<elementRef key="occupation"/>
+							<elementRef key="socecStatus"/>
+							<elementRef key="education"/>
 						</sequence>
 						<elementRef key="langKnowledge" minOccurs="0" maxOccurs="unbounded"/>
+						<elementRef key="note" minOccurs="0" maxOccurs="unbounded"/>
 					</content>
 					<attList>
-						<attDef ident="id" usage="rec" rendition="id unique" mode="change"/>
+						<attDef ident="xml:id" usage="rec" rendition="id unique" mode="change">
+							<desc xml:lang="fr">ID unique du locuteur</desc>
+							<desc xml:lang="en">Unique ID of locuteur</desc>
+							<datatype>
+								<dataRef name="string"/>
+							</datatype>
+						</attDef>
 						<attDef ident="sex" usage="req" mode="change">
-							<valList>
+							<desc xml:lang="fr">Sexe</desc>
+							<desc xml:lang="en">Sex</desc>
+							<valList >
 								<valItem ident="1">
 									<desc>masculin</desc>
 								</valItem>
@@ -984,37 +1007,151 @@
 								</valItem>
 							</valList>
 						</attDef>
-					</attList>
-				</elementSpec>
-
-				<elementSpec ident="persName" module="namesdates"/>
-
-				<elementSpec ident="age" module="namesdates">
-					<attList>
-						<attDef ident="ana" usage="req" mode="change">
+						<attDef ident="age" usage="rec" rendition="age" mode="change">
+							<desc>Age</desc>
+							<datatype>
+								<dataRef name="string"/>
+							</datatype>
+						</attDef>
+						<attDef ident="source" usage="rec" rendition="source" mode="change">
+							<desc xml:lang="fr">Pointeur sur une ressource externe</desc>
+							<desc xml:lang="en">Point to an external source</desc>
+							<datatype>
+								<dataRef name="anyURI"/>
+							</datatype>
+						</attDef>
+						<attDef ident="role" usage="rec" rendition="role" mode="change">
+							<desc xml:lang="fr">Role du participant</desc>
+							<desc xml:lang="fr">Participant role</desc>
+							<datatype>
+								<dataRef name="openlist"/>
+							</datatype>
 							<valList>
-								<valItem ident="age.child">
-									<desc xml:lang="fr">moins de 15 ans</desc>
-									<desc xml:lang="en">less than 15</desc>
+								<valItem ident="target_child">
+									<desc xml:lang="fr">enfant sujet de l'étude</desc>
+									<desc xml:lang="en">child study target</desc>
 								</valItem>
-								<valItem ident="age.youth">
-									<desc xml:lang="fr">de 16 à 20 ans </desc>
-									<desc xml:lang="en">from 16 to 20</desc>
+								<valItem ident="target_adult">
+									<desc xml:lang="fr">adulte sujet de l'étude</desc>
+									<desc xml:lang="en">adult study target</desc>
 								</valItem>
-								<valItem ident="age.adult">
-									<desc xml:lang="fr">de 21 à 60 ans</desc>
-									<desc xml:lang="en">from 21 to 60</desc>
+								<valItem ident="child">
+									<desc xml:lang="fr">enfant</desc>
+									<desc xml:lang="en">child</desc>
 								</valItem>
-								<valItem ident="age.senior">
-									<desc xml:lang="fr">plus de 61 ans </desc>
-									<desc xml:lang="en">up to 61</desc>
+								<valItem ident="adult">
+									<desc xml:lang="fr">adulte</desc>
+									<desc xml:lang="en">adult</desc>
 								</valItem>
-								<valItem ident="age.unknown">
+								<valItem ident="observer">
+									<desc xml:lang="fr">observateur</desc>
+									<desc xml:lang="en">observer</desc>
+								</valItem>
+								<valItem ident="mother">
+									<desc xml:lang="fr">mère</desc>
+									<desc xml:lang="en">mother</desc>
+								</valItem>
+								<valItem ident="father">
+									<desc xml:lang="fr">père</desc>
+									<desc xml:lang="en">father</desc>
+								</valItem>
+								<valItem ident="unidentified">
 									<desc xml:lang="fr">inconnu</desc>
 									<desc xml:lang="en">unknown</desc>
 								</valItem>
 							</valList>
 						</attDef>
+					</attList>
+				</elementSpec>
+				
+				<elementSpec ident="persName" module="namesdates">
+					<content>
+						<textNode/>
+					</content>
+				</elementSpec>
+				
+				<elementSpec ident="socecStatus" module="namesdates">
+					<content>
+						<textNode/>
+					</content>
+				</elementSpec>
+				
+				<elementSpec ident="education" module="namesdates">
+					<content>
+						<textNode/>
+					</content>
+				</elementSpec>
+				
+				<elementSpec ident="altGrp" module="core">
+					<content>
+						<elementRef key="alt" minOccurs="1" maxOccurs="unbounded"/>
+					</content>
+				</elementSpec>
+				
+				<elementSpec ident="alt" module="core">
+					<attList>
+						<attDef ident="type">
+							<desc>Type</desc>
+							<datatype>
+								<dataRef name="string"/>
+							</datatype>
+						</attDef>
+					</attList>
+				</elementSpec>
+				
+				<elementSpec ident="note" module="core">
+					<content>
+						<textNode/>
+					</content>
+					<attList>
+						<attDef ident="type">
+							<desc>Type</desc>
+							<datatype>
+								<dataRef name="string"/>
+							</datatype>
+						</attDef>
+					</attList>
+				</elementSpec>
+				
+				<elementSpec ident="age" module="namesdates">
+					<content>
+						<valList>
+							<valItem ident="age.infant">
+								<desc xml:lang="fr">moins de 1 an</desc>
+								<desc xml:lang="en">less than 1</desc>
+							</valItem>
+							<valItem ident="age.youngchild">
+								<desc xml:lang="fr">de 1 à 2 ans</desc>
+								<desc xml:lang="en">from 1 to 2</desc>
+							</valItem>
+							<valItem ident="age.middlechild">
+								<desc xml:lang="fr">de 3 à 5 ans</desc>
+								<desc xml:lang="en">from 3 to 5</desc>
+							</valItem>
+							<valItem ident="age.oldchild">
+								<desc xml:lang="fr">de 6 à 15 ans</desc>
+								<desc xml:lang="en">from 6 to 15</desc>
+							</valItem>
+							<valItem ident="age.youth">
+								<desc xml:lang="fr">de 16 à 20 ans </desc>
+								<desc xml:lang="en">from 16 to 20</desc>
+							</valItem>
+							<valItem ident="age.adult">
+								<desc xml:lang="fr">de 21 à 60 ans</desc>
+								<desc xml:lang="en">from 21 to 60</desc>
+							</valItem>
+							<valItem ident="age.senior">
+								<desc xml:lang="fr">plus de 61 ans </desc>
+								<desc xml:lang="en">up to 61</desc>
+							</valItem>
+							<valItem ident="age.unknown">
+								<desc xml:lang="fr">inconnu</desc>
+								<desc xml:lang="en">unknown</desc>
+							</valItem>
+						</valList>
+					</content>
+					<attList>
+						<attDef ident="value" usage="req" mode="change"/>
 					</attList>
 				</elementSpec>
 
@@ -1061,7 +1198,13 @@
 					<attList>
 						<attDef ident="tag" usage="req"
 							rendition="code iso des langues, cf langUsage pour l'enregistrement"
-							mode="change"/>
+							mode="change">
+							<desc xml:lang="fr">code iso des langues, cf langUsage pour l'enregistrement</desc>
+							<desc xml:lang="en">language iso code, see langUsage for recording</desc>
+							<datatype>
+								<dataRef name="string"/>
+							</datatype>
+						</attDef>
 						<attDef ident="level" usage="req" mode="change">
 							<valList>
 								<valItem ident="language.first">
