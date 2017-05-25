@@ -8,7 +8,7 @@ let path = require('path');
 let remote = require('electron').remote;
 
 let saveAs = require('file-saver');
-let picoModal = require('../js/picoModal.js');
+let picoModal = require('picoModal');
 
 /**
  * available in main

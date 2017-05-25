@@ -6,7 +6,7 @@
  */
 
 let saveAs = require('file-saver');
-let picoModal = require('../js/picoModal.js');
+let picoModal = require('picoModal');
 
 export function openLocalFile(fn) {
     /*

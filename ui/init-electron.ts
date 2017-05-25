@@ -5,8 +5,11 @@
 
 const ipcRenderer = require('electron').ipcRenderer;
 import * as events from './events';
+import * as odd from '../teiedit/odd';
 import * as edit from '../teiedit/edit';
+import * as syscall from './opensave';
 import * as help from './help';
+import * as common from './common';
 
 function bodyKeys(e) {
 /*    
@@ -74,14 +77,38 @@ export function init() {
     //el.addEventListener("click", events.newFile);
     el = document.getElementById('help');
     el.addEventListener("click", help.about);
+    el = document.getElementById('top2-params');
+    el.addEventListener("click", common.oddParams);
 
+    el = document.getElementById('odd-media');
+    el.addEventListener("click", common.oddMedia);
+    el = document.getElementById('odd-teioral');
+    el.addEventListener("click", common.oddTeiOral);
+    el = document.getElementById('odd-partdesc');
+    el.addEventListener("click", common.oddPartDesc);
+    
+    el = document.getElementById('showall');
+    el.addEventListener("click", edit.showAll);
+    el = document.getElementById('hideall');
+    el.addEventListener("click", edit.hideAll);
+    el = document.getElementById('upload-input-transcript');
+    el.addEventListener("change", syscall.openLocalFile);
+    //
     // for user interface in html pages
     window['ui'] = {};
-    window['ui'].setOnOff = edit.setOnOff;    
-    window['ui'].setOnOffEC = edit.setOnOffEC;    
+    window['ui'].setOnOffES = edit.setOnOffES;
+//    window['ui'].setOnOffEC = edit.setOnOffEC;    
     window['ui'].setText = edit.setText;
     window['ui'].createEC = edit.createEC;    
     window['ui'].setAttr = edit.setAttr;
+    window['ui'].toggleES = edit.toggleES;
+    window['ui'].odd = odd.odd;
+    window['ui'].setLeftShift = common.setLeftShift;
+    window['ui'].setDispFPath = common.setDispFPath;
+    window['ui'].setDefNewElt = common.setDefNewElt;
+    window['ui'].setValReq = common.setValReq;
+    window['ui'].setCanRm = common.setCanRm;
+    window['ui'].setLgEng = common.setLgEng;
     // for debugging purposes
     window['dbg'] = {};
     window['dbg'].tei = events.teiData;

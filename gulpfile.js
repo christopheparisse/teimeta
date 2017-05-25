@@ -11,7 +11,7 @@ gulp.task('electron-teiedit', function () {
 });
 
 gulp.task('electron-ui', function () {
-  return gulp.src(['ui/opensave.ts', 'ui/init-electron.ts', 'ui/events.ts', 'ui/help.ts'])
+  return gulp.src(['ui/opensave.ts', 'ui/init-electron.ts', 'ui/events.ts', 'ui/common.ts', 'ui/help.ts'])
     .pipe(gulp.dest('temp-electron/ui/'))
 });
 
@@ -36,7 +36,7 @@ gulp.task('electron-ts', function () {
         .js.pipe(gulp.dest("."));
 });
 
-gulp.task('electron-src', ['electron-teiedit', 'electron-ui', 'electron-js', 'electron-css', 'electron-main']);
+gulp.task('electron-src', ['electron-teiedit', 'electron-ui', 'electron-css', 'electron-main']);
 
 gulp.task('page-teiedit', function () {
   return gulp.src('teiedit/*.ts')
@@ -44,7 +44,7 @@ gulp.task('page-teiedit', function () {
 });
 
 gulp.task('page-ui', function () {
-  return gulp.src(['ui/opensave-singlepage.ts', 'ui/init-singlepage.ts', 'ui/events.ts', 'ui/help.ts'])
+  return gulp.src(['ui/opensave-singlepage.ts', 'ui/init-singlepage.ts', 'ui/events.ts', 'ui/common.ts', 'ui/help.ts'])
     .pipe(gulp.dest('temp-page/ui/'))
 });
 
@@ -69,7 +69,7 @@ gulp.task('page-main', function () {
     .pipe(gulp.dest('temp-page/'))
 });
 
-gulp.task('page-src', ['page-teiedit', 'page-ui', 'page-js', 'page-css', 'page-main']);
+gulp.task('page-src', ['page-teiedit', 'page-ui', 'page-css', 'page-main']);
 
 gulp.task('electron', function(done) {
     runSequence('electron-src', 'electron-ts', function() {
