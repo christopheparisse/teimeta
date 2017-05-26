@@ -2,6 +2,13 @@
 
 **Outil d'édition de champs xml dans un fichier xml à partir d'une description odd**
 
+## Accès à l'outil
+Utilisation en ligne: [http://ct3.ortolang.fr/teimeta/](http://ct3.ortolang.fr/teimeta/)
+
+Téléchargement application autonome pour MacOs: [http://ct3.ortolang.fr/download/tei-meta-v0.4.0-macos.zip](http://ct3.ortolang.fr/download/tei-meta-v0.4.0-macos.zip)
+
+Téléchargement du code source: [http://ct3.ortolang.fr/download/tei-meta-x64.exe](http://ct3.ortolang.fr/download/tei-meta-v0.4.0-x64.exe)
+
 ## Description générale
 
 L'outil est conçu pour une utilisation TEI mais peut être utilsé pour d'autres fichiers XML.
@@ -40,6 +47,9 @@ Les autres champs respectent complétement le format TEI.
 Le contenu du ODD consiste en des éléments elementSpec qui peuvent référencer d'autres éléments avec elementRef.
 Les moduleRef ne sont pas utilisés pour l'instant: ils sont là pour les autres usages des ODD.
 
+  * schemaSpec
+    * start = racine du fichier xml résultat
+    * ns = namespace pour le fichier xml résultat
 
   * elementSpec
     * ident="nom du tag dans la TEI" corresp="tag optionel à utiliser si ident n'est pas unique"

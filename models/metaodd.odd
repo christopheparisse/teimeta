@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml"
+	schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+  <teiHeader>
+      <fileDesc>
+         <titleStmt>
+            <title>Editeur de ODD pour TEIMETA</title>
+         </titleStmt>
+         <publicationStmt>
+            <p>Meta ODD pour créer d'autres ODD</p>
+         </publicationStmt>
+         <sourceDesc>
+            <p>Créé par Christophe Parisse</p>
+         </sourceDesc>
+      </fileDesc>
+  </teiHeader>
+  <text>
+      <body>
+         <schemaSpec ident="myTEI" ns="http://www.tei-c.org/ns/1.0" start="TEI">
+            
+            <!-- structure generale TEI -->
+            <elementSpec ident="TEI" module="teimeta" mode="change">
+               <content>
+                  <elementRef key="text" minOccurs="1" maxOccurs="1" />
+               </content>
+            </elementSpec>
+            
+            <!-- structure generale text -->
+            <elementSpec ident="text" module="teimeta" mode="change">
+               <content>
+                  <elementRef key="body" minOccurs="1" maxOccurs="1" />
+               </content>
+            </elementSpec>
+            
+            <!-- structure generale text -->
+            <elementSpec ident="body" module="teimeta" mode="change">
+               <content>
+                  <elementRef key="schemaSpec" minOccurs="1" maxOccurs="1" />
+               </content>
+            </elementSpec>
+            
+            <!-- structure generale text -->
+            <elementSpec ident="schemaSpec" module="teimeta" mode="change">
+               <desc>Root of the schema</desc>
+               <content>
+                  <elementRef key="elementSpec" minOccurs="0" maxOccurs="unbounded" />
+               </content>
+               <attList>
+                  <attDef ident="start">
+                     <desc>Start</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="ns">
+                     <desc>Namespace</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="corresp">
+                     <desc>Corresp</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+            
+            <!-- structure generale text -->
+            <elementSpec ident="elementSpec" module="teimeta" mode="change">
+               <desc>Describing a main tag</desc>
+               <content>
+                  <elementRef key="desc" minOccurs="0" maxOccurs="unbounded" />
+                  <elementRef key="content" minOccurs="0" maxOccurs="1" />
+                  <elementRef key="attList" minOccurs="0" maxOccurs="1" />
+               </content>
+               <attList>
+                  <attDef ident="ident">
+                     <desc>Identifier</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="usage">
+                     <desc>Usage</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="mode">
+                     <desc>Mode</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="corresp">
+                     <desc>Corresp</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+            
+            <!-- structure generale text -->
+            <elementSpec ident="desc" module="teimeta" mode="change">
+               <desc>Description of tags</desc>
+               <content>
+                  <textNode />
+               </content>
+               <attList>
+                  <attDef ident="xml:lang">
+                     <desc>Language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+            
+            <!-- structure generale text -->
+            <elementSpec ident="content" module="teimeta" mode="change">
+               <desc>Node content of tags</desc>
+               <content>
+                  <elementRef key="elementRef" minOccurs="0" maxOccurs="unbounded" />
+                  <elementRef key="sequence" minOccurs="0" maxOccurs="unbounded" />
+                  <elementRef key="textNode" minOccurs="0" maxOccurs="1" />
+                  <elementRef key="dataRef" minOccurs="0" maxOccurs="1" />
+               </content>
+            </elementSpec>
+            
+            <!-- structure generale text -->
+            <elementSpec ident="sequence" module="teimeta" mode="change">
+               <content>
+                  <elementRef key="elementRef" minOccurs="2" maxOccurs="unbounded" />
+               </content>
+            </elementSpec>
+            
+            <!-- structure generale text -->
+            <elementSpec ident="elementRef" module="teimeta" mode="change">
+               <desc>Pointer to other tag</desc>
+               <attList>
+                  <attDef ident="key">
+                     <desc>Id pointer</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="corresp">
+                     <desc>Corresp pointer</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+            
+            <!-- structure generale text -->
+            <elementSpec ident="attList" module="teimeta" mode="change">
+               <desc>List of attributes</desc>
+               <content>
+                  <elementRef key="attDef" minOccurs="0" maxOccurs="unbounded" />
+               </content>
+            </elementSpec>
+            
+            <!-- structure generale text -->
+            <elementSpec ident="attDef" module="teimeta" mode="change">
+               <desc>Definition of an attribute</desc>
+               <content>
+                  <elementRef key="datatype" minOccurs="0" maxOccurs="1" />
+                  <elementRef key="valList" minOccurs="0" maxOccurs="1" />
+               </content>
+               <attList>
+                  <attDef ident="ident">
+                     <desc>ID</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="usage">
+                     <desc>Usage</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="mode">
+                     <desc>Mode</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="rend">
+                     <desc>Rend</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="rendition">
+                     <desc>Rendition</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+            
+            <!-- structure generale text -->
+            <elementSpec ident="datatype" module="teimeta" mode="change">
+               <content>
+                  <elementRef key="dataRef" minOccurs="1" maxOccurs="1" />
+               </content>
+            </elementSpec>
+            
+            <!-- structure generale text -->
+            <elementSpec ident="dataRef" module="teimeta" mode="change">
+               <desc>Type of content</desc>
+               <attList>
+                  <attDef ident="name">
+                     <valList type="closed" mode="replace">
+                        <valItem ident="string">
+                           <desc>Any string</desc>
+                        </valItem>
+                        <valItem ident="number">
+                           <desc>Number</desc>
+                        </valItem>
+                        <valItem ident="url">
+                           <desc>URL</desc>
+                        </valItem>
+                        <valItem ident="anyURI">
+                           <desc>any URI</desc>
+                        </valItem>
+                        <valItem ident="languagecode">
+                           <desc>Code for language</desc>
+                        </valItem>
+                        <valItem ident="list">
+                           <desc>Closed list</desc>
+                        </valItem>
+                        <valItem ident="openlist">
+                           <desc>Open list (new element accepted)</desc>
+                        </valItem>
+                     </valList>
+                  </attDef>
+               </attList>
+            </elementSpec>
+            
+            <!-- structure generale text -->
+            <elementSpec ident="valList" module="teimeta" mode="change">
+               <desc>List of values</desc>
+               <content>
+                  <elementRef key="valItem" minOccurs="1" maxOccurs="unbounded" />
+               </content>
+               <attList>
+                  <attDef ident="type">
+                     <desc>Type</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="mode">
+                     <desc>Mode</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+            
+            <!-- structure generale text -->
+            <elementSpec ident="valItem" module="teimeta" mode="change">
+               <desc>Description of value</desc>
+               <content>
+                  <elementRef key="desc" minOccurs="0" maxOccurs="unbounded" />
+               </content>
+               <attList>
+                  <attDef ident="ident">
+                     <desc>ID</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+            
+            <!-- structure generale text -->
+            <elementSpec ident="textNode" module="teimeta" mode="change">
+               <desc>Text node</desc>
+            </elementSpec>
+            
+         </schemaSpec>
+      </body>
+  </text>
+</TEI>
