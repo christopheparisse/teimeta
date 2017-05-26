@@ -7,7 +7,7 @@ Utilisation en ligne: [http://ct3.ortolang.fr/teimeta/](http://ct3.ortolang.fr/t
 
 Téléchargement application autonome pour MacOs: [http://ct3.ortolang.fr/download/tei-meta-v0.4.0-macos.zip](http://ct3.ortolang.fr/download/tei-meta-v0.4.0-macos.zip)
 
-Téléchargement du code source: [http://ct3.ortolang.fr/download/tei-meta-x64.exe](http://ct3.ortolang.fr/download/tei-meta-v0.4.0-x64.exe)
+Téléchargement application windows 64 bits: [http://ct3.ortolang.fr/download/tei-meta-x64.exe](http://ct3.ortolang.fr/download/tei-meta-v0.4.0-x64.exe)
 
 ## Description générale
 
