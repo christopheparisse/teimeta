@@ -43,5 +43,5 @@ Thumbs.db
 /node_modules/
 /temp-page/
 /temp-electron/
-.app/
+/tei-meta-darwin-x64/
 
