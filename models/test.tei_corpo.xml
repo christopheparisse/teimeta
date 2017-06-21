@@ -4,7 +4,7 @@
 <teiHeader>
 <fileDesc>
 <titleStmt>
-<title>Fichier TEI obtenu à partir du fichier CLAN test.cha</title>
+<title><desc>Fichier TEI obtenu à partir du fichier CLAN test.cha &amp;</desc></title>
 </titleStmt>
 <publicationStmt>
 <distributor>tei_corpo</distributor>
@@ -70,7 +70,7 @@
 <sourceDesc>
 <recordingStmt>
 <recording>
-<media mimeType="video/mp4" url="ANTOINE-34-2_03_05-480P.mp4"/>
+<media mimeType="video/mp4" url="ANTOINE-34-2_03_05-480P&amp;.mp4"/>
 <date dur="36.77">15-JUL-2008</date>
 </recording>
 </recordingStmt>

@@ -12,13 +12,14 @@ import * as schema from './schema';
 
 export let odd : schema.SCHEMA = new schema.SCHEMA();
 
+let entities = require("entities");
 let dom = require('xmldom').DOMParser;
 let xpath = require('xpath');
 let select;
 // import * as system from '../system/opensave';
 
 function tagES(k, c) {
-    return (c) ? k + '/' + c : k;    
+    return (c) ? k + '#' + c : k;    
 }
 
 /**
@@ -205,7 +206,7 @@ export function textDesc(desc, lg) {
     for (let i=0; i<desc.langs.length; i++) {
         if (lg === desc.langs[i]) return desc.texts[i];
     }
-    return desc.texts.length > 0 ? desc.texts[0] : '';
+    return entities.decodeXML( desc.texts.length > 0 ? desc.texts[0] : '' );
 }
 
 function rendition(desc, lg) {
@@ -216,10 +217,17 @@ function rendition(desc, lg) {
     return desc.rendition.length > 0 ? desc.rendition[0] : '';
 }
 
+function innerXml(s) {
+    if (!s) return '';
+    let pat = /\<.*?\>(.*)\<.*?\>/;
+    let r = s.replace(/\n/g, ' ').match(pat);
+    return (r) ? r[1] : s;
+}
+
 function readDesc(desc, node) {
     let d = getChildrenByName(node, 'desc');
     for (let i in d) {
-        desc.texts.push(d[i].textContent);
+        desc.texts.push(innerXml(d[i].toString()));
         desc.langs.push(d[i].getAttribute('xml:lang'));
         desc.renditions.push(d[i].getAttribute('rendition'));
     }
@@ -240,6 +248,8 @@ function readAttrDef(attrDef, node) {
     let a = getChildrenByName(node, 'datatype');
     if (a.length > 0) {
         attrDef.datatype = getDataRef(a[0]);
+    } else {
+        attrDef.datatype = 'string';
     }
 }
 

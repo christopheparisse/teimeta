@@ -14,8 +14,160 @@ import * as load from './load';
 import * as system from '../ui/opensave';
 
 export let values = {};
-let lastId = 0;
 
+/**
+ * format an integer into 2-digit values
+ * @method intFormat2
+ * @param {integer} value
+ * @return {string} formatted value
+ */
+function intFormat2(v) {
+    return (v < 10) ? "0" + v : v;
+}
+
+/**
+ * format the presentation of time in the transcript
+ * @method formatTime
+ * @param {float} time in seconds
+ * @param {string} time format : hms 00:00 ?:00:00 and raw
+ * @param {number} nb of digit to the right of the point
+ * @return {string} time as string
+ */
+function formatTime(t) {
+    if (t === undefined || t === null || t === '') t = 0; // no time
+
+    let d = new Date(t * 1000);
+    let h = d.getUTCHours();
+    let r;
+    if (odd.odd.params.fmt === 'hms') {
+        if (h > 0)
+            r = h + 'h' + d.getUTCMinutes() + "m" + d.getSeconds() + "s";
+        else
+            r = d.getUTCMinutes() + "m" + d.getSeconds() + "s";
+    } else if (odd.odd.params.fmt === '00:00') {
+        r = intFormat2(h * 60 + d.getUTCMinutes()) + ':' + intFormat2(d.getSeconds());
+    } else if (odd.odd.params.fmt === '?:00:00') {
+        if (h > 0)
+            r = h + ':' + intFormat2(d.getUTCMinutes()) + ':' + intFormat2(d.getSeconds());
+        else
+            r = intFormat2(d.getUTCMinutes()) + ':' + intFormat2(d.getSeconds());
+    } else if (odd.odd.params.fmt === '0:00:00') {
+        if (h > 0)
+            r = h + ':' + intFormat2(d.getUTCMinutes()) + ':' + intFormat2(d.getSeconds());
+        else
+            r = h + ':' + intFormat2(d.getUTCMinutes()) + ':' + intFormat2(d.getSeconds());
+    } else {
+        r = h;
+    }
+    if (!odd.odd.params.nbdigits)
+        return r;
+
+    let ms = '';
+    if (newval === 0.0)
+        ms = '0.000';
+    else
+        ms = newval.toString();
+    if (odd.odd.params.nbdigits === 3)
+        ms = ms.substring(2, 5);
+    else if (odd.odd.params.nbdigits === 2)
+        ms = ms.substring(2, 4);
+    else if (odd.odd.params.nbdigits === 1)
+        ms = ms.substring(2, 3);
+    if (odd.odd.params.fmt === 'hms')
+        return r + ms;
+    else
+        return r + '.' + ms;
+}
+
+/**
+ * check and modify the value of the time edited directly by the user
+ * @method checkTime
+ * @param event
+ */
+export function checkTime(event, id) {
+    //console.log(event);
+    //console.log(event.target);
+    event.preventDefault();
+    // découper en parties
+    var tx = event.target.value;
+    if (tx === '' || tx === 0 || tx === null) {
+        // sets the time
+        values[id] = '';
+        return;
+    }
+    let newt = 0;
+    if (odd.odd.params.fmt === 'hms') {
+        var m = tx.split(/[hmsHMS]/);
+        if (m.length !== 3) {
+            system.alertUser('Mauvais format de temps. Format correct: HhMmSs.ms');
+            return;
+        }
+        var h = parseInt(m[0]);
+        var mn = parseInt(m[1]);
+        var s = parseFloat(m[2]);
+        if (mn > 59 || mn < 0) {
+            system.alertUser('Mauvais format des minutes: entre 0 et 59');
+            return;
+        }
+        if (s > 59 || s < 0) {
+            system.alertUser('Mauvais format des secondes: entre 0 et 59');
+            return;
+        }
+        newt = h * 3600 + mn * 60 + s;
+    } else {
+        var m = tx.split(':');
+        if (m.length === 1) {
+            newt = parseFloat(m[0]);
+        } else if (m.length === 2) {
+            let mn = parseInt(m[0]);
+            let s = parseFloat(m[1]);
+            newt = mn * 60 + s;
+        } else if (m.length !== 3) {
+            system.alertUser('Mauvais format de temps. Format correct: H:M:S.ms');
+            return;
+        } else {
+            let h = parseInt(m[0]);
+            let mn = parseInt(m[1]);
+            let s = parseFloat(m[2]);
+            if (mn > 59 || mn < 0) {
+                system.alertUser('Mauvais format des minutes: entre 0 et 59');
+                return;
+            }
+            if (s > 59 || s < 0) {
+                system.alertUser('Mauvais format des secondes: entre 0 et 59');
+                return;
+            }
+            newt = h * 3600 + mn * 60 + s;
+        }
+    }
+    // sets the time to newt
+    values[id] = newt;
+}
+
+function styleTime() {
+    let s;
+    switch(odd.odd.params.fmt) {
+        case 'hms':
+        case 'HMS':
+            s = "Format: 0h0m0s";
+            break;
+        case '00:00':
+            s = "Format: 00:00";
+            break;
+        case '00:00:00':
+            s = "Format: 00:00:00";
+            break;
+        case '?:00:00':
+            s = "Format: 00:00 ou 00:00:00";
+            break;
+        default:
+            s = "Format en secondes";
+            break;
+    }
+    return s;
+}
+
+let lastId = 0;
 export function createID() {
     let id = 'id' + lastId;
     lastId++;
@@ -234,12 +386,41 @@ function editDataType(elt) {
             s +='onchange="window.ui.setAttr(event, \'' + uniq + '\');" >\n';
             for (let k=0; k < elt.content.vallist.items.length; k++) {
                 s += '<option value="' +
-                    elt.content.vallist.items[k].desc + '" ';
+                    elt.content.vallist.items[k].ident + '" ';
                 if (elt.content.textContent === elt.content.vallist.items[k].ident)
                     s  += 'selected="selected" ';
                 s += '>' + elt.content.vallist.items[k].desc + '</option>\n';
             }
             s += '</select>\n';
+            break;
+        case 'duration':
+            elt.textContentID = uniq;
+            values[uniq] = elt.content.textContent;
+            // edition de la valeur
+            s += '<label for="' + uniq + '">';
+            if (elt.usage === 'req') {
+                s += '<em>obligatoire</em>';
+            }
+            s += ' ' + styleTime();
+            s += '</label>\n';
+            s += '<input name="' + uniq + '" id="' + uniq + '" ';
+            s += 'onchange="window.ui.checkTime(event, \'' + uniq + '\');"';
+            s += ' value="' + formatTime(elt.content.textContent) + '"';
+            s += ' />\n';
+            break;
+        case 'date':
+            elt.textContentID = uniq;
+            values[uniq] = elt.content.textContent;
+            // edition de la valeur
+            if (elt.usage === 'req') {
+                s += '<label for="' + uniq + '">';
+                s += '<em>obligatoire</em>';
+                s += '</label>\n';
+            }
+            s += '<input type="date" name="' + uniq + '" id="' + uniq + '" ';
+            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+            if (elt.content.textContent) s += ' value="' + formatTime(elt.content.textContent) + '"';
+            s += ' />\n';
             break;
         case 'string':
         default:
@@ -313,7 +494,7 @@ function editAttr(elt) {
             // attributs avec liste
             let uniq = createID();
             if (!elt.attr[i].value) // si vide mettre le premier de la liste
-                elt.attr[i].value =  elt.attr[i].items[0].ident;
+                elt.attr[i].value =  elt.attr[i].rend;
             values[uniq] = elt.attr[i].value;
             elt.attr[i].valueID = uniq;
             if (elt.attr[i].desc) {
@@ -336,15 +517,13 @@ function editAttr(elt) {
             let uniq = createID();
             values[uniq] = elt.attr[i].value;
             elt.attr[i].valueID = uniq;
-            if (elt.attr[i].desc) {
-                s += '<label for="' + uniq + '">';
-                s += '<b>' + odd.textDesc(elt.attr[i].desc, odd.odd.params.language) + '</b>';
-                s += '</label>\n';
-            }
             let type = 'text';
             switch (elt.attr[i].datatype) {
                 case 'month':
                     type = 'month';
+                    break;
+                case 'duration':
+                    type = 'duration';
                     break;
                 case 'date':
                     type = 'date';
@@ -358,11 +537,29 @@ function editAttr(elt) {
                     type = 'url';
                     break;
             }
-            s += '<input type = "' + type + '" name="' + uniq + '" id="' + uniq + '"';
-            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
-            if (elt.attr[i].value) s += ' value="' + elt.attr[i].value + '"';
-            values[uniq] = (elt.attr[i].value) ? elt.attr[i].value : '';
-            s += ' />\n';
+            if (elt.attr[i].desc) {
+                s += '<label for="' + uniq + '">';
+                s += '<b>' + odd.textDesc(elt.attr[i].desc, odd.odd.params.language) + '</b>';
+                if (type === "duration")
+                    s += ' ' + styleTime();
+                s += '</label>\n';
+            } else if (type === "duration") {
+                s += '<label for="' + uniq + '">';
+                s += ' ' + styleTime();
+                s += '</label>\n';
+            }
+            if (type === "duration") {
+                s += '<input name="' + uniq + '" id="' + uniq + '" ';
+                s += 'onchange="window.ui.checkTime(event, \'' + uniq + '\');" ';
+                s += ' value="' + formatTime(elt.attr[i].value) + '"';
+                s += ' />\n';
+            } else {
+                s += '<input type = "' + type + '" name="' + uniq + '" id="' + uniq + '"';
+                s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+                if (elt.attr[i].value) s += ' value="' + elt.attr[i].value + '"';
+                values[uniq] = (elt.attr[i].value) ? elt.attr[i].value : '';
+                s += ' />\n';
+            }
         }
     }
     s += '</div>\n';

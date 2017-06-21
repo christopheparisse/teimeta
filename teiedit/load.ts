@@ -11,6 +11,7 @@ import * as odd from './odd';
 import * as schema from './schema';
 import * as system from '../ui/opensave';
 
+let entities = require("entities");
 let dom = require('xmldom').DOMParser;
 
 export let ptrListElementSpec = null; // closure variable
@@ -29,9 +30,9 @@ function getNodeText(node) {
     var txt = '';
     for (let child in node.childNodes) {
         if (node.childNodes[child].nodeType === 3) {
-            txt += node.childNodes[child].textContent;
+            txt += entities.decodeXML(node.childNodes[child].textContent);
         } else if (node.childNodes[child].nodeType === 1 && node.childNodes[child].tagName === 'seg') {
-            txt += node.childNodes[child].textContent;
+            txt += entities.decodeXML(node.childNodes[child].textContent);
         }
     }
     return txt;

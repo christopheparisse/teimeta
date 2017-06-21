@@ -226,7 +226,9 @@ function generateFilledElement(elt, doc, node) {
             if (!elt.attr[i].datatype) {
                 elt.attr[i].value = elt.attr[i].rend;
             } else {
-                elt.attr[i].value = entities.encodeXML(edit.values[elt.attr[i].valueID]);
+                let v = edit.values[elt.attr[i].valueID];
+                console.log(v);
+                elt.attr[i].value = entities.encodeXML(String(v));
             }
             node.setAttribute(elt.attr[i].ident, elt.attr[i].value);
             s += ' ' + elt.attr[i].ident + '="' + elt.attr[i].value + '"';

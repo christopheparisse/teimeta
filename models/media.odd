@@ -95,12 +95,12 @@
 						<elementRef key="recordingStmt" minOccurs="1" maxOccurs="1"/>
 					</content>
 				</elementSpec>
-
+				
 				<elementSpec ident="recordingStmt" module="spoken">
 					<content>
 						<elementRef key="recording" minOccurs="1" maxOccurs="unbounded"/>
 					</content>
-
+					
 					<!--  Des exemples  -->
 					<exemplum versionDate="2016-10-04" xml:lang="fr">
 						<egXML xmlns="http://www.tei-c.org/ns/Examples">
@@ -136,17 +136,22 @@
 						</egXML>
 					</exemplum>
 				</elementSpec>
-
+				
 				<elementSpec ident="recording" module="spoken">
 					<content>
 						<elementRef key="media" minOccurs="1" maxOccurs="1"/>
-						<elementRef key="p" minOccurs="0" maxOccurs="1"/>
+						<!--
+						<sequence minOccurs="1" maxOccurs="unbounded">
+							<elementRef key="p" />
+							<elementRef key="media" minOccurs="1" maxOccurs="1"/>
+						</sequence>
+						-->
 					</content>
 				</elementSpec>
-
+				
 				<elementSpec ident="media" module="spoken">
-                    <desc xml:lang="fr">Média : chaque media peut avoir une durée différente</desc>
-                    <desc xml:lang="en">Media: each media could have a different duration </desc>
+					<desc xml:lang="fr">Média : chaque media peut avoir une durée différente</desc>
+					<desc xml:lang="en">Media: each media could have a different duration </desc>
 					<content>
 						<sequence minOccurs="1" maxOccurs="1">
 							<elementRef key="desc" corresp="quality"/>
@@ -188,7 +193,7 @@
 						</attDef>
 					</attList>
 				</elementSpec>
-
+				
 				<elementSpec ident="desc" corresp="quality">
 					<attList>
 						<attDef ident="type" usage="req" mode="change">
@@ -199,8 +204,8 @@
 						<attDef ident="subtype" usage="req" mode="change">
 							<valList>
 								<valItem ident="less_noisy">
-									<desc xml:lang="fr">inaudible ou bruité moins de 5%</desc>
-									<desc xml:lang="en">inaudible or noisy less than 5%</desc>
+									<desc xml:lang="fr">bruité moins de 5%</desc>
+									<desc xml:lang="en">noisy less than 5%</desc>
 								</valItem>
 								<valItem ident="noisy">
 									<desc xml:lang="fr">inaudible ou bruité plus de 5%</desc>
@@ -218,7 +223,7 @@
 						</attDef>
 					</attList>
 				</elementSpec>
-
+				
 				<elementSpec ident="desc" corresp="anonymization">
 					<attList>
 						<attDef ident="type" usage="req" mode="change">
@@ -248,7 +253,7 @@
 						</attDef>
 					</attList>
 				</elementSpec>
-
+				
 				<elementSpec ident="p" module="core">
 					<content>
 						<textNode/>

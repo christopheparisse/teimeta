@@ -86,6 +86,7 @@ export function init() {
     window['ui'].createEC = edit.createEC;    
     window['ui'].setAttr = edit.setAttr;
     window['ui'].toggleES = edit.toggleES;
+    window['ui'].checkTime = edit.checkTime;
     window['ui'].odd = odd.odd;
     window['ui'].setLeftShift = common.setLeftShift;
     window['ui'].setDispFPath = common.setDispFPath;

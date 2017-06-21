@@ -33,8 +33,8 @@ export function oddTeiOral() {
 }
 
 export function oddPartDesc() {
-    readTextFile('http://ct3.ortolang.fr/teimeta/partdesc.odd?v=' + schema.version, function(text) {
-        events.openOddLoad('Odd prédéfini Participants', text);
+    readTextFile('http://ct3.ortolang.fr/teimeta/olac.odd?v=' + schema.version, function(text) {
+        events.openOddLoad('Odd prédéfini Olac DC', text);
     });
 }
 
