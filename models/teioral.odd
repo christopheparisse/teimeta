@@ -138,7 +138,7 @@
 					<specGrpRef target="media.odd"/>
 					<specGrpRef target="partdesc.odd"/>
 				-->
-				
+
 				<!-- structure generale TEI -->
 				<elementSpec ident="TEI" module="textstructure" mode="change">
 					<content>
@@ -481,6 +481,14 @@
 						<attDef ident="type" usage="req" mode="change">
 							<valList>
 								<valItem ident="handle"/>
+								<valItem ident="ISSN"/>
+								<valItem ident="ISBN"/>
+								<valItem ident="URI"/>
+								<valItem ident="DOI"/>
+								<valItem ident="ESTC"/>
+								<valItem ident="OCLC"/>
+								<valItem ident="library"/>
+								<valItem ident="other"/>
 							</valList>
 						</attDef>
 					</attList>
@@ -613,8 +621,8 @@
 						<attDef ident="subtype" usage="req" mode="change">
 							<valList>
 								<valItem ident="less_noisy">
-									<desc xml:lang="fr">inaudible ou bruité moins de 5%</desc>
-									<desc xml:lang="en">inaudible or noisy less than 5%</desc>
+									<desc xml:lang="fr">bruité moins de 5%</desc>
+									<desc xml:lang="en">noisy less than 5%</desc>
 								</valItem>
 								<valItem ident="noisy">
 									<desc xml:lang="fr">inaudible ou bruité plus de 5%</desc>
@@ -883,11 +891,15 @@
 									<desc xml:lang="fr">thème initial/ordre du jour/consigne donnée
 										aux locuteurs sur le contenu ou les modalités de
 										l'échange</desc>
-									<desc xml:lang="en">...</desc>
+									<desc xml:lang="en">initial thème/insctructions to speakers on content or modality</desc>
 								</valItem>
 								<valItem ident="instruction.spontaneous">
-									<desc xml:lang="fr">no instruction</desc>
-									<desc xml:lang="en">...</desc>
+									<desc xml:lang="fr">spontané</desc>
+									<desc xml:lang="en">spontaneous</desc>
+								</valItem>
+				                <valItem ident="instruction.noinstruction">
+									<desc xml:lang="fr">sans instruction</desc>
+									<desc xml:lang="en">no instruction</desc>
 								</valItem>
 								<valItem ident="unknown">
 									<desc xml:lang="fr">inconnu</desc>
@@ -1007,12 +1019,6 @@
 								</valItem>
 							</valList>
 						</attDef>
-						<attDef ident="age" usage="rec" rendition="age" mode="change">
-							<desc>Age</desc>
-							<datatype>
-								<dataRef name="string"/>
-							</datatype>
-						</attDef>
 						<attDef ident="source" usage="rec" rendition="source" mode="change">
 							<desc xml:lang="fr">Pointeur sur une ressource externe</desc>
 							<desc xml:lang="en">Point to an external source</desc>
@@ -1020,7 +1026,7 @@
 								<dataRef name="anyURI"/>
 							</datatype>
 						</attDef>
-						<attDef ident="role" usage="rec" rendition="role" mode="change">
+						<attDef ident="role" usage="rec" rendition="role" mode="change" rend="unknown">
 							<desc xml:lang="fr">Role du participant</desc>
 							<desc xml:lang="fr">Participant role</desc>
 							<datatype>
@@ -1063,31 +1069,31 @@
 						</attDef>
 					</attList>
 				</elementSpec>
-				
+
 				<elementSpec ident="persName" module="namesdates">
 					<content>
 						<textNode/>
 					</content>
 				</elementSpec>
-				
+
 				<elementSpec ident="socecStatus" module="namesdates">
 					<content>
 						<textNode/>
 					</content>
 				</elementSpec>
-				
+
 				<elementSpec ident="education" module="namesdates">
 					<content>
 						<textNode/>
 					</content>
 				</elementSpec>
-				
+
 				<elementSpec ident="altGrp" module="core">
 					<content>
 						<elementRef key="alt" minOccurs="1" maxOccurs="unbounded"/>
 					</content>
 				</elementSpec>
-				
+
 				<elementSpec ident="alt" module="core">
 					<attList>
 						<attDef ident="type">
@@ -1098,7 +1104,7 @@
 						</attDef>
 					</attList>
 				</elementSpec>
-				
+
 				<elementSpec ident="note" module="core">
 					<content>
 						<textNode/>
@@ -1112,10 +1118,14 @@
 						</attDef>
 					</attList>
 				</elementSpec>
-				
+
 				<elementSpec ident="age" module="namesdates">
 					<content>
 						<valList>
+							<valItem ident="age.adult">
+								<desc xml:lang="fr">de 21 à 60 ans</desc>
+								<desc xml:lang="en">from 21 to 60</desc>
+							</valItem>
 							<valItem ident="age.infant">
 								<desc xml:lang="fr">moins de 1 an</desc>
 								<desc xml:lang="en">less than 1</desc>
@@ -1133,15 +1143,11 @@
 								<desc xml:lang="en">from 6 to 15</desc>
 							</valItem>
 							<valItem ident="age.youth">
-								<desc xml:lang="fr">de 16 à 20 ans </desc>
+								<desc xml:lang="fr">de 16 à 20 ans</desc>
 								<desc xml:lang="en">from 16 to 20</desc>
 							</valItem>
-							<valItem ident="age.adult">
-								<desc xml:lang="fr">de 21 à 60 ans</desc>
-								<desc xml:lang="en">from 21 to 60</desc>
-							</valItem>
 							<valItem ident="age.senior">
-								<desc xml:lang="fr">plus de 61 ans </desc>
+								<desc xml:lang="fr">plus de 61 ans</desc>
 								<desc xml:lang="en">up to 61</desc>
 							</valItem>
 							<valItem ident="age.unknown">
@@ -1151,7 +1157,11 @@
 						</valList>
 					</content>
 					<attList>
-						<attDef ident="value" usage="req" mode="change"/>
+						<attDef ident="value" usage="req" mode="change">
+							<datatype>
+								<dataRef name="number"/>
+							</datatype>
+						</attDef>
 					</attList>
 				</elementSpec>
 
@@ -1159,6 +1169,10 @@
 					<attList>
 						<attDef ident="ana" usage="req" mode="change">
 							<valList>
+								<valItem ident="occupation.unknown">
+									<desc xml:lang="fr">inconnu</desc>
+									<desc xml:lang="en">unknown</desc>
+								</valItem>
 								<valItem ident="occupation.before_school">
 									<desc xml:lang="fr">avant la scolarisation</desc>
 									<desc xml:lang="en">before school</desc>
@@ -1178,10 +1192,6 @@
 								<valItem ident="occupation.without_job">
 									<desc xml:lang="fr">sans emploi (chomage, H/F au foyer) </desc>
 									<desc xml:lang="en">without job (unemployed, at home) </desc>
-								</valItem>
-								<valItem ident="occupation.unknown">
-									<desc xml:lang="fr">inconnu</desc>
-									<desc xml:lang="en">unknown</desc>
 								</valItem>
 							</valList>
 						</attDef>
@@ -1251,12 +1261,23 @@
 				</elementSpec>
 
 				<elementSpec ident="place" module="namesdates">
+					<desc xml:lang="fr">Lieu où se déroule l'enregistrement.<br/>Le champ placeName doit être rempli.</desc>
+					<desc xml:lang="en">Recording place.<br/>placeName field is mandatory.</desc>
 					<content>
-						<elementRef key="country" minOccurs="1" maxOccurs="1"/>
+						<sequence minOccurs="1" maxOccurs="1">
+							<elementRef key="placeName"/>
+							<elementRef key="country"/>
+						</sequence>
 						<elementRef key="settlement" minOccurs="0" maxOccurs="unbounded"/>
 						<elementRef key="district" minOccurs="0" maxOccurs="unbounded"/>
-						<!-- TDOD : plusieurs desc ??? desc:  piece, exemple changement de lieu avec micro cravate -->
+						<!-- TODO : plusieurs desc ??? desc:  piece, exemple changement de lieu avec micro cravate -->
 						<elementRef key="desc" minOccurs="0" maxOccurs="unbounded"/>
+					</content>
+				</elementSpec>
+
+				<elementSpec ident="placeName" module="namesdates">
+					<content>
+						<textNode/>
 					</content>
 				</elementSpec>
 
@@ -1285,6 +1306,7 @@
 						<elementRef key="date" minOccurs="0" maxOccurs="unbounded"/>
 						<!-- description de la situation ==> attention aux redondances ==> description déjà dans title -->
 						<elementRef key="activity" minOccurs="0" maxOccurs="unbounded"/>
+						<textNode/>
 					</content>
 				</elementSpec>
 
@@ -1301,12 +1323,35 @@
 				</elementSpec>
 
 				<elementSpec ident="date" module="core">
+					<desc xml:lang="fr">date : soit intervalle notBefore-iso/notAfter-iso<br/>soit date exacte avec l'attribut when-iso
+					</desc>
+					<!-- ds le modèle normalement contrainte soit when soit before/after
+					-->
+					<content>
+						<textNode/>
+					</content>
 					<attList>
-						<!-- date : soit intervalle notBefore-iso/notAfter-iso, soit date exacte avec l'attribut when-iso
-	  							     ds le modèle normalement contrainte soit when soit before/after-->
-						<attDef ident="notBefore-iso" usage="opt" mode="change"/>
-						<attDef ident="notAfter-iso" usage="opt" mode="change"/>
-						<attDef ident="when-iso" usage="opt" mode="change"/>
+						<attDef ident="notBefore-iso" usage="opt" mode="change">
+							<desc xml:lang="fr">Pas avant</desc>
+							<desc xml:lang="en">Not before</desc>
+							<datatype>
+								<dataRef name="date"/>
+							</datatype>
+						</attDef>
+						<attDef ident="notAfter-iso" usage="opt" mode="change">
+							<desc xml:lang="fr">Pas après</desc>
+							<desc xml:lang="en">Not after</desc>
+							<datatype>
+								<dataRef name="date"/>
+							</datatype>
+						</attDef>
+						<attDef ident="when-iso" usage="opt" mode="change">
+							<desc xml:lang="fr">Date exacte</desc>
+							<desc xml:lang="en">Exact date</desc>
+							<datatype>
+								<dataRef name="date"/>
+							</datatype>
+						</attDef>
 					</attList>
 				</elementSpec>
 
@@ -1330,10 +1375,10 @@
 				</elementSpec>
 
 				<elementSpec ident="appInfo" module="header" mode="change">
-					<desc xml:lang="fr"> TEI_CORPO + release ou autre "convertisseur maison" (C'est
-						ici qu'on indique la référence à l'application ayant généré le fichier TEI)
+					<desc xml:lang="fr"> <b>TEI_CORPO</b> + release ou autre "convertisseur maison"<br/>(C'est
+						ici qu'on indique la référence à l'application ayant généré le fichier TEI)<br/>
 						Description obligatoire en TEI donc générique de l'application , evt options
-						de traitement pour elan, praat, choix des locuteurs, ... </desc>
+						de traitement pour elan, praat, choix des locuteurs, ... &amp; </desc>
 					<desc xml:lang="en">Which kind of oral corpora,an additonal setting element will
 						complete description (artefact, map, ...)</desc>
 					<content>
@@ -1391,10 +1436,13 @@
 							</valList>
 						</attDef>
 						<attDef ident="ana" usage="req" mode="change">
+							<datatype>
+								<dataRef name="openlist"/>
+							</datatype>
 							<valList>
 								<valItem ident="annotation.orthographic">
-									<desc xml:lang="fr">prosodie</desc>
-									<desc xml:lang="en">prosody</desc>
+									<desc xml:lang="fr">orthographe</desc>
+									<desc xml:lang="en">orthography</desc>
 								</valItem>
 								<valItem ident="annotation.prosodical">
 									<desc xml:lang="fr">prosodique</desc>

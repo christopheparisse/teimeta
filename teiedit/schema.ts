@@ -6,7 +6,7 @@
  * the description of the schema and the loading edition saving of the xml files are now independant
  */
 
-export let version = "3.1"; // version du format
+export let version = "3.2"; // version du format
 
 export class PARAMS {
     // Default PARAMETRES
