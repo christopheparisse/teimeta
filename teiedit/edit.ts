@@ -311,8 +311,10 @@ export function generateHTML(teiData) {
 function generateContent(ct, abspath) {
     let s = '';
     for (let ec of ct.sequencesRefs) {
+        //console.log(">>>",ec.model);
         if (ec.minOccurs === '1' && ec.maxOccurs === '1') {
-            s = '<div class="headHRef">';
+            //console.log("1-1",ec.model);
+            s += '<div class="headHRef">';
             if (ec.type === 'elementRef') {
                 s += generateElement(ec.eCI[0].element, 'single');
             } else {
@@ -322,6 +324,7 @@ function generateContent(ct, abspath) {
             }
             s += '</div>';
         } else {
+            console.log("multiple",ec.eCI[0].ident);
             s += generateMultiple(ec, abspath);
         }
     }
@@ -463,6 +466,15 @@ function editAttr(elt) {
                 system.alertUser("pas de liste de valeurs pour l'attribut: " + elt.attr.ident);
                 continue;
             }
+            if (elt.attr[i].items.length <= 1) {
+                // liste avec un seul element
+                let uniq = createID();
+                if (!elt.attr[i].value) // si vide mettre le premier de la liste
+                    elt.attr[i].value =  elt.attr[i].items[0].ident;
+                values[uniq] = elt.attr[i].value;
+                elt.attr[i].valueID = uniq;
+                continue;
+            }
             // attributs avec liste
             let uniq = createID();
             if (!elt.attr[i].value) // si vide mettre le premier de la liste
@@ -491,6 +503,10 @@ function editAttr(elt) {
                 system.alertUser("pas de liste de valeurs pour l'attribut: " + elt.attr.ident);
                 continue;
             }
+            if (elt.attr[i].items.length <= 1) {
+                // liste avec un seul element
+                continue;
+            }
             // attributs avec liste
             let uniq = createID();
             if (!elt.attr[i].value) // si vide mettre le premier de la liste
@@ -502,7 +518,7 @@ function editAttr(elt) {
                 s += '<b>' + odd.textDesc(elt.attr[i].desc, odd.odd.params.language) + '</b>';
                 s +='</label>\n';
             }
-            s +='<input type=text class="listattr" list="' + uniq + '" value="' + elt.attr[i].value + '" ';
+            s +='<input type=text class="awesomplete listattr" data-minchars="0" list="' + uniq + '" value="' + elt.attr[i].value + '" ';
             s +='onchange="window.ui.setAttr(event, \'' + uniq + '\');"/>\n';
             s +='<datalist id="' + uniq + '">';
             for (let k in elt.attr[i].items) {
@@ -571,27 +587,13 @@ function generateElement(elt, validatedStyle) {
     let s = '';
     let uniq = createID();
     let prof = (elt.absolutepath.match(/\//g) || []).length - 1;
-    s += '<div class="nodeField node-' + classOf(elt.usage) + '" title="' + elt.absolutepath + '" style="margin-left: ' + prof*odd.odd.params.leftShift + 'px;">\n';
-    if (odd.odd.params.validateRequired && validatedStyle !== 'root') {
-        // on peut tout valider donc on ne se pose pas de question
-        values[uniq] = elt.validatedES;
-        elt.validatedESID = uniq;
-        if (elt.validatedES) {
-            s += '<i class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
-                + classOf(elt.usage)
-                + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
-        } else {
-            s += '<i class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
-                + classOf(elt.usage)
-                + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
-        }
-    } else {
-        // on ne peut pas valider les req - ils sont toujours à validatedES === true
-        if ((elt.usage === 'req' && validatedStyle !== 'multiple') || validatedStyle === 'root')
-            elt.validatedES = true;
-        values[uniq] = elt.validatedES;
-        elt.validatedESID = uniq;
-        if (validatedStyle !== 'root' && (elt.usage !== 'req' || validatedStyle === 'multiple')) {
+    if (odd.odd.params.displayFullpath || elt.attr.length > 0 || (elt.content && elt.content.datatype)) {
+        let lprof = (odd.odd.params.displayFullpath) ? prof*odd.odd.params.leftShift : 0;
+        s += '<div class="nodeField node-' + classOf(elt.usage) + '" title="' + elt.absolutepath + '" style="margin-left: ' + lprof + 'px;">\n';
+        if (odd.odd.params.validateRequired && validatedStyle !== 'root') {
+            // on peut tout valider donc on ne se pose pas de question
+            values[uniq] = elt.validatedES;
+            elt.validatedESID = uniq;
             if (elt.validatedES) {
                 s += '<i class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
                     + classOf(elt.usage)
@@ -601,28 +603,67 @@ function generateElement(elt, validatedStyle) {
                     + classOf(elt.usage)
                     + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
             }
+        } else {
+            // on ne peut pas valider les req - ils sont toujours à validatedES === true
+            if ((elt.usage === 'req' && validatedStyle !== 'multiple') || validatedStyle === 'root')
+                elt.validatedES = true;
+            values[uniq] = elt.validatedES;
+            elt.validatedESID = uniq;
+            if (validatedStyle !== 'root' && (elt.usage !== 'req' || validatedStyle === 'multiple')) {
+                if (elt.validatedES) {
+                    s += '<i class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
+                        + classOf(elt.usage)
+                        + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                } else {
+                    s += '<i class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
+                        + classOf(elt.usage)
+                        + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                }
+            }
         }
-    }
-    // contenu (node principal)
-    s += '<i class="hidebutton fa fa-size2 fa-star-half-o fa-color-toggle" '
-        + 'onclick="window.ui.toggleES(event, \'' + uniq + '\')"></i>';
-    s += '<span class="nodeIdent">' + elt.ident + '</span>\n';
-    if (odd.odd.params.displayFullpath)
-        s += '<span class="nodeAbspath">' + elt.absolutepath + '</span>\n';
-    s += '<div class="toggle" id="show' + uniq + '">';
-    // description
-    if (elt.desc) s += '<div class="eltDesc">' + odd.textDesc(elt.desc, odd.odd.params.language) + '</div>\n';
-    // champ texte du noeud
-    if (elt.content && elt.content.datatype) s += editDataType(elt);
-    // Attributes
-    if (elt.attr.length > 0) s += editAttr(elt);
-    // enfants
-    if (elt.content && elt.content.sequencesRefs.length > 0) {
-        s += '<div class="nodeContent">';
-        s += generateContent(elt.content, elt.absolutepath);
+
+        // contenu (node principal)
+        s += '<i class="hidebutton fa fa-size2 fa-star-half-o fa-color-toggle" '
+            + 'onclick="window.ui.toggleES(event, \'' + uniq + '\')"></i>';
+        if (odd.odd.params.displayFullpath) {
+            s += '<span class="nodeIdent">' + elt.ident + '</span>\n';
+            s += '<span class="nodeAbspath">' + elt.absolutepath + '</span>\n';
+            s += '<div class="toggle" id="show' + uniq + '">';
+            // description
+            if (elt.desc) s += '<div class="eltDescBlock">' + odd.textDesc(elt.desc, odd.odd.params.language) + '</div>\n';
+        } else {
+            s += '<div class="toggle" id="show' + uniq + '">';
+            // description
+            if (elt.desc)
+                s += '<div class="eltDesc">' + odd.textDesc(elt.desc, odd.odd.params.language) + '</div>\n';
+            else
+                s += '<div class="eltDesc">' + elt.ident + '</div>\n';
+        }
+
+        // champ texte du noeud
+        if (elt.content && elt.content.datatype) s += editDataType(elt);
+        // Attributes
+        if (elt.attr.length > 0) s += editAttr(elt);
+        // enfants
+        if (elt.content && elt.content.sequencesRefs.length > 0) {
+            s += '<div class="nodeContent">';
+            s += generateContent(elt.content, elt.absolutepath);
+            s += '</div>\n';
+        }
+        s += '</div>\n';
+        s += '</div>\n';
+    } else {
+        s += '<div class="nodeField node-' + classOf(elt.usage) + ' " style="margin-left: '
+            /*+ prof*odd.odd.params.leftShift*/
+            + 'px;">\n';
+        values[uniq] = true; // elt.validatedES // on ne peut pas accepter les éléments non validés car ils sont cachés
+        elt.validatedESID = uniq;
+        if (elt.content && elt.content.sequencesRefs.length > 0) {
+            s += '<div class="nodeContent">';
+            s += generateContent(elt.content, elt.absolutepath);
+            s += '</div>\n';
+        }
         s += '</div>\n';
     }
-    s += '</div>\n';
-    s += '</div>\n';
     return s;
 }

@@ -7,6 +7,8 @@
 
 let saveAs = require('file-saver');
 let picoModal = require('picoModal');
+//require('../js/stretchy.js');
+//require('../js/awesomplete.js');
 
 export function openLocalFile(fn) {
     /*

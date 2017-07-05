@@ -6,7 +6,7 @@
  * the description of the schema and the loading edition saving of the xml files are now independant
  */
 
-export let version = "3.2"; // version du format
+export let version = "3.3"; // version du format
 
 export class PARAMS {
     // Default PARAMETRES
@@ -15,7 +15,7 @@ export class PARAMS {
     groupingStyle = 'border'; // style d'affichage des groupes d'éléments duplicables
     validateRequired = false; // si true on a le droit de ne pas valider (de supprimer) les éléments obligatoires
     language = 'fr'; // nom de la langue des champs desc
-    displayFullpath = true; // affichage ou non du chemin complet des tags
+    displayFullpath = false; // affichage ou non du chemin complet des tags
     canRemove = false; // allows to remove existing nodes
     fmt = '?:00:00'; // format for time length of media
     nbdigits = 0; // number of digits allowed in the decimal part of a number

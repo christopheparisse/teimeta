@@ -55,7 +55,7 @@ gulp.task('page-ui2', function () {
 });
 
 gulp.task('page-js', function () {
-  return gulp.src('js/picoModal.js')
+  return gulp.src(['js/stretchy.js', 'js/awesomplete.js'])
     .pipe(gulp.dest('temp-page/js/'))
 });
 
@@ -79,6 +79,7 @@ gulp.task('electron', function(done) {
 });
 
 gulp.task('page', function(done) {
+//    runSequence('page-src', 'page-ui2', 'page-js', function() {
     runSequence('page-src', 'page-ui2', function() {
         console.log('ok.');
         done();

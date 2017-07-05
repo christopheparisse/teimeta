@@ -87,7 +87,7 @@
  */
 
 .nodeIdent {
-    display: inline-block;
+    display: inline;
     border: 1px solid #551cd9;
     border-collapse: collapse;
 	border-radius: 2px;
@@ -95,7 +95,7 @@
 }
 
 .showonoff {
-    display: block;
+    display: inline;
 }
 
 .nodeContent {
@@ -108,13 +108,25 @@
     margin-top: 5px;
     margin-bottom: 5px;
     padding: 2px;
+    display: inline;
 }
 
-.nodeContent .eltDesc {
-    display: inline-block;
+.eltDesc {
+    display: inline;
     font-style: italic;
     font-size: smaller;
     background-color: lightgray;
+}
+
+.eltDescBlock {
+    display: block;
+    font-style: italic;
+    font-size: smaller;
+    background-color: lightgray;
+}
+
+.toggle {
+    display: inline;
 }
 
 .contentCountMany {
@@ -154,12 +166,20 @@
 }
 
 .nodeField {
-    display: block;
+    display: inline-block;
     font-size: large;
 }
 
 .headSequence .nodeField {
     display: block;
+}
+
+.headHRef {
+    display: inline-block;
+}
+
+.nodeEdit {
+    display: inline-block;
 }
 
 .nodeAttr {
@@ -194,6 +214,16 @@
 
 input {
     background-color: #F7F7F7;
+    min-width: 30px;
+    font-size: large;
+}
+
+strong {
+    font-size: x-large;
+}
+
+select {
+    font-size: large;
 }
 
 .optional {

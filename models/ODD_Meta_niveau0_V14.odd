@@ -242,13 +242,13 @@
 				</elementSpec>
 
 				<elementSpec ident="idno" corresp="title" module="header">
-					<desc xml:lang="fr"><strong>Titre donné au fichier ressource, généralement le nom formel sous lequel il est connu</strong></desc>
+					<desc xml:lang="fr"><strong>Titre donné au fichier ressource,<br/> généralement le nom formel sous lequel il est connu</strong></desc>
 					<desc xml:lang="fr">Tittle...</desc>
 					<content>
 						<textNode/>
 					</content>
 					<attList>
-						<attDef ident="type" usage="req" mode="change">
+						<attDef ident="type" usage="req" mode="change" rend="title">
 							<valList>
 								<valItem ident="title"/>
 							</valList>

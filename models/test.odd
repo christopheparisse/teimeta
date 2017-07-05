@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+    <?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+    <?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+
+<TEI xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:svg="http://www.w3.org/2000/svg"
+	xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns="http://www.tei-c.org/ns/1.0"
+	xmlns:rng="http://relaxng.org/ns/structure/1.0">
+
+	<teiHeader>
+		<fileDesc>
+			<titleStmt>
+      <title>
+        <idno type="title">Test pour le logiciel TEIMETA</idno>
+        <bibl> CORLI et IRCOM test.odd </bibl>
+        <desc> Ne pas encombrer l'écran et tester les fonctionnalités de base</desc>
+      </title>
+      <principal>
+        <name type="org"> CORLI - IRCOM </name>
+        <name type="org"> Christophe Parisse, Carole Etienne, Loic Liégeois, ... </name>
+      </principal>
+			</titleStmt>
+			<publicationStmt>
+				<publisher>CORLI wiki</publisher>
+			</publicationStmt>
+			<sourceDesc>
+				<p>written from IRCOM/CORLI recommandations</p>
+			</sourceDesc>
+		</fileDesc>
+	</teiHeader>
+
+	<text>
+		<body>
+			<!-- definition de TEI_CORPO_METADATA-->
+			<schemaSpec ident="TEST_CORPO_METADATA" start="TEST">
+				<!-- ajouter teiCorpus par la suite si collections -->
+
+				<!-- structure generale TEST -->
+				<elementSpec ident="TEST" module="textstructure" mode="change">
+					<content>
+						<sequence minOccurs="1" maxOccurs="1">
+							<elementRef key="testZero"/>
+							<elementRef key="testOne"/>
+							<elementRef key="testTwo"/>
+						</sequence>
+					</content>
+				</elementSpec>
+
+				<elementSpec ident="testZero" module="header" mode="change">
+					<desc xml:lang="fr">TEST Zero</desc>
+					<desc xml:lang="en">Zero test</desc>
+					<content>
+			            <textNode/>
+					</content>
+					<attList>
+						<attDef ident="type" usage="req" mode="change" rend="title">
+							<valList>
+								<valItem ident="title"/>
+							</valList>
+						</attDef>
+					</attList>
+				</elementSpec>
+
+				<elementSpec ident="testOne" module="header" mode="change">
+					<desc xml:lang="fr">Première série de tests<br/>Un seul élément fils obligatoire</desc>
+					<desc xml:lang="en">First set of tests<br/>Only one obligatory element</desc>
+					<content>
+						<elementRef key="elementSimple11" minOccurs="1" maxOccurs="1" />
+						<elementRef key="elementSimple22" minOccurs="1" maxOccurs="1" />
+						<elementRef key="elementSimple33" minOccurs="1" maxOccurs="unbounded" />
+					</content>
+				</elementSpec>
+
+				<elementSpec ident="testTwo" module="header">
+					<desc xml:lang="fr">Deuxième série de tests<br/>Sequence obligatoire de deux élements</desc>
+					<desc xml:lang="en">Second set of tests</desc>
+					<content>
+						<sequence minOccurs="1" maxOccurs="1">
+							<elementRef key="elementSimple11" />
+							<elementRef key="elementSimple22" />
+						</sequence>
+						<elementRef key="elementSimple33" minOccurs="0" maxOccurs="unbounded"/>
+					</content>
+				</elementSpec>
+
+				<elementSpec ident="elementSimple11" module="spoken">
+					<desc xml:lang="fr">Element simple premier test</desc>
+					<desc xml:lang="en">Simple element first test</desc>
+					<content>
+			            <textNode/>
+					</content>
+					<attList>
+						<attDef ident="type" usage="req" mode="change">
+							<valList type="closed">
+								<valItem ident="audio"/>
+								<valItem ident="video"/>
+								<valItem ident="other"/>
+							</valList>
+						</attDef>
+						<attDef ident="mimeType" usage="req" mode="change">
+              <datatype>
+                <dataRef name="openlist"/>
+              </datatype>
+							<valList>
+								<valItem ident="audio/wav"/>
+								<valItem ident="audio/mp3"/>
+								<valItem ident="video/mp4"/>
+								<valItem ident="video/mov"/>
+								<valItem ident="video/wmv"/>
+								<valItem ident="video/avi"/>
+								<valItem ident="other"/>
+							</valList>
+						</attDef>
+					</attList>
+				</elementSpec>
+
+				<elementSpec ident="elementSimple22" module="spoken">
+					<desc xml:lang="fr">Element simple deuxième test</desc>
+					<desc xml:lang="en">Simple element second test</desc>
+					<content>
+            <textNode/>
+					</content>
+				</elementSpec>
+
+				<elementSpec ident="elementSimple33" module="spoken">
+					<desc xml:lang="fr">Element simple troisième test</desc>
+					<desc xml:lang="en">Simple element third test</desc>
+					<content>
+            <textNode/>
+					</content>
+				</elementSpec>
+
+			</schemaSpec>
+		</body>
+	</text>
+</TEI>

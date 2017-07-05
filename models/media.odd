@@ -139,13 +139,10 @@
 				
 				<elementSpec ident="recording" module="spoken">
 					<content>
-						<elementRef key="media" minOccurs="1" maxOccurs="1"/>
-						<!--
 						<sequence minOccurs="1" maxOccurs="unbounded">
 							<elementRef key="p" />
 							<elementRef key="media" minOccurs="1" maxOccurs="1"/>
 						</sequence>
-						-->
 					</content>
 				</elementSpec>
 				
