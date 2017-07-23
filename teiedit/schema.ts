@@ -19,6 +19,7 @@ export class PARAMS {
     canRemove = false; // allows to remove existing nodes
     fmt = '?:00:00'; // format for time length of media
     nbdigits = 0; // number of digits allowed in the decimal part of a number
+    encodeXMLFull = false; // if true use entities.encodeXML otherwise only encodes < and >
 }
 
 export class SCHEMA {
@@ -59,14 +60,20 @@ export class ElementSpec {
     validatedESID = '';
     node = null; // utilisé pour retrouver les éléments orignaux
     // si null alors création ex nihilo dans un emplacement absolu
+    parentElementSpec = null; // pointer to parent element for validation when validating elementSpec
 }
 
 export class Content {
     sequencesRefs = []; // des ElementCount contenant des sequence ou des elementRef
-    datatype = ''; // infos pour l'edition
+    datatype = null; // infos pour l'edition
+}
+
+export class DataType {
+    type = ''; // format of the type to edit
     vallist = null; // utilisé si ensemble de valeurs prédéfinies
-    textContent = ''; // value pour le texte si nécessaire
-    textContentID = ''; // ID pour le texte si nécessaire
+    valueContent = ''; // valeur du contenu quelque soit le format
+    valueContentID = ''; // ID pour les callback
+    parentElementSpec = null; // pointeur sur l'elementSpec à mettre à vrai si modifié
     // obligatory = false; // true if element cannot be removed
 }
 
@@ -80,8 +87,11 @@ export class ElementCount {
     ident = null; //
     type = ''; // elementRef or sequence
     eCI = []; // element Count Items
-    parent = null; // utilisé pour retrouver les éléments orignaux et les nouveaux nodes
+    /* PAS UTILISE ???
+    // parent = null; // utilisé pour retrouver les éléments orignaux et les nouveaux nodes
     // si null alors un élément doit être créé et ajouté au node parent
+    */
+    parentElementSpec = null; // pointer to parent element for validation when editing datatype
 }
 
 export class ElementCountItem {
@@ -93,6 +103,7 @@ export class ElementCountItem {
     element = null; // pointeur ElementSpec vers des elementSpec ou sur des Sequence
     node = null; // utilisé pour retrouver les éléments orignaux et les nouveaux nodes
     // si null alors un élément doit être créé et ajouté au node parent
+    parentElementSpec = null; // pointer to parent element for validation when validating elementSpec
 }
 
 export class Desc {
@@ -109,11 +120,8 @@ export class AttrDef {
     usage = ''; // champ indiquant l'usage: obligatory (req), recommanded (rec), optional (opt ou '')
     mode = '';
     desc = null;
-    items = [];
-    datatype = '';
-    // Informations pour éditer la TEI
-    valueID = '';
-    value = '';
+    // items = []; ? valList dans datatype ?
+    datatype = null;
 }
 
 export class ValItem {
@@ -133,22 +141,20 @@ export function copyElementSpec(obj): any {
     cp.validatedES = obj.validatedES; // is false element not used, si non element used
     cp.validatedESID = obj.validatedESID;
     cp.content = (obj.content !== null)
-        ? copyContent(obj.content)
+        ? copyContent(obj.content, cp)
         : null; // pointeur sur les enfants.
     cp.attr = (obj.attr !== null)
-        ? copyAttr(obj.attr)
+        ? copyAttr(obj.attr, cp)
         : null; // contenu pour l'édition du noeud lui même, champ texte, attributs et categories
     cp.absolutepath = obj.absolutepath;
+    cp.parentElementSpec = obj.parentElementSpec;
     cp.node = null; // utilisé pour retrouver les éléments orignaux
     return cp;
 }
 
-function copyContent(obj): any {
+function copyContent(obj, parent): any {
     let cp: any = {};
-    cp.datatype = obj.datatype;
-    cp.textContent = obj.textContent;
-    cp.textContentID = obj.textContentID;
-    cp.vallist = obj.vallist; // pas de duplication necessaire car ces elements ne sont pas modifiés
+    cp.datatype = (obj.datatype) ? copyDataType(obj.datatype, parent) : null;
     cp.sequencesRefs = [];
     cpBloc(cp.sequencesRefs, obj.sequencesRefs);
     return cp;
@@ -179,7 +185,7 @@ function cpBloc(cp, obj) {
     }
 }
 
-function copyAttr(oldattr): any {
+function copyAttr(oldattr, parent): any {
     let newattr = [];
     for (let obj of oldattr) {
         let cp: any = {};
@@ -188,11 +194,19 @@ function copyAttr(oldattr): any {
         cp.usage = obj.usage; // req ou rien
         cp.mode = obj.mode;
         cp.desc = obj.desc;
-        cp.items = obj.items; // les items ne sont pas modifiés
-        cp.datatype = obj.datatype;
-        cp.valueID = obj.valueID;
-        cp.value = obj.value;
+        cp.datatype = (obj.datatype) ? copyDataType(obj.datatype, parent) : null;
         newattr.push(cp);
     }
     return newattr;
+}
+
+function copyDataType(obj, parent): any {
+    let cp: any = {};
+    cp.type = obj.type;
+    cp.valueContent = obj.valueContent;
+    cp.valueContentID = obj.valueContentID;
+    cp.parentElementSpec = parent;
+    cp.vallist = obj.vallist; // pas de duplication necessaire car ces elements ne sont pas modifiés
+// ?? cp.items = obj.items; // les items ne sont pas modifiés
+    return cp;
 }

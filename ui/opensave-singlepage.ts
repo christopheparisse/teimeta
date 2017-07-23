@@ -95,3 +95,30 @@ export function alertUser(s) {
 export function alertUserModal(s, fun: any) {
     picoModal(s).afterClose(() => fun()).show();
 }
+
+export function askUser(s) {
+    if (confirm(s) === true)
+        return true;
+    else
+        return false;
+}
+
+export function askUserModal(s, fun) {
+    picoModal({
+        content: "<p>" + s + "</p>" +
+            "<p class='footer'>" +
+            "<button class='cancel'>Cancel</button> " +
+            "<button class='ok'>Ok</button>" +
+            "</p>"
+    }).afterCreate(modal => {
+        modal.modalElem().addEventListener("click", evt => {
+            if (evt.target && evt.target.matches(".ok")) {
+                modal.close(true);
+            } else if (evt.target && evt.target.matches(".cancel")) {
+                modal.close();
+            }
+        });
+    }).afterClose((modal, event) => {
+        fun(event.detail ? true : false);
+    }).show();
+}

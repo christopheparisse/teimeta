@@ -62,11 +62,7 @@ function formatTime(t) {
     if (!odd.odd.params.nbdigits)
         return r;
 
-    let ms = '';
-    if (newval === 0.0)
-        ms = '0.000';
-    else
-        ms = newval.toString();
+    let ms = '0.0';
     if (odd.odd.params.nbdigits === 3)
         ms = ms.substring(2, 5);
     else if (odd.odd.params.nbdigits === 2)
@@ -92,7 +88,7 @@ export function checkTime(event, id) {
     var tx = event.target.value;
     if (tx === '' || tx === 0 || tx === null) {
         // sets the time
-        values[id] = '';
+        values[id].value = '';
         return;
     }
     let newt = 0;
@@ -141,7 +137,7 @@ export function checkTime(event, id) {
         }
     }
     // sets the time to newt
-    values[id] = newt;
+    values[id].value = newt;
 }
 
 function styleTime() {
@@ -186,14 +182,58 @@ export function createID() {
 export function setOnOff(event, id, styleOn, styleOff) {
     if (event.target.className.indexOf('fa-choice-not-validated') >= 0) {
         event.target.className = 'validate fa fa-size2 fa-choice-validated ' + styleOn;
-        values[id] = true;
-        // ici il faut mettre à 'ok' les parents.
+        values[id].select = true;
+        // ici il faut mettre à 'ok' les parentElementSpec.
+        setOnParents(values[id].eltSpec);
     } else {
-        event.target.className = 'validate fa fa-size2 fa-choice-not-validated ' + styleOff;
-        values[id] = false;
-        // ici il faut mette à 'del' les enfants
+        system.askUserModal(
+            'Voulez vous supprimer cet élément et tous ses descendants de votre document ?',
+            (ret) => {
+                if (ret) {
+                    event.target.className = 'validate fa fa-size2 fa-choice-not-validated ' + styleOff;
+                    values[id].select = false;
+                    setOffChildren(values[id].eltSpec);
+                }
+            }
+        );
+        /*
+        if (system.askUser('Voulez vous supprimer cet élément et tous ses descendants de votre document ?')) {
+            console.log("mettre les enfants à ---", eltSpec);
+            event.target.className = 'validate fa fa-size2 fa-choice-not-validated ' + styleOff;
+            values[id].select = false;
+            setOffChildren(values[id].eltSpec);
+        }
+        */
+    }
+}
+
+function setStyleOnOff(id, val, styleOn, styleOff) {
+    let node = document.getElementById(id);
+    if (!node) {
+        console.log("pas d'id trouvé pour", id);
+        return;
+    }
+    if (val) {
+        node.className = 'validate fa fa-size2 fa-choice-validated ' + styleOn;
+    } else {
+        node.className = 'validate fa fa-size2 fa-choice-not-validated ' + styleOff;
     }
     //console.log(event);
+}
+
+function setOnParents(eltSpec) {
+    console.log("mettre les parents à +++", eltSpec);
+    eltSpec.validatedES = 'ok';
+    if (eltSpec.usage === 'req')
+        setStyleOnOff(eltSpec.validatedESID, true, 'fa-bookmark fa-color-required', 'fa-bookmark-o fa-color-required');
+    else
+        setStyleOnOff(eltSpec.validatedESID, true, 'fa-bookmark fa-color-optional', 'fa-bookmark-o fa-color-optional');
+    if (eltSpec.parentElementSpec)
+        setOnParents(eltSpec.parentElementSpec);
+}
+
+function setOffChildren(eltSpec) {
+    console.log("mettre les enfants à ---", eltSpec);
 }
 
 export function setOnOffES(event, id, usage) {
@@ -212,18 +252,19 @@ export function createEC(event, id) {
     let c = values[id];
     // values[uniqCreate] = {elt: ec.model, tab: ec.eCI, id: uniqCreate, path: ec.absolutepath};
     let eci = new schema.ElementCountItem();
+    eci.parentElementSpec = c.eltSpec;
     eci.type = c.elt.type;
     if (c.elt.type === 'elementRef') {
         eci.model = c.elt.model;
         let h = load.ptrListElementSpec[eci.model];
-        eci.element = load.loadElementSpec(h, null, c.path + '/' + eci.model, "0", "unbounded");
+        eci.element = load.loadElementSpec(h, null, c.path + '/' + eci.model, "0", "unbounded", c.eltSpec);
     } else {
         eci.model = [];
         eci.element = [];
         for (let ece of c.elt.model) {
             eci.model.push(ece);
             let h = load.ptrListElementSpec[ece];
-            eci.element.push(load.loadElementSpec(h, null, c.path + '/' + ece, "0", "unbounded"));
+            eci.element.push(load.loadElementSpec(h, null, c.path + '/' + ece, "0", "unbounded", c.eltSpec));
         }
     }
     
@@ -233,7 +274,7 @@ export function createEC(event, id) {
     // odd.setNodesToNull(eci.element);
     eci.validatedEC = false;
     eci.validatedECID = createID();
-    values[eci.validatedECID] = false;
+    values[eci.validatedECID] = { select: false, eltSpec: c.eltSpec };
     c.tab.push(eci);
     let s = '<div class="headSequence">\n';
     /*
@@ -261,12 +302,14 @@ export function createEC(event, id) {
 }
 
 export function setText(event, id) {
-    values[id] = event.target.value;
+    values[id].value = event.target.value;
+    setOnParents(values[id].eltSpec);
     //console.log(event);
 }
 
 export function setAttr(event, id) {
-    values[id] = event.target.value;
+    values[id].value = event.target.value;
+    setOnParents(values[id].eltSpec);
     //console.log(event);
 }
 
@@ -324,7 +367,7 @@ function generateContent(ct, abspath) {
             }
             s += '</div>';
         } else {
-            console.log("multiple",ec.eCI[0].ident);
+            // console.log("multiple",ec.eCI[0].model);
             s += generateMultiple(ec, abspath);
         }
     }
@@ -339,21 +382,13 @@ function generateMultiple(ec, abspath) {
     // on peut en rajouter ... ou supprimer
     s += '<div class="plusCM"><i class="create fa fa-plus-square fa-color-expand" '
         + 'onclick="window.ui.createEC(event, \'' + uniqCreate + '\')"></i></div>\n';
-    values[uniqCreate] = {elt: ec.eCI[0], tab: ec.eCI, id: uniqCreate, path: abspath};
+    values[uniqCreate] = {elt: ec.eCI[0], tab: ec.eCI, id: uniqCreate, path: abspath, eltSpec: ec.parentElementSpec};
     for (let i in ec.eCI) {
         let uniq = createID();
         ec.eCI[i].validatedECID = uniq;
         s += '<div class="headSequence">\n';
-        values[uniq] = ec.eCI[i].validatedEC;
-        /*
-        // l'élément peut être validé ou non
-        if (values[uniq])
-            s += '<i class="validate fa fa-check-square fa-choice-validated fa-color-expand" '
-                + 'onclick="window.ui.setOnOffEC(event, \'' + uniq + '\')"></i>\n';
-        else
-            s += '<i class="validate fa fa-minus-square-o fa-choice-not-validated fa-color-expand" '
-                + 'onclick="window.ui.setOnOffEC(event, \'' + uniq + '\')"></i>\n';
-        */
+        values[uniq] = { select: ec.eCI[i].validatedEC, eltSpec: ec.parentElementSpec };
+        // HERE can put info about expansions
         s += '<div class="content">\n';
         if (ec.eCI[i].type === 'elementRef') {
             s += generateElement(ec.eCI[i].element, 'multiple');
@@ -369,75 +404,115 @@ function generateMultiple(ec, abspath) {
     return s;
 }
 
-function editDataType(elt) {
+function editDataType(datatype) {
     let s = '<div class="nodeEdit">\n';
     // il faut editer l'élément texte du noeud
     let uniq = createID();
     // gérer le type d'édition du champ
-    switch(elt.content.datatype) {
+    switch(datatype.type) {
         case 'list':
-            elt.textContentID = uniq;
-            values[uniq] = elt.content.textContent;
+            if (!datatype.vallist || datatype.vallist.length <= 0) {
+                // grosse erreur ou manque liste vide
+                system.alertUser("pas de liste de valeurs pour le datatype: " + datatype.type);
+                return '';
+            }
+            if (datatype.vallist.length <= 1) {
+                // liste avec un seul element
+                if (!datatype.valueContent) // si vide mettre le premier de la liste
+                    datatype.valueContent =  datatype.vallist[0].ident;
+                values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
+                datatype.valueContentID = uniq;
+                return '';
+            }
+            datatype.valueContentID = uniq;
+            values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
             // edition de la valeur
-            if (elt.usage === 'req') {
+            /*
+            if (usage === 'req') {
                 s += '<label for="' + uniq + '">';
                 s += '<em>obligatoire</em>';
                 s += '</label>\n';
             }
+            */
             // choix dans une liste
             s +='<select class="listattr" id="' + uniq + '" ';
             s +='onchange="window.ui.setAttr(event, \'' + uniq + '\');" >\n';
-            for (let k=0; k < elt.content.vallist.items.length; k++) {
+            for (let k=0; k < datatype.vallist.length; k++) {
                 s += '<option value="' +
-                    elt.content.vallist.items[k].ident + '" ';
-                if (elt.content.textContent === elt.content.vallist.items[k].ident)
+                    datatype.vallist[k].ident + '" ';
+                if (datatype.valueContent === datatype.vallist[k].ident)
                     s  += 'selected="selected" ';
-                s += '>' + elt.content.vallist.items[k].desc + '</option>\n';
+                s += '>' + datatype.vallist[k].desc + '</option>\n';
             }
             s += '</select>\n';
             break;
+        case 'openlist':
+            // attributs avec liste
+            datatype.valueContentID = uniq;
+            values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
+            s +='<input type=text class="awesomplete listattr" data-minchars="0" list="' + uniq + '" value="' + datatype.valueContent + '" ';
+            s +='onchange="window.ui.setAttr(event, \'' + uniq + '\');"/>\n';
+            s +='<datalist id="' + uniq + '">';
+            for (let k in datatype.vallist) {
+                s += '<option value="' +
+                    datatype.vallist[k].ident + '" ';
+                    s += '>' + datatype.vallist[k].desc;
+                    s += '</option>\n';
+            }
+            s += '</datalist>\n';
+            break;
         case 'duration':
-            elt.textContentID = uniq;
-            values[uniq] = elt.content.textContent;
+            datatype.valueContentID = uniq;
+            values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
             // edition de la valeur
             s += '<label for="' + uniq + '">';
-            if (elt.usage === 'req') {
+            /*
+            if (usage === 'req') {
                 s += '<em>obligatoire</em>';
             }
+            */
             s += ' ' + styleTime();
             s += '</label>\n';
             s += '<input name="' + uniq + '" id="' + uniq + '" ';
             s += 'onchange="window.ui.checkTime(event, \'' + uniq + '\');"';
-            s += ' value="' + formatTime(elt.content.textContent) + '"';
+            s += ' value="' + formatTime(datatype.valueContent) + '"';
             s += ' />\n';
             break;
         case 'date':
-            elt.textContentID = uniq;
-            values[uniq] = elt.content.textContent;
+        case 'month':
+            datatype.valueContentID = uniq;
+            values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
             // edition de la valeur
-            if (elt.usage === 'req') {
+            /*
+            if (usage === 'req') {
                 s += '<label for="' + uniq + '">';
                 s += '<em>obligatoire</em>';
                 s += '</label>\n';
             }
+            */
             s += '<input type="date" name="' + uniq + '" id="' + uniq + '" ';
             s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
-            if (elt.content.textContent) s += ' value="' + formatTime(elt.content.textContent) + '"';
+            if (datatype.valueContent) s += ' value="' + formatTime(datatype.valueContent) + '"';
             s += ' />\n';
             break;
+        case 'anyURI':
+        case 'uri':
+        case 'url':
         case 'string':
         default:
-            elt.textContentID = uniq;
-            values[uniq] = elt.content.textContent;
+            datatype.valueContentID = uniq;
+            values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
             // edition de la valeur
-            if (elt.usage === 'req') {
+            /*
+            if (usage === 'req') {
                 s += '<label for="' + uniq + '">';
                 s += '<em>obligatoire</em>';
                 s += '</label>\n';
             }
+            */
             s += '<input name="' + uniq + '" id="' + uniq + '" ';
             s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
-            if (elt.content.textContent) s += ' value="' + elt.content.textContent + '"';
+            if (datatype.valueContent) s += ' value="' + datatype.valueContent + '"';
             s += ' />\n';
             break;
     }
@@ -457,9 +532,20 @@ function classOf(usage) {
 }
 
 function editAttr(elt) {
-    let s = '<div class="nodeAttr attr-' + classOf(elt.usage) + '">\n';
+    if (elt.attr.length < 1) return;
+    let s = '<div class="nodeAttr">\n';
     for (let i in elt.attr) {
         if (!elt.attr[i].datatype) continue; // pas d'édition de la valeur
+        if (elt.attr[i].rend) elt.attr[i].valueContent = elt.attr[i].rend;
+        s += '<span class="eltNodeAttr-' + classOf(elt.attr[i].usage) + '">\n';
+        if (elt.attr[i].desc) {
+            s += '<span class="descAttr">';
+            s += odd.textDesc(elt.attr[i].desc, odd.odd.params.language);
+            s +='</span>\n';
+        }
+        s += editDataType(elt.attr[i].datatype);
+        s += '</span>\n';
+        /*
         if (elt.attr[i].datatype === 'list') {
             if (!elt.attr[i].items || elt.attr[i].items.length <= 0) {
                 // grosse erreur ou manque liste vide
@@ -471,7 +557,7 @@ function editAttr(elt) {
                 let uniq = createID();
                 if (!elt.attr[i].value) // si vide mettre le premier de la liste
                     elt.attr[i].value =  elt.attr[i].items[0].ident;
-                values[uniq] = elt.attr[i].value;
+                values[uniq] = { value: elt.attr[i].value, eltSpec: elt.parentElementSpec };
                 elt.attr[i].valueID = uniq;
                 continue;
             }
@@ -479,7 +565,7 @@ function editAttr(elt) {
             let uniq = createID();
             if (!elt.attr[i].value) // si vide mettre le premier de la liste
                 elt.attr[i].value =  elt.attr[i].items[0].ident;
-            values[uniq] = elt.attr[i].value;
+            values[uniq] = { value: elt.attr[i].value, eltSpec: elt.parentElementSpec };
             elt.attr[i].valueID = uniq;
             if (elt.attr[i].desc) {
                 s += '<label for="' + uniq + '">';
@@ -511,7 +597,7 @@ function editAttr(elt) {
             let uniq = createID();
             if (!elt.attr[i].value) // si vide mettre le premier de la liste
                 elt.attr[i].value =  elt.attr[i].rend;
-            values[uniq] = elt.attr[i].value;
+            values[uniq] = { value: elt.attr[i].value, eltSpec: elt.parentElementSpec };
             elt.attr[i].valueID = uniq;
             if (elt.attr[i].desc) {
                 s += '<label for="' + uniq + '">';
@@ -531,7 +617,7 @@ function editAttr(elt) {
         } else {
             // attribut sans liste: edition de la valeur
             let uniq = createID();
-            values[uniq] = elt.attr[i].value;
+            values[uniq] = { value: elt.attr[i].value, eltSpec: elt.parentElementSpec };
             elt.attr[i].valueID = uniq;
             let type = 'text';
             switch (elt.attr[i].datatype) {
@@ -573,10 +659,11 @@ function editAttr(elt) {
                 s += '<input type = "' + type + '" name="' + uniq + '" id="' + uniq + '"';
                 s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
                 if (elt.attr[i].value) s += ' value="' + elt.attr[i].value + '"';
-                values[uniq] = (elt.attr[i].value) ? elt.attr[i].value : '';
+                values[uniq] = { value: (elt.attr[i].value) ? elt.attr[i].value : '', eltSpec: elt.parentElementSpec };
                 s += ' />\n';
             }
         }
+        */
     }
     s += '</div>\n';
     return s;
@@ -592,14 +679,14 @@ function generateElement(elt, validatedStyle) {
         s += '<div class="nodeField node-' + classOf(elt.usage) + '" title="' + elt.absolutepath + '" style="margin-left: ' + lprof + 'px;">\n';
         if (odd.odd.params.validateRequired && validatedStyle !== 'root') {
             // on peut tout valider donc on ne se pose pas de question
-            values[uniq] = elt.validatedES;
+            values[uniq] = { select: elt.validatedES, eltSpec: elt.parentElementSpec };
             elt.validatedESID = uniq;
             if (elt.validatedES) {
-                s += '<i class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
+                s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
                     + classOf(elt.usage)
                     + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
             } else {
-                s += '<i class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
+                s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
                     + classOf(elt.usage)
                     + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
             }
@@ -607,15 +694,15 @@ function generateElement(elt, validatedStyle) {
             // on ne peut pas valider les req - ils sont toujours à validatedES === true
             if ((elt.usage === 'req' && validatedStyle !== 'multiple') || validatedStyle === 'root')
                 elt.validatedES = true;
-            values[uniq] = elt.validatedES;
+            values[uniq] = { select: elt.validatedES, eltSpec: elt.parentElementSpec };
             elt.validatedESID = uniq;
             if (validatedStyle !== 'root' && (elt.usage !== 'req' || validatedStyle === 'multiple')) {
                 if (elt.validatedES) {
-                    s += '<i class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
+                    s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
                         + classOf(elt.usage)
                         + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
                 } else {
-                    s += '<i class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
+                    s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
                         + classOf(elt.usage)
                         + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
                 }
@@ -641,7 +728,7 @@ function generateElement(elt, validatedStyle) {
         }
 
         // champ texte du noeud
-        if (elt.content && elt.content.datatype) s += editDataType(elt);
+        if (elt.content && elt.content.datatype) s += editDataType(elt.content.datatype);
         // Attributes
         if (elt.attr.length > 0) s += editAttr(elt);
         // enfants
@@ -656,7 +743,7 @@ function generateElement(elt, validatedStyle) {
         s += '<div class="nodeField node-' + classOf(elt.usage) + ' " style="margin-left: '
             /*+ prof*odd.odd.params.leftShift*/
             + 'px;">\n';
-        values[uniq] = true; // elt.validatedES // on ne peut pas accepter les éléments non validés car ils sont cachés
+        values[uniq] = { select: true, eltSpec: elt.parentElementSpec }; // elt.validatedES // on ne peut pas accepter les éléments non validés car ils sont cachés
         elt.validatedESID = uniq;
         if (elt.content && elt.content.sequencesRefs.length > 0) {
             s += '<div class="nodeContent">';

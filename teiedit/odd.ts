@@ -66,12 +66,6 @@ function readElementSpec(elementspec, node) {
         for (let i in ad) {
             let adv = new schema.AttrDef();
             readAttrDef(adv, ad[i]);
-            let n = valList(adv, ad[i]);
-            if (n > 0) {
-                // mettre une valeur par défaut s'il y en a une
-                if (adv.datatype !== 'openlist')
-                    adv.datatype = 'list';
-            }
             elementspec.attr.push(adv);
         }
     }
@@ -133,23 +127,31 @@ function readContent(content, node) {
             content.sequencesRefs.push(ec);
         }
         // find dataRef
-        content.datatype = getDataRef(d[0]); // si rien alors datatype === ''
+        let ltype = getDataRef(d[0]); // si rien alors datatype === null
         // find textNode
         let t = getChildrenByName(d[0], 'textNode');
         if (t.length > 0) {
-            if (content.datatype === '') {
-                content.datatype = 'string'; // type par defaut
+            content.datatype = new schema.DataType();
+            if (ltype === '') {
+                content.datatype.type = 'string'; // type par defaut
+            } else {
+                // sinon on respecte le type de dataRef
+                content.datatype.type = ltype;
             }
-            // sinon on respecte le type de dataRef
+        } else if (ltype != '') {
+            content.datatype = new schema.DataType();
+            content.datatype.type = ltype;
         }
         // find if there are values predefined
         let vl = new schema.AttrDef();
         let n = valList(vl, d[0]);
         if (n > 0) {
-            content.vallist = vl;
+            if (!content.datatype)
+                content.datatype = new schema.DataType();
+            content.datatype.vallist = vl;
             // mettre une valeur par défaut s'il y en a une
-            if (content.datatype !== 'openlist')
-                content.datatype = 'list';
+            if (content.datatype.type !== 'openlist')
+                content.datatype.type = 'list';
         }
     }
     return d.length;
@@ -244,12 +246,19 @@ function readAttrDef(attrDef, node) {
     let d =  new schema.Desc();
     if (readDesc(d, node)) attrDef.desc = d;
 
+    attrDef.datatype = new schema.DataType();
     // le champ datatype
     let a = getChildrenByName(node, 'datatype');
     if (a.length > 0) {
-        attrDef.datatype = getDataRef(a[0]);
+        attrDef.datatype.type = getDataRef(a[0]);
     } else {
-        attrDef.datatype = 'string';
+        attrDef.datatype.type = 'string';
+    }
+    let n = valList(attrDef.datatype, node);
+    if (n > 0) {
+        // mettre une valeur par défaut s'il y en a une
+        if (attrDef.datatype.type !== 'openlist')
+            attrDef.datatype.type = 'list';
     }
 }
 
@@ -259,9 +268,10 @@ function readAttrDef(attrDef, node) {
  * @param Attr structure 
  * @param node 
  */
-function valList(attrDef, node) {
+function valList(data, node) {
     let valList = node.getElementsByTagName("valList");
     if (valList.length > 0) {
+        data.vallist = [];
         // find all about element
         let valItem = node.getElementsByTagName("valItem");
         for (let k=0; k < valItem.length; k++) {
@@ -271,7 +281,7 @@ function valList(attrDef, node) {
             let desc = valItem[k].getElementsByTagName("desc");
             if (desc.length>0) vi.desc = desc[0].textContent;
             if (!vi.desc) vi.desc = vi.ident;
-            attrDef.items.push(vi);
+            data.vallist.push(vi);
         }
     }
     return valList.length;

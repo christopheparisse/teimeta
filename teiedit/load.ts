@@ -74,7 +74,7 @@ export function loadTei(data, teiData) {
     }
     if (root) {
         // create first elementSpec and find and create the other recursively
-        teiData.dataTei = loadElementSpec(h, root, path, '1', '1');
+        teiData.dataTei = loadElementSpec(h, root, path, '1', '1', null);
         // h = descripteur elementSpec
         // root = suite de noeuds
         // '' = chemin initial
@@ -82,7 +82,7 @@ export function loadTei(data, teiData) {
         // 1 = nombre maximal de root autorisés
     } else {
         // create first elementSpec and find and create the other recursively
-        teiData.dataTei = loadElementSpec(h, null, path, '1', '1');
+        teiData.dataTei = loadElementSpec(h, null, path, '1', '1', null);
         // h = descripteur elementSpec
         // root = suite de noeuds
         // '' = chemin initial
@@ -93,10 +93,11 @@ export function loadTei(data, teiData) {
     return true;
 }
 
-export function loadElementSpec(es, node, path, minOcc, maxOcc) {
+export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
     let c = schema.copyElementSpec(es);
     // creation d'un élément initial vide pour le noeud courant
     c.node = node;
+    c.parentElementSpec = parent;
     if (minOcc === '1')
         c.usage = 'req';
     else
@@ -111,21 +112,23 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc) {
         // load content
         if (c.content && c.content.datatype) {
             // the text of the node is edited
-            c.content.textContent = getNodeText(node).trim();
+            c.content.datatype.valueContent = getNodeText(node).trim();
+            c.content.datatype.parentElementSpec = c;
         }
         // load attributes
         for (let a in c.attr) {
             if (c.attr[a].ident) {
-                if (c.attr[a].datatype === '') {
+                c.attr[a].datatype.parentElementSpec = c;
+                if (c.attr[a].datatype.type === '') {
                     // pas d'édition de l'attribut
                     // mais valeur prédéfinie
-                    if (c.attr[a].rend) c.attr[a].value = c.attr[a].rend;
+                    if (c.attr[a].rend) c.attr[a].datatype.valueContent = c.attr[a].rend;
                 } else {
                     let attr = node.getAttribute(c.attr[a].ident);
                     if (attr) {
-                        c.attr[a].value = attr;
+                        c.attr[a].datatype.valueContent = attr;
                     } else {
-                        if (c.attr[a].rend) c.attr[a].value = c.attr[a].rend;
+                        if (c.attr[a].rend) c.attr[a].datatype.valueContent = c.attr[a].rend;
                     }
                 }
             }
@@ -135,9 +138,9 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc) {
         for (let ec of c.content.sequencesRefs) {
             // ec au format ElementCount
             if (ec.type === 'elementRef') {
-                loadElementRef(ec, node, c.absolutepath);
+                loadElementRef(ec, node, c.absolutepath, c);
             } else {
-                loadSequence(ec, node, c.absolutepath);
+                loadSequence(ec, node, c.absolutepath, c);
             }
         }
     } else {
@@ -154,19 +157,20 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc) {
             // ec au format ElementCount
             // load content
             if (ec.type === 'elementRef') {
-                loadElementRef(ec, null, c.absolutepath);
+                loadElementRef(ec, null, c.absolutepath, c);
             } else {
-                loadSequence(ec, null, c.absolutepath);
+                loadSequence(ec, null, c.absolutepath, c);
             }
         }
     }
     return c;
 }
 
-function loadElementRef(ec, node, path) {
+function loadElementRef(ec, node, path, parent) {
     // ec est un ElementCount
     // préparer le premier élément ElementCountItem
     let eci = new schema.ElementCountItem();
+    eci.parentElementSpec = parent;
     // ec.model contient le nom de l'elementSpec
     eci.type = 'elementRef';
     if (ec.minOccurs === '1')
@@ -181,7 +185,7 @@ function loadElementRef(ec, node, path) {
         // find and create one elementSpec
         let h = ptrListElementSpec[ec.model];
         eci.model = ec.model;
-        eci.element = loadElementSpec(h, null, path, ec.minOccurs, ec.maxOccurs);
+        eci.element = loadElementSpec(h, null, path, ec.minOccurs, ec.maxOccurs, parent);
         return;
     }
     // remplir le premier s'il y en a un
@@ -189,7 +193,7 @@ function loadElementRef(ec, node, path) {
         // find and create first elementSpec
         let h = ptrListElementSpec[ec.model];
         eci.model = ec.model;
-        eci.element = loadElementSpec(h, nodes[0], path, ec.minOccurs, ec.maxOccurs);
+        eci.element = loadElementSpec(h, nodes[0], path, ec.minOccurs, ec.maxOccurs, parent);
     }
     for (let i = 1; i < nodes.length ; i++) {
         if (ec.maxOccurs === '1') {
@@ -198,6 +202,7 @@ function loadElementRef(ec, node, path) {
         // préparer les nouveaux éléments
         // ec est un ElementCount
         eci = new schema.ElementCountItem();
+        eci.parentElementSpec = parent;
         eci.type = 'elementRef';
         if (ec.minOccurs === '2')
             eci.validatedEC = true;
@@ -205,11 +210,11 @@ function loadElementRef(ec, node, path) {
         // find and create first elementSpec
         let h = ptrListElementSpec[ec.model];
         eci.model = ec.model;
-        eci.element = loadElementSpec(h, nodes[i], path, ec.minOccurs, ec.maxOccurs);
+        eci.element = loadElementSpec(h, nodes[i], path, ec.minOccurs, ec.maxOccurs, parent);
     }
 }
 
-function loadSequence(ec, node, path) {
+function loadSequence(ec, node, path, parent) {
     // load from TEI
     let nnodes = []; // tableau de tableau de nodes
     // pour tous les modèles de la séquence on cherche les noeuds correspondants
@@ -228,7 +233,6 @@ function loadSequence(ec, node, path) {
         }
     }
     */
-
     
     // initialiser le tableau des descendants
     ec.eCI = [];
@@ -237,6 +241,7 @@ function loadSequence(ec, node, path) {
         // préparer la première séquence
         // ec est un ElementCount
         let eci = new schema.ElementCountItem();
+        eci.parentElementSpec = parent;
         eci.type = 'sequence';
         if (ec.minOccurs === '1') eci.validatedEC = true; // ce node doit exister
         ec.eCI.push(eci);
@@ -247,7 +252,7 @@ function loadSequence(ec, node, path) {
         for (let k=0; k < ec.model.length ; k++) {
             let h = ptrListElementSpec[ec.model[k]];
             eci.model.push(ec.model[k]);
-            eci.element.push(loadElementSpec(h, null, path + '/' + ec.model[k], ec.minOccurs, ec.maxOccurs));
+            eci.element.push(loadElementSpec(h, null, path + '/' + ec.model[k], ec.minOccurs, ec.maxOccurs, parent));
         }
         if (ec.minOccurs === '2') {
             // cas particulier des noeuds avec 2 éléments obligatoires
@@ -264,7 +269,7 @@ function loadSequence(ec, node, path) {
             for (let k=0; k < ec.model.length ; k++) {
                 let h = ptrListElementSpec[ec.model[k]];
                 eci.model.push(ec.model[k]);
-                eci.element.push(loadElementSpec(h, null, path + '/' + ec.model[k], ec.minOccurs, ec.maxOccurs));
+                eci.element.push(loadElementSpec(h, null, path + '/' + ec.model[k], ec.minOccurs, ec.maxOccurs, parent));
             }
         }
         return;
@@ -273,6 +278,7 @@ function loadSequence(ec, node, path) {
     // générer un ensemble de eci dans ec.eCI
     for (let i=0; i < maxlg ; i++) {            
         let eci = new schema.ElementCountItem();
+        eci.parentElementSpec = parent;
         eci.type = 'sequence';
         eci.validatedEC = true; // comme les nodes existent ils sont tous considérés comme valides
         eci.element = [];
@@ -288,7 +294,7 @@ function loadSequence(ec, node, path) {
             // find and create first elementSpec
             let h = ptrListElementSpec[ec.model[k]];
             ec.eCI[i].model.push(ec.model[k]);
-            ec.eCI[i].element.push(loadElementSpec(h, nnodes[k].length > i ? nnodes[k][i] : null, path + '/' + ec.model[k], ec.minOccurs, ec.maxOccurs));
+            ec.eCI[i].element.push(loadElementSpec(h, nnodes[k].length > i ? nnodes[k][i] : null, path + '/' + ec.model[k], ec.minOccurs, ec.maxOccurs, parent));
         }
     }
 }

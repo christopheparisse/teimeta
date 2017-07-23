@@ -14,6 +14,14 @@ let basicTEI = '<?xml version="1.0" encoding="UTF-8"?>\
      xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns="http://www.tei-c.org/ns/1.0">\
 </TEI>';
 
+function encodeXML(s) {
+    if (odd.odd.params.encodeXMLFull)
+        return entities.encodeXML(s);
+    s = s.replace(/\</,'&lt;');
+    s = s.replace(/\>/,'&gt;');
+    return s;
+}
+
 function clean(node) {
     var nodes=[], values=[];
     for (let att, i = 0, atts = node.attributes, n = atts.length; i < n; i++) {
@@ -40,9 +48,9 @@ function clean(node) {
 
 export function generateTEI(teiData) {
     let eltspec = teiData.dataTei;
-    if (!edit.values[eltspec.validatedESID]) {
-        console.log(eltspec.absolutepath, " racine imprimée bien que non validée");
-        //system.alertUser(eltspec.absolutepath + " racine non imprimé car non validée ? >" + edit.values[eltspec.validatedESID] + "<");
+    if (!edit.values[eltspec.validatedESID].select) {
+        console.log(eltspec.absolutepath, " racine imprimée bien que non validée", edit.values[eltspec.validatedESID]);
+        //system.alertUser(eltspec.absolutepath + " racine non imprimé car non validée ? >" + edit.values[eltspec.validatedESID].select + "<");
         //return;
     }
     if (!teiData.doc) {
@@ -62,7 +70,7 @@ export function generateTEI(teiData) {
     s += generateFilledElement(eltspec, teiData.doc, eltspec.node);
     if (eltspec.content)
         s += generateTEIContent(eltspec.content, teiData.doc, eltspec.node);
-    console.log(s);
+    // console.log(s);
     // transform doc to text
     console.log(teiData.doc);
     /*
@@ -76,7 +84,7 @@ export function generateTEI(teiData) {
 function generateElement(espec, doc, node) {
     let s = '';
     // console.log("geneElemts:",eci);
-    if (edit.values[espec.validatedESID]) {
+    if (edit.values[espec.validatedESID].select) {
         // si node est vide en créer un en dernier fils du node d'au dessus
         let current = espec.node;
         if (!current) {
@@ -223,22 +231,22 @@ function generateFilledElement(elt, doc, node) {
     // attributs
     for (let i = 0; i < elt.attr.length; i++) {
         if (elt.attr[i].ident) {
-            if (!elt.attr[i].datatype) {
-                elt.attr[i].value = elt.attr[i].rend;
+            if (!elt.attr[i].datatype.type) {
+                elt.attr[i].datatype.valueContent = elt.attr[i].rend;
             } else {
-                let v = edit.values[elt.attr[i].valueID];
+                let v = edit.values[elt.attr[i].datatype.valueContentID].value;
                 console.log(v);
-                elt.attr[i].value = entities.encodeXML(String(v));
+                elt.attr[i].datatype.valueContent = encodeXML(String(v));
             }
-            node.setAttribute(elt.attr[i].ident, elt.attr[i].value);
-            s += ' ' + elt.attr[i].ident + '="' + elt.attr[i].value + '"';
+            node.setAttribute(elt.attr[i].ident, elt.attr[i].datatype.valueContent);
+            s += ' ' + elt.attr[i].ident + '="' + elt.attr[i].datatype.valueContent + '"';
         }
     }
     s += '>';
     if (elt.content && elt.content.datatype) {
-        elt.textContent = entities.encodeXML(edit.values[elt.textContentID]);
-        setTextNode(node, elt.textContent, doc);
-        s += '<textNode>' + elt.textContent + '</textNode>\n';
+        elt.content.datatype.valueContent = encodeXML(edit.values[elt.content.datatype.valueContentID].value);
+        setTextNode(node, elt.content.datatype.valueContent, doc);
+        s += '<textNode>' + elt.content.datatype.valueContent + '</textNode>\n';
     }
     s += '</' + elt.ident + '>\n';
     return s;

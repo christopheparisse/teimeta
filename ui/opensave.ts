@@ -116,3 +116,31 @@ export function alertUserModal(s, fun: any) {
 export function openLocalFile(fn) {
     // for compatibility
 }
+
+export function askUser(s) {
+    if (confirm(s) === true)
+        return true;
+    else
+        return false;
+    //    dialog.showXXXXBox('teiEdit', s);
+}
+
+export function askUserModal(s, fun) {
+    picoModal({
+        content: "<p>" + s + "</p>" +
+            "<p class='footer'>" +
+            "<button class='cancel'>Cancel</button> " +
+            "<button class='ok'>Ok</button>" +
+            "</p>"
+    }).afterCreate(modal => {
+        modal.modalElem().addEventListener("click", evt => {
+            if (evt.target && evt.target.matches(".ok")) {
+                modal.close(true);
+            } else if (evt.target && evt.target.matches(".cancel")) {
+                modal.close();
+            }
+        });
+    }).afterClose((modal, event) => {
+        fun(event.detail ? true : false);
+    }).show();
+}
