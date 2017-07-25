@@ -1,13 +1,13 @@
-# tei-meta-edit
+# teimeta-edit
 
 **Outil d'édition de champs xml dans un fichier xml à partir d'une description odd**
 
 ## Accès à l'outil
 Utilisation en ligne: [http://ct3.ortolang.fr/teimeta/](http://ct3.ortolang.fr/teimeta/)
 
-Téléchargement application autonome pour MacOs: [http://ct3.ortolang.fr/download/tei-meta-v0.4.0-macos.zip](http://ct3.ortolang.fr/download/tei-meta-v0.4.0-macos.zip)
+Téléchargement application autonome pour MacOs: [http://ct3.ortolang.fr/download/teimeta-v0.4.4-macos.zip](http://ct3.ortolang.fr/download/teimeta-v0.4.4-macos.zip)
 
-Téléchargement application windows 64 bits: [http://ct3.ortolang.fr/download/tei-meta-x64.exe](http://ct3.ortolang.fr/download/tei-meta-v0.4.0-x64.exe)
+Téléchargement application windows 64 bits: [http://ct3.ortolang.fr/download/teimeta-v0.4.4-x64.exe](http://ct3.ortolang.fr/download/teimeta-v0.4.4-x64.exe)
 
 ## Description générale
 
@@ -165,8 +165,8 @@ import * from 'teimeta/tei'
 ```
 
 ## Informations complémentaires
-Téléchargement du code source: [https://github.com/christopheparisse/tei-meta/](https://github.com/christopheparisse/tei-meta/)
+Téléchargement du code source: [https://github.com/christopheparisse/teimeta/](https://github.com/christopheparisse/teimeta/)
 
-Signaler erreurs et commentaires dans [issues](https://github.com/christopheparisse/tei-meta/issues).
+Signaler erreurs et commentaires dans [issues](https://github.com/christopheparisse/teimeta/issues).
 
 #### License [CC0 (Public Domain)](LICENSE.md)
