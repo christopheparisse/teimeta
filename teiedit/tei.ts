@@ -72,7 +72,7 @@ export function generateTEI(teiData) {
         s += generateTEIContent(eltspec.content, teiData.doc, eltspec.node);
     // console.log(s);
     // transform doc to text
-    console.log(teiData.doc);
+    // console.log(teiData.doc);
     /*
     var sr = new XMLSerializer();
     var str = sr.serializeToString(teiData.doc.documentElement);
@@ -83,8 +83,11 @@ export function generateTEI(teiData) {
 
 function generateElement(espec, doc, node) {
     let s = '';
-    // console.log("geneElemts:",eci);
-    if (edit.values[espec.validatedESID].select) {
+    if (!edit.values[espec.validatedESID]) {
+        console.log("Error: geneElemts:", espec);
+        return "";
+    }
+    if (edit.values[espec.validatedESID].select === 'ok') {
         // si node est vide en créer un en dernier fils du node d'au dessus
         let current = espec.node;
         if (!current) {
@@ -100,7 +103,7 @@ function generateElement(espec, doc, node) {
     } else {
         // supprimer le noeud si c'est autorisé
         console.log(espec.absolutepath, " non imprimé car non validé: ", edit.values[espec.validatedESID]);
-        if (espec.node && odd.odd.params.canRemove) {
+        if (espec.node && (odd.odd.params.canRemove || espec.usage === 'opt')) {
             espec.node.parentNode.removeChild(espec.node);
             espec.node = null;
         }
@@ -182,13 +185,6 @@ function generateElementRef(eci, doc, current) {
     let s = '';
     // pointeur sur l'élément dans ec
     for ( let i = 0; i < eci.eCI.length ; i++) {
-        if (eci.minOccurs !== '1' && eci.maxOccurs !== '1') {
-            console.log('min:', eci.minOccurs);
-            console.log('max:', eci.maxOccurs);
-            console.log('id1:', eci.eCI[i].validatedEC);
-            console.log('id2:', eci.eCI[i].validatedECID);
-            console.log('id3:', edit.values[eci.eCI[i].validatedECID]);
-        }
         s += generateElement(eci.eCI[i].element, doc, current);
     }
     return s;
@@ -198,13 +194,6 @@ function generateSequence(eci, doc, current) {
     let s = '';
     // pointeur sur l'élément dans ec
     for ( let i = 0; i < eci.eCI.length ; i++) {
-        if (eci.minOccurs !== '1' && eci.maxOccurs !== '1') {
-            console.log('min:', eci.minOccurs);
-            console.log('max:', eci.maxOccurs);
-            console.log('xd1:', eci.eCI[i].validatedEC);
-            console.log('xd2:', eci.eCI[i].validatedECID);
-            console.log('xd3:', edit.values[eci.eCI[i].validatedECID]);
-        }
         for ( let k = 0; k < eci.eCI[i].element.length; k++) {
             s += generateElement(eci.eCI[i].element[k], doc, current);
         }
@@ -235,7 +224,7 @@ function generateFilledElement(elt, doc, node) {
                 elt.attr[i].datatype.valueContent = elt.attr[i].rend;
             } else {
                 let v = edit.values[elt.attr[i].datatype.valueContentID].value;
-                console.log(v);
+                // console.log(v);
                 elt.attr[i].datatype.valueContent = encodeXML(String(v));
             }
             node.setAttribute(elt.attr[i].ident, elt.attr[i].datatype.valueContent);

@@ -95,9 +95,6 @@ export class ElementCount {
 }
 
 export class ElementCountItem {
-    validatedEC = true; // is false element not used, si true element used
-    validatedECID = '';
-    // obligatory = false; // true if element cannot be removed
     type = '';
     model = null; // pour la copie du modèle dans le parent
     element = null; // pointeur ElementSpec vers des elementSpec ou sur des Sequence
@@ -175,8 +172,6 @@ function cpBloc(cp, obj) {
         for (let k in obj[i].eCI) {
             let eci = new ElementCountItem();
             let e = obj[i].eCI[k];
-            eci.validatedEC = e.validatedEC;
-            eci.validatedECID = e.validatedECID;
             eci.type = e.type;
             inner.eCI.push(eci);
         }

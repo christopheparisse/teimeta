@@ -5,7 +5,7 @@
 import * as events from './events';
 import * as odd from '../teiedit/odd';
 import * as schema from '../teiedit/schema';
-let picoModal = require('picoModal');
+let picoModal = require('picomodal');
 
 function readTextFile(file, callback) {
     var rawFile:any = new XMLHttpRequest();
@@ -21,20 +21,29 @@ function readTextFile(file, callback) {
 }
 
 export function oddMedia() {
-    readTextFile('http://ct3.ortolang.fr/teimeta/media.odd?v=' + schema.version, function(text) {
-        events.openOddLoad('Odd prédéfini Média', text);
+    // checked changes
+    events.checkChange(() => {
+        readTextFile('http://ct3.ortolang.fr/teimeta/media.odd?v=' + schema.version, function(text) {
+            events.openOddLoad('Odd prédéfini Média', text);
+        });
     });
 }
 
 export function oddTeiOral() {
-    readTextFile('http://ct3.ortolang.fr/teimeta/teioral.odd?v=' + schema.version, function(text) {
-        events.openOddLoad('Odd prédéfini Tei Oral', text);
+    // checked changes
+    events.checkChange(() => {
+        readTextFile('http://ct3.ortolang.fr/teimeta/teioral.odd?v=' + schema.version, function(text) {
+            events.openOddLoad('Odd prédéfini Tei Oral', text);
+        });
     });
 }
 
 export function oddPartDesc() {
-    readTextFile('http://ct3.ortolang.fr/teimeta/olac.odd?v=' + schema.version, function(text) {
-        events.openOddLoad('Odd prédéfini Olac DC', text);
+    // checked changes
+    events.checkChange(() => {
+        readTextFile('http://ct3.ortolang.fr/teimeta/olac.odd?v=' + schema.version, function(text) {
+            events.openOddLoad('Odd prédéfini Olac DC', text);
+        });
     });
 }
 

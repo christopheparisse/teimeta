@@ -138,19 +138,21 @@ function readContent(content, node) {
                 // sinon on respecte le type de dataRef
                 content.datatype.type = ltype;
             }
-        } else if (ltype != '') {
+        } else if (ltype !== '') {
             content.datatype = new schema.DataType();
             content.datatype.type = ltype;
         }
         // find if there are values predefined
-        let vl = new schema.AttrDef();
+        let vl = new schema.DataType();
         let n = valList(vl, d[0]);
         if (n > 0) {
             if (!content.datatype)
                 content.datatype = new schema.DataType();
-            content.datatype.vallist = vl;
+            content.datatype.vallist = vl.vallist;
             // mettre une valeur par défaut s'il y en a une
-            if (content.datatype.type !== 'openlist')
+            if (content.datatype.type === 'openlist' || vl.type === 'openlist')
+                content.datatype.type = 'openlist';
+            else
                 content.datatype.type = 'list';
         }
     }
@@ -256,9 +258,14 @@ function readAttrDef(attrDef, node) {
     }
     let n = valList(attrDef.datatype, node);
     if (n > 0) {
-        // mettre une valeur par défaut s'il y en a une
-        if (attrDef.datatype.type !== 'openlist')
-            attrDef.datatype.type = 'list';
+        if (attrDef.datatype.vallistType) {
+            let vlType = (attrDef.datatype.vallistType === 'closed') ? 'list' : attrDef.datatype.vallistType;
+            attrDef.datatype.type = vlType;
+        } else {
+            // type pas spécifié par valList: utiliser datatype ou par défaut
+            if (attrDef.datatype.type !== 'openlist')
+                attrDef.datatype.type = 'list';
+        }
     }
 }
 
@@ -271,6 +278,7 @@ function readAttrDef(attrDef, node) {
 function valList(data, node) {
     let valList = node.getElementsByTagName("valList");
     if (valList.length > 0) {
+        data.vallistType = valList[0].getAttribute("type");
         data.vallist = [];
         // find all about element
         let valItem = node.getElementsByTagName("valItem");
