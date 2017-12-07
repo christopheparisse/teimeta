@@ -1,10 +1,12 @@
 {
-  "name": "tei-meta",
-  "version": "0.1.0",
+  "name": "teimeta",
+  "productName": "TeiMeta",  
+  "version": "0.4.7",
   "description": "An editor for TEI CORPO metadata",
   "main": "index.js",
   "scripts": {
-    "start": "electron temp-electron/index.js",
+    "start": "electron index.js",
+    "run": "electron temp-electron/index.js",
     "page": "gulp page; webpack",
     "electron": "gulp electron; cd temp-electron ; npm install",
     "readme": "marky-markdown README.md > readme.html",
@@ -16,12 +18,12 @@
     "TEICORPO",
     "metadata"
   ],
-  "author": "GitHub",
+  "author": "Christophe Parisse",
   "license": "CC0-1.0",
   "bugs": {
-    "url": "https://github.com/christopheparisse/tei-meta/issues"
+    "url": "https://github.com/christopheparisse/teimeta/issues"
   },
-  "homepage": "https://github.com/christopheparisse/tei-meta#readme",
+  "homepage": "https://github.com/christopheparisse/teimeta#readme",
   "devDependencies": {
     "@types/jquery": "^2.0.37",
     "@types/node": "^6.0.55",
