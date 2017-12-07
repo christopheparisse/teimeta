@@ -5,9 +5,11 @@
 ## Accès à l'outil
 Utilisation en ligne: [http://ct3.ortolang.fr/teimeta/](http://ct3.ortolang.fr/teimeta/)
 
-Téléchargement application autonome pour MacOs: [http://ct3.ortolang.fr/download/teimeta-v0.4.4-macos.zip](http://ct3.ortolang.fr/download/teimeta-v0.4.4-macos.zip)
+Téléchargement application autonome pour MacOs: [http://ct3.ortolang.fr/download/teimeta-v0.4.6-macos.zip](http://ct3.ortolang.fr/download/teimeta-v0.4.6-macos.zip)
 
-Téléchargement application windows 64 bits: [http://ct3.ortolang.fr/download/teimeta-v0.4.4-x64.exe](http://ct3.ortolang.fr/download/teimeta-v0.4.4-x64.exe)
+Téléchargement application windows 64 bits: [http://ct3.ortolang.fr/download/teimeta-v0.4.6-x64.exe](http://ct3.ortolang.fr/download/teimeta-v0.4.6-x64.exe)
+
+Téléchargement application windows 32 bits: [http://ct3.ortolang.fr/download/teimeta-v0.4.6-x86.exe](http://ct3.ortolang.fr/download/teimeta-v0.4.6-x86.exe)
 
 ## Description générale
 

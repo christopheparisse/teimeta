@@ -93,15 +93,46 @@ export function loadTei(data, teiData) {
     return true;
 }
 
+function verifyDatatype(datatype) {
+    if (datatype.type === 'openlist' && datatype.valueContent !== '') {
+        // check if valueContent fait partie du openlist
+        let found = false;
+        for (let i=0; i < datatype.vallist.length; i++) {
+            if (datatype.vallist[i].ident === datatype.valueContent) {
+                found = true;
+                break;
+            } 
+        }
+        if (found === false) {
+            let vi = new schema.ValItem();
+            vi.ident = datatype.valueContent;
+            vi.desc = vi.ident;
+            datatype.vallist.push(vi);
+        }
+    }
+}
+
 export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
     let c = schema.copyElementSpec(es);
     // creation d'un élément initial vide pour le noeud courant
     c.node = node;
     c.parentElementSpec = parent;
-    if (minOcc === '1')
-        c.usage = 'req';
-    else
-        c.usage = 'opt';
+    if (maxOcc === '2') {
+        if (minOcc === '1')
+            c.usage = 'req';
+        else            
+            c.usage = 'opt'; // cas 0 à 2
+    } else if (maxOcc === 'unbounded') {
+        if (minOcc === '1')
+            c.usage = 'req';
+        else            
+            c.usage = 'opt'; // cas 0 à unbounded
+    } else {
+        if (minOcc === '1')
+            c.usage = 'req'; // cas 1 à 1
+        else
+            c.usage = 'opt'; // cas 0 à 1
+    }
     c.validatedES = '';
     // chercher tous les elements existant dans le DOM
     // sous cet élément
@@ -114,6 +145,7 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
             // the text of the node is edited
             c.content.datatype.valueContent = getNodeText(node).trim();
             c.content.datatype.parentElementSpec = c;
+            verifyDatatype(c.content.datatype);
         }
         // load attributes
         for (let a in c.attr) {
@@ -127,6 +159,7 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
                     let attr = node.getAttribute(c.attr[a].ident);
                     if (attr) {
                         c.attr[a].datatype.valueContent = attr;
+                        verifyDatatype(c.attr[a].datatype);
                     } else {
                         if (c.attr[a].rend) c.attr[a].datatype.valueContent = c.attr[a].rend;
                     }
@@ -173,8 +206,6 @@ function loadElementRef(ec, node, path, parent) {
     eci.parentElementSpec = parent;
     // ec.model contient le nom de l'elementSpec
     eci.type = 'elementRef';
-    if (ec.minOccurs === '1')
-        eci.validatedEC = true;
     ec.eCI.push(eci);
 
     // load from TEI
@@ -204,8 +235,6 @@ function loadElementRef(ec, node, path, parent) {
         eci = new schema.ElementCountItem();
         eci.parentElementSpec = parent;
         eci.type = 'elementRef';
-        if (ec.minOccurs === '2')
-            eci.validatedEC = true;
         ec.eCI.push(eci);
         // find and create first elementSpec
         let h = ptrListElementSpec[ec.model];
@@ -243,7 +272,6 @@ function loadSequence(ec, node, path, parent) {
         let eci = new schema.ElementCountItem();
         eci.parentElementSpec = parent;
         eci.type = 'sequence';
-        if (ec.minOccurs === '1') eci.validatedEC = true; // ce node doit exister
         ec.eCI.push(eci);
         eci.element = [];
         eci.model = [];
@@ -260,7 +288,6 @@ function loadSequence(ec, node, path, parent) {
             // ec est un ElementCount
             let eci = new schema.ElementCountItem();
             eci.type = 'sequence';
-            eci.validatedEC = true; // ce node doit exister
             ec.eCI.push(eci);
             eci.element = [];
             eci.model = [];
@@ -280,7 +307,6 @@ function loadSequence(ec, node, path, parent) {
         let eci = new schema.ElementCountItem();
         eci.parentElementSpec = parent;
         eci.type = 'sequence';
-        eci.validatedEC = true; // comme les nodes existent ils sont tous considérés comme valides
         eci.element = [];
         eci.model = [];
         ec.eCI.push(eci);

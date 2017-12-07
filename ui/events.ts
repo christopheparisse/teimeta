@@ -9,6 +9,8 @@ import * as tei from '../teiedit/tei';
 import * as load from '../teiedit/load';
 import * as system from './opensave';
 
+const NEWFILENAME = 'nouveau-fichier.xml';
+
 export let teiData = {
     oddName: '',
     fileName: '',
@@ -18,6 +20,7 @@ export let teiData = {
     new: true,
     parser: null,
     doc: null,
+    system: ''
 };
 
 function finishLoad(err, name, data) {
@@ -33,40 +36,73 @@ function finishLoad(err, name, data) {
     //console.log(edit.values);
 }
 
-export function open() {
-    system.chooseOpenFile(function(err, name, data) {
-        if (!err) {
-            if (!teiData.dataOdd) {
-                newFile(function() { finishLoad(1, null, null); } );
+export function dumpHtml() {
+    system.saveFileLocal("html", "page.html", teiData.html);
+}
+
+export function checkChange(fun) {
+    if (edit.change() === false) {
+        fun();
+        return;
+    }
+    system.askUserModalYesNoCancel(
+        "Le fichier n'est pas sauvegardé. Voulez vous le sauver, quitter sans sauver ou annuler ?",
+        (ret) => {
+            if (ret === 'yes') { //save
+                if (teiData.system === 'electron') {
+                    save(fun);
+                } else {
+                    saveAsLocal(fun);
+                }
+            } else if (ret === 'no') {
+                fun(); // do not save
             } else {
-                finishLoad(0, name, data);
+                return; // cancel
             }
-        } else
-            console.log(name, err);
+        }
+    );
+}
+
+export function open() {
+    // checked changes
+    checkChange(() => {
+        system.chooseOpenFile(function(err, name, data) {
+            if (!err) {
+                if (!teiData.dataOdd) {
+                    newFile(function() { finishLoad(1, null, null); } );
+                } else {
+                    finishLoad(0, name, data);
+                }
+            } else
+                console.log(name, err);
+        });
     });
 };
 
 export function newFile(callback) {
-    try {
-        let ls = localStorage.getItem("previousODD");
-        if (ls) {
-            var js = JSON.parse(ls);
-            if (!js.version || js.version !== schema.version) {
-                console.log('ancienne version de localstorage');
-                emptyFile();
+    // checked changes
+    checkChange(() => {
+        try {
+            let ls = localStorage.getItem("previousODD");
+            if (ls) {
+                var js = JSON.parse(ls);
+                if (!js.version || js.version !== schema.version) {
+                    console.log('ancienne version de localstorage');
+                    emptyFile();
+                    if (callback) callback(0);
+                    return;
+                }
+                openOddLoad(js.oddName, js.data);
                 if (callback) callback(0);
-                return;
+            } else {
+                emptyFile();
             }
-            openOddLoad(js.oddName, js.data);
-            if (callback) callback(0);
-        } else {
+        } catch (error) {
+            console.log(error);
             emptyFile();
+            if (callback) callback(0);
         }
-    } catch (error) {
-        console.log(error);
-        emptyFile();
-        if (callback) callback(0);
-    }
+    });
 }
 
 export function reLoad(callback) {
@@ -101,7 +137,7 @@ export function openOddLoad(name, data) {
     teiData.dataOdd = odd.loadOdd(data);
     load.loadTei(null, teiData);
     teiData.html = edit.generateHTML(teiData);
-    teiData.fileName = 'nouveau-fichier.xml';
+    teiData.fileName = NEWFILENAME;
     teiData.new = true;
 
     el = document.getElementById('filename');
@@ -113,11 +149,14 @@ export function openOddLoad(name, data) {
 }
 
 export function openOdd() {
-    system.chooseOpenFile(function(err, name, data) {
-        if (!err) {
-            openOddLoad(name, data);
-        } else
-            console.log(name, err);
+    // checked changes
+    checkChange(() => {
+        system.chooseOpenFile(function(err, name, data) {
+            if (!err) {
+                openOddLoad(name, data);
+            } else
+                console.log(name, err);
+        });
     });
 };
 
@@ -133,17 +172,18 @@ export function emptyFile() {
     el.innerHTML = "Fichier: " + teiData.fileName;
 }
 
-export function saveAs() {    
-    system.chooseSaveFile('json', function(err, name) {
+export function saveAs(fun) {    
+    system.chooseSaveFile('xml', function(err, name) {
         if (!err) {
             teiData.fileName = name;
             let el = document.getElementById('filename');
             el.innerHTML = "Fichier: " + teiData.fileName;
             var ed = tei.generateTEI(teiData);
-            console.log(ed);
             system.saveFile(teiData.fileName, ed, null);
+            edit.change(false);
+            fun();
         } else
-            console.log(name, err);
+            console.log('saveas cancelled', name, err);
     });
 };
 
@@ -153,16 +193,21 @@ export function saveStorage() {
     localStorage.setItem("previousXMLName", teiData.fileName);
 };
 
-export function save() {
-    if (!teiData.fileName) {
+export function save(fun) {
+    if (teiData.fileName !== NEWFILENAME) {
             var ed = tei.generateTEI(teiData);
+            edit.change(false);
             system.saveFile(teiData.fileName, ed, null);
-    } else
-        saveAs();
+            fun();
+    } else {
+        return saveAs(fun);
+    }
 };
 
-export function saveAsLocal() {
+export function saveAsLocal(fun) {
     var ed = tei.generateTEI(teiData);
     // console.log(ed);
+    edit.change(false);
     system.saveFileLocal('xml', teiData.fileName, ed);
+    fun();
 };

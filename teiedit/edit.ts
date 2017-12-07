@@ -14,6 +14,12 @@ import * as load from './load';
 import * as system from '../ui/opensave';
 
 export let values = {};
+let changed = false; // start with no change made. If set to true then the data has to be saved.
+export function change(newval=undefined) {
+    if (newval === undefined) return changed;
+    changed = newval; // If the parameter is set, set the value
+}
+let recursiveDepth = 0; // recursive depth is zero at start
 
 /**
  * format an integer into 2-digit values
@@ -182,7 +188,7 @@ export function createID() {
 export function setOnOff(event, id, styleOn, styleOff) {
     if (event.target.className.indexOf('fa-choice-not-validated') >= 0) {
         event.target.className = 'validate fa fa-size2 fa-choice-validated ' + styleOn;
-        values[id].select = true;
+        values[id].select = 'ok';
         // ici il faut mettre à 'ok' les parentElementSpec.
         setOnParents(values[id].eltSpec);
     } else {
@@ -191,7 +197,7 @@ export function setOnOff(event, id, styleOn, styleOff) {
             (ret) => {
                 if (ret) {
                     event.target.className = 'validate fa fa-size2 fa-choice-not-validated ' + styleOff;
-                    values[id].select = false;
+                    values[id].select = '';
                     setOffChildren(values[id].eltSpec);
                 }
             }
@@ -200,14 +206,14 @@ export function setOnOff(event, id, styleOn, styleOff) {
         if (system.askUser('Voulez vous supprimer cet élément et tous ses descendants de votre document ?')) {
             console.log("mettre les enfants à ---", eltSpec);
             event.target.className = 'validate fa fa-size2 fa-choice-not-validated ' + styleOff;
-            values[id].select = false;
+            values[id].select = '';
             setOffChildren(values[id].eltSpec);
         }
         */
     }
 }
 
-function setStyleOnOff(id, val, styleOn, styleOff) {
+function setStyleOnOff(id, val: boolean, styleOn, styleOff) {
     let node = document.getElementById(id);
     if (!node) {
         console.log("pas d'id trouvé pour", id);
@@ -223,7 +229,7 @@ function setStyleOnOff(id, val, styleOn, styleOff) {
 
 function setOnParents(eltSpec) {
     console.log("mettre les parents à +++", eltSpec);
-    eltSpec.validatedES = 'ok';
+    values[eltSpec.validatedESID].select = 'ok';
     if (eltSpec.usage === 'req')
         setStyleOnOff(eltSpec.validatedESID, true, 'fa-bookmark fa-color-required', 'fa-bookmark-o fa-color-required');
     else
@@ -249,6 +255,7 @@ export function setOnOffEC(event, id) {
 */
 
 export function createEC(event, id) {
+    change(true);
     let c = values[id];
     // values[uniqCreate] = {elt: ec.model, tab: ec.eCI, id: uniqCreate, path: ec.absolutepath};
     let eci = new schema.ElementCountItem();
@@ -272,24 +279,15 @@ export function createEC(event, id) {
     // propager à tous les enfants la mise à zéro des champs node
     // normalement pas copié à vérifier
     // odd.setNodesToNull(eci.element);
-    eci.validatedEC = false;
-    eci.validatedECID = createID();
-    values[eci.validatedECID] = { select: false, eltSpec: c.eltSpec };
     c.tab.push(eci);
-    let s = '<div class="headSequence">\n';
-    /*
-    s += '<i class="validate fa fa-minus-square-o fa-choice-not-validated fa-color-expand " '
-        + 'onclick="window.ui.setOnOffEC(event, \'' + eci.validatedECID + '\')"></i>\n';
-    */
-    s += '<div class="content">\n';
+    let s = '<div class="content">\n';
     if (eci.type === 'elementRef') {
-        s += generateElement(eci.element, 'single');
+        s += generateElement(eci.element, 'optional');
     } else {
         for (let ece of eci.element) {
-            s += generateElement(ece, 'single');
+            s += generateElement(ece, 'optional');
         }
     }
-    s += '</div>';
     s += '</div>';
     //console.log(event, id);
     let referenceNode = document.getElementById(id);
@@ -302,15 +300,60 @@ export function createEC(event, id) {
 }
 
 export function setText(event, id) {
+    change(true);
     values[id].value = event.target.value;
     setOnParents(values[id].eltSpec);
     //console.log(event);
 }
 
-export function setAttr(event, id) {
+function openchoice() {
+    return odd.odd.params.language === 'fr' ? '-saisir une valeur-' : '-edit a value-';
+}
+
+export function setOpenlist(event, id) {
+    if (event.target.value === "--openchoice--") {
+        system.promptUserModal(
+            (odd.odd.params.language === 'fr' ? "Donner la nouvelle valeur" : "Give the new value"),
+            (ret) => {
+                if (ret) {
+                    change(true);
+                    values[id].value = ret;
+                    setOnParents(values[id].eltSpec);
+                    var select:any = document.getElementById(id);
+                    var option = document.createElement("option");
+                    option.value = ret;
+                    option.innerHTML = ret;
+                    select.appendChild(option);
+                    select.value = ret;
+                }
+            }
+        );
+        return;
+    }
+    change(true);
     values[id].value = event.target.value;
     setOnParents(values[id].eltSpec);
     //console.log(event);
+}
+
+export function initOpenlist(event, id) {
+    system.promptUserModal(
+        (odd.odd.params.language === 'fr' ? "Donner la nouvelle valeur" : "Give the new value"),
+        (ret) => {
+            if (ret) {
+                change(true);
+                values[id].value = ret;
+                setOnParents(values[id].eltSpec);
+                var select:any = document.getElementById(id);
+                var option = document.createElement("option");
+                option.value = ret;
+                option.innerHTML = ret;
+                select.appendChild(option);
+                select.value = ret;
+                select.onclick = null; // remove this handler
+            }
+        }
+    );
 }
 
 function toggle(el, value) {
@@ -348,7 +391,20 @@ export function hideAll() {
  * @param elist 
  */
 export function generateHTML(teiData) {
+    recursiveDepth = 0; 
     return generateElement(teiData.dataTei, 'root');
+}
+
+export function highlight(e) {
+    e = e || window.event;
+    console.log(e);
+//    if (e.button !== 2) return;
+    if (!e.altKey) return;
+    let el = e.target;
+    if (e.target.className === "headHRef") {
+        e.target.className = "headHRef highlight";
+        setTimeout(function() { e.target.className = "headHRef"; }, 5000);
+    }
 }
 
 function generateContent(ct, abspath) {
@@ -357,12 +413,12 @@ function generateContent(ct, abspath) {
         //console.log(">>>",ec.model);
         if (ec.minOccurs === '1' && ec.maxOccurs === '1') {
             //console.log("1-1",ec.model);
-            s += '<div class="headHRef">';
+            s += '<div class="headHRef" onmouseover="window.ui.highlight(event)">';
             if (ec.type === 'elementRef') {
-                s += generateElement(ec.eCI[0].element, 'single');
+                s += generateElement(ec.eCI[0].element, 'obligatory');
             } else {
                 for (let ece of ec.eCI[0].element) {
-                    s += generateElement(ece, 'single');
+                    s += generateElement(ece, 'obligatory');
                 }
             }
             s += '</div>';
@@ -384,20 +440,15 @@ function generateMultiple(ec, abspath) {
         + 'onclick="window.ui.createEC(event, \'' + uniqCreate + '\')"></i></div>\n';
     values[uniqCreate] = {elt: ec.eCI[0], tab: ec.eCI, id: uniqCreate, path: abspath, eltSpec: ec.parentElementSpec};
     for (let i in ec.eCI) {
-        let uniq = createID();
-        ec.eCI[i].validatedECID = uniq;
-        s += '<div class="headSequence">\n';
-        values[uniq] = { select: ec.eCI[i].validatedEC, eltSpec: ec.parentElementSpec };
         // HERE can put info about expansions
         s += '<div class="content">\n';
         if (ec.eCI[i].type === 'elementRef') {
-            s += generateElement(ec.eCI[i].element, 'multiple');
+            s += generateElement(ec.eCI[i].element, 'obligatory');
         } else {
             for (let ece of ec.eCI[i].element) {
-                s += generateElement(ece, 'multiple');
+                s += generateElement(ece, 'obligatory');
             }
         }
-        s += '</div>\n';
         s += '</div>\n';
     }
     s += '</div>\n';
@@ -436,7 +487,7 @@ function editDataType(datatype) {
             */
             // choix dans une liste
             s +='<select class="listattr" id="' + uniq + '" ';
-            s +='onchange="window.ui.setAttr(event, \'' + uniq + '\');" >\n';
+            s +='onchange="window.ui.setText(event, \'' + uniq + '\');" >\n';
             for (let k=0; k < datatype.vallist.length; k++) {
                 s += '<option value="' +
                     datatype.vallist[k].ident + '" ';
@@ -450,6 +501,7 @@ function editDataType(datatype) {
             // attributs avec liste
             datatype.valueContentID = uniq;
             values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
+            /*
             s +='<input type=text class="awesomplete listattr" data-minchars="0" list="' + uniq + '" value="' + datatype.valueContent + '" ';
             s +='onchange="window.ui.setAttr(event, \'' + uniq + '\');"/>\n';
             s +='<datalist id="' + uniq + '">';
@@ -460,6 +512,33 @@ function editDataType(datatype) {
                     s += '</option>\n';
             }
             s += '</datalist>\n';
+            */
+            // choix dans une liste avec ajout possible
+            s += '<select class="listattr" id="' + uniq + '" \n';
+            s += 'onchange="window.ui.setOpenlist(event, \'' + uniq + '\');" \n';
+            if (datatype.vallist.length === 0) {
+                s += 'onclick="window.ui.initOpenlist(event, \'' + uniq + '\');" \n';
+                // ne faire cela que pour des listes pas encore remplie. Pas nécessaire pour les autres.                
+            }
+            s += '>\n';
+            s += '<option value="--openchoice--">';
+            s += openchoice() + '</option>\n';
+            let selected: boolean = false;
+            for (let k=0; k < datatype.vallist.length; k++) {
+                if (datatype.valueContent === datatype.vallist[k].ident) {
+                    selected = true;                    
+                }
+            }
+            for (let k=0; k < datatype.vallist.length; k++) {
+                s += '<option value="' +
+                    datatype.vallist[k].ident + '" ';
+                if (datatype.valueContent === datatype.vallist[k].ident || k === 0 && selected === false) {
+                    s  += 'selected="selected" ';
+                    selected = true;                    
+                }
+                s += '>' + datatype.vallist[k].desc + '</option>\n';
+            }
+            s += '</select>\n';
             break;
         case 'duration':
             datatype.valueContentID = uniq;
@@ -545,125 +624,6 @@ function editAttr(elt) {
         }
         s += editDataType(elt.attr[i].datatype);
         s += '</span>\n';
-        /*
-        if (elt.attr[i].datatype === 'list') {
-            if (!elt.attr[i].items || elt.attr[i].items.length <= 0) {
-                // grosse erreur ou manque liste vide
-                system.alertUser("pas de liste de valeurs pour l'attribut: " + elt.attr.ident);
-                continue;
-            }
-            if (elt.attr[i].items.length <= 1) {
-                // liste avec un seul element
-                let uniq = createID();
-                if (!elt.attr[i].value) // si vide mettre le premier de la liste
-                    elt.attr[i].value =  elt.attr[i].items[0].ident;
-                values[uniq] = { value: elt.attr[i].value, eltSpec: elt.parentElementSpec };
-                elt.attr[i].valueID = uniq;
-                continue;
-            }
-            // attributs avec liste
-            let uniq = createID();
-            if (!elt.attr[i].value) // si vide mettre le premier de la liste
-                elt.attr[i].value =  elt.attr[i].items[0].ident;
-            values[uniq] = { value: elt.attr[i].value, eltSpec: elt.parentElementSpec };
-            elt.attr[i].valueID = uniq;
-            if (elt.attr[i].desc) {
-                s += '<label for="' + uniq + '">';
-                s += '<b>' + odd.textDesc(elt.attr[i].desc, odd.odd.params.language) + '</b>';
-                s +='</label>\n';
-            }
-            s +='<select class="listattr" id="' + uniq + '" ';
-            s +='onchange="window.ui.setAttr(event, \'' + uniq + '\');">\n';
-            for (let k in elt.attr[i].items) {
-                s += '<option value="' +
-                    elt.attr[i].items[k].ident + '" ';
-                    if (elt.attr[i].value === elt.attr[i].items[k].ident)
-                        s  += 'selected="selected" ';
-                    s += '>' + elt.attr[i].items[k].desc;
-                    s += '</option>\n';
-            }
-            s += '</select>\n';                    
-        } else if (elt.attr[i].datatype === 'openlist') {
-            if (!elt.attr[i].items || elt.attr[i].items.length <= 0) {
-                // grosse erreur ou manque liste vide
-                system.alertUser("pas de liste de valeurs pour l'attribut: " + elt.attr.ident);
-                continue;
-            }
-            if (elt.attr[i].items.length <= 1) {
-                // liste avec un seul element
-                continue;
-            }
-            // attributs avec liste
-            let uniq = createID();
-            if (!elt.attr[i].value) // si vide mettre le premier de la liste
-                elt.attr[i].value =  elt.attr[i].rend;
-            values[uniq] = { value: elt.attr[i].value, eltSpec: elt.parentElementSpec };
-            elt.attr[i].valueID = uniq;
-            if (elt.attr[i].desc) {
-                s += '<label for="' + uniq + '">';
-                s += '<b>' + odd.textDesc(elt.attr[i].desc, odd.odd.params.language) + '</b>';
-                s +='</label>\n';
-            }
-            s +='<input type=text class="awesomplete listattr" data-minchars="0" list="' + uniq + '" value="' + elt.attr[i].value + '" ';
-            s +='onchange="window.ui.setAttr(event, \'' + uniq + '\');"/>\n';
-            s +='<datalist id="' + uniq + '">';
-            for (let k in elt.attr[i].items) {
-                s += '<option value="' +
-                    elt.attr[i].items[k].ident + '" ';
-                    s += '>' + elt.attr[i].items[k].desc;
-                    s += '</option>\n';
-            }
-            s += '</datalist>\n';
-        } else {
-            // attribut sans liste: edition de la valeur
-            let uniq = createID();
-            values[uniq] = { value: elt.attr[i].value, eltSpec: elt.parentElementSpec };
-            elt.attr[i].valueID = uniq;
-            let type = 'text';
-            switch (elt.attr[i].datatype) {
-                case 'month':
-                    type = 'month';
-                    break;
-                case 'duration':
-                    type = 'duration';
-                    break;
-                case 'date':
-                    type = 'date';
-                    break;
-                case 'number':
-                    type = 'number';
-                    break;
-                case 'anyURI':
-                case 'uri':
-                case 'url':
-                    type = 'url';
-                    break;
-            }
-            if (elt.attr[i].desc) {
-                s += '<label for="' + uniq + '">';
-                s += '<b>' + odd.textDesc(elt.attr[i].desc, odd.odd.params.language) + '</b>';
-                if (type === "duration")
-                    s += ' ' + styleTime();
-                s += '</label>\n';
-            } else if (type === "duration") {
-                s += '<label for="' + uniq + '">';
-                s += ' ' + styleTime();
-                s += '</label>\n';
-            }
-            if (type === "duration") {
-                s += '<input name="' + uniq + '" id="' + uniq + '" ';
-                s += 'onchange="window.ui.checkTime(event, \'' + uniq + '\');" ';
-                s += ' value="' + formatTime(elt.attr[i].value) + '"';
-                s += ' />\n';
-            } else {
-                s += '<input type = "' + type + '" name="' + uniq + '" id="' + uniq + '"';
-                s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
-                if (elt.attr[i].value) s += ' value="' + elt.attr[i].value + '"';
-                values[uniq] = { value: (elt.attr[i].value) ? elt.attr[i].value : '', eltSpec: elt.parentElementSpec };
-                s += ' />\n';
-            }
-        }
-        */
     }
     s += '</div>\n';
     return s;
@@ -673,9 +633,11 @@ function generateElement(elt, validatedStyle) {
     // let s = '<div class="element">';
     let s = '';
     let uniq = createID();
-    let prof = (elt.absolutepath.match(/\//g) || []).length - 1;
+    recursiveDepth ++; // increase depth of edition
+    if (validatedStyle === 'optional')
+        elt.usage = 'opt'; // created by the user
     if (odd.odd.params.displayFullpath || elt.attr.length > 0 || (elt.content && elt.content.datatype)) {
-        let lprof = (odd.odd.params.displayFullpath) ? prof*odd.odd.params.leftShift : 0;
+        let lprof = recursiveDepth * odd.odd.params.leftShift;
         s += '<div class="nodeField node-' + classOf(elt.usage) + '" title="' + elt.absolutepath + '" style="margin-left: ' + lprof + 'px;">\n';
         if (odd.odd.params.validateRequired && validatedStyle !== 'root') {
             // on peut tout valider donc on ne se pose pas de question
@@ -691,12 +653,12 @@ function generateElement(elt, validatedStyle) {
                     + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
             }
         } else {
-            // on ne peut pas valider les req - ils sont toujours à validatedES === true
-            if ((elt.usage === 'req' && validatedStyle !== 'multiple') || validatedStyle === 'root')
-                elt.validatedES = true;
+            // on ne peut pas valider les req - ils sont toujours à validatedES === 'ok'
+            if ((elt.usage === 'req' && validatedStyle !== 'optional') || validatedStyle === 'root')
+                elt.validatedES = 'ok';
             values[uniq] = { select: elt.validatedES, eltSpec: elt.parentElementSpec };
             elt.validatedESID = uniq;
-            if (validatedStyle !== 'root' && (elt.usage !== 'req' || validatedStyle === 'multiple')) {
+            if (validatedStyle !== 'root' && (elt.usage !== 'req' || validatedStyle === 'optional')) {
                 if (elt.validatedES) {
                     s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
                         + classOf(elt.usage)
@@ -740,17 +702,26 @@ function generateElement(elt, validatedStyle) {
         s += '</div>\n';
         s += '</div>\n';
     } else {
-        s += '<div class="nodeField node-' + classOf(elt.usage) + ' " style="margin-left: '
-            /*+ prof*odd.odd.params.leftShift*/
-            + 'px;">\n';
-        values[uniq] = { select: true, eltSpec: elt.parentElementSpec }; // elt.validatedES // on ne peut pas accepter les éléments non validés car ils sont cachés
+        recursiveDepth --; // cancel recursiveDepth
+        let lprof = recursiveDepth * odd.odd.params.leftShift;
+        s += '<div class="nodeField node-' + classOf(elt.usage) + ' " style="margin-left: ' + lprof + 'px;">\n';
+        values[uniq] = { select: true, eltSpec: elt.parentElementSpec };
+        // on ne peut pas accepter les éléments non validés car ils sont cachés
         elt.validatedESID = uniq;
+        if (validatedStyle === 'optional') {
+            // on peut valider
+            s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
+                + classOf(elt.usage)
+                + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+        }
         if (elt.content && elt.content.sequencesRefs.length > 0) {
             s += '<div class="nodeContent">';
             s += generateContent(elt.content, elt.absolutepath);
             s += '</div>\n';
         }
         s += '</div>\n';
+        recursiveDepth ++; // reset recursiveDepth
     }
+    recursiveDepth --;
     return s;
 }

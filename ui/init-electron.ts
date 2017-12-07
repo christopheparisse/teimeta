@@ -11,6 +11,31 @@ import * as syscall from './opensave';
 import * as help from './help';
 import * as common from './common';
 
+function quit() {
+    // checked changes
+    events.checkChange(() => {
+            const remote = require('electron').remote;
+            remote.process.preventClose = false;
+            remote.app.quit();
+    });
+}
+
+/*
+    ipcRenderer.on('close', function (e) {
+        if (edit.change() === false) {
+            const remote = require('electron').remote;
+            remote.process.preventClose = false;
+            remote.app.quit();
+        }
+        var answer = confirm('Something is not saved. Do you really want to close the application?');
+        if (!answer) {
+            const remote = require('electron').remote;
+            remote.process.preventClose = true;
+        }
+    });
+
+*/
+
 function bodyKeys(e) {
 /*    
     console.log('keyCode '+ e.keyCode);
@@ -36,7 +61,13 @@ function bodyKeys(e) {
     }
     if (e.which === 83 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl S
         e.preventDefault();
-        events.saveAsLocal();
+        events.saveAsLocal(() => {});
+    }
+    if (e.which === 81 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl Q
+        quit();            
+    }
+    if (e.which === 115 && (e.altKey === true)) { // alt F4
+        quit();
     }
     if (e.which === 78 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl N
         e.preventDefault();
@@ -45,6 +76,7 @@ function bodyKeys(e) {
 }
 
 export function init() {
+    events.teiData.system = 'electron';
     // load previous data
     events.newFile(null);
 
@@ -55,13 +87,16 @@ export function init() {
         events.openOdd();
     });
     ipcRenderer.on('save', function(event, arg) {
-        events.save();
+        events.save(() => {});
     });
     ipcRenderer.on('saveas', function(event, arg) {
-        events.saveAs();
+        events.saveAs(() => {});
     });
     ipcRenderer.on('help', function(event, arg) {
         help.about();
+    });
+    ipcRenderer.on('quit', function(event, arg) {
+        quit();            
     });
 
     let el;
@@ -97,11 +132,12 @@ export function init() {
     // for user interface in html pages
     window['ui'] = {};
     window['ui'].setOnOffES = edit.setOnOffES;
-//    window['ui'].setOnOffEC = edit.setOnOffEC;    
     window['ui'].setText = edit.setText;
-    window['ui'].createEC = edit.createEC;    
-    window['ui'].setAttr = edit.setAttr;
+    window['ui'].createEC = edit.createEC;
+    window['ui'].setOpenlist = edit.setOpenlist;
+    window['ui'].initOpenlist = edit.initOpenlist;
     window['ui'].toggleES = edit.toggleES;
+    window['ui'].checkTime = edit.checkTime;
     window['ui'].odd = odd.odd;
     window['ui'].setLeftShift = common.setLeftShift;
     window['ui'].setDispFPath = common.setDispFPath;

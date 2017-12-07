@@ -133,6 +133,7 @@
     /*
         ici optionel pour les blocs à ajouter
     */
+    display: block;
     border: 1px solid black;
 	border-radius: 4px;
 
@@ -176,6 +177,11 @@
 
 .headHRef {
     display: inline-block;
+/*    border: 1px solid grey; */
+}
+
+.highlight {
+    border: 3px solid green;
 }
 
 .nodeEdit {

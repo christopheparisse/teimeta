@@ -39,11 +39,16 @@ function bodyKeys(e) {
     }
     if (e.which === 78 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl N
         e.preventDefault();
-        events.newFile(null);
+        events.newFile(null); // checked changes
+    }
+    if (e.which === 83 && (e.ctrlKey === true || e.metaKey === true) && (e.altKey === true)) { // ctrl alt S
+        e.preventDefault();
+        events.dumpHtml();
     }
 }
 
 export function init() {
+    events.teiData.system = 'html';
     // load params
     common.loadParams();
     // load previous data
@@ -52,9 +57,9 @@ export function init() {
     el = document.getElementsByTagName('body');
     el[0].addEventListener("keydown", bodyKeys);
     el = document.getElementById('file-open');
-    el.addEventListener("click", events.open);
+    el.addEventListener("click", events.open); // checked changes
     el = document.getElementById('file-open-odd');
-    el.addEventListener("click", events.openOdd);
+    el.addEventListener("click", events.openOdd); // checked changes
     el = document.getElementById('file-saveas');
     el.addEventListener("click", events.saveAsLocal);
     //el = document.getElementById('file-new');
@@ -65,11 +70,11 @@ export function init() {
     el.addEventListener("click", common.oddParams);
 
     el = document.getElementById('odd-media');
-    el.addEventListener("click", common.oddMedia);
+    el.addEventListener("click", common.oddMedia); // checked changes
     el = document.getElementById('odd-teioral');
-    el.addEventListener("click", common.oddTeiOral);
+    el.addEventListener("click", common.oddTeiOral); // checked changes
     el = document.getElementById('odd-partdesc');
-    el.addEventListener("click", common.oddPartDesc);
+    el.addEventListener("click", common.oddPartDesc); // checked changes
     
     el = document.getElementById('showall');
     el.addEventListener("click", edit.showAll);
@@ -81,12 +86,13 @@ export function init() {
     // for user interface in html pages
     window['ui'] = {};
     window['ui'].setOnOffES = edit.setOnOffES;
-//    window['ui'].setOnOffEC = edit.setOnOffEC;    
     window['ui'].setText = edit.setText;
-    window['ui'].createEC = edit.createEC;    
-    window['ui'].setAttr = edit.setAttr;
+    window['ui'].createEC = edit.createEC;
+    window['ui'].setOpenlist = edit.setOpenlist;
+    window['ui'].initOpenlist = edit.initOpenlist;
     window['ui'].toggleES = edit.toggleES;
     window['ui'].checkTime = edit.checkTime;
+    window['ui'].highlight = edit.highlight;
     window['ui'].odd = odd.odd;
     window['ui'].setLeftShift = common.setLeftShift;
     window['ui'].setDispFPath = common.setDispFPath;
@@ -98,6 +104,18 @@ export function init() {
     window['dbg'] = {};
     window['dbg'].tei = events.teiData;
     window['dbg'].v = edit.values;
+
+    window.addEventListener("beforeunload", function (e) {
+        if (edit.change() === false) {
+            return undefined;
+        }
+
+        var confirmationMessage = 'It looks like you have been editing something. '
+                                + 'If you leave before saving, your changes will be lost.';
+
+        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+    });
 }
 
 // in case the document is already rendered

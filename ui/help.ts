@@ -4,7 +4,7 @@
 
 import * as system from './opensave';
 
-export let version = '0.4.4 - 24-07-2017';
+export let version = '0.4.7 - 06-07-2017';
 
 export function about() {
     var s = "Version prototype de TEIMETA javascript : " + version + "</br></br>";
@@ -23,8 +23,8 @@ La sauvegarde (cliquer sur "Sauver") se fait dans le répertoire de télécharge
 <i class="hidebutton fa fa-size2 fa-star-half-o fa-color-toggle"></i> permet de montrer ou cacher une partie du fichier.</br>
 </br>
 Pour toute information, aller sur <a href="http://ct3.ortolang.fr/teimeta/readme.php" target="_blank">http://ct3.ortolang.fr/teimeta/readme.php</a><br/>
-Pour télécharger ce logiciel, aller sur <a href="https://github.com/christopheparisse/tei-meta" target="_blank">https://github.com/christopheparisse/tei-meta</a><br/>
-Pour signaler une erreur ou proposer une fonctionnalité, aller sur <a href="https://github.com/christopheparisse/tei-meta/issues" target="_blank">https://github.com/christopheparisse/tei-meta/issues</a><br/>
+Pour télécharger ce logiciel, aller sur <a href="https://github.com/christopheparisse/teimeta" target="_blank">https://github.com/christopheparisse/teimeta</a><br/>
+Pour signaler une erreur ou proposer une fonctionnalité, aller sur <a href="https://github.com/christopheparisse/teimeta/issues" target="_blank">https://github.com/christopheparisse/teimeta/issues</a><br/>
 `;
     // system.alertUser(s);
     system.alertUser(s);
