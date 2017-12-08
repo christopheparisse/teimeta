@@ -1,1 +1,0 @@
-rsync -ruv /Volumes/MacHighSierra/devlopt/* /Volumes/25GOFAT/devlopt/
