@@ -48,11 +48,12 @@ function clean(node) {
 
 export function generateTEI(teiData) {
     let eltspec = teiData.dataTei;
-    if (!edit.values[eltspec.validatedESID].select) {
+/*    if (!edit.values[eltspec.validatedESID].select) {
         console.log(eltspec.absolutepath, " racine imprimée bien que non validée", edit.values[eltspec.validatedESID]);
         //system.alertUser(eltspec.absolutepath + " racine non imprimé car non validée ? >" + edit.values[eltspec.validatedESID].select + "<");
         //return;
     }
+*/
     if (!teiData.doc) {
         if (teiData.dataOdd.namespace) {
             let s = '<?xml version="1.0" encoding="UTF-8"?>';
@@ -87,7 +88,7 @@ function generateElement(espec, doc, node) {
         console.log("Error: geneElemts:", espec);
         return "";
     }
-    if (edit.values[espec.validatedESID].select === 'ok') {
+if (edit.values[espec.validatedESID].select === 'ok' /* || espec.usage === 'req' */) {
         // si node est vide en créer un en dernier fils du node d'au dessus
         let current = espec.node;
         if (!current) {

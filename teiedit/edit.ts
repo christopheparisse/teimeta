@@ -254,6 +254,11 @@ export function setOnOffEC(event, id) {
 }
 */
 
+/**
+ * @method createEC
+ * @param event // informed by the navigator
+ * @param id // reference to the content in the ODD/TEI
+ */
 export function createEC(event, id) {
     change(true);
     let c = values[id];
@@ -397,7 +402,7 @@ export function generateHTML(teiData) {
 
 export function highlight(e) {
     e = e || window.event;
-    console.log(e);
+    // console.log(e);
 //    if (e.button !== 2) return;
     if (!e.altKey) return;
     let el = e.target;
@@ -469,13 +474,13 @@ function editDataType(datatype) {
             }
             if (datatype.vallist.length <= 1) {
                 // liste avec un seul element
-                if (!datatype.valueContent) // si vide mettre le premier de la liste
-                    datatype.valueContent =  datatype.vallist[0].ident;
                 values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
                 datatype.valueContentID = uniq;
                 return '';
             }
             datatype.valueContentID = uniq;
+            if (!datatype.valueContent) // si vide mettre le premier de la liste
+                datatype.valueContent =  datatype.vallist[0].ident;
             values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
             // edition de la valeur
             /*
@@ -654,7 +659,7 @@ function generateElement(elt, validatedStyle) {
             }
         } else {
             // on ne peut pas valider les req - ils sont toujours à validatedES === 'ok'
-            if ((elt.usage === 'req' && validatedStyle !== 'optional') || validatedStyle === 'root')
+            if (elt.usage === 'req') // || validatedStyle === 'root')
                 elt.validatedES = 'ok';
             values[uniq] = { select: elt.validatedES, eltSpec: elt.parentElementSpec };
             elt.validatedESID = uniq;
@@ -705,7 +710,7 @@ function generateElement(elt, validatedStyle) {
         recursiveDepth --; // cancel recursiveDepth
         let lprof = recursiveDepth * odd.odd.params.leftShift;
         s += '<div class="nodeField node-' + classOf(elt.usage) + ' " style="margin-left: ' + lprof + 'px;">\n';
-        values[uniq] = { select: true, eltSpec: elt.parentElementSpec };
+        values[uniq] = { select: 'ok', eltSpec: elt.parentElementSpec };
         // on ne peut pas accepter les éléments non validés car ils sont cachés
         elt.validatedESID = uniq;
         if (validatedStyle === 'optional') {

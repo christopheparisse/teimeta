@@ -100,6 +100,8 @@ export function init() {
     });
 
     let el;
+    el = document.getElementById('titledate');
+    el.textContent = ' - ' + help.version;
     el = document.getElementsByTagName('body');
     el[0].addEventListener("keydown", bodyKeys);
     el = document.getElementById('file-open');

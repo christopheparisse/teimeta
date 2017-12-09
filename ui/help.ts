@@ -4,10 +4,11 @@
 
 import * as system from './opensave';
 
-export let version = '0.4.7 - 06-07-2017';
+export let version = '0.4.8';
+export let date = '06-07-2017';
 
 export function about() {
-    var s = "Version prototype de TEIMETA javascript : " + version + "</br></br>";
+    var s = "Version prototype de TEIMETA javascript : " + version + " - " + date + "</br></br>";
     s += `
 <b>Usage:</b> Il faut d'abord charger un fichier ODD local (cliquer "Ouvrir ODD").</br>
 Il est possible d'éditer directement un nouveau fichier à partir du ODD chargé puis de 

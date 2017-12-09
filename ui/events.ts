@@ -181,7 +181,7 @@ export function saveAs(fun) {
             var ed = tei.generateTEI(teiData);
             system.saveFile(teiData.fileName, ed, null);
             edit.change(false);
-            fun();
+            if (fun && typeof fun === "function") fun();
         } else
             console.log('saveas cancelled', name, err);
     });
@@ -198,7 +198,7 @@ export function save(fun) {
             var ed = tei.generateTEI(teiData);
             edit.change(false);
             system.saveFile(teiData.fileName, ed, null);
-            fun();
+            if (fun && typeof fun === 'function') fun();
     } else {
         return saveAs(fun);
     }
@@ -209,5 +209,5 @@ export function saveAsLocal(fun) {
     // console.log(ed);
     edit.change(false);
     system.saveFileLocal('xml', teiData.fileName, ed);
-    fun();
+    if (fun && typeof fun === 'function') fun();
 };

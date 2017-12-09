@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title><idno type="title">Lyon_69aag1_conv_libre</idno><desc>Lyon conversation libre
+                        du locuteur 69aag1</desc><bibl>PFC research database</bibl><bibl>Durand,
+                        Jacques, Laks, Bernard &amp; Lyche, Chantal (2002). La phonologie du
+                        français contemporain: usages, variétés et structure. In C. Pusch &amp; W.
+                        Raible (éds), Romanistische Korpuslinguistik- Korpora und gesprochene
+                        Sprache/Romance Corpus Linguistics – Corpora and Spoken Language. Tübingen :
+                        Gunter Narr Verlag, 93-106. PDF (Durand/Laks/Lyche 2002)</bibl></title>
+                <principal>programme PFC<name type="project">Programme PFC</name></principal>
+            </titleStmt>
+            <publicationStmt>
+                <publisher>Programme PFC</publisher>
+                <pubPlace><ref target="https://research.projet-pfc.net/locuteurs.php?id=102"
+                        >http://www.projet-pfc.net</ref></pubPlace>
+                <idno type=""/>
+                <availability status="restricted">
+                    <licence type="OTHER">cf site web</licence>
+                </availability>
+            </publicationStmt>
+            <sourceDesc>
+                <recordingStmt>
+                    <recording>
+                        <p>Liste de mots</p>
+                        <media type="" mimeType="other" dur-iso="166" url="">
+                            <desc type="quality" subtype="no_anonymization"/>
+                            <desc type="anonymization" subtype="no_anonymization"/>
+                        </media>
+                    </recording>
+                </recordingStmt>
+            </sourceDesc>
+        </fileDesc>
+        <profileDesc>
+            <textDesc>
+                <channel mode="s" subtype=""/>
+                <constitution type=""/>
+                <derivation type=""/>
+                <domain nature_type="nature_type.private" nature="unknown"/>
+                <interaction type="1" active="" passive=""/>
+                <preparedness ana="instruction.read"/>
+                <purpose ana="unknown"/>
+            </textDesc>
+            <particDesc>
+                <listPerson>
+                    <person xml:id="69aag1" sex="" source="" role="target_adult">
+                        <langKnowledge>
+                            <langKnown tag="français" level=""/>
+                            <langKnown tag="allemand" level="language.seconde"/>
+                            <langKnown tag="anglais" level="language.seconde"/>
+                            <langKnown tag="espagnol" level="language.seconde"/>
+                        </langKnowledge>
+                        <note type=""/>
+                        <persName/>
+                        <age value=""/>
+                        <occupation ana="occupation.professional_activity"/>
+                        <socecStatus>Professeur d'allemand</socecStatus>
+                        <education>supérieur</education>
+                        <altGrp>
+                            <alt type="AG"/>
+                        </altGrp>
+                    </person>
+                </listPerson>
+            </particDesc>
+            <settingDesc>
+                <listPlace>
+                    <place>
+                        <settlement ref=" Lyon 4ème"/>
+                        <desc>Liste de mots produits par le locuteur 69aag1</desc>
+                        <placeName>appartement</placeName>
+                        <country name="fr"/>
+                        <district name="Rhône-Alpes"/>
+                    </place>
+                </listPlace>
+                <setting>
+                    <date notBefore-iso="" notAfter-iso="" when-iso="1999-05-12"/>
+                    <activity/>
+                </setting>
+                <langUsage>
+                    <language usage="français" ident=""/>
+                </langUsage>
+            </settingDesc>
+        </profileDesc>
+        <encodingDesc>
+            <transcriptionDesc>
+                <desc type="anonymization_transcription"
+                    ana="anonymization_transcription.no_anonymization"/>
+                <desc type="transcript_convention" ana="annotation.phonological"/>
+                <desc type="annotation_software" ana="annotation_software.praat"/>
+                <desc type="" ana=""/>
+            </transcriptionDesc>
+            <projectDesc>
+                <p>de praat à du texte</p>
+            </projectDesc>
+            <appInfo>
+                <application ident="transpraat" ana="other"/>
+                <desc>export de la tier en format texte</desc>
+            </appInfo>
+        </encodingDesc>
+    </teiHeader>
+</TEI>

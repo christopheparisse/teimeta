@@ -35,7 +35,7 @@ function bodyKeys(e) {
     }
     if (e.which === 83 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl S
         e.preventDefault();
-        events.saveAsLocal();
+        events.saveAsLocal(null);
     }
     if (e.which === 78 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl N
         e.preventDefault();
@@ -54,6 +54,8 @@ export function init() {
     // load previous data
     events.newFile(null);
     let el;
+    el = document.getElementById('titledate');
+    el.textContent = ' - ' + help.version;
     el = document.getElementsByTagName('body');
     el[0].addEventListener("keydown", bodyKeys);
     el = document.getElementById('file-open');
