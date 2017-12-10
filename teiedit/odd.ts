@@ -48,6 +48,7 @@ function readElementSpec(elementspec, node) {
     elementspec.corresp = node.getAttribute("corresp");
     elementspec.module = node.getAttribute("module");
     elementspec.mode = node.getAttribute("mode");
+    elementspec.rend = node.getAttribute("rend"); // rend will not be used - signal it ?
     // les autres attributs sont ignorés
     elementspec.access = tagES(elementspec.ident, elementspec.corresp);
 
@@ -112,6 +113,8 @@ function readContent(content, node) {
         console.log('more than one content in node: only first is processed', node.tagName);
     }
     if (d.length > 0) {
+        content.rend = d[0].getAttribute('rend');
+        if (!content.rend) content.rend = '';
         // find elementRef
         let e = getChildrenByName(d[0], 'elementRef');
         for (let ei in e) {
@@ -137,10 +140,12 @@ function readContent(content, node) {
             } else {
                 // sinon on respecte le type de dataRef
                 content.datatype.type = ltype;
+                content.datatype.rend = content.rend;
             }
         } else if (ltype !== '') {
             content.datatype = new schema.DataType();
             content.datatype.type = ltype;
+            content.datatype.rend = content.rend;
         }
         // find if there are values predefined
         let vl = new schema.DataType();
@@ -154,6 +159,7 @@ function readContent(content, node) {
                 content.datatype.type = 'openlist';
             else
                 content.datatype.type = 'list';
+            content.datatype.rend = content.rend;
         }
     }
     return d.length;
@@ -243,7 +249,8 @@ function readAttrDef(attrDef, node) {
     attrDef.usage = node.getAttribute('usage');
     attrDef.mode = node.getAttribute('mode');
     attrDef.rend = node.getAttribute('rend');
-
+    if (!attrDef.rend) attrDef.rend = '';
+    
     // le champ desc
     let d =  new schema.Desc();
     if (readDesc(d, node)) attrDef.desc = d;
@@ -256,6 +263,7 @@ function readAttrDef(attrDef, node) {
     } else {
         attrDef.datatype.type = 'string';
     }
+    attrDef.datatype.rend = attrDef.rend;
     let n = valList(attrDef.datatype, node);
     if (n > 0) {
         if (attrDef.datatype.vallistType) {
@@ -267,6 +275,7 @@ function readAttrDef(attrDef, node) {
                 attrDef.datatype.type = 'list';
         }
     }
+    console.log(attrDef.ident, attrDef.rend, attrDef);
 }
 
 /**
@@ -377,4 +386,3 @@ export function loadOdd(data) {
     }
     return odd;
 }
-

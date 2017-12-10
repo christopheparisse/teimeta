@@ -66,19 +66,11 @@ export function generateTEI(teiData) {
         eltspec.node = teiData.root;
     }
     // first generate the root otherwise it would be duplicated
-    let s = '';
-    s += '<!-- ajout de ' + eltspec.absolutepath + ' -->\n';
-    s += generateFilledElement(eltspec, teiData.doc, eltspec.node);
+    generateFilledElement(eltspec, teiData.doc, eltspec.node);
     if (eltspec.content)
-        s += generateTEIContent(eltspec.content, teiData.doc, eltspec.node);
-    // console.log(s);
-    // transform doc to text
-    // console.log(teiData.doc);
-    /*
-    var sr = new XMLSerializer();
-    var str = sr.serializeToString(teiData.doc.documentElement);
-    return str;
-    */
+        generateTEIContent(eltspec.content, teiData.doc, eltspec.node);
+    // add oddname to teiData.doc
+    eltspec.node.setAttribute("xml:base", teiData.oddName);
     return teiData.doc.toString();
 }
 

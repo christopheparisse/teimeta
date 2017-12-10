@@ -474,13 +474,15 @@ function editDataType(datatype) {
             }
             if (datatype.vallist.length <= 1) {
                 // liste avec un seul element
-                values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
+                console.log("1datatype:", datatype.valueContent, datatype.rend, datatype);
+                values[uniq] = { value: (datatype.valueContent?datatype.valueContent:datatype.rend), eltSpec: datatype.parentElementSpec };
                 datatype.valueContentID = uniq;
                 return '';
             }
+            console.log("datatype:", datatype.valueContent, datatype.rend, datatype);
             datatype.valueContentID = uniq;
             if (!datatype.valueContent) // si vide mettre le premier de la liste
-                datatype.valueContent =  datatype.vallist[0].ident;
+                datatype.valueContent =  datatype.rend;
             values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
             // edition de la valeur
             /*

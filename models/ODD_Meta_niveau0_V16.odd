@@ -209,7 +209,7 @@
 
 
 				<!-- titleStmt : un principal, de 0 à n respStmt (collecteur, transcripteur, collecteur, ...) -->
-				<elementSpec ident="titleStmt" module="header" mode="change" >
+				<elementSpec ident="titleStmt" module="header" mode="change" n="1">
 					<desc xml:lang="fr">La ressource: titre, description, citation, responsable, contributeurs</desc>
 					<desc xml:lang="en">Resource : Title, description, citation, responsible, contributors</desc>
 					<content>
@@ -354,7 +354,7 @@
 				<!-- publicationStmt : au moins un , un handle et une licence
 	  				par defaut Creative Common CC BY-NC-SA 2.0 FR c'est à dire
 	  				"Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions"-->
-				<elementSpec ident="publicationStmt" module="header" mode="change">
+				<elementSpec ident="publicationStmt" module="header" mode="change" n="1">
 					<desc xml:lang="fr">Diffusion : identifiant unique, diffusion, sites web, licence</desc>
 					<desc xml:lang="en">Diffusion : handle, publisher, pubPlace, license</desc>
 					<content>
@@ -374,7 +374,7 @@
 					</content>
 					<attList>
 						<!-- value=restricted car une creative common telle qu'elle soit-->
-						<attDef ident="status" usage="req" mode="change">
+						<attDef ident="status" usage="req" mode="change" rend="restricted">
 							<valList>
 								<valItem ident="restricted"/>
 							</valList>
@@ -490,7 +490,7 @@
 				</elementSpec>
 
 				<!-- recordingStmt : recording et medias-->
-				<elementSpec ident="sourceDesc" module="header" mode="change">
+				<elementSpec ident="sourceDesc" module="header" mode="change" n="1">
 					<desc xml:lang="fr">Données primaires (signal)</desc>
 					<desc xml:lang="en">Primary data (recording)</desc>
 					<content>
@@ -669,7 +669,7 @@
 
 				<!-- textDesc : catégorisation du document oral-->
 				<!-- attention il y a aussi un module additionnel setting ==> détail de la situation, artefact, plan,   ...-->
-				<elementSpec ident="textDesc" module="corpus" mode="change">
+				<elementSpec ident="textDesc" module="corpus" mode="change" n="1">
 					<desc xml:lang="fr">Type de données orales</desc>
 					<desc xml:lang="en">Setting</desc>
 					<content>
@@ -974,7 +974,7 @@
 				</elementSpec>
 
 				<!-- particDesc : speakers ==> Christophe le fait pour vérif -->
-				<elementSpec ident="particDesc" module="corpus" mode="change">
+				<elementSpec ident="particDesc" module="corpus" mode="change" n="1">
 					<desc xml:lang="fr">Locuteurs</desc>
 					<desc xml:lang="en">Speakers </desc>
 					<content>
@@ -1257,7 +1257,7 @@
 				</elementSpec>
 
 				<!-- settingDesc : recording et medias-->
-				<elementSpec ident="settingDesc" module="corpus" mode="change">
+				<elementSpec ident="settingDesc" module="corpus" mode="change" n="1">
 					<desc xml:lang="fr">Session enregistrée : lieu, langue,date</desc>
 					<desc xml:lang="en">Seeting: place, language,date</desc>
 
@@ -1383,7 +1383,7 @@
 				</elementSpec>
 
 				<!-- langUsage : langue de l'enregistrement, plusieurs possibles avec % d'utilisation-->
-				<elementSpec ident="langUsage" module="header" mode="change">
+				<elementSpec ident="langUsage" module="header" mode="change" n="1">
 					<desc xml:lang="fr">Langue(s) parlée dans la session (si plusieurs pourcentage d'utilisation)</desc>
 					<desc xml:lang="en">Recording language(s), a percentage if several languages</desc>
 					<content>
@@ -1401,7 +1401,7 @@
 					</attList>
 				</elementSpec>
 
-				<elementSpec ident="appInfo" module="header" mode="change">
+				<elementSpec ident="appInfo" module="header" mode="change" n="1">
 					<desc xml:lang="fr"> Convertisseur TEI : TEI_CORPO ou un autre convertisseur</desc>
 					<desc xml:lang="en">TEI conversion : TEI_CORPO or another tool</desc>
 					<content>
@@ -1429,7 +1429,7 @@
 					</attList>
 				</elementSpec>
 
-				<elementSpec ident="projectDesc" module="header" mode="change">
+				<elementSpec ident="projectDesc" module="header" mode="change" n="1">
 					<desc xml:lang="fr">Description étendue du projet</desc>
 					<desc xml:lang="en">Free additional text on project</desc>
 					<content>
@@ -1437,7 +1437,7 @@
 					</content>
 				</elementSpec>
 
-				<elementSpec ident="transcriptionDesc" module="header" mode="change">
+				<elementSpec ident="transcriptionDesc" module="header" mode="change" n="1">
 					<desc xml:lang="fr">Annotations : type d'annotation, logiciel d'annotation, convention, anonymisation</desc>
 					<desc xml:lang="en">Annotations : type of annotation, annotation software, convention, anonymization</desc>
 					<content>

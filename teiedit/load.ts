@@ -110,6 +110,7 @@ function verifyDatatype(datatype) {
             datatype.vallist.push(vi);
         }
     }
+    if (!datatype.valueContent && datatype.rend) datatype.valueContent = datatype.rend;
 }
 
 export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
@@ -144,6 +145,8 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
         if (c.content && c.content.datatype) {
             // the text of the node is edited
             c.content.datatype.valueContent = getNodeText(node).trim();
+            c.content.datatype.rend = c.content.rend;
+            if (!c.content.datatype.valueContent) c.content.datatype.valueContent = c.content.rend;
             c.content.datatype.parentElementSpec = c;
             verifyDatatype(c.content.datatype);
         }
@@ -159,9 +162,14 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
                     let attr = node.getAttribute(c.attr[a].ident);
                     if (attr) {
                         c.attr[a].datatype.valueContent = attr;
+                        c.attr[a].datatype.rend = c.attr[a].rend;
+                        if (!c.attr[a].datatype.valueContent) c.attr[a].datatype.valueContent = c.attr[a].rend;
                         verifyDatatype(c.attr[a].datatype);
                     } else {
-                        if (c.attr[a].rend) c.attr[a].datatype.valueContent = c.attr[a].rend;
+                        if (c.attr[a].rend)
+                            c.attr[a].datatype.valueContent = c.attr[a].rend;
+                        else
+                            c.attr[a].datatype.valueContent = '';
                     }
                 }
             }

@@ -134,6 +134,7 @@ export function copyElementSpec(obj): any {
     cp.corresp = obj.corresp;
     cp.access = obj.access;
     cp.module = obj.module;
+    cp.rend = obj.rend;
     cp.mode = obj.mode; // change=oneOrMore, replace=one, add=zeroOrMore
     cp.validatedES = obj.validatedES; // is false element not used, si non element used
     cp.validatedESID = obj.validatedESID;
@@ -152,6 +153,7 @@ export function copyElementSpec(obj): any {
 function copyContent(obj, parent): any {
     let cp: any = {};
     cp.datatype = (obj.datatype) ? copyDataType(obj.datatype, parent) : null;
+    cp.rend = obj.rend;
     cp.sequencesRefs = [];
     cpBloc(cp.sequencesRefs, obj.sequencesRefs);
     return cp;
@@ -198,6 +200,7 @@ function copyAttr(oldattr, parent): any {
 function copyDataType(obj, parent): any {
     let cp: any = {};
     cp.type = obj.type;
+    cp.rend = obj.rend;
     cp.valueContent = obj.valueContent;
     cp.valueContentID = obj.valueContentID;
     cp.parentElementSpec = parent;
