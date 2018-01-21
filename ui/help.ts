@@ -4,8 +4,8 @@
 
 import * as system from './opensave';
 
-export let version = '0.4.8';
-export let date = '06-07-2017';
+export let version = '0.4.9';
+export let date = '22-01-2018';
 
 export function about() {
     var s = "Version prototype de TEIMETA javascript : " + version + " - " + date + "</br></br>";

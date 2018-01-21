@@ -578,7 +578,7 @@ function editDataType(datatype) {
             */
             s += '<input type="date" name="' + uniq + '" id="' + uniq + '" ';
             s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
-            if (datatype.valueContent) s += ' value="' + formatTime(datatype.valueContent) + '"';
+            if (datatype.valueContent) s += ' value="' + datatype.valueContent + '"';
             s += ' />\n';
             break;
         case 'anyURI':
