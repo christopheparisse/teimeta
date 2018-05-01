@@ -13,36 +13,40 @@ Téléchargement application windows 32 bits: [http://ct3.ortolang.fr/download/t
 
 ## Description générale
 
+TEIMETA est un outil qui permet d'éditer des fichiers XML à partir d'une description, elle-même au format XML ODD de la TEI. A partir de cette description, TEIMETA produit automatiquement une interface utilisateur qui prend place dans un navigateur web ou dans une application indépendante ELECTRON.
+
 L'outil est conçu pour une utilisation TEI mais peut être utilsé pour d'autres fichiers XML.
 Dans ce cas il faut éditer un fichier ayant un namespace correct ou modifier le namespace du fichier final à la main.
-L'édition du namespace destination n'est pas encore implémentée.
+L'édition du namespace destination n'est pas encore implémentée. La vérification du schéma XML n'est pas implémentée non plus. Liberté est laissé à l'utilisateur de traiter cette partie. Le programme TEIMETA garantit que les fichiers créés seront conformes aux modèles conçus par les utilisateurs mais ne garantit pas la qualité de ces modèles qui produit par des utilisateurs avancés.
 
 L'outil permet d'éditer un noeud XML où qu'il soit mais pas de le déplacer.
 Tout noeud édité garde sa position. Un noeud inexistant peut être créé, mais selon la position décrite dans l'ODD.
-L'ODD doit décrire toute l'arborescence depuis la racine.
-Les valeurs d'un fichier XML non décrites dans l'ODD ne doivent pas être modifiées.
-Les valeurs décrites pevuent être créées, modifiées et vidées. La suppression est possible en désactivant les noeuds non-obligatoires.
-Il est possible en option (pas encore implémentée d'autoriser la suppression des noeuds obligatoires).
+L'ODD doit décrire toute l'arborescence depuis la racine. **Les valeurs d'un fichier XML non décrites dans l'ODD ne sont pas modifiées lors de l'édition du fichier XML par TEIMETA. TEIMETA permet donc d'éditer une partie d'un fichier XML en respectant l'intégrité du reste du fichier.** Les valeurs décrites pevuent être créées, modifiées et vidées. La suppression est possible en désactivant les noeuds non-obligatoires. Il est possible en option (pas encore implémentée d'autoriser la suppression des noeuds obligatoires).
+
+## Versions disponibles
+0.5.0 - 2 mai 2018 - version permettant une présentation visuelle à façon en éditant les fichiers ODD
+
+## Organisation des données
 
 Les fonctions d'édition principales sont:
 -  création d'un noeud (si on y ajoute une valeur)
 - édition du champ texte d'un noeud avec un format
   - texte libre
-  - vocabulaire
-  - nombre (à faire)
-  - date (à faire)
+  - vocabulaire ouvert ou fermé
+  - nombre
+  - date
 - édition d'un des attributs d'un noeud avec un format
   - texte libre
-  - vocabulaire
-  - nombre (à faire)
-  - date (à faire)
+  - vocabulaire ouvert ou fermé
+  - nombre
+  - date
 
 ## Edition de l'ODD et exemples XML
 
 L'ODD respecte le format de la TEI prévu pour ajouter des tags à la TEI.
-On utilise les champs desc pour fournir des informations.
-Les champs corresp, rend et rendition ont une fonctionnalité supplémentaire par rapport à la TEI pour notre implémentation.
-Les autres champs respectent complétement le format TEI.
+On utilise les champs desc *pour fournir des informations qui seront visibles dans l'outil d'édition*.
+Les champs corresp, rend et rendition ont une fonctionnalité supplémentaire par rapport à la TEI pour notre implémentation. Le champ remarks permet d'insérer des informations de présentation visuelle (de type CSS).
+Les autres champs respectent le format TEI.
 
 ### Format de description des noeuds XML
 
@@ -58,6 +62,7 @@ Les moduleRef ne sont pas utilisés pour l'instant: ils sont là pour les autres
     * desc: multilingue possible voir champ xml:lang
     * content: contenu du noeud y compris partie texte
     * attList: listes des attributs
+    * remarks: valeurs de présentation CSS d'un elementSpec et/ou de son champ content
 
   * content
     * sequence minOccurs maxOccurs (s'il y a plus d'un élément)
@@ -76,6 +81,7 @@ Les moduleRef ne sont pas utilisés pour l'instant: ils sont là pour les autres
     * datatype
       * dataRef : format de l'attribut
       * ... ou sinon une liste de valeurs: si une seule pas de choix valeur obigatoire
+      * remarks: valeurs de présentation CSS d'un champ d'édition datatype
     * valList ==> choix multiples type ascenseur
       * valItem ident="valeur-dans-TEI"
       * desc (multilingue) + rendition (champ aide optionel ? - emplacement à affiner)
@@ -154,8 +160,7 @@ Toutes les instructions pour l'utilisation sont à la fin du fichier tei.ts
 ##### AEEC et TRJS (pas encore implémentés)
 Le soft est intégré à l'outil AEEC et l'outil TRJS. Il est possible d'éditer un des fichiers listé dans la base.
 
-Note: Il pourrait être intéressant d'éditer une série de fichiers d'un coup. Par exemple on pourrait créer un fichier XML et
-fusionner le résultat avec un fichier XML quelconque pour modifier d'un coup une série de fichiers.
+Note: Il pourrait être intéressant d'éditer une série de fichiers d'un coup. Par exemple on pourrait créer un fichier XML et fusionner le résultat avec un fichier XML quelconque pour modifier d'un coup une série de fichiers.
 
 ```
 # utiliser la librairie dans une autre application.
