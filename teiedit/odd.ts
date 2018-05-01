@@ -421,6 +421,7 @@ export function loadOdd(data) {
     // récupérer attribut cssfile
     odd.cssfile = schemaSpec[0].getAttribute("rend");
     console.log('remarks cssfile', odd.cssfile);
+    odd.remarks = false;
     // récupérer attribut other entries (corresp)
     attr = schemaSpec[0].getAttribute("corresp");
     if (attr) {
