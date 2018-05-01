@@ -440,7 +440,10 @@ function generateMultiple(ec, abspath) {
     let uniqCreate = createID();
     // console.log(ec); // ec.parentElementSpec.ident
     let idm = typeof(ec.ident) === 'string' ? ec.ident : (ec.ident.join('-'));
-    s += '<div class="contentCountMany UPCM-' + idm + '" id="' + uniqCreate + '" >\n';
+    s += '<div class="contentCountMany UPCM-' + idm + '" id="' + uniqCreate + '" ';
+    if (odd.odd.remarks === false)
+        s += ' style="border: 1px solid black; border-radius: 4px;"';
+    s += ' >\n';
     // on peut en rajouter ... ou supprimer
     s += '<div class="plusCM"><i class="create fa fa-plus-square fa-color-expand" '
         + 'onclick="window.ui.createEC(event, \'' + uniqCreate + '\')"></i></div>\n';

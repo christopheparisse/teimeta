@@ -142,8 +142,21 @@
 							<elementRef key="media" minOccurs="1" maxOccurs="1"/>
 						</sequence>
 					</content>
-					<remarks>
-						<ab>background-color: lightblue;</ab>
+					<remarks style="element">
+						<ab>background-color: lightblue; border-radius: 8px; margin: 3px;</ab>
+						<p><ident>recording-element</ident></p>
+					</remarks>
+				</elementSpec>
+				
+				<elementSpec ident="p" corresp="media" module="core">
+					<desc xml:lang="fr">Media information</desc>
+					<desc xml:lang="en">Media information</desc>
+					<content>
+						<textNode/>
+					</content>
+					<remarks style="element">
+						<ab>background-color: lightgreen; border-radius: 8px; margin: 3px; margin-top: 10px;</ab>
+						<p><ident>media-p-element</ident></p>
 					</remarks>
 				</elementSpec>
 				
@@ -164,7 +177,8 @@
 								<valItem ident="other"/>
 							</valList>
 							<remarks>
-								<ab>width:800px; color:purple;</ab>
+								<ab>color:blue;</ab>
+								<p><ident>media-type</ident></p>
 							</remarks>
 						</attDef>
 						<attDef ident="mimeType" usage="req" mode="change">
@@ -178,7 +192,7 @@
 								<valItem ident="other"/>
 							</valList>
 							<remarks>
-								<ab>width:600px; color:green;</ab>
+								<ab>color:blue;</ab>
 								<p><ident>media-mimeType</ident></p>
 							</remarks>
 						</attDef>
@@ -189,11 +203,8 @@
 								<dataRef name="duration"/>
 							</datatype>
 							<remarks>
-								<p>
-									<note type="width">600px</note>
-									<note type="color">purple</note>
-									<note type="background-color">black</note>
-								</p>
+								<ab>color:blue;</ab>
+								<p><ident>media-duriso</ident></p>
 							</remarks>
 						</attDef>
 						<attDef ident="url" mode="change">
@@ -203,12 +214,14 @@
 								<dataRef name="anyURI"/>
 							</datatype>
 							<remarks>
-								<ab>background-color: black; color: green;</ab>
+								<ab>color:blue;</ab>
+								<p><ident>media-url</ident></p>
 							</remarks>
 						</attDef>
 					</attList>
-					<remarks>
-						<ab>background-color: lightgreen;</ab>
+					<remarks style="element">
+						<ab>background-color: lightgreen; border-radius: 8px; margin: 3px;</ab>
+						<p><ident>media-element</ident></p>
 					</remarks>
 				</elementSpec>
 				
@@ -270,22 +283,6 @@
 							</valList>
 						</attDef>
 					</attList>
-				</elementSpec>
-				
-				<elementSpec ident="p" corresp="media" module="core">
-					<desc xml:lang="fr">Media information</desc>
-					<desc xml:lang="en">Media information</desc>
-					<content>
-						<textNode/>
-					</content>
-					<remarks style="element"> <!-- default value -->
-						<ab>background-color: yellow; border: 2px solid red;</ab>
-						<p><ident>media-element</ident></p>
-					</remarks>
-					<remarks style="content">
-						<ab>background-color: black; color: orange;</ab>
-						<p><ident>media-text</ident></p>
-					</remarks>
 				</elementSpec>
 
 			</schemaSpec>

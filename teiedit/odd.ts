@@ -98,6 +98,7 @@ function readRemarks(rm, node, style) {
         if (s === style || (style === 'element' && !s)) {
             let r = processRemarks(rm, d[i]);
             if (r) {
+                odd.remarks = true;
                 return rm;
             }
         }

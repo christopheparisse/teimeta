@@ -31,6 +31,7 @@ export class SCHEMA {
     namespace = ''; // namespace of the resulting xml
     entries = null; // entry points other than rootTEI
     cssfile = ''; // information about user specified presentation
+    remarks = false; // if there is some user css then don't use full css default design
 
     init() {
         this.listElementSpec = {}; // avoir tous les elementSpec sous la main et les controler
