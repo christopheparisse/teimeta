@@ -1,8 +1,8 @@
 /*
- * SAUVEGARDE DU FICHIER TEI
+ * Saving the results and the TEI or XML file
  */
 
-import * as system from '../ui/opensave';
+import * as alert from '../ui/alert';
 import * as odd from './odd';
 import * as edit from './edit';
 
@@ -50,7 +50,7 @@ export function generateTEI(teiData) {
     let eltspec = teiData.dataTei;
 /*    if (!edit.values[eltspec.validatedESID].select) {
         console.log(eltspec.absolutepath, " racine imprimée bien que non validée", edit.values[eltspec.validatedESID]);
-        //system.alertUser(eltspec.absolutepath + " racine non imprimé car non validée ? >" + edit.values[eltspec.validatedESID].select + "<");
+        //alert.alertUser(eltspec.absolutepath + " racine non imprimé car non validée ? >" + edit.values[eltspec.validatedESID].select + "<");
         //return;
     }
 */
@@ -95,7 +95,7 @@ if (edit.values[espec.validatedESID].select === 'ok' /* || espec.usage === 'req'
         }
     } else {
         // supprimer le noeud si c'est autorisé
-        console.log(espec.absolutepath, " non imprimé car non validé: ", edit.values[espec.validatedESID]);
+        //console.log(espec.absolutepath, " non imprimé car non validé: ", edit.values[espec.validatedESID]);
         if (espec.node && (odd.odd.params.canRemove || espec.usage === 'opt')) {
             espec.node.parentNode.removeChild(espec.node);
             espec.node = null;
@@ -150,7 +150,7 @@ function createAbsolutePath(path, doc) {
     /*
     if (p[0] !== 'TEI') {
         let s = 'impossible de créer des chemins qui ne commencent pas par TEI';
-        system.alertUser(s);
+        alert.alertUser(s);
         return null;
     }
     */
@@ -160,8 +160,8 @@ function createAbsolutePath(path, doc) {
         if (nds.length > 1) {
             let s = p.slice(0,i).join('/');
             s = '<!-- attention element ' + s + " n'est pas unique. -->";
-            console.log(s);
-            // system.alertUser(s);
+            //console.log(s);
+            // alert.alertUser(s);
         }
         if (nds.length > 0) {
             node = nds[0];

@@ -1,17 +1,16 @@
 /**
  * @module edit.js
  * @author Christophe Parisse
- * création des structures HTML permettant l'édiion d'un ODD et d'un TEI
- * toutes les structures sous-jacentes (contenus à éditer)
- * ont été générés précédemment dans les fonctions odd.loadOdd et tei.load
- * les champs xxID qui permettent de récupérer les valeurs sont créés ici
+ * creation of the HTML structures that will allow the edition of the ODD and the TEI
+ * all the underlying structures have been created before in the odd.loadOdd and tei.load functions
+ * the xxID fields than allow to get the final values are created here
  */
 
 import * as odd from './odd';
 import * as schema from './schema';
 import * as tei from './tei';
 import * as load from './load';
-import * as system from '../ui/opensave';
+import * as alert from '../ui/alert';
 
 export let values = {};
 let changed = false; // start with no change made. If set to true then the data has to be saved.
@@ -101,18 +100,18 @@ export function checkTime(event, id) {
     if (odd.odd.params.fmt === 'hms') {
         var m = tx.split(/[hmsHMS]/);
         if (m.length !== 3) {
-            system.alertUser('Mauvais format de temps. Format correct: HhMmSs.ms');
+            alert.alertUser('Mauvais format de temps. Format correct: HhMmSs.ms');
             return;
         }
         var h = parseInt(m[0]);
         var mn = parseInt(m[1]);
         var s = parseFloat(m[2]);
         if (mn > 59 || mn < 0) {
-            system.alertUser('Mauvais format des minutes: entre 0 et 59');
+            alert.alertUser('Mauvais format des minutes: entre 0 et 59');
             return;
         }
         if (s > 59 || s < 0) {
-            system.alertUser('Mauvais format des secondes: entre 0 et 59');
+            alert.alertUser('Mauvais format des secondes: entre 0 et 59');
             return;
         }
         newt = h * 3600 + mn * 60 + s;
@@ -125,18 +124,18 @@ export function checkTime(event, id) {
             let s = parseFloat(m[1]);
             newt = mn * 60 + s;
         } else if (m.length !== 3) {
-            system.alertUser('Mauvais format de temps. Format correct: H:M:S.ms');
+            alert.alertUser('Mauvais format de temps. Format correct: H:M:S.ms');
             return;
         } else {
             let h = parseInt(m[0]);
             let mn = parseInt(m[1]);
             let s = parseFloat(m[2]);
             if (mn > 59 || mn < 0) {
-                system.alertUser('Mauvais format des minutes: entre 0 et 59');
+                alert.alertUser('Mauvais format des minutes: entre 0 et 59');
                 return;
             }
             if (s > 59 || s < 0) {
-                system.alertUser('Mauvais format des secondes: entre 0 et 59');
+                alert.alertUser('Mauvais format des secondes: entre 0 et 59');
                 return;
             }
             newt = h * 3600 + mn * 60 + s;
@@ -192,7 +191,7 @@ export function setOnOff(event, id, styleOn, styleOff) {
         // ici il faut mettre à 'ok' les parentElementSpec.
         setOnParents(values[id].eltSpec);
     } else {
-        system.askUserModal(
+        alert.askUserModal(
             'Voulez vous supprimer cet élément et tous ses descendants de votre document ?',
             (ret) => {
                 if (ret) {
@@ -203,7 +202,7 @@ export function setOnOff(event, id, styleOn, styleOff) {
             }
         );
         /*
-        if (system.askUser('Voulez vous supprimer cet élément et tous ses descendants de votre document ?')) {
+        if (alert.askUser('Voulez vous supprimer cet élément et tous ses descendants de votre document ?')) {
             console.log("mettre les enfants à ---", eltSpec);
             event.target.className = 'validate fa fa-size2 fa-choice-not-validated ' + styleOff;
             values[id].select = '';
@@ -228,7 +227,7 @@ function setStyleOnOff(id, val: boolean, styleOn, styleOff) {
 }
 
 function setOnParents(eltSpec) {
-    console.log("mettre les parents à +++", eltSpec);
+    //console.log("mettre les parents à +++", eltSpec);
     values[eltSpec.validatedESID].select = 'ok';
     if (eltSpec.usage === 'req')
         setStyleOnOff(eltSpec.validatedESID, true, 'fa-bookmark fa-color-required', 'fa-bookmark-o fa-color-required');
@@ -317,7 +316,7 @@ function openchoice() {
 
 export function setOpenlist(event, id) {
     if (event.target.value === "--openchoice--") {
-        system.promptUserModal(
+        alert.promptUserModal(
             (odd.odd.params.language === 'fr' ? "Donner la nouvelle valeur" : "Give the new value"),
             (ret) => {
                 if (ret) {
@@ -342,7 +341,7 @@ export function setOpenlist(event, id) {
 }
 
 export function initOpenlist(event, id) {
-    system.promptUserModal(
+    alert.promptUserModal(
         (odd.odd.params.language === 'fr' ? "Donner la nouvelle valeur" : "Give the new value"),
         (ret) => {
             if (ret) {
@@ -439,7 +438,9 @@ function generateMultiple(ec, abspath) {
     // ec est un ElementCount
     let s = '';
     let uniqCreate = createID();
-    s += '<div class="contentCountMany" id="' + uniqCreate + '" >\n';
+    // console.log(ec); // ec.parentElementSpec.ident
+    let idm = typeof(ec.ident) === 'string' ? ec.ident : (ec.ident.join('-'));
+    s += '<div class="contentCountMany UPCM-' + idm + '" id="' + uniqCreate + '" >\n';
     // on peut en rajouter ... ou supprimer
     s += '<div class="plusCM"><i class="create fa fa-plus-square fa-color-expand" '
         + 'onclick="window.ui.createEC(event, \'' + uniqCreate + '\')"></i></div>\n';
@@ -460,26 +461,29 @@ function generateMultiple(ec, abspath) {
     return s;
 }
 
-function editDataType(datatype) {
+function editDataType(datatype, ident) {
+//    console.log('DATATYPE', datatype);
+    if (datatype.remarks) console.log("datatype remarks", datatype.remarks.ident, datatype.remarks, datatype);
     let s = '<div class="nodeEdit">\n';
     // il faut editer l'élément texte du noeud
     let uniq = createID();
+    let UPname = 'UPI-' + datatype.parentElementSpec.ident + (datatype.parentElementSpec.corresp ? '-' + datatype.parentElementSpec.corresp : '') + '-' + ident;
     // gérer le type d'édition du champ
     switch(datatype.type) {
         case 'list':
             if (!datatype.vallist || datatype.vallist.length <= 0) {
                 // grosse erreur ou manque liste vide
-                system.alertUser("pas de liste de valeurs pour le datatype: " + datatype.type);
+                alert.alertUser("pas de liste de valeurs pour le datatype: " + datatype.type);
                 return '';
             }
             if (datatype.vallist.length <= 1) {
                 // liste avec un seul element
-                console.log("1datatype:", datatype.valueContent, datatype.rend, datatype);
+                //console.log("1datatype:", datatype.valueContent, datatype.rend, datatype);
                 values[uniq] = { value: (datatype.valueContent?datatype.valueContent:datatype.rend), eltSpec: datatype.parentElementSpec };
                 datatype.valueContentID = uniq;
                 return '';
             }
-            console.log("datatype:", datatype.valueContent, datatype.rend, datatype);
+            //console.log("datatype:", datatype.valueContent, datatype.rend, datatype);
             datatype.valueContentID = uniq;
             if (!datatype.valueContent) // si vide mettre le premier de la liste
                 datatype.valueContent =  datatype.rend;
@@ -493,7 +497,10 @@ function editDataType(datatype) {
             }
             */
             // choix dans une liste
-            s +='<select class="listattr" id="' + uniq + '" ';
+            s +='<select class="listattr ' + UPname + '" id="' + uniq + '" ';
+            if (datatype.remarks) {
+                s += 'style="' + datatype.remarks.cssvalue + '" \n';
+            }
             s +='onchange="window.ui.setText(event, \'' + uniq + '\');" >\n';
             for (let k=0; k < datatype.vallist.length; k++) {
                 s += '<option value="' +
@@ -521,7 +528,10 @@ function editDataType(datatype) {
             s += '</datalist>\n';
             */
             // choix dans une liste avec ajout possible
-            s += '<select class="listattr" id="' + uniq + '" \n';
+            s += '<select class="listattr ' + UPname + '" id="' + uniq + '" \n';
+            if (datatype.remarks) {
+                s += 'style="' + datatype.remarks.cssvalue + '" \n';
+            }
             s += 'onchange="window.ui.setOpenlist(event, \'' + uniq + '\');" \n';
             if (datatype.vallist.length === 0) {
                 s += 'onclick="window.ui.initOpenlist(event, \'' + uniq + '\');" \n';
@@ -559,7 +569,10 @@ function editDataType(datatype) {
             */
             s += ' ' + styleTime();
             s += '</label>\n';
-            s += '<input name="' + uniq + '" id="' + uniq + '" ';
+            s += '<input class="' + UPname + '" name="' + uniq + '" id="' + uniq + '" ';
+            if (datatype.remarks) {
+                s += 'style="' + datatype.remarks.cssvalue + '" \n';
+            }
             s += 'onchange="window.ui.checkTime(event, \'' + uniq + '\');"';
             s += ' value="' + formatTime(datatype.valueContent) + '"';
             s += ' />\n';
@@ -576,7 +589,10 @@ function editDataType(datatype) {
                 s += '</label>\n';
             }
             */
-            s += '<input type="date" name="' + uniq + '" id="' + uniq + '" ';
+            s += '<input class="' + UPname + '" type="date" name="' + uniq + '" id="' + uniq + '" ';
+            if (datatype.remarks) {
+                s += 'style="' + datatype.remarks.cssvalue + '" \n';
+            }
             s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
             if (datatype.valueContent) s += ' value="' + datatype.valueContent + '"';
             s += ' />\n';
@@ -596,7 +612,10 @@ function editDataType(datatype) {
                 s += '</label>\n';
             }
             */
-            s += '<input name="' + uniq + '" id="' + uniq + '" ';
+            s += '<input class="' + UPname + '" name="' + uniq + '" id="' + uniq + '" ';
+            if (datatype.remarks) {
+                s += 'style="' + datatype.remarks.cssvalue + '" \n';
+            }
             s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
             if (datatype.valueContent) s += ' value="' + datatype.valueContent + '"';
             s += ' />\n';
@@ -629,7 +648,7 @@ function editAttr(elt) {
             s += odd.textDesc(elt.attr[i].desc, odd.odd.params.language);
             s +='</span>\n';
         }
-        s += editDataType(elt.attr[i].datatype);
+        s += editDataType(elt.attr[i].datatype, elt.attr[i].ident);
         s += '</span>\n';
     }
     s += '</div>\n';
@@ -643,9 +662,23 @@ function generateElement(elt, validatedStyle) {
     recursiveDepth ++; // increase depth of edition
     if (validatedStyle === 'optional')
         elt.usage = 'opt'; // created by the user
+    // test if the elemennt is to be displayed or if this is something to edit in it
+    let classdisplay = "UP-" + elt.ident;
+    if (elt.corresp) classdisplay += "-" + elt.corresp;
     if (odd.odd.params.displayFullpath || elt.attr.length > 0 || (elt.content && elt.content.datatype)) {
         let lprof = recursiveDepth * odd.odd.params.leftShift;
-        s += '<div class="nodeField node-' + classOf(elt.usage) + '" title="' + elt.absolutepath + '" style="margin-left: ' + lprof + 'px;">\n';
+        if (odd.odd.params.displayFullpath && (elt.attr.length === 0 && (!elt.content || !elt.content.datatype)))
+            classdisplay = "noUP";
+        if (elt.remarks) console.log("elt remarks (on) ", elt.ident, elt);
+        if (elt.remarks) {
+            s += '<div title="' + elt.absolutepath + '" ';
+            s += 'class="nodeField node-' + classOf(elt.usage) + " " + classdisplay;
+            s += (elt.remarks.ident) ? " " + elt.remarks.ident + '" ' : '" ';
+            s += 'style="' + elt.remarks.cssvalue + '">\n';
+        } else {
+            s += '<div class="nodeField node-' + classOf(elt.usage) + " " + classdisplay + '" title="' 
+                + elt.absolutepath + '" style="margin-left: ' + lprof + 'px;">\n';
+        }
         if (odd.odd.params.validateRequired && validatedStyle !== 'root') {
             // on peut tout valider donc on ne se pose pas de question
             values[uniq] = { select: elt.validatedES, eltSpec: elt.parentElementSpec };
@@ -686,18 +719,18 @@ function generateElement(elt, validatedStyle) {
             s += '<span class="nodeAbspath">' + elt.absolutepath + '</span>\n';
             s += '<div class="toggle" id="show' + uniq + '">';
             // description
-            if (elt.desc) s += '<div class="eltDescBlock">' + odd.textDesc(elt.desc, odd.odd.params.language) + '</div>\n';
+            if (elt.desc) s += '<div class="eltDescBlock ' + classdisplay + '-desc' + '">' + odd.textDesc(elt.desc, odd.odd.params.language) + '</div>\n';
         } else {
             s += '<div class="toggle" id="show' + uniq + '">';
             // description
             if (elt.desc)
-                s += '<div class="eltDesc">' + odd.textDesc(elt.desc, odd.odd.params.language) + '</div>\n';
+                s += '<div class="eltDesc ' + classdisplay + '-desc' + '">' + odd.textDesc(elt.desc, odd.odd.params.language) + '</div>\n';
             else
-                s += '<div class="eltDesc">' + elt.ident + '</div>\n';
+                s += '<div class="eltDesc ' + classdisplay + '-desc' + '">' + elt.ident + '</div>\n';
         }
 
         // champ texte du noeud
-        if (elt.content && elt.content.datatype) s += editDataType(elt.content.datatype);
+        if (elt.content && elt.content.datatype) s += editDataType(elt.content.datatype, elt.ident);
         // Attributes
         if (elt.attr.length > 0) s += editAttr(elt);
         // enfants
@@ -711,7 +744,15 @@ function generateElement(elt, validatedStyle) {
     } else {
         recursiveDepth --; // cancel recursiveDepth
         let lprof = recursiveDepth * odd.odd.params.leftShift;
-        s += '<div class="nodeField node-' + classOf(elt.usage) + ' " style="margin-left: ' + lprof + 'px;">\n';
+        if (elt.remarks) {
+            if (elt.remarks) console.log("elt remarks (off) ", elt.ident, elt);
+            s += '<div class="nodeField noUP node-' + classOf(elt.usage) + " " + classdisplay;
+            s += (elt.remarks.ident) ? " " + elt.remarks.ident + '" ' : '" ';
+            s += 'style="' + elt.remarks.cssvalue + '">\n';
+        } else {
+            s += '<div class="nodeField node-' + classOf(elt.usage) 
+                + ' noUP" style="margin-left: ' + lprof + 'px;">\n';
+        }
         values[uniq] = { select: 'ok', eltSpec: elt.parentElementSpec };
         // on ne peut pas accepter les éléments non validés car ils sont cachés
         elt.validatedESID = uniq;
@@ -721,6 +762,11 @@ function generateElement(elt, validatedStyle) {
                 + classOf(elt.usage)
                 + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
         }
+        // description
+        if (elt.desc)
+            s += '<div class="eltDesc ' + classdisplay + '-desc' + '">' + odd.textDesc(elt.desc, odd.odd.params.language) + '</div>\n';
+        else if (odd.odd.params.displayFullpath)
+            s += '<div class="eltDesc ' + classdisplay + '-desc' + '">' + elt.ident + '</div>\n';
         if (elt.content && elt.content.sequencesRefs.length > 0) {
             s += '<div class="nodeContent">';
             s += generateContent(elt.content, elt.absolutepath);

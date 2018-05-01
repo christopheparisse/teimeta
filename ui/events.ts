@@ -7,7 +7,8 @@ import * as odd from '../teiedit/odd';
 import * as schema from '../teiedit/schema';
 import * as tei from '../teiedit/tei';
 import * as load from '../teiedit/load';
-import * as system from './opensave';
+import * as opensave from './opensave';
+import * as alert from './alert';
 
 const NEWFILENAME = 'nouveau-fichier.xml';
 
@@ -37,7 +38,7 @@ function finishLoad(err, name, data) {
 }
 
 export function dumpHtml() {
-    system.saveFileLocal("html", "page.html", teiData.html);
+    opensave.saveFileLocal("html", "page.html", teiData.html);
 }
 
 export function checkChange(fun) {
@@ -45,7 +46,7 @@ export function checkChange(fun) {
         fun();
         return;
     }
-    system.askUserModalYesNoCancel(
+    alert.askUserModalYesNoCancel(
         "Le fichier n'est pas sauvegardé. Voulez vous le sauver, quitter sans sauver ou annuler ?",
         (ret) => {
             if (ret === 'yes') { //save
@@ -66,7 +67,7 @@ export function checkChange(fun) {
 export function open() {
     // checked changes
     checkChange(() => {
-        system.chooseOpenFile(function(err, name, data) {
+        opensave.chooseOpenFile(function(err, name, data) {
             if (!err) {
                 if (!teiData.dataOdd) {
                     newFile(function() { finishLoad(1, null, null); } );
@@ -87,7 +88,7 @@ export function newFile(callback) {
             if (ls) {
                 var js = JSON.parse(ls);
                 if (!js.version || js.version !== schema.version) {
-                    console.log('ancienne version de localstorage');
+                    //console.log('ancienne version de localstorage');
                     emptyFile();
                     if (callback) callback(0);
                     return;
@@ -113,7 +114,7 @@ export function reLoad(callback) {
         if (ls && lx) {
             var js = JSON.parse(ls);
             if (!js.version || js.version !== schema.version) {
-                console.log('ancienne version de localstorage');
+                //console.log('ancienne version de localstorage');
                 emptyFile();
                 if (callback) callback(0);
                 return;
@@ -151,7 +152,7 @@ export function openOddLoad(name, data) {
 export function openOdd() {
     // checked changes
     checkChange(() => {
-        system.chooseOpenFile(function(err, name, data) {
+        opensave.chooseOpenFile(function(err, name, data) {
             if (!err) {
                 openOddLoad(name, data);
             } else
@@ -173,13 +174,13 @@ export function emptyFile() {
 }
 
 export function saveAs(fun) {    
-    system.chooseSaveFile('xml', function(err, name) {
+    opensave.chooseSaveFile('xml', function(err, name) {
         if (!err) {
             teiData.fileName = name;
             let el = document.getElementById('filename');
             el.innerHTML = "Fichier: " + teiData.fileName;
             var ed = tei.generateTEI(teiData);
-            system.saveFile(teiData.fileName, ed, null);
+            opensave.saveFile(teiData.fileName, ed);
             edit.change(false);
             if (fun && typeof fun === "function") fun();
         } else
@@ -197,7 +198,7 @@ export function save(fun) {
     if (teiData.fileName !== NEWFILENAME) {
             var ed = tei.generateTEI(teiData);
             edit.change(false);
-            system.saveFile(teiData.fileName, ed, null);
+            opensave.saveFile(teiData.fileName, ed);
             if (fun && typeof fun === 'function') fun();
     } else {
         return saveAs(fun);
@@ -208,6 +209,6 @@ export function saveAsLocal(fun) {
     var ed = tei.generateTEI(teiData);
     // console.log(ed);
     edit.change(false);
-    system.saveFileLocal('xml', teiData.fileName, ed);
+    opensave.saveFileLocal('xml', teiData.fileName, ed);
     if (fun && typeof fun === 'function') fun();
 };

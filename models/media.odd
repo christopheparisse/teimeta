@@ -31,7 +31,7 @@
 	<text>
 		<body>
 			<!-- definition de TEI_CORPO_METADATA-->
-			<schemaSpec ident="TEI_CORPO_METADATA" start="TEI">
+			<schemaSpec ident="TEI_CORPO_METADATA" start="TEI" rend="media_odd.css">
 				<!-- ajouter teiCorpus par la suite si collections -->
 
 				<!-- required modules -->
@@ -62,18 +62,14 @@
 				<!-- structure generale TEI -->
 				<elementSpec ident="TEI" module="textstructure" mode="change">
 					<content>
-						<sequence minOccurs="1" maxOccurs="1">
-							<elementRef key="teiHeader"/>
-						</sequence>
+						<elementRef key="teiHeader" minOccurs="1" maxOccurs="1"/>
 					</content>
 				</elementSpec>
 
 				<!-- structure generale teiHeader -->
 				<elementSpec ident="teiHeader" module="header" mode="change">
 					<content>
-						<sequence minOccurs="1" maxOccurs="1">
-							<elementRef key="fileDesc"/>
-						</sequence>
+						<elementRef key="fileDesc" minOccurs="1" maxOccurs="1"/>
 					</content>
 				</elementSpec>
 
@@ -81,22 +77,22 @@
 					<desc xml:lang="fr">Titre, diffusion et données primaires</desc>
 					<desc xml:lang="en">Title, diffusion and primary data</desc>
 					<content>
-						<sequence minOccurs="1" maxOccurs="1">
-							<elementRef key="sourceDesc"/>
-						</sequence>
+						<elementRef key="sourceDesc" minOccurs="1" maxOccurs="1"/>
 					</content>
 				</elementSpec>
 
 				<!-- recordingStmt : recording et medias-->
 				<elementSpec ident="sourceDesc" module="header" mode="change">
-					<desc xml:lang="fr">Enregistrement, données primaires</desc>
-					<desc xml:lang="en">Recording information, primary data </desc>
+					<desc xml:lang="fr">Données sources</desc>
+					<desc xml:lang="en">Sources of the data</desc>
 					<content>
 						<elementRef key="recordingStmt" minOccurs="1" maxOccurs="1"/>
 					</content>
 				</elementSpec>
 				
 				<elementSpec ident="recordingStmt" module="spoken">
+					<desc xml:lang="fr">Enregistrement, données primaires</desc>
+					<desc xml:lang="en">Recording, primary data </desc>
 					<content>
 						<elementRef key="recording" minOccurs="1" maxOccurs="unbounded"/>
 					</content>
@@ -138,12 +134,17 @@
 				</elementSpec>
 				
 				<elementSpec ident="recording" module="spoken">
+					<desc xml:lang="fr">Informations sur l'enregistrement</desc>
+					<desc xml:lang="en">Recording information</desc>
 					<content>
 						<sequence minOccurs="1" maxOccurs="unbounded">
-							<elementRef key="p" />
+							<elementRef key="p" corresp="media"/>
 							<elementRef key="media" minOccurs="1" maxOccurs="1"/>
 						</sequence>
 					</content>
+					<remarks>
+						<ab>background-color: lightblue;</ab>
+					</remarks>
 				</elementSpec>
 				
 				<elementSpec ident="media" module="spoken">
@@ -162,6 +163,9 @@
 								<valItem ident="video"/>
 								<valItem ident="other"/>
 							</valList>
+							<remarks>
+								<ab>width:800px; color:purple;</ab>
+							</remarks>
 						</attDef>
 						<attDef ident="mimeType" usage="req" mode="change">
 							<valList type="closed">
@@ -173,6 +177,10 @@
 								<valItem ident="video/avi"/>
 								<valItem ident="other"/>
 							</valList>
+							<remarks>
+								<ab>width:600px; color:green;</ab>
+								<p><ident>media-mimeType</ident></p>
+							</remarks>
 						</attDef>
 						<attDef ident="dur-iso" usage="req" mode="change">
 							<desc xml:lang="fr">durée du média</desc>
@@ -180,6 +188,13 @@
 							<datatype>
 								<dataRef name="duration"/>
 							</datatype>
+							<remarks>
+								<p>
+									<note type="width">600px</note>
+									<note type="color">purple</note>
+									<note type="background-color">black</note>
+								</p>
+							</remarks>
 						</attDef>
 						<attDef ident="url" mode="change">
 							<desc xml:lang="fr">url du média</desc>
@@ -187,8 +202,14 @@
 							<datatype>
 								<dataRef name="anyURI"/>
 							</datatype>
+							<remarks>
+								<ab>background-color: black; color: green;</ab>
+							</remarks>
 						</attDef>
 					</attList>
+					<remarks>
+						<ab>background-color: lightgreen;</ab>
+					</remarks>
 				</elementSpec>
 				
 				<elementSpec ident="desc" corresp="quality">
@@ -251,10 +272,20 @@
 					</attList>
 				</elementSpec>
 				
-				<elementSpec ident="p" module="core">
+				<elementSpec ident="p" corresp="media" module="core">
+					<desc xml:lang="fr">Media information</desc>
+					<desc xml:lang="en">Media information</desc>
 					<content>
 						<textNode/>
 					</content>
+					<remarks style="element"> <!-- default value -->
+						<ab>background-color: yellow; border: 2px solid red;</ab>
+						<p><ident>media-element</ident></p>
+					</remarks>
+					<remarks style="content">
+						<ab>background-color: black; color: orange;</ab>
+						<p><ident>media-text</ident></p>
+					</remarks>
 				</elementSpec>
 
 			</schemaSpec>

@@ -2,10 +2,10 @@
  * help.ts
  */
 
-import * as system from './opensave';
+import * as alert from './alert';
 
-export let version = '0.4.9';
-export let date = '22-01-2018';
+export let version = '0.5.0';
+export let date = '02-05-2018';
 
 export function about() {
     var s = "Version prototype de TEIMETA javascript : " + version + " - " + date + "</br></br>";
@@ -27,6 +27,6 @@ Pour toute information, aller sur <a href="http://ct3.ortolang.fr/teimeta/readme
 Pour télécharger ce logiciel, aller sur <a href="https://github.com/christopheparisse/teimeta" target="_blank">https://github.com/christopheparisse/teimeta</a><br/>
 Pour signaler une erreur ou proposer une fonctionnalité, aller sur <a href="https://github.com/christopheparisse/teimeta/issues" target="_blank">https://github.com/christopheparisse/teimeta/issues</a><br/>
 `;
-    // system.alertUser(s);
-    system.alertUser(s);
+    // alert.alertUser(s);
+    alert.alertUser(s);
 };

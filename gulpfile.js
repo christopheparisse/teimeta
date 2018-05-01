@@ -11,7 +11,7 @@ gulp.task('electron-teiedit', function () {
 });
 
 gulp.task('electron-ui', function () {
-  return gulp.src(['ui/opensave.ts', 'ui/init-electron.ts', 'ui/events.ts', 'ui/common.ts', 'ui/help.ts'])
+  return gulp.src(['ui/opensave.ts', 'ui/init-electron.ts', 'ui/events.ts', 'ui/common.ts', 'ui/help.ts', 'ui/alert.ts'])
     .pipe(gulp.dest('temp-electron/ui/'))
 });
 
@@ -44,7 +44,7 @@ gulp.task('page-teiedit', function () {
 });
 
 gulp.task('page-ui', function () {
-  return gulp.src(['ui/opensave-singlepage.ts', 'ui/init-singlepage.ts', 'ui/events.ts', 'ui/common.ts', 'ui/help.ts'])
+  return gulp.src(['ui/opensave-singlepage.ts', 'ui/init-singlepage.ts', 'ui/events.ts', 'ui/common.ts', 'ui/help.ts', 'ui/alert.ts'])
     .pipe(gulp.dest('temp-page/ui/'))
 });
 

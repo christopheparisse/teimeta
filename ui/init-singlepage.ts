@@ -25,13 +25,19 @@ function bodyKeys(e) {
         teiEdit.insertLineAtEnd(e);
     }
 */  
+    if (e.which === 79 && (e.ctrlKey === true || e.metaKey === true) && e.shiftKey === true) { // ctrl shift O
+        e.preventDefault();
+        events.openOdd();
+        return;
+    }
     if (e.which === 79 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl O
         e.preventDefault();
         events.open();
     }
-    if (e.which === 79 && (e.ctrlKey === true || e.metaKey === true) && e.shiftKey === true) { // ctrl shift O
+    if (e.which === 83 && (e.ctrlKey === true || e.metaKey === true) && (e.altKey === true)) { // ctrl alt S
         e.preventDefault();
-        events.openOdd();
+        events.dumpHtml();
+        return;
     }
     if (e.which === 83 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl S
         e.preventDefault();
@@ -40,10 +46,6 @@ function bodyKeys(e) {
     if (e.which === 78 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl N
         e.preventDefault();
         events.newFile(null); // checked changes
-    }
-    if (e.which === 83 && (e.ctrlKey === true || e.metaKey === true) && (e.altKey === true)) { // ctrl alt S
-        e.preventDefault();
-        events.dumpHtml();
     }
 }
 

@@ -30,6 +30,7 @@ export class SCHEMA {
     params =  new PARAMS();
     namespace = ''; // namespace of the resulting xml
     entries = null; // entry points other than rootTEI
+    cssfile = ''; // information about user specified presentation
 
     init() {
         this.listElementSpec = {}; // avoir tous les elementSpec sous la main et les controler
@@ -61,6 +62,11 @@ export class ElementSpec {
     node = null; // utilisé pour retrouver les éléments orignaux
     // si null alors création ex nihilo dans un emplacement absolu
     parentElementSpec = null; // pointer to parent element for validation when validating elementSpec
+    style = ''; // style for presenting the data (block or hidden)
+    remarks = null; // class Remarks for CSS presentation of the global element
+    // remarksContent = null; // class Remarks for CSS presentation of the main field of content.datatype
+    // if exist it is the datatype
+    // either default style (empty) or user specified style
 }
 
 export class Content {
@@ -75,6 +81,7 @@ export class DataType {
     valueContentID = ''; // ID pour les callback
     parentElementSpec = null; // pointeur sur l'elementSpec à mettre à vrai si modifié
     // obligatory = false; // true if element cannot be removed
+    remarks = null; // class Remarks for CSS presentation
 }
 
 export class ElementCount {
@@ -127,6 +134,11 @@ export class ValItem {
     desc = '';
 }
 
+export class Remarks {
+    cssvalue = '';
+    ident = '';
+}
+
 export function copyElementSpec(obj): any {
     let cp: any = {};
     cp.ident = obj.ident; // nom de l'élément
@@ -147,6 +159,7 @@ export function copyElementSpec(obj): any {
     cp.absolutepath = obj.absolutepath;
     cp.parentElementSpec = obj.parentElementSpec;
     cp.node = null; // utilisé pour retrouver les éléments orignaux
+    cp.remarks = obj.remarks;
     return cp;
 }
 
@@ -201,6 +214,7 @@ function copyDataType(obj, parent): any {
     let cp: any = {};
     cp.type = obj.type;
     cp.rend = obj.rend;
+    cp.remarks = obj.remarks;
     cp.valueContent = obj.valueContent;
     cp.valueContentID = obj.valueContentID;
     cp.parentElementSpec = parent;

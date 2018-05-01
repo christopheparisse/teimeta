@@ -1,13 +1,13 @@
 /**
  * @module odd.ts
  * @author: Christophe Parisse
- * lecture du fichier odd et récupération de toutes
- * les informatons qui permettront l'édition de la tei
+ * reading the odd file and get all information
+ * that make it possible to edit the xml or the TEI
  * @exports loadOdd
  * @exports Element ElementCount ElementCountItem ElementSpec Content Attr Val ValItem
  */
 
-import * as system from '../ui/opensave';
+import * as alert from '../ui/alert';
 import * as schema from './schema';
 
 export let odd : schema.SCHEMA = new schema.SCHEMA();
@@ -60,6 +60,25 @@ function readElementSpec(elementspec, node) {
     let c =  new schema.Content();
     if (readContent(c, node)) elementspec.content = c;
 
+    console.log('IDENT remarks',elementspec.ident);
+    // le champ remarksContent
+    let rc =  new schema.Remarks();
+    if (readRemarks(rc, node, "element")) {
+        console.log("content element", rc);
+        elementspec.remarks = rc;
+    }
+    rc =  new schema.Remarks();
+    if (readRemarks(rc, node, "content")) {
+        // elementspec.remarksContent = rc;
+        if (elementspec.content.datatype) {
+            console.log("content content", rc);
+            elementspec.content.datatype.remarks = rc;
+        } else {
+            let s = 'warning: remarks for content without datatype in content: remarks ignored.';
+            alert.alertUser(s);
+        }
+    }
+
     // le champ attr
     let a = getChildrenByName(node, 'attList');
     if (a.length > 0) {
@@ -70,6 +89,58 @@ function readElementSpec(elementspec, node) {
             elementspec.attr.push(adv);
         }
     }
+}
+
+function readRemarks(rm, node, style) {
+    let d = getChildrenByName(node, 'remarks');
+    for (let i in d) {
+        let s = d[i].getAttribute('style');
+        if (s === style || (style === 'element' && !s)) {
+            let r = processRemarks(rm, d[i]);
+            if (r) {
+                return rm;
+            }
+        }
+    }
+    return null;
+}
+
+function processRemarks(rm, node) {
+    // ab field : must be unique
+    let d = getChildrenByName(node, 'ab');
+    if (d.length > 1) {
+        let s = "warning: multiple ab fields in remarks. Only first one processed.";
+        alert.alertUser(s);
+        rm.cssvalue = d[0].textContent;
+    } else if (d.length === 1) {
+        rm.cssvalue = d[0].textContent;
+    }
+    // if no ab field, then the user can use the note fields
+    // load the <p><ident> field if it exists
+    // load the <p><note> fields (easier to use than the css)
+    d = getChildrenByName(node, 'p');
+    for (let i in d) {
+        let p = getChildrenByName(d[0], 'ident');
+        if (p.length > 1) {
+            let s = "warning: multiple ident fields in remarks. Only first one processed.";
+            alert.alertUser(s);
+        }
+        if (p.length >= 1) {
+            rm.ident = p[0].textContent;
+        }
+        p = getChildrenByName(d[0], 'note');
+        if (p.length > 0 && rm.cssvalue !== '') {
+            let s = "warning: field ab is used and note also: only the ab field is used";
+            alert.alertUser(s);
+        } else if (p.length > 0) {
+            rm.cssvalue = '';
+            for (let j in p) {
+                let a = p[j].getAttribute('type');
+                rm.cssvalue += ' ' + a + ':' + p[j].textContent + ';';
+            }
+        }
+    }
+    return rm;
 }
 
 function getDataRef(node) : string {
@@ -275,7 +346,12 @@ function readAttrDef(attrDef, node) {
                 attrDef.datatype.type = 'list';
         }
     }
-    console.log(attrDef.ident, attrDef.rend, attrDef);
+    let rc =  new schema.Remarks();
+    if (readRemarks(rc, node, "element")) {
+        console.log('remarks attrdef', rc);
+        attrDef.datatype.remarks = rc;
+    }
+    //console.log(attrDef.ident, attrDef.rend, attrDef);
 }
 
 /**
@@ -322,7 +398,7 @@ export function loadOdd(data) {
     let schemaSpec = select("//tei:schemaSpec", doc);
     if (schemaSpec.length < 1) {
         let s = "Pas d'élément schemaSpec dans le fichier ODD";
-        system.alertUser(s);
+        alert.alertUser(s);
         return null;
     }
     // récupérer attribut start
@@ -333,7 +409,7 @@ export function loadOdd(data) {
         odd.rootTEI = attr;
     } else {
         let s = "Pas d'attribut racine (@start) dans le fichier ODD";
-        system.alertUser(s);
+        alert.alertUser(s);
         return null;
     }
     // récupérer attribut ident
@@ -341,6 +417,9 @@ export function loadOdd(data) {
     let eSpec = getChildrenByName(schemaSpec[0], 'elementSpec');
     // récupérer attribut namespace
     odd.namespace = schemaSpec[0].getAttribute("ns");
+    // récupérer attribut cssfile
+    odd.cssfile = schemaSpec[0].getAttribute("rend");
+    console.log('remarks cssfile', odd.cssfile);
     // récupérer attribut other entries (corresp)
     attr = schemaSpec[0].getAttribute("corresp");
     if (attr) {
@@ -375,13 +454,13 @@ export function loadOdd(data) {
     } else {
         rootElt.usage = 'req';
     }
-    console.log(odd);
+    //console.log(odd);
     if (error) {
-        system.alertUser(error);
+        alert.alertUser(error);
         return null;
     }
     if (warning) {
-        system.alertUser(warning);
+        alert.alertUser(warning);
         console.log(warning);
     }
     return odd;

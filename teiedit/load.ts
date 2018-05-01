@@ -1,15 +1,15 @@
 /**
  * @module load.ts
  * @author Christophe Parisse
- * lecture d'un fichier xml et chargement des valeurs initiales
- * si le fichier est vide (null) les valeurs initiales sont toutes mises à zéro
- * la structure résultat teiData est prête à être traitée
+ * load the XML file and the initial value according to the ODD
+ * if the XML file is empty, all initial values are zero or null or blank
+ * the result structure teiData is ready to be processed
  */
 
 import * as edit from './edit';
 import * as odd from './odd';
 import * as schema from './schema';
-import * as system from '../ui/opensave';
+import * as alert from '../ui/alert';
 
 let entities = require("entities");
 let dom = require('xmldom').DOMParser;
@@ -58,7 +58,7 @@ export function loadTei(data, teiData) {
         root = teiData.doc.documentElement;
         let nodes = odd.getChildrenByName(root, teiData.dataOdd.rootTEI);
         if (nodes.length > 1) {
-            system.alertUser("Ficher invalide: Interdit d'avoir plus d'un élément racine");
+            alert.alertUser("Ficher invalide: Interdit d'avoir plus d'un élément racine");
             return false;
         } else if (nodes.length === 1) {
             root = nodes[0];
@@ -69,7 +69,7 @@ export function loadTei(data, teiData) {
     ptrListElementSpec = teiData.dataOdd.listElementSpec;
     let h = ptrListElementSpec[teiData.dataOdd.rootTEI];
     if (!h) {
-        system.alertUser("Ficher invalide: pas d'élément racine dans le ODD");
+        alert.alertUser("Ficher invalide: pas d'élément racine dans le ODD");
         return false;
     }
     if (root) {
@@ -89,7 +89,7 @@ export function loadTei(data, teiData) {
         // 1 = nombre minimal de root autorisés
         // 1 = nombre maximal de root autorisés
     }
-    console.log(teiData.dataTei);
+    //console.log(teiData.dataTei);
     return true;
 }
 
@@ -236,7 +236,7 @@ function loadElementRef(ec, node, path, parent) {
     }
     for (let i = 1; i < nodes.length ; i++) {
         if (ec.maxOccurs === '1') {
-            system.alertUser("Attention: trop d'éléments pour " + path + '/' + ec.model);
+            alert.alertUser("Attention: trop d'éléments pour " + path + '/' + ec.model);
         }
         // préparer les nouveaux éléments
         // ec est un ElementCount
@@ -265,7 +265,7 @@ function loadSequence(ec, node, path, parent) {
     if (nnodes.length > 1 && ec.maxOccurs === '1') {
         for (let k = 0; k < nnodes.length ; k++) {
             if (nnodes[k].length > 1) {
-                system.alertUser("Attention: trop d'éléments pour " + ec.model[k] + " dans " + path + '/' + ec.model[k]);
+                alert.alertUser("Attention: trop d'éléments pour " + ec.model[k] + " dans " + path + '/' + ec.model[k]);
             }
         }
     }
