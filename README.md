@@ -111,6 +111,10 @@ Les moduleRef ne sont pas utilisés pour l'instant: ils sont là pour les autres
                 <valItem ident="audio/mp3"/>
                 <valItem ident="other"/>
             </valList>
+            <!-- this will display the current attribute (mimeType) as it is described in the <ab> field -->
+            <remarks>
+                <ab>color:red; width: 400px;</ab>
+            </remarks>
         </attDef>
         <attDef ident="dur-iso" usage="req" mode="change">
             <desc xml:lang="fr">durée du média : chaque medias peut avoir une durée
@@ -122,6 +126,14 @@ Les moduleRef ne sont pas utilisés pour l'instant: ils sont là pour les autres
             </datatype>
         </attDef>
     </attList>
+    <!-- this will display the elementSpec block as it is described in the <ab> field -->
+    <remarks style="element">
+        <ab>background-color: lightgreen; border-radius: 8px; margin: 3px; margin-top: 10px;</ab>
+    </remarks>
+    <!-- this will display the texnode/datatype in the content part as it is described in the <ab> field -->
+    <remarks style="content">
+        <ab>color: blue; width: 500px;</ab>
+    </remarks>
 </elementSpec>
 ```
 
