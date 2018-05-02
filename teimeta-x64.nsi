@@ -12,10 +12,10 @@
 ;--------------------------------
 
 ; The name of the installer
-Name "teimeta-install-v0.4.7-x64"
+Name "teimeta-install-v0.5.0-x64"
 
 ; The file to write
-OutFile "teimeta-v0.4.7-x64.exe"
+OutFile "teimeta-v0.5.0-x64.exe"
 
 ; The default installation directory
 InstallDir "$PROGRAMFILES64\teimeta"
@@ -41,7 +41,7 @@ UninstPage instfiles
 ;--------------------------------
 
 ; The stuff to install
-Section "teimeta 64bits v0.4.7 (required)"
+Section "teimeta 64bits v0.5.0 (required)"
 
   SectionIn RO
 
