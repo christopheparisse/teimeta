@@ -418,7 +418,6 @@ export function loadOdd(data) {
     let eSpec = getChildrenByName(schemaSpec[0], 'elementSpec');
     // récupérer attribut namespace
     odd.namespace = schemaSpec[0].getAttribute("ns");
-    odd.targetnamespace = schemaSpec[0].getAttribute("n");
     // récupérer attribut cssfile
     odd.cssfile = schemaSpec[0].getAttribute("rend");
     console.log('remarks cssfile', odd.cssfile);

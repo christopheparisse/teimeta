@@ -1,4 +1,185 @@
 <h1><a id="user-content-teimeta-edit" class="anchor" href="#teimeta-edit" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>teimeta-edit</h1>
+<p><strong>An editor (generated automatically from a ODD description) for subparts of a XML file</strong></p>
+<h2><a id="user-content-downloading-or-using-the-tool" class="anchor" href="#downloading-or-using-the-tool" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Downloading or using the tool</h2>
+<p>Online use: <a href="http://ct3.ortolang.fr/teimeta/">http://ct3.ortolang.fr/teimeta/</a></p>
+<p>Downloading the tool for MacOs: <a href="http://ct3.ortolang.fr/download/teimeta-macos.zip">http://ct3.ortolang.fr/download/teimeta-macos.zip</a></p>
+<p>Downloading the tool for windows 64: <a href="http://ct3.ortolang.fr/download/teimeta-x64.exe">http://ct3.ortolang.fr/download/teimeta-x64.exe</a></p>
+<p>Downloading the tool for windows 32: <a href="http://ct3.ortolang.fr/download/teimeta-x86.exe">http://ct3.ortolang.fr/download/teimeta-x86.exe</a></p>
+<h2><a id="user-content-description" class="anchor" href="#description" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Description</h2>
+<p>TEIMETA is a tool for editing XML files. The editing structure, possibilies, and information are described in an XML ODD TEI file. TEIMETA uses this description (the model) to produce automatically a user interface in a webbrowser or an independant Electron application.</p>
+<p>The tool was created to edit TEI files, but it can be used for any type of XML format. XML schema control is not implemented. The quality of the final format is automatically controled by the description (the model) but the quality of the model is not (yet) controlled by TEIMETA.</p>
+<p>TEIMETA allows to edit any XML node but not to move this node around in the XML file. New nodes can be created and nodes can be erased (if this is allowed by the model). The ODD describes node position from the root. <strong>The values of an XML node not described in the ODD file will never be modified. This means that it is possible to edit parts of an XML file respecting the integrity of the rest of the file.</strong></p>
+<h2><a id="user-content-version-information" class="anchor" href="#version-information" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Version information</h2>
+<p>0.5.0 - 2 may 2018 - ODD files can describe the visual presentation of the data edited using CSS features.
+0.4.9 - feb 2018 - correction of bugs and namespace implementation</p>
+<h2><a id="user-content-organization-of-the-data" class="anchor" href="#organization-of-the-data" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Organization of the data</h2>
+<p>The main editing features are:</p>
+<ul>
+<li>creating a node, adding node to other nodes</li>
+<li>editing a node with a specific format
+<ul>
+<li>free text</li>
+<li>vocabulary (open or closed)</li>
+<li>number</li>
+<li>date</li>
+<li>duration</li>
+</ul>
+</li>
+<li>editing attributes from a node with a format
+<ul>
+<li>free text</li>
+<li>vocabulary (open or closed)</li>
+<li>number</li>
+<li>date</li>
+<li>duration</li>
+</ul>
+</li>
+</ul>
+<h2><a id="user-content-editing-the-odd-and-xml-examples" class="anchor" href="#editing-the-odd-and-xml-examples" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Editing the ODD and XML examples</h2>
+<p>The ODD is using the TEI support for inserting tags into the TEI. Actually, we don't do that but
+we use desc field to provide rich information that will be provided to the user when editing data.
+The corresp, rend et rendition have a different fonctionnaly than in the TEI. They allow to describe
+the control of the data edited by TEIMETA. This is also the case for the remarks tag which is used
+to describe the visual presentation of the data to be edited. The other fields follow the TEI guidelines.</p>
+<h3><a id="user-content-description-format-for-the-xml-nodes" class="anchor" href="#description-format-for-the-xml-nodes" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Description format for the XML nodes</h3>
+<p>The ODD is made of elementSpec elements that can refer (using elementRef) to other elements of the same type. Each elementSpec contains the description of the node content, attributes, and pointer to descendants.
+moduleRef are not used.</p>
+<ul>
+<li>
+<p>schemaSpec</p>
+<ul>
+<li>start = root for the result xml</li>
+<li>ns = namespace for the result xml</li>
+</ul>
+</li>
+<li>
+<p>elementSpec</p>
+<ul>
+<li>ident=&quot;name of the tag in the TEI&quot; corresp=&quot;optional tag to be used when ident is not unique&quot;</li>
+<li>desc: multilingual description (see xml:lang)</li>
+<li>content: content of the node, subelement and text node</li>
+<li>attList: list of the attributes</li>
+<li>remarks: CSS presentation of an elementSpec and/or the content field</li>
+</ul>
+</li>
+<li>
+<p>content</p>
+<ul>
+<li>sequence minOccurs maxOccurs (if there is more than one element)
+<ul>
+<li>elementRef key=&quot;name of the tag in the TEI&quot; corresp=&quot;optional tag to be used when ident is not unique&quot;</li>
+<li>elementRef minOccurs maxOccurs (min and max are optionals: if omitted their value is 1)</li>
+</ul>
+</li>
+<li>textNode
+<ul>
+<li>dataRef : to be indicate the format of the node (instead of text)</li>
+<li>integer decimal NCName string duration anyURI data open closed - if nothing, then no format control</li>
+<li>valList : to be used if the node can take a series of values</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>attList</p>
+<ul>
+<li>attDef ident=&quot;attribute-in-the-TEI&quot; rend=&quot;default value of the attribute&quot; usage=&quot;rec or req&quot;
+<ul>
+<li>desc (multilingual)</li>
+<li>desc = name of the section, information for the user</li>
+</ul>
+</li>
+<li>datatype
+<ul>
+<li>dataRef : format of the attribute</li>
+<li>... or a list of values: if only one they this is the default value</li>
+<li>remarks: CSS presentation of the datatype editing field</li>
+</ul>
+</li>
+<li>valList ==&gt; multiple choices presented to the user
+<ul>
+<li>valItem ident=&quot;value-in-the-TEI&quot;</li>
+<li>desc (multilingue) + rendition (optional help)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4><a id="user-content-example" class="anchor" href="#example" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h4>
+<pre><code>&lt;elementSpec ident=&quot;tag_TEI&quot; module=&quot;header&quot;
+    corresp=&quot;name_for_a_unique_identification&quot;&gt;
+    &lt;desc xml:lang=&quot;fr&quot;&gt;... in French ... - partie affichée pour décrire
+        l'élément&lt;/desc&gt;
+    &lt;desc xml:lang=&quot;en&quot;&gt;... in English ... - information for the user&lt;/desc&gt;
+    &lt;content&gt;
+        &lt;sequence minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;&gt;
+            &lt;elementRef key=&quot;sub_tag_1&quot;
+                corresp=&quot;another_name_for_unique_identification&quot;/&gt;
+            &lt;elementRef key=&quot;sub_tag_2&quot;/&gt;
+        &lt;/sequence&gt;
+        &lt;elementRef key=&quot;idno&quot; corresp=&quot;handle&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;unbounded&quot;/&gt;
+        &lt;textNode/&gt;
+        &lt;dataRef name=&quot;NCName&quot;/&gt;
+    &lt;/content&gt;
+    &lt;attList&gt;
+        &lt;attDef ident=&quot;mimeType&quot; usage=&quot;req&quot; mode=&quot;change&quot;&gt;
+            &lt;valList type=&quot;closed&quot;&gt;
+                &lt;valItem ident=&quot;audio/wav&quot;/&gt;
+                &lt;valItem ident=&quot;audio/mp3&quot;/&gt;
+                &lt;valItem ident=&quot;other&quot;/&gt;
+            &lt;/valList&gt;
+            &lt;!-- this will display the current attribute (mimeType) as it is described in the &lt;ab&gt; field --&gt;
+            &lt;remarks&gt;
+                &lt;ab&gt;color:red; width: 400px;&lt;/ab&gt;
+            &lt;/remarks&gt;
+        &lt;/attDef&gt;
+        &lt;attDef ident=&quot;dur-iso&quot; usage=&quot;req&quot; mode=&quot;change&quot;&gt;
+            &lt;desc xml:lang=&quot;fr&quot;&gt;durée du média : chaque medias peut avoir une durée
+                différente&lt;/desc&gt;
+            &lt;desc xml:lang=&quot;en&quot;&gt;media duration : each media could have a different
+                duration &lt;/desc&gt;
+            &lt;datatype&gt;
+                &lt;dataRef name=&quot;duration&quot;/&gt;
+            &lt;/datatype&gt;
+        &lt;/attDef&gt;
+    &lt;/attList&gt;
+    &lt;!-- this will display the elementSpec block as it is described in the &lt;ab&gt; field --&gt;
+    &lt;remarks style=&quot;element&quot;&gt;
+        &lt;ab&gt;background-color: lightgreen; border-radius: 8px; margin: 3px; margin-top: 10px;&lt;/ab&gt;
+    &lt;/remarks&gt;
+    &lt;!-- this will display the texnode/datatype in the content part as it is described in the &lt;ab&gt; field --&gt;
+    &lt;remarks style=&quot;content&quot;&gt;
+        &lt;ab&gt;color: blue; width: 500px;&lt;/ab&gt;
+    &lt;/remarks&gt;
+&lt;/elementSpec&gt;
+</code></pre><h2><a id="user-content-use" class="anchor" href="#use" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Use</h2>
+<h3><a id="user-content-html-page-version-implemented" class="anchor" href="#html-page-version-implemented" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>HTML Page Version (implemented)</h3>
+<p>Le soft comprend une page html autonome pouvant être utilisée localement ou à distance.
+Il est possible de charger un ODD local et un XML local
+La sauvegarde se fait dans le répertoire de téléchargement (ou ailleurs selon les paramètres du navigateur web).</p>
+<pre><code>npm run page
+# creation d'un sous-répertoire temp-page
+$ open temp-page/teimeta.html
+</code></pre><h3><a id="user-content-stand-alone-version-implemented" class="anchor" href="#stand-alone-version-implemented" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Stand Alone Version (implemented)</h3>
+<h4><a id="user-content-teimeta-application" class="anchor" href="#teimeta-application" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>TEIMETA Application</h4>
+<p>The soft is integrated within Electron. It has the same functionnalities as the Html version. It can be started as a classical software.</p>
+<pre><code>npm run electron
+# creating a sub-directory temp-electron
+npm start
+</code></pre><h4><a id="user-content-use-as-a-library-in-another-software" class="anchor" href="#use-as-a-library-in-another-software" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Use as a library in another software</h4>
+<p>Include directory teimeta/*.ts
+Instructions are within tei.ts file</p>
+<pre><code># use the library in another application.
+import * from 'teimeta/tei'
+... innerHTML = openODD(dataOdd)
+... innerHTML = openODDTEI(dataTei, dataOdd)
+... insert innerHTML in an HTML element
+... generateTEI(innerHTML)
+</code></pre><h2><a id="user-content-other-information" class="anchor" href="#other-information" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Other information</h2>
+<p>Download source code: <a href="https://github.com/christopheparisse/teimeta/">https://github.com/christopheparisse/teimeta/</a></p>
+<p>Issues, questions and comments <a href="https://github.com/christopheparisse/teimeta/issues">issues</a>.</p>
+<h4><a id="user-content-license-cc0-public-domain" class="anchor" href="#license-cc0-public-domain" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>License <a href="LICENSE.md">CC0 (Public Domain)</a></h4>
+<h1><a id="user-content-teimeta-edit-1" class="anchor" href="#teimeta-edit-1" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>teimeta-edit</h1>
 <p><strong>Outil d'édition de champs xml dans un fichier xml à partir d'une description odd</strong></p>
 <h2><a id="user-content-accès-à-loutil" class="anchor" href="#accès-à-loutil" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Accès à l'outil</h2>
 <p>Utilisation en ligne: <a href="http://ct3.ortolang.fr/teimeta/">http://ct3.ortolang.fr/teimeta/</a></p>
@@ -8,13 +189,13 @@
 <h2><a id="user-content-description-générale" class="anchor" href="#description-générale" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Description générale</h2>
 <p>TEIMETA est un outil qui permet d'éditer des fichiers XML à partir d'une description, elle-même au format XML ODD de la TEI. A partir de cette description, TEIMETA produit automatiquement une interface utilisateur qui prend place dans un navigateur web ou dans une application indépendante ELECTRON.</p>
 <p>L'outil est conçu pour une utilisation TEI mais peut être utilsé pour d'autres fichiers XML.
-Dans ce cas il faut éditer un fichier ayant un namespace correct ou modifier le namespace du fichier final à la main.
-L'édition du namespace destination n'est pas encore implémentée. La vérification du schéma XML n'est pas implémentée non plus. Liberté est laissé à l'utilisateur de traiter cette partie. Le programme TEIMETA garantit que les fichiers créés seront conformes aux modèles conçus par les utilisateurs mais ne garantit pas la qualité de ces modèles qui produit par des utilisateurs avancés.</p>
+La vérification du schéma XML n'est pas implémentée non plus. Liberté est laissé à l'utilisateur de traiter cette partie. Le programme TEIMETA garantit que les fichiers créés seront conformes aux modèles conçus par les utilisateurs mais ne garantit pas la qualité de ces modèles produits par des utilisateurs avancés.</p>
 <p>L'outil permet d'éditer un noeud XML où qu'il soit mais pas de le déplacer.
 Tout noeud édité garde sa position. Un noeud inexistant peut être créé, mais selon la position décrite dans l'ODD.
 L'ODD doit décrire toute l'arborescence depuis la racine. <strong>Les valeurs d'un fichier XML non décrites dans l'ODD ne sont pas modifiées lors de l'édition du fichier XML par TEIMETA. TEIMETA permet donc d'éditer une partie d'un fichier XML en respectant l'intégrité du reste du fichier.</strong> Les valeurs décrites pevuent être créées, modifiées et vidées. La suppression est possible en désactivant les noeuds non-obligatoires. Il est possible en option (pas encore implémentée d'autoriser la suppression des noeuds obligatoires).</p>
 <h2><a id="user-content-versions-disponibles" class="anchor" href="#versions-disponibles" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Versions disponibles</h2>
-<p>0.5.0 - 2 mai 2018 - version permettant une présentation visuelle à façon en éditant les fichiers ODD</p>
+<p>0.5.0 - 2 mai 2018 - version permettant une présentation visuelle à façon en éditant les fichiers ODD
+0.4.9 - février 2018 - correction de bugs, implémentation des namespaces dans les fichiers résultats</p>
 <h2><a id="user-content-organisation-des-données" class="anchor" href="#organisation-des-données" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Organisation des données</h2>
 <p>Les fonctions d'édition principales sont:</p>
 <ul>
@@ -41,8 +222,9 @@ L'ODD doit décrire toute l'arborescence depuis la racine. <strong>Les valeurs d
 On utilise les champs desc <em>pour fournir des informations qui seront visibles dans l'outil d'édition</em>.
 Les champs corresp, rend et rendition ont une fonctionnalité supplémentaire par rapport à la TEI pour notre implémentation. Le champ remarks permet d'insérer des informations de présentation visuelle (de type CSS).
 Les autres champs respectent le format TEI.</p>
-<h3><a id="user-content-format-de-description-des-noeuds-xml" class="anchor" href="#format-de-description-des-noeuds-xml" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Format de description des noeuds XML</h3>
-<p>Le contenu du ODD consiste en des éléments elementSpec qui peuvent référencer d'autres éléments avec elementRef.
+<h3><a id="user-content-description-format-for-the-xml-nodes-1" class="anchor" href="#description-format-for-the-xml-nodes-1" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Description format for the XML nodes</h3>
+<p>The ODD is made of elementSpec elements that can refer to other elements of the same type. Each elementSpec contains the description of the node content, attributes, and pointer to descendants.
+qui peuvent référencer d'autres éléments avec .
 Les moduleRef ne sont pas utilisés pour l'instant: ils sont là pour les autres usages des ODD.</p>
 <ul>
 <li>
@@ -68,7 +250,6 @@ Les moduleRef ne sont pas utilisés pour l'instant: ils sont là pour les autres
 <li>sequence minOccurs maxOccurs (s'il y a plus d'un élément)
 <ul>
 <li>elementRef key=&quot;nom du tag dans la TEI&quot; corresp=&quot;tag optionel à utiliser si ident n'est pas unique&quot;</li>
-<li>elementRef key=...</li>
 <li>elementRef minOccurs maxOccurs (min et max sont optionels: omis ils valent 1)</li>
 </ul>
 </li>
@@ -172,16 +353,16 @@ npm start
 </code></pre><h4><a id="user-content-utilisation-en-librairie-dans-un-soft" class="anchor" href="#utilisation-en-librairie-dans-un-soft" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Utilisation en librairie dans un soft</h4>
 <p>Inclure le repertoire teimeta/*.ts
 Toutes les instructions pour l'utilisation sont à la fin du fichier tei.ts</p>
-<h5><a id="user-content-aeec-et-trjs-pas-encore-implémentés" class="anchor" href="#aeec-et-trjs-pas-encore-implémentés" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>AEEC et TRJS (pas encore implémentés)</h5>
-<p>Le soft est intégré à l'outil AEEC et l'outil TRJS. Il est possible d'éditer un des fichiers listé dans la base.</p>
-<p>Note: Il pourrait être intéressant d'éditer une série de fichiers d'un coup. Par exemple on pourrait créer un fichier XML et fusionner le résultat avec un fichier XML quelconque pour modifier d'un coup une série de fichiers.</p>
 <pre><code># utiliser la librairie dans une autre application.
 import * from 'teimeta/tei'
 ... innerHTML = openODD(dataOdd)
 ... innerHTML = openODDTEI(dataTei, dataOdd)
 ... insérer innerHTML dans un éléement du navigateur
 ... generateTEI(innerHTML)
-</code></pre><h2><a id="user-content-informations-complémentaires" class="anchor" href="#informations-complémentaires" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Informations complémentaires</h2>
+</code></pre><h5><a id="user-content-aeec-et-trjs-pas-encore-implémentés" class="anchor" href="#aeec-et-trjs-pas-encore-implémentés" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>AEEC et TRJS (pas encore implémentés)</h5>
+<p>Le soft est intégré à l'outil AEEC et l'outil TRJS. Il est possible d'éditer un des fichiers listé dans la base.</p>
+<p>Note: Il pourrait être intéressant d'éditer une série de fichiers d'un coup. Par exemple on pourrait créer un fichier XML et fusionner le résultat avec un fichier XML quelconque pour modifier d'un coup une série de fichiers.</p>
+<h2><a id="user-content-informations-complémentaires" class="anchor" href="#informations-complémentaires" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Informations complémentaires</h2>
 <p>Téléchargement du code source: <a href="https://github.com/christopheparisse/teimeta/">https://github.com/christopheparisse/teimeta/</a></p>
 <p>Signaler erreurs et commentaires dans <a href="https://github.com/christopheparisse/teimeta/issues">issues</a>.</p>
-<h4><a id="user-content-license-cc0-public-domain" class="anchor" href="#license-cc0-public-domain" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>License <a href="LICENSE.md">CC0 (Public Domain)</a></h4>
+<h4><a id="user-content-license-cc0-public-domain-1" class="anchor" href="#license-cc0-public-domain-1" aria-hidden="true"><svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewbox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>License <a href="LICENSE.md">CC0 (Public Domain)</a></h4>
