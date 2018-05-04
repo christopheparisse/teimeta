@@ -10,6 +10,7 @@ import * as edit from './edit';
 import * as odd from './odd';
 import * as schema from './schema';
 import * as alert from '../ui/alert';
+import * as msg from '../ui/messages';
 
 let entities = require("entities");
 let dom = require('xmldom').DOMParser;
@@ -58,7 +59,7 @@ export function loadTei(data, teiData) {
         root = teiData.doc.documentElement;
         let nodes = odd.getChildrenByName(root, teiData.dataOdd.rootTEI);
         if (nodes.length > 1) {
-            alert.alertUser("Ficher invalide: Interdit d'avoir plus d'un élément racine");
+            alert.alertUser(msg.msg('morethanoneroot'));
             return false;
         } else if (nodes.length === 1) {
             root = nodes[0];
@@ -69,7 +70,7 @@ export function loadTei(data, teiData) {
     ptrListElementSpec = teiData.dataOdd.listElementSpec;
     let h = ptrListElementSpec[teiData.dataOdd.rootTEI];
     if (!h) {
-        alert.alertUser("Ficher invalide: pas d'élément racine dans le ODD");
+        alert.alertUser(msg.msg('norootinodd'));
         return false;
     }
     if (root) {
@@ -236,7 +237,7 @@ function loadElementRef(ec, node, path, parent) {
     }
     for (let i = 1; i < nodes.length ; i++) {
         if (ec.maxOccurs === '1') {
-            alert.alertUser("Attention: trop d'éléments pour " + path + '/' + ec.model);
+            alert.alertUser(msg.msg('toomanyelements') + path + '/' + ec.model);
         }
         // préparer les nouveaux éléments
         // ec est un ElementCount

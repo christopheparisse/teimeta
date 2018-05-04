@@ -44,7 +44,7 @@ gulp.task('page-teiedit', function () {
 });
 
 gulp.task('page-ui', function () {
-  return gulp.src(['ui/opensave-singlepage.ts', 'ui/init-singlepage.ts', 'ui/events.ts', 'ui/common.ts', 'ui/help.ts', 'ui/alert.ts'])
+  return gulp.src(['ui/opensave-singlepage.ts', 'ui/init-singlepage.ts', 'ui/events.ts', 'ui/common.ts', 'ui/help.ts', 'ui/alert.ts', 'ui/messages.ts'])
     .pipe(gulp.dest('temp-page/ui/'))
 });
 

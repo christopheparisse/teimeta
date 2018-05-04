@@ -8,6 +8,7 @@
  */
 
 import * as alert from '../ui/alert';
+import * as msg from '../ui/messages';
 import * as schema from './schema';
 
 export let odd : schema.SCHEMA = new schema.SCHEMA();
@@ -74,7 +75,7 @@ function readElementSpec(elementspec, node) {
             console.log("content content", rc);
             elementspec.content.datatype.remarks = rc;
         } else {
-            let s = 'warning: remarks for content without datatype in content: remarks ignored.';
+            let s = msg.msg('remarksnodatatype');
             alert.alertUser(s);
         }
     }
@@ -110,7 +111,7 @@ function processRemarks(rm, node) {
     // ab field : must be unique
     let d = getChildrenByName(node, 'ab');
     if (d.length > 1) {
-        let s = "warning: multiple ab fields in remarks. Only first one processed.";
+        let s = msg.msg('remarksmultab');
         alert.alertUser(s);
         rm.cssvalue = d[0].textContent;
     } else if (d.length === 1) {
@@ -123,7 +124,7 @@ function processRemarks(rm, node) {
     for (let i in d) {
         let p = getChildrenByName(d[0], 'ident');
         if (p.length > 1) {
-            let s = "warning: multiple ident fields in remarks. Only first one processed.";
+            let s = msg.msg('remarksmultident');
             alert.alertUser(s);
         }
         if (p.length >= 1) {
@@ -131,7 +132,7 @@ function processRemarks(rm, node) {
         }
         p = getChildrenByName(d[0], 'note');
         if (p.length > 0 && rm.cssvalue !== '') {
-            let s = "warning: field ab is used and note also: only the ab field is used";
+            let s = msg.msg('remarksabplusnote');
             alert.alertUser(s);
         } else if (p.length > 0) {
             rm.cssvalue = '';
@@ -398,7 +399,7 @@ export function loadOdd(data) {
     select = xpath.useNamespaces({"tei": ns});
     let schemaSpec = select("//tei:schemaSpec", doc);
     if (schemaSpec.length < 1) {
-        let s = "Pas d'élément schemaSpec dans le fichier ODD";
+        let s = msg.msg('nooddinelementspec');
         alert.alertUser(s);
         return null;
     }
@@ -409,7 +410,7 @@ export function loadOdd(data) {
         odd.init();
         odd.rootTEI = attr;
     } else {
-        let s = "Pas d'attribut racine (@start) dans le fichier ODD";
+        let s = msg.msg('norootattr');
         alert.alertUser(s);
         return null;
     }
@@ -434,25 +435,25 @@ export function loadOdd(data) {
         var es = new schema.ElementSpec();
         readElementSpec(es, eSpec[i]);
         if (odd.listElementSpec[es.access]) {
-            error += 'ERREUR: redefinition de ' + es.access + "\n";
+            error += msg.msg('redefelementspec') + es.access;
         }
         odd.listElementSpec[es.access] = es;
     }
     for (let i in odd.listElementRef) {
         // check if all elementRef exist as elementSpec
         if (!odd.listElementSpec[i]) {
-            error += 'ERREUR: elementRef ' + i + " n'est pas défini\n";
+            error += msg.msg('notdefelementref1') + i + msg.msg('notdefelementref2');
         }
     }
     for (let i in odd.listElementSpec) {
         // check if all elementRef exist as elementSpec
         if (odd.listElementSpec[i].access !== odd.rootTEI && !odd.listElementRef[odd.listElementSpec[i].access]) {
-            warning += 'ATTENTION: elementSpec ' + odd.listElementSpec[i].access + " n'est pas utilisé<br/>\n";
+            warning += msg.msg('notusedelementref1') + odd.listElementSpec[i].access + msg.msg('notusedelementref2');
         }
     }
     let rootElt = odd.listElementSpec[odd.rootTEI];
     if (!rootElt) {
-        error += "Pas de définition pour l'élément racine " + odd.rootTEI + "\n";
+        error += msg.msg('nodefrootelement') + odd.rootTEI + "\n";
     } else {
         rootElt.usage = 'req';
     }

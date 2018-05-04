@@ -1,4 +1,6 @@
 # teimeta-edit
+## English version
+[Version française](#user-content-version-française)
 
 **An editor (generated automatically from a ODD description) for subparts of a XML file**
 
@@ -141,9 +143,7 @@ moduleRef are not used.
 
 ### HTML Page Version (implemented)
 
-Le soft comprend une page html autonome pouvant être utilisée localement ou à distance.
-Il est possible de charger un ODD local et un XML local
-La sauvegarde se fait dans le répertoire de téléchargement (ou ailleurs selon les paramètres du navigateur web).
+The soft works in a static webpage that can be used locally or distantly. Nothing is required from the server. Local ODD and XML files can be produced. Saving is done using the download facility of the web browser.
 
 ```
 npm run page
@@ -184,6 +184,8 @@ Issues, questions and comments [issues](https://github.com/christopheparisse/tei
 #### License [CC0 (Public Domain)](LICENSE.md)
 
 # teimeta-edit
+## Version française
+[English Version](#user-content-english-version)
 
 **Outil d'édition de champs xml dans un fichier xml à partir d'une description odd**
 

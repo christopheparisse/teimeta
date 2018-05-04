@@ -11,6 +11,7 @@ import * as schema from './schema';
 import * as tei from './tei';
 import * as load from './load';
 import * as alert from '../ui/alert';
+import * as msg from '../ui/messages';
 
 export let values = {};
 let changed = false; // start with no change made. If set to true then the data has to be saved.
@@ -100,18 +101,18 @@ export function checkTime(event, id) {
     if (odd.odd.params.fmt === 'hms') {
         var m = tx.split(/[hmsHMS]/);
         if (m.length !== 3) {
-            alert.alertUser('Mauvais format de temps. Format correct: HhMmSs.ms');
+            alert.alertUser(msg.msg('badtimeformat'));
             return;
         }
         var h = parseInt(m[0]);
         var mn = parseInt(m[1]);
         var s = parseFloat(m[2]);
         if (mn > 59 || mn < 0) {
-            alert.alertUser('Mauvais format des minutes: entre 0 et 59');
+            alert.alertUser(msg.msg('badtimeminutes'));
             return;
         }
         if (s > 59 || s < 0) {
-            alert.alertUser('Mauvais format des secondes: entre 0 et 59');
+            alert.alertUser(msg.msg('badtimeseconds'));
             return;
         }
         newt = h * 3600 + mn * 60 + s;
@@ -124,18 +125,18 @@ export function checkTime(event, id) {
             let s = parseFloat(m[1]);
             newt = mn * 60 + s;
         } else if (m.length !== 3) {
-            alert.alertUser('Mauvais format de temps. Format correct: H:M:S.ms');
+            alert.alertUser(msg.msg('badtimeformat2'));
             return;
         } else {
             let h = parseInt(m[0]);
             let mn = parseInt(m[1]);
             let s = parseFloat(m[2]);
             if (mn > 59 || mn < 0) {
-                alert.alertUser('Mauvais format des minutes: entre 0 et 59');
+                alert.alertUser(msg.msg('badtimeminutes'));
                 return;
             }
             if (s > 59 || s < 0) {
-                alert.alertUser('Mauvais format des secondes: entre 0 et 59');
+                alert.alertUser(msg.msg('badtimeseconds'));
                 return;
             }
             newt = h * 3600 + mn * 60 + s;
@@ -162,7 +163,7 @@ function styleTime() {
             s = "Format: 00:00 ou 00:00:00";
             break;
         default:
-            s = "Format en secondes";
+            s = msg.msg('formatinseconds');
             break;
     }
     return s;
@@ -192,7 +193,7 @@ export function setOnOff(event, id, styleOn, styleOff) {
         setOnParents(values[id].eltSpec);
     } else {
         alert.askUserModal(
-            'Voulez vous supprimer cet élément et tous ses descendants de votre document ?',
+            msg.msg('askremove'),
             (ret) => {
                 if (ret) {
                     event.target.className = 'validate fa fa-size2 fa-choice-not-validated ' + styleOff;
@@ -215,7 +216,7 @@ export function setOnOff(event, id, styleOn, styleOff) {
 function setStyleOnOff(id, val: boolean, styleOn, styleOff) {
     let node = document.getElementById(id);
     if (!node) {
-        console.log("pas d'id trouvé pour", id);
+        console.log("no id found for ", id);
         return;
     }
     if (val) {
@@ -238,7 +239,7 @@ function setOnParents(eltSpec) {
 }
 
 function setOffChildren(eltSpec) {
-    console.log("mettre les enfants à ---", eltSpec);
+    console.log("put the children to ---", eltSpec);
 }
 
 export function setOnOffES(event, id, usage) {
@@ -311,13 +312,13 @@ export function setText(event, id) {
 }
 
 function openchoice() {
-    return odd.odd.params.language === 'fr' ? '-saisir une valeur-' : '-edit a value-';
+    return msg.msg('editvalue');
 }
 
 export function setOpenlist(event, id) {
     if (event.target.value === "--openchoice--") {
         alert.promptUserModal(
-            (odd.odd.params.language === 'fr' ? "Donner la nouvelle valeur" : "Give the new value"),
+            msg.msg('givevalue'),
             (ret) => {
                 if (ret) {
                     change(true);
@@ -342,7 +343,7 @@ export function setOpenlist(event, id) {
 
 export function initOpenlist(event, id) {
     alert.promptUserModal(
-        (odd.odd.params.language === 'fr' ? "Donner la nouvelle valeur" : "Give the new value"),
+        msg.msg('givevalue'),
         (ret) => {
             if (ret) {
                 change(true);
@@ -476,7 +477,7 @@ function editDataType(datatype, ident) {
         case 'list':
             if (!datatype.vallist || datatype.vallist.length <= 0) {
                 // grosse erreur ou manque liste vide
-                alert.alertUser("pas de liste de valeurs pour le datatype: " + datatype.type);
+                alert.alertUser(msg.msg('nolistdatatype') + datatype.type);
                 return '';
             }
             if (datatype.vallist.length <= 1) {

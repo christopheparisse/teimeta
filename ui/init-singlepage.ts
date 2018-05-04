@@ -9,6 +9,7 @@ import * as edit from '../teiedit/edit';
 import * as syscall from './opensave';
 import * as help from './help';
 import * as common from './common';
+import * as msg from './messages';
 
 function bodyKeys(e) {
 /*    
@@ -114,8 +115,7 @@ export function init() {
             return undefined;
         }
 
-        var confirmationMessage = 'It looks like you have been editing something. '
-                                + 'If you leave before saving, your changes will be lost.';
+        var confirmationMessage = msg.msg('leavinghtml');
 
         (e || window.event).returnValue = confirmationMessage; //Gecko + IE
         return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
