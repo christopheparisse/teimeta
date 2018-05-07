@@ -13,7 +13,7 @@ import * as opensave from './opensave';
 import * as alert from './alert';
 import * as msg from './messages';
 
-const NEWFILENAME = 'nouveau-fichier.xml';
+const NEWFILENAME = msg.msg('newfile');
 
 export let teiData = {
     oddName: '',

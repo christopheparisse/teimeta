@@ -25,7 +25,7 @@ export function oddMedia() {
     // checked changes
     events.checkChange(() => {
         readTextFile('http://ct3.ortolang.fr/teimeta/media.odd?v=' + schema.version, function(text) {
-            events.openOddLoad('Odd prédéfini Média', text);
+            events.openOddLoad(msg.msg('predefoddmedia'), text);
         });
     });
 }
@@ -34,7 +34,7 @@ export function oddTeiOral() {
     // checked changes
     events.checkChange(() => {
         readTextFile('http://ct3.ortolang.fr/teimeta/teioral.odd?v=' + schema.version, function(text) {
-            events.openOddLoad('Odd prédéfini Tei Oral', text);
+            events.openOddLoad(msg.msg('predefoddteispoken'), text);
         });
     });
 }
@@ -43,7 +43,7 @@ export function oddPartDesc() {
     // checked changes
     events.checkChange(() => {
         readTextFile('http://ct3.ortolang.fr/teimeta/olac.odd?v=' + schema.version, function(text) {
-            events.openOddLoad('Odd prédéfini Olac DC', text);
+            events.openOddLoad(msg.msg('predefoddolacdc'), text);
         });
     });
 }

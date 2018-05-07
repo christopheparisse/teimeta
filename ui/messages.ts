@@ -70,6 +70,10 @@ let messages_fra = {
     askforsave: "Le fichier n'est pas sauvegardé. Voulez vous le sauver, quitter sans sauver ou annuler ?",
     file: "Fichier: ",
     nofilename: "Pas de nom de fichier",
+    predefoddmedia: 'Odd prédéfini Média',
+    predefoddolacdc: 'Odd prédéfini Olac DC',
+    predefoddteispoken: 'Odd prédéfini TEI Oral',
+    newfile: 'nouveau-fichier.xml',
 };
 
 let messages_spa = {
@@ -140,6 +144,10 @@ let messages_eng = {
     askforsave: "The file was not saved. Do you want to save it, to quit without saving or to cancel?",
     file: "File: ",
     nofilename: "No file name",
+    predefoddmedia: 'predefined ODD Media',
+    predefoddolacdc: 'predefined ODD  Olac DC',
+    predefoddteispoken: 'predefined ODD TEI Spoken language',
+    newfile: 'new-file.xml',
 };
 
 let language: any = messages_eng;
