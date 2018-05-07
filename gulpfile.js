@@ -11,7 +11,7 @@ gulp.task('electron-teiedit', function () {
 });
 
 gulp.task('electron-ui', function () {
-  return gulp.src(['ui/opensave.ts', 'ui/init-electron.ts', 'ui/events.ts', 'ui/common.ts', 'ui/help.ts', 'ui/alert.ts'])
+  return gulp.src(['ui/opensave.ts', 'ui/init-electron.ts', 'ui/events.ts', 'ui/common.ts', 'ui/help.ts', 'ui/alert.ts', 'ui/messages.ts'])
     .pipe(gulp.dest('temp-electron/ui/'))
 });
 

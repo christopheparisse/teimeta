@@ -152,7 +152,7 @@ export function init() {
     window['ui'].setDefNewElt = common.setDefNewElt;
     window['ui'].setValReq = common.setValReq;
     window['ui'].setCanRm = common.setCanRm;
-    window['ui'].setLgEng = common.setLgEng;
+    window['ui'].setLanguage = common.setLanguage;
     // for debugging purposes
     window['dbg'] = {};
     window['dbg'].tei = events.teiData;

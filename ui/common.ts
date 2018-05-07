@@ -4,6 +4,7 @@
 
 import * as events from './events';
 import * as odd from '../teiedit/odd';
+import * as msg from './messages';
 import * as schema from '../teiedit/schema';
 let picoModal = require('picomodal');
 
@@ -109,73 +110,93 @@ export function setCanRm(e) {
     changeParams = true;
 }
 
-export function setLgEng(e) {
-    let s = document.getElementById('toggleLgEng');
-    if (odd.odd.params.language === 'en') {
-        s.innerHTML = '<i class="fa fa-square-o" aria-hidden="true"></i>';
+export function setLanguage(lg) {
+    if (lg === 'fra') {
         odd.odd.params.language = 'fr';
+        msg.setLanguage('fra');
     } else {
-        s.innerHTML = '<i class="fa fa-check-square-o" aria-hidden="true"></i>';
         odd.odd.params.language = 'en';
+        msg.setLanguage('eng');
     }
-    changeParams = true;
+
+    let el = document.getElementById('title');
+    el.textContent = msg.msg("title");
+    el = document.getElementById('xmlopen');
+    el.textContent = msg.msg("xmlopen");
+    el = document.getElementById('xmlsave');
+    el.textContent = msg.msg("xmlsave");
+    el = document.getElementById('oddopen');
+    el.textContent = msg.msg("oddopen");
+    el = document.getElementById('menuhelp');
+    el.textContent = msg.msg("menuhelp");
+    el = document.getElementById('oddpredef');
+    el.textContent = msg.msg("oddpredef");
+    el = document.getElementById('teispoken');
+    el.textContent = msg.msg("teispoken");
+    el = document.getElementById('oddolac');
+    el.textContent = msg.msg("oddolac");
+    el = document.getElementById('oddmedia');
+    el.textContent = msg.msg("oddmedia");
+    el = document.getElementById('menuparam');
+    el.textContent = msg.msg("menuparam");
+
+    changeParams = false;
+    saveParams();
+    events.saveStorage();
+    events.reLoad(null);
 }
 
-let paramsPicomodal = null;
-
 export function oddParams() {
-    if (!paramsPicomodal) {
-        // for the first time do not used DOM functions
-        // use only picoModal initiatilisation of a HTML string
-let userInfo = `
-<h2 style="margin-top: 0">Paramètres</h2>
-<ul>
-    <li onclick="window.ui.setDispFPath();">Afficher les chemins complets <span id="toggleDispFPath">`
-    + ((odd.odd.params.displayFullpath)
-        ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
-        : '<i class="fa fa-square-o" aria-hidden="true"></i>')
-+ `</span></li>
-    <li>Décalage en pixels des imbrications: <input type="number" min="0" max="100" value="`
-    + odd.odd.params.leftShift 
-+ `" name="leftshift" onchange="window.ui.setLeftShift(event);"/></li>
-    <li onclick="window.ui.setDefNewElt();">Elements vides ou absents inclus automatiquement <span id="toggleDefNewElt">`
-    + ((odd.odd.params.defaultNewElement)
-        ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
-        : '<i class="fa fa-square-o" aria-hidden="true"></i>')
-+ `</span></li>
-    <li onclick="window.ui.setValReq();">Autoriser la suppression des éléments obligatoires <span id="toggleDefValReq">`
-    + ((odd.odd.params.validateRequired)
-        ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
-        : '<i class="fa fa-square-o" aria-hidden="true"></i>')
-+ `</span></li>
-    <li onclick="window.ui.setCanRm();">Autoriser la suppression d'éléments (sinon seulement modification) <span id="toggleDefCanRm">`
-    + ((odd.odd.params.canRemove)
-        ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
-        : '<i class="fa fa-square-o" aria-hidden="true"></i>')
-+ `</span></li>
-    <li onclick="window.ui.setLgEng();">English version of ODD <span id="toggleLgEng">`
-    + ((odd.odd.params.language === 'en')
-        ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
-        : '<i class="fa fa-square-o" aria-hidden="true"></i>')
-+ `</span></li>
-</ul>
-`;
-        changeParams = false;
-        paramsPicomodal = picoModal({
-            content: userInfo,
-            closeHtml: '<span>Ok</span>',
-            closeStyles: {
+    let paramsPicomodal = null;
+    let userInfo = `
+    <h2 style="margin-top: 0">Paramètres</h2>
+    <ul>
+        <li onclick="window.ui.setDispFPath();">` + msg.msg('paramfullpath') + '<span id="toggleDispFPath">'
+        + ((odd.odd.params.displayFullpath)
+            ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
+            : '<i class="fa fa-square-o" aria-hidden="true"></i>')
+    + `</span></li>
+        <li>` + msg.msg('paramshift') + '<input type="number" min="0" max="100" value="'
+        + odd.odd.params.leftShift 
+    + `" name="leftshift" onchange="window.ui.setLeftShift(event);"/></li>
+        <li onclick="window.ui.setDefNewElt();">` + msg.msg('paramdefincl') + '<span id="toggleDefNewElt">'
+        + ((odd.odd.params.defaultNewElement)
+            ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
+            : '<i class="fa fa-square-o" aria-hidden="true"></i>')
+    + `</span></li>
+        <li onclick="window.ui.setValReq();">` + msg.msg('paramsupprobl') + '<span id="toggleDefValReq">'
+        + ((odd.odd.params.validateRequired)
+            ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
+            : '<i class="fa fa-square-o" aria-hidden="true"></i>')
+    + `</span></li>
+        <li onclick="window.ui.setCanRm();">` + msg.msg('paramcanrm') + '<span id="toggleDefCanRm">'
+        + ((odd.odd.params.canRemove)
+            ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
+            : '<i class="fa fa-square-o" aria-hidden="true"></i>')
+/*
+    + `</span></li>
+        <li onclick="window.ui.setLanguage('fra');">Version française <img height="15px" src="css/fr.png"></img>`
+    + `</span></li>
+        <li onclick="window.ui.setLanguage('eng');">English version<img height="15px" src="css/us.png"></img>`
+*/
+    + `</span></li>
+    </ul>
+    `;
+    changeParams = false;
+    paramsPicomodal = picoModal({
+        content: userInfo,
+        closeHtml: '<span>Ok</span>',
+        closeStyles: {
 //                position: "absolute",
-                top: "-10px",
-                right: "-10px",
-                background: "#eee",
-                padding: "5px 10px",
-                cursor: "pointer",
-                borderRadius: "5px",
-                border: "1px solid #ccc"
-            }
-        });
-    }
+            top: "-10px",
+            right: "-10px",
+            background: "#eee",
+            padding: "5px 10px",
+            cursor: "pointer",
+            borderRadius: "5px",
+            border: "1px solid #ccc"
+        }
+    });
     paramsPicomodal.afterClose( () => {
         if (changeParams) {
             saveParams();

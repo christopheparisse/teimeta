@@ -1,5 +1,7 @@
 /**
- * 
+ * events.ts
+ * author: Christophe Parisse
+ * main procedures to load, save, and call teiedit functions
  */
 
 import * as edit from '../teiedit/edit';
@@ -9,6 +11,7 @@ import * as tei from '../teiedit/tei';
 import * as load from '../teiedit/load';
 import * as opensave from './opensave';
 import * as alert from './alert';
+import * as msg from './messages';
 
 const NEWFILENAME = 'nouveau-fichier.xml';
 
@@ -27,7 +30,7 @@ export let teiData = {
 function finishLoad(err, name, data) {
     teiData.fileName = name;
     let el = document.getElementById('filename');
-    el.innerHTML = "Fichier: " + name;
+    el.innerHTML = msg.msg('file') + name;
     load.loadTei(data, teiData);
     teiData.html = edit.generateHTML(teiData);
     el = document.getElementById('teidata');
@@ -47,7 +50,7 @@ export function checkChange(fun) {
         return;
     }
     alert.askUserModalYesNoCancel(
-        "Le fichier n'est pas sauvegardé. Voulez vous le sauver, quitter sans sauver ou annuler ?",
+        msg.msg('askforsave'),
         (ret) => {
             if (ret === 'yes') { //save
                 if (teiData.system === 'electron') {
@@ -142,7 +145,7 @@ export function openOddLoad(name, data) {
     teiData.new = true;
 
     el = document.getElementById('filename');
-    el.innerHTML = "Fichier: " + teiData.fileName;
+    el.innerHTML = msg.msg('file') + teiData.fileName;
     el = document.getElementById('teidata');
     el.innerHTML = teiData.html;
     let js = JSON.stringify({data: data, oddName: name, version: schema.version});
@@ -164,13 +167,13 @@ export function openOdd() {
 export function emptyFile() {
     let dt = document.getElementById('teidata');
     dt.innerHTML = '';
-    teiData.oddName = "Pas de nom de fichier";
-    teiData.fileName = 'Pas de nom de fichier';
+    teiData.oddName = msg.msg('nofilename');
+    teiData.fileName = msg.msg('nofilename');
     teiData.new = true;
     let el = document.getElementById('oddname');
     el.innerHTML = "ODD: " + teiData.oddName;
     el = document.getElementById('filename');
-    el.innerHTML = "Fichier: " + teiData.fileName;
+    el.innerHTML = msg.msg('file') + teiData.fileName;
 }
 
 export function saveAs(fun) {    
@@ -178,7 +181,7 @@ export function saveAs(fun) {
         if (!err) {
             teiData.fileName = name;
             let el = document.getElementById('filename');
-            el.innerHTML = "Fichier: " + teiData.fileName;
+            el.innerHTML = msg.msg('file') + teiData.fileName;
             var ed = tei.generateTEI(teiData);
             opensave.saveFile(teiData.fileName, ed);
             edit.change(false);
