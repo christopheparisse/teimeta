@@ -35,7 +35,7 @@
     "extract-text-webpack-plugin": "^2.1.2",
     "gulp": "^3.9.1",
     "gulp-concat": "latest",
-    "gulp-html-tag-include": "latest",
+    "gulp-html-tag-include": "^1.0.1",
     "gulp-preprocess": "latest",
     "gulp-rename": "^1.2.2",
     "gulp-typescript": "^3.2.4",

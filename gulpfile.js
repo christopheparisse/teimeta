@@ -1,4 +1,5 @@
 var gulp = require("gulp");
+var include = require('gulp-html-tag-include');
 var runSequence = require('run-sequence');
 var rename = require("gulp-rename");
 
@@ -18,6 +19,13 @@ gulp.task('electron-ui', function () {
 gulp.task('electron-js', function () {
   return gulp.src('js/picoModal.js')
     .pipe(gulp.dest('temp-electron/js/'))
+});
+
+gulp.task('electron-html', function () {
+  // construct index.html
+   return gulp.src('./html/index.html')
+       .pipe(include())
+       .pipe(gulp.dest('.'));
 });
 
 gulp.task('electron-css', function () {
@@ -64,6 +72,13 @@ gulp.task('page-css', function () {
     .pipe(gulp.dest('temp-page/css/'))
 });
 
+gulp.task('page-html', function () {
+  // construct index.html
+   return gulp.src('./html/teimeta.html')
+       .pipe(include())
+       .pipe(gulp.dest('.'));
+});
+
 gulp.task('page-main', function () {
   return gulp.src(['teimeta.html', 'favicon.ico'])
     .pipe(gulp.dest('temp-page/'))
@@ -72,7 +87,7 @@ gulp.task('page-main', function () {
 gulp.task('page-src', ['page-teiedit', 'page-ui', 'page-css', 'page-main']);
 
 gulp.task('electron', function(done) {
-    runSequence('electron-src', 'electron-ts', function() {
+    runSequence('electron-html', 'electron-src', 'electron-ts', function() {
         console.log('ok.');
         done();
     });
@@ -80,7 +95,7 @@ gulp.task('electron', function(done) {
 
 gulp.task('page', function(done) {
 //    runSequence('page-src', 'page-ui2', 'page-js', function() {
-    runSequence('page-src', 'page-ui2', function() {
+    runSequence('page-html', 'page-src', 'page-ui2', function() {
         console.log('ok.');
         done();
     });

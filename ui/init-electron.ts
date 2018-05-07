@@ -83,6 +83,7 @@ function bodyKeys(e) {
 
 export function init() {
     events.teiData.system = 'electron';
+    common.loadParams();
     // load previous data
     events.newFile(null);
 
@@ -157,4 +158,6 @@ export function init() {
     window['dbg'] = {};
     window['dbg'].tei = events.teiData;
     window['dbg'].v = edit.values;
+
+    common.setLanguage(odd.odd.params.language, false);
 }

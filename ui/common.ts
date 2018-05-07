@@ -110,7 +110,7 @@ export function setCanRm(e) {
     changeParams = true;
 }
 
-export function setLanguage(lg) {
+export function setLanguage(lg, reload=true) {
     if (lg === 'fra') {
         odd.odd.params.language = 'fr';
         msg.setLanguage('fra');
@@ -142,8 +142,10 @@ export function setLanguage(lg) {
 
     changeParams = false;
     saveParams();
-    events.saveStorage();
-    events.reLoad(null);
+    if (reload) {
+        events.saveStorage();
+        events.reLoad(null);
+    }
 }
 
 export function oddParams() {

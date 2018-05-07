@@ -120,6 +120,8 @@ export function init() {
         (e || window.event).returnValue = confirmationMessage; //Gecko + IE
         return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
     });
+
+    common.setLanguage(odd.odd.params.language, false);
 }
 
 // in case the document is already rendered
