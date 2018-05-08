@@ -10,74 +10,71 @@
 	<script src="bundle.js"></script>
  </head>
 <body style="margin-left:10px;">
-    <div id="topall">
-    <div id="title">Edition de métadonnées TEI / CORLI
+  <div class="nav">
+    <div class="nav-header">
+      <div class="nav-title">
+      <span id="title">Edition de métadonnées TEI / CORLI </span>
       <i class="fa fa-star" id="showall"></i>
       <i class="fa fa-star-o" id="hideall"></i>
       <span id="titledate"></span>
+      </div>
     </div>
-      <div id="top">
-        <div class="headtop" id="file-open">
-        <i class="headtopi fa fa-folder-open-o fa-3x" title="Ouvrir Ficher TEI"></i>
+    <div class="nav-btn">
+      <label for="nav-check">
+        <span></span>
+        <span></span>
+        <span></span>
+      </label>
+    </div>
+    <input type="checkbox" id="nav-check">
+    <div class="nav-links">
+      <a id="file-open" target="_blank">
+        <i class="headtopi fa fa-folder-open-o fa-1x" title="Ouvrir Ficher TEI"></i>
         <span class="headtopt" id="xmlopen">Ouvrir</span>
-        </div>
-        <!--
-        <div class="headtop" id="file-new">
-        <i class="headtopi fa fa-sticky-note-o fa-3x" title="Nouveau Ficher TEI"></i>
-        <span class="headtopt">Nouveau</span>
-        </div>
-        -->
-        <div class="headtop" id="file-saveas">
-        <i class="headtopi fa fa-save fa-3x" title="Sauver le ficher TEI"></i>
+      </a>
+      <a id="file-saveas" target="_blank">
+        <i class="headtopi fa fa-save fa-1x" title="Sauver le ficher TEI"></i>
         <span class="headtopt" id="xmlsave">Sauver</span>
-        </div>
-        <div class="headtop" id="file-open-odd">
-        <i class="headtopi fa fa-cog fa-3x" title="Ouvrir Ficher ODD"></i>
+      </a>
+      <a id="file-open-odd" target="_blank">
+        <i class="headtopi fa fa-cog fa-1x" title="Ouvrir Ficher ODD"></i>
         <span class="headtopt" id="oddopen">Ouvrir ODD</span>
-        </div>
-        <div class="headtop" id="help">
-        <i class="headtopi fa fa-question fa-3x" title="Aide"></i>
-        <span class="headtopt" id="menuhelp">Aide</span>
-        </div>
-      </div>
-      <div id="top2">
-        <div class="headtop2" id="top2-descr">
-        <i class="headtopi fa fa-wrench fa-2x" title="Predefined ODD"></i>
-        <span class="headtopt" id="oddpredef">ODD prédéfinis:</span>
-        </div>
-        <div class="headtop2" id="odd-teioral">
-        <i class="headtopi fa fa-briefcase fa-2x" title="Tei Spoken"></i>
+      </a>
+      <a id="odd-teioral" target="_blank">
+        <i class="headtopi fa fa-briefcase fa-1x" title="Tei Spoken"></i>
         <span class="headtopt" id="teispoken">TEI Oral</span>
-        </div>
-        <div class="headtop2" id="odd-partdesc">
-        <i class="headtopi fa fa-users fa-2x" title="Tei Participants"></i>
-        <span class="headtopt" id="oddolac">Olac / Dublin Core</span>
-        </div>
-        <div class="headtop2" id="odd-media">
-        <i class="headtopi fa fa-video-camera fa-2x" title="Tei Medias"></i>
+      </a>
+      <a id="odd-partdesc" target="_blank">
+        <i class="headtopi fa fa-users fa-1x" title="Tei Participants"></i>
+        <span class="headtopt" id="oddolac">Olac/DC</span>
+      </a>
+      <a id="odd-media" target="_blank">
+        <i class="headtopi fa fa-video-camera fa-1x" title="Tei Medias"></i>
         <span class="headtopt" id="oddmedia">Médias</span>
-        </div>
-        <div class="headtop2" id="top2-params">
-        <i class="headtopi fa fa-wrench fa-2x" title="Parametres"></i>
+      </a>
+      <a id="top2-params" target="_blank">
+        <i class="headtopi fa fa-wrench fa-1x" title="Parametres"></i>
         <span class="headtopt" id="menuparam">Paramètres</span>
-        </div>
-        <div class="headtop2" id="top2-language">
-            <i class="headtopi fa fa-language fa-2x" title="Languages"></i>
-            <span class="headtopt">
-            <img onclick="window.ui.setLanguage('fra');" height="25px" src="css/fr.png"></img>
-          </span>
-          <span class="headtopt">
-              <img onclick="window.ui.setLanguage('eng');" height="25px" src="css/us.png"></img>
-          </span>
-        </div>
-      </div>
+      </a>
+      <a id="top2-language" target="_blank">
+        <!-- <i class="headtopi fa fa-language fa-1x" title="Languages"></i> -->
+        <span class="headtopt">
+        <img onclick="window.ui.setLanguage('fra');" height="20px" src="css/fr.png"></img>
+      </span>
+      <span class="headtopt">
+          <img onclick="window.ui.setLanguage('eng');" height="20px" src="css/us.png"></img>
+      </span>
+      </a>
+      <a id="help" target="_blank">
+        <i class="headtopi fa fa-question fa-1x" title="Aide"></i>
+        <span class="headtopt" id="menuhelp">Aide</span>
+      </a>
     </div>
-    <div id="bottomall">
     <input style="display:none;" id="upload-input-transcript" type="file" name="file-transcript" />
     <!-- <h3 id="subtitle"></h3> -->
     <div class="infofiles" id="oddname">ODD: </div>
     <div class="infofiles" id="filename">TEI: </div>
     <div id="teidata"></div>
-    </div>
+  </div>
 </body>
 </html>

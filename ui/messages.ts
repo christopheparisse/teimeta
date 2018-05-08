@@ -57,7 +57,7 @@ let messages_fra = {
     menuhelp: "Aide",
     oddpredef: "ODD prédéfinis:",
     teispoken: "TEI Oral",
-    oddolac: "Olac / Dublin Core",
+    oddolac: "Olac/DC",
     oddmedia: "Médias",
     menuparam: "Paramètres",
     paramfullpath: "Afficher les chemins complets ",
@@ -70,9 +70,9 @@ let messages_fra = {
     askforsave: "Le fichier n'est pas sauvegardé. Voulez vous le sauver, quitter sans sauver ou annuler ?",
     file: "Fichier: ",
     nofilename: "Pas de nom de fichier",
-    predefoddmedia: 'Odd prédéfini Média',
-    predefoddolacdc: 'Odd prédéfini Olac DC',
-    predefoddteispoken: 'Odd prédéfini TEI Oral',
+    predefoddmedia: 'Média (TEI)',
+    predefoddolacdc: 'Olac DC',
+    predefoddteispoken: 'TEI Oral',
     newfile: 'nouveau-fichier.xml',
 };
 
@@ -131,7 +131,7 @@ let messages_eng = {
     menuhelp: "Help",
     oddpredef: "Predefined ODD:",
     teispoken: "TEI Spoken",
-    oddolac: "Olac / Dublin Core",
+    oddolac: "Olac/DC",
     oddmedia: "Media",
     menuparam: "Parameters",
     paramfullpath: "Display full paths ",
@@ -144,9 +144,9 @@ let messages_eng = {
     askforsave: "The file was not saved. Do you want to save it, to quit without saving or to cancel?",
     file: "File: ",
     nofilename: "No file name",
-    predefoddmedia: 'predefined ODD Media',
-    predefoddolacdc: 'predefined ODD  Olac DC',
-    predefoddteispoken: 'predefined ODD TEI Spoken language',
+    predefoddmedia: 'Media (TEI)',
+    predefoddolacdc: 'Olac DC',
+    predefoddteispoken: 'TEI Spoken',
     newfile: 'new-file.xml',
 };
 
