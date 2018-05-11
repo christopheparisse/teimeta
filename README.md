@@ -14,6 +14,12 @@ Downloading the tool for windows 64: [http://ct3.ortolang.fr/download/teimeta-x6
 
 Downloading the tool for windows 32: [http://ct3.ortolang.fr/download/teimeta-x86.exe](http://ct3.ortolang.fr/download/teimeta-x86.exe)
 
+Downloading the TEI Spoken language ODD: [http://ct3.ortolang.fr/teimeta/teispoken.odd](http://ct3.ortolang.fr/teimeta/teispoken.odd)
+
+Downloading the TEI Media ODD: [http://ct3.ortolang.fr/teimeta/media.odd](http://ct3.ortolang.fr/teimeta/media.odd)
+
+Downloading the DC/OLAC ODD: [http://ct3.ortolang.fr/teimeta/olac.odd](http://ct3.ortolang.fr/teimeta/olac.odd)
+
 ## Description
 
 TEIMETA is a tool for editing XML files. The editing structure, possibilies, and information are described in an XML ODD TEI file. TEIMETA uses this description (the model) to produce automatically a user interface in a webbrowser or an independant Electron application.
@@ -23,6 +29,7 @@ The tool was created to edit TEI files, but it can be used for any type of XML f
 TEIMETA allows to edit any XML node but not to move this node around in the XML file. New nodes can be created and nodes can be erased (if this is allowed by the model). The ODD describes node position from the root. **The values of an XML node not described in the ODD file will never be modified. This means that it is possible to edit parts of an XML file respecting the integrity of the rest of the file.**
 
 ## Version information
+0.5.2 - improved style of CSS for all display size
 0.5.1 - full English or French version
 0.5.0 - 2 may 2018 - ODD files can describe the visual presentation of the data edited using CSS features.
 0.4.9 - feb 2018 - correction of bugs and namespace implementation
@@ -211,6 +218,7 @@ Tout noeud édité garde sa position. Un noeud inexistant peut être créé, mai
 L'ODD doit décrire toute l'arborescence depuis la racine. **Les valeurs d'un fichier XML non décrites dans l'ODD ne sont pas modifiées lors de l'édition du fichier XML par TEIMETA. TEIMETA permet donc d'éditer une partie d'un fichier XML en respectant l'intégrité du reste du fichier.** Les valeurs décrites pevuent être créées, modifiées et vidées. La suppression est possible en désactivant les noeuds non-obligatoires. Il est possible en option (pas encore implémentée d'autoriser la suppression des noeuds obligatoires).
 
 ## Versions disponibles
+0.5.2 - amélioration CSS et en-tête pour toutes tailles d'écran
 0.5.1 - version complète Anglais ou Français
 0.5.0 - 2 mai 2018 - version permettant une présentation visuelle à façon en éditant les fichiers ODD
 0.4.9 - février 2018 - correction de bugs, implémentation des namespaces dans les fichiers résultats

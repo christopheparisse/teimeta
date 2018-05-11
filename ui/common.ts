@@ -33,7 +33,7 @@ export function oddMedia() {
 export function oddTeiOral() {
     // checked changes
     events.checkChange(() => {
-        readTextFile('http://ct3.ortolang.fr/teimeta/teioral.odd?v=' + schema.version, function(text) {
+        readTextFile('http://ct3.ortolang.fr/teimeta/teispoken.odd?v=' + schema.version, function(text) {
             events.openOddLoad(msg.msg('predefoddteispoken'), text);
         });
     });
@@ -203,7 +203,8 @@ export function oddParams() {
             events.saveStorage();
             events.reLoad(null);
         }
-    }).show();
+    }).afterClose(function (modal) { modal.destroy(); })
+    .show();
 }
 
 function saveParams() {

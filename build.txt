@@ -1,0 +1,33 @@
+# version for web browser
+npm run page
+open temp-page/teimeta.html
+# version stand alone Electron
+npm run electron
+npm run run
+# build readme
+npm run readme
+# build Electron version
+electron-packager temp-electron --platform=darwin --asar=true --overwrite --icon=temp-electron/favicon.icns
+cmd /c electron-packager temp-electron --asar=true --platform=win32 --arch=x64 --overwrite --icon=temp-electron\favicon.ico
+cmd /c electron-packager temp-electron --asar=true --platform=win32 --arch=ia32 --overwrite --icon=temp-electron\favicon.ico
+
+# send browser version to a website
+rsync -auv temp-page/css adress@website.com:/teimeta
+rsync -uv temp-page/teimeta.html adress@website.com:/teimeta/index.html
+rsync -uv temp-page/bundle.js adress@website.com:/teimeta
+rsync -uv temp-page/favicon.ico adress@website.com:/teimeta
+rsync -uv readme.html adress@website.com:/teimeta
+rsync -uv models/*odd adress@website.com:/teimeta 
+# send sources
+cd temp-page
+zip -rv ../teimeta.zip .
+cd ..
+rsync -uv teimeta.zip adress@website.com:/teimeta
+
+# pack and send Electron version
+cd TeiMeta-darwin-x64
+#zip -r ../teimeta-macos.zip teimeta.app
+ditto -ck --rsrc --sequesterRsrc --keepParent teimeta.app ../teimeta-macos.zip
+cd ..
+scp teimeta-macos.zip parisse@ct3.ortolang.fr:/applis/download/
+
