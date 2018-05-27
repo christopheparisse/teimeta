@@ -61,18 +61,18 @@ function readElementSpec(elementspec, node) {
     let c =  new schema.Content();
     if (readContent(c, node)) elementspec.content = c;
 
-    console.log('IDENT remarks',elementspec.ident);
+    //console.log('IDENT remarks',elementspec.ident);
     // le champ remarksContent
     let rc =  new schema.Remarks();
     if (readRemarks(rc, node, "element")) {
-        console.log("content element", rc);
+        //console.log("content element", rc);
         elementspec.remarks = rc;
     }
     rc =  new schema.Remarks();
     if (readRemarks(rc, node, "content")) {
         // elementspec.remarksContent = rc;
         if (elementspec.content.datatype) {
-            console.log("content content", rc);
+            //console.log("content content", rc);
             elementspec.content.datatype.remarks = rc;
         } else {
             let s = msg.msg('remarksnodatatype');
@@ -285,9 +285,13 @@ function keyElementSpec(node) {
 }
 
 export function textDesc(desc, lg) {
-    if (lg === undefined) return desc.texts.length > 0 ? desc.texts[0] : '';
+    console.log('lang:',lg);
+    if (!lg) {
+        lg = 'en';
+    }
     for (let i=0; i<desc.langs.length; i++) {
-        if (lg === desc.langs[i]) return desc.texts[i];
+        console.log(desc.langs[i], desc.texts[i]);
+        if (lg === desc.langs[i]) return entities.decodeXML(desc.texts[i]);
     }
     return entities.decodeXML( desc.texts.length > 0 ? desc.texts[0] : '' );
 }
@@ -350,7 +354,7 @@ function readAttrDef(attrDef, node) {
     }
     let rc =  new schema.Remarks();
     if (readRemarks(rc, node, "element")) {
-        console.log('remarks attrdef', rc);
+        //console.log('remarks attrdef', rc);
         attrDef.datatype.remarks = rc;
     }
     //console.log(attrDef.ident, attrDef.rend, attrDef);
@@ -421,7 +425,7 @@ export function loadOdd(data) {
     odd.namespace = schemaSpec[0].getAttribute("ns");
     // récupérer attribut cssfile
     odd.cssfile = schemaSpec[0].getAttribute("rend");
-    console.log('remarks cssfile', odd.cssfile);
+    console.log('remarks cssfile : [', odd.cssfile, ']');
     odd.remarks = false;
     // récupérer attribut other entries (corresp)
     attr = schemaSpec[0].getAttribute("corresp");

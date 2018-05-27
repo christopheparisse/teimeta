@@ -45,10 +45,43 @@ function getNodeText(node) {
  * @param {*} dataOdd array of ElementSpec from odd.ts - loadOdd
  * @returns {*} true if ok
  */
-export function loadTei(data, teiData) {
+export function checkOddTei(data, teiData) {
     // get XML ready
     teiData.parser = new DOMParser();
     teiData.doc = data 
+        ? new dom().parseFromString(data.toString(), 'text/xml')
+        : null;
+
+    // find root
+    let root = null;
+    if (teiData.doc) {
+        root = teiData.doc.documentElement;
+        let nodes = odd.getChildrenByName(root, teiData.dataOdd.rootTEI);
+        if (nodes.length > 1) {
+            alert.alertUser(msg.msg('morethanoneroot'));
+            return false;
+        } else if (nodes.length === 1) {
+            root = nodes[0];
+        }
+    }
+    if (root) {
+        let attr = root.getAttribute("xml:base");
+        if (attr) return attr;
+    }
+    //console.log(teiData.dataTei);
+    return '';
+}
+
+/**
+ * @method load
+ * @param {*} data raw data content of TEI file 
+ * @param {*} dataOdd array of ElementSpec from odd.ts - loadOdd
+ * @returns {*} true if ok
+ */
+export function loadTei(data, teiData, noreload=false) {
+    // get XML ready
+    if (noreload) teiData.parser = new DOMParser();
+    if (noreload) teiData.doc = data 
         ? new dom().parseFromString(data.toString(), 'text/xml')
         : null;
 
@@ -74,6 +107,7 @@ export function loadTei(data, teiData) {
         return false;
     }
     if (root) {
+//        let attr = root.getAttribute("xml:base");
         // create first elementSpec and find and create the other recursively
         teiData.dataTei = loadElementSpec(h, root, path, '1', '1', null);
         // h = descripteur elementSpec

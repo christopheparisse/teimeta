@@ -6,6 +6,9 @@ import * as events from './events';
 import * as odd from '../teiedit/odd';
 import * as msg from './messages';
 import * as schema from '../teiedit/schema';
+import * as edit from '../teiedit/edit';
+import * as syscall from './opensave';
+import * as help from './help';
 let picoModal = require('picomodal');
 
 function readTextFile(file, callback) {
@@ -45,6 +48,17 @@ export function oddPartDesc() {
         readTextFile('http://ct3.ortolang.fr/teimeta/olac.odd?v=' + schema.version, function(text) {
             events.openOddLoad(msg.msg('predefoddolacdc'), text);
         });
+        /*
+        readTextFile('http://ct3.ortolang.fr/teimeta/olac-css.odd', 
+            function(textOdd) {
+                readTextFile('http://ct3.ortolang.fr/teimeta/olac-css.css',
+                    function(textCss) {
+                        events.openOddCssLoad('Ct3:olac-css.odd', textOdd, "Ct3:Olac-css.css", textCss);
+                    }
+                );
+            }
+        );
+        */
     });
 }
 
@@ -111,12 +125,18 @@ export function setCanRm(e) {
 }
 
 export function setLanguage(lg, reload=true) {
-    if (lg === 'fra') {
+    if (lg === 'fr' || lg === 'fra') {
         odd.odd.params.language = 'fr';
-        msg.setLanguage('fra');
+        msg.setLanguage('fr');
+    } else if (lg === 'es' || lg === 'esp') {
+        odd.odd.params.language = 'es';
+        msg.setLanguage('es');
+    } else if (lg === 'ja' || lg === 'jpn') {
+        odd.odd.params.language = 'ja';
+        msg.setLanguage('ja');
     } else {
         odd.odd.params.language = 'en';
-        msg.setLanguage('eng');
+        msg.setLanguage('en');
     }
 
     let el = document.getElementById('title');
@@ -127,6 +147,8 @@ export function setLanguage(lg, reload=true) {
     el.textContent = msg.msg("xmlsave");
     el = document.getElementById('oddopen');
     el.textContent = msg.msg("oddopen");
+    el = document.getElementById('cssopen');
+    el.textContent = msg.msg("cssopen");
     el = document.getElementById('menuhelp');
     el.textContent = msg.msg("menuhelp");
     el = document.getElementById('teispoken');
@@ -137,6 +159,12 @@ export function setLanguage(lg, reload=true) {
     el.textContent = msg.msg("oddmedia");
     el = document.getElementById('menuparam');
     el.textContent = msg.msg("menuparam");
+    el = document.getElementById('xmlnew');
+    el.textContent = msg.msg("xmlnew");
+    el = document.getElementById('predefodd');
+    el.textContent = msg.msg("predefodd");
+    el = document.getElementById('choicelanguage');
+    el.textContent = msg.msg("choicelanguage");
 
     changeParams = false;
     saveParams();
@@ -243,4 +271,60 @@ export function loadParams() {
         if (!isNaN(vi) && vi >= 0 && vi <= 100)
             odd.odd.params.leftShift = vi;
     }
+}
+
+export function init(funbodykeys) {
+    let el;
+    el = document.getElementById('titledate');
+    el.textContent = ' - ' + help.version;
+    el = document.getElementsByTagName('body');
+    el[0].addEventListener("keydown", funbodykeys);
+    el = document.getElementById('file-open');
+    el.addEventListener("click", events.openXml);
+    el = document.getElementById('file-open-odd');
+    el.addEventListener("click", events.openOdd);
+    el = document.getElementById('file-open-css');
+    el.addEventListener("click", events.openCss);
+    el = document.getElementById('file-saveas');
+    el.addEventListener("click", events.saveAsLocal);
+    el = document.getElementById('help');
+    el.addEventListener("click", help.about);
+    el = document.getElementById('top2-params');
+    el.addEventListener("click", oddParams);
+
+    el = document.getElementById('odd-media');
+    el.addEventListener("click", oddMedia);
+    el = document.getElementById('odd-teioral');
+    el.addEventListener("click", oddTeiOral);
+    el = document.getElementById('odd-partdesc');
+    el.addEventListener("click", oddPartDesc);
+    
+    el = document.getElementById('showall');
+    el.addEventListener("click", edit.showAll);
+    el = document.getElementById('hideall');
+    el.addEventListener("click", edit.hideAll);
+    el = document.getElementById('upload-input-transcript');
+    el.addEventListener("change", syscall.openLocalFile);
+    //
+    // for user interface in html pages
+    window['ui'] = {};
+    window['ui'].setOnOffES = edit.setOnOffES;
+    window['ui'].setText = edit.setText;
+    window['ui'].createEC = edit.createEC;
+    window['ui'].setOpenlist = edit.setOpenlist;
+    window['ui'].initOpenlist = edit.initOpenlist;
+    window['ui'].toggleES = edit.toggleES;
+    window['ui'].checkTime = edit.checkTime;
+    window['ui'].highlight = edit.highlight;
+    window['ui'].odd = odd.odd;
+    window['ui'].setLeftShift = setLeftShift;
+    window['ui'].setDispFPath = setDispFPath;
+    window['ui'].setDefNewElt = setDefNewElt;
+    window['ui'].setValReq = setValReq;
+    window['ui'].setCanRm = setCanRm;
+    window['ui'].setLanguage = setLanguage;
+    // for debugging purposes
+    window['dbg'] = {};
+    window['dbg'].tei = events.teiData;
+    window['dbg'].v = edit.values;
 }

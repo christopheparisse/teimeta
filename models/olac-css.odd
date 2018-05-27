@@ -1,0 +1,803 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml"
+	schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+  <teiHeader>
+      <fileDesc>
+         <titleStmt>
+            <title>Exemple d'édition de fichier Olac</title>
+         </titleStmt>
+         <publicationStmt>
+            <p>Base pour l'édition des documents au format olac pour oai-pmh</p>
+         </publicationStmt>
+         <sourceDesc>
+            <p>Groupe de travail exploration/interopérabilité CORLI</p>
+         </sourceDesc>
+      </fileDesc>
+  </teiHeader>
+  <text>
+      <body>
+         <schemaSpec ident="OLAC" ns="http://www.language-archives.org/OLAC/0.4/" start="olac">
+            <altIdent type="xmlns:xsi">http://www.w3.org/2001/XMLSchema-instance</altIdent>
+            <altIdent type="xsi:schemaLocation">http://www.language-archives.org/OLAC/0.4/ http://www.language-archives.org/OLAC/0.4/olac.xsd</altIdent>
+
+            <elementSpec ident="olac">
+               <content>
+                  <elementRef key="contributor" minOccurs="0" maxOccurs="unbounded"/>
+                  <!--  same as creator  -->
+                  <elementRef key="coverage" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="creator" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="date" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="description" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="format" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="format.cpu" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="format.encoding" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="format.markup" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="format.os" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="format.sourcecode" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="identifier" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="language" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="publisher" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="relation" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="rights" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="source" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="subject" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="subject.language" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="title" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="type" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="type.linguistic" minOccurs="0" maxOccurs="unbounded"/>
+                  <elementRef key="type.functionality" minOccurs="0" maxOccurs="unbounded"/>
+               </content>
+            </elementSpec>
+            
+            <elementSpec ident="contributor">
+               <desc>Entité responsable de contributions au contenu de la ressource.
+                  Les exemples de contributeur comprennent une personne, une organisation ou un service. 
+                  Généralement, on utilisera le nom d’un contributeur pour désigner cette entité.
+               </desc>
+               <content>
+                  <textNode/>
+               </content>
+                <remarks style="element">
+                    <p><ident>contributor-css</ident></p>
+                </remarks>
+               <attList>
+                  <attDef ident="refine">
+                     <desc>refine</desc>
+                     <datatype>
+                        <dataRef name="openlist"/>
+                     </datatype>
+                     <valList type="open">
+                        <valItem ident="annotator" />
+                        <valItem ident="author" />
+                        <valItem ident="compiler" />
+                        <valItem ident="consultant" />
+                        <valItem ident="data_inputter" />
+                        <valItem ident="depositor" />
+                        <valItem ident="developer" />
+                        <valItem ident="editor" />
+                        <valItem ident="illustrator" />
+                        <valItem ident="interpreter" />
+                        <valItem ident="interviewer" />
+                        <valItem ident="participant" />
+                        <valItem ident="performer" />
+                        <valItem ident="photographer" />
+                        <valItem ident="recorder" />
+                        <valItem ident="researcher" />
+                        <valItem ident="research_participant" />
+                        <valItem ident="responder" />
+                        <valItem ident="signer" />
+                        <valItem ident="singer" />
+                        <valItem ident="speaker" />
+                        <valItem ident="sponsor" />
+                        <valItem ident="transcriber" />
+                        <valItem ident="translator" />
+                     </valList>
+                  </attDef>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+            <elementSpec ident="coverage">
+               <desc>Périmètre ou domaine d’application du contenu de la ressource, c’est‑à‑dire ou la couverture spatio‑temporelle de la ressource.
+                  Généralement, l’élément couverture inclut une position géographique (le nom d’un lieu ou les coordonnées d’une entité administrative).Il est recommandé de sélectionner une valeur dans un vocabulaire contrôlé (par exemple, le thésaurus de noms géographiques TGN Thesaurus of Geographic Names et d’utiliser, quand cela est approprié, des noms de lieux ou de périodes plutôt que des identifiants numériques tels que des coordonnées ou des intervalles de dates.
+                  L'élément Coverage sert à préciser le sujet quand il s'agit d'une période temporelle ou d'une étendue spatiale.
+                  Il est employé uniquement pour l’indexation matière et non pour indiquer la période ou le lieu de création de la ressource.
+               </desc>
+               <content>
+                  <textNode/>
+               </content>
+                <remarks style="element">
+                    <p><ident>coverage-css</ident></p>
+                </remarks>
+               <attList>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+            
+            <elementSpec ident="creator">
+               <desc xml:lang="fr">L’entité principalement responsable de la création du contenu de la ressource.
+                  Les exemples de créateur comprennent une personne, une organisation ou un service. 
+                  Généralement, on utilisera le nom du créateur pour désigner cette entité.
+               </desc>
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="refine">
+                     <desc>refine</desc>
+                     <datatype>
+                        <dataRef name="openlist"/>
+                     </datatype>
+                     <valList type="open">
+                        <valItem ident="annotator" />
+                        <valItem ident="author" />
+                        <valItem ident="compiler" />
+                        <valItem ident="consultant" />
+                        <valItem ident="data_inputter" />
+                        <valItem ident="depositor" />
+                        <valItem ident="developer" />
+                        <valItem ident="editor" />
+                        <valItem ident="illustrator" />
+                        <valItem ident="informant" />
+                        <valItem ident="interpreter" />
+                        <valItem ident="interviewer" />
+                        <valItem ident="participant" />
+                        <valItem ident="performer" />
+                        <valItem ident="photographer" />
+                        <valItem ident="recorder" />
+                        <valItem ident="researcher" />
+                        <valItem ident="research_participant" />
+                        <valItem ident="responder" />
+                        <valItem ident="signer" />
+                        <valItem ident="singer" />
+                        <valItem ident="speaker" />
+                        <valItem ident="sponsor" />
+                        <valItem ident="transcriber" />
+                        <valItem ident="translator" />
+                     </valList>
+                  </attDef>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                    <remarks style="element">
+                        <p><ident>creator-data-css</ident></p>
+                    </remarks>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+            <elementSpec ident="date">
+               <desc>Date d’un événement dans le cycle de vie de la ressource. 
+                  Il s’agira généralement de la date de création ou de mise à disposition de la ressource.
+               </desc>
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="code">
+                     <desc>code</desc>
+                     <datatype>
+                        <dataRef name="date"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="refine">
+                     <desc>refine</desc>
+                     <datatype>
+                        <dataRef name="list"/>
+                     </datatype>
+                     <valList type="closed">
+                        <valItem ident="created" />
+                        <valItem ident="valid" />
+                        <valItem ident="available" />
+                        <valItem ident="issued" />
+                        <valItem ident="modified" />
+                     </valList>
+                  </attDef>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+ 
+            <elementSpec ident="description">
+               <desc xml:lang="fr">Une présentation du contenu de la ressource.
+                  Les exemples de description comprennent notamment : résumé, table des matières, référence à une représentation graphique du contenu, exposé du contenu en texte libre.
+                  L’information porte sur le contenu intellectuel de la ressource.
+                  La description matérielle des documents relève de l’élément Format.
+               </desc>
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+ 
+            <elementSpec ident="format">
+               <desc>La manifestation (ou matérialisation) physique ou numérique de la ressource.
+                  Typiquement, le format peut comprendre le type de medium ou les dimensions de la ressource. 
+                  L’élément Format peut être utilisé pour identifier le logiciel, le matériel ou tout autre équipement 
+                  nécessaire pour afficher ou exploiter la ressource. Les exemples de dimensions comprennent la taille et la durée.
+               </desc>
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="code">
+                     <desc>code</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+ 
+            <elementSpec ident="format.cpu">
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="code">
+                     <desc>code</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+            <elementSpec ident="format.encoding">
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="code">
+                     <desc>code</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+            <elementSpec ident="format.markup">
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+            <elementSpec ident="format.os">
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="code">
+                     <desc>code</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+            <elementSpec ident="format.sourcecode">
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+            <elementSpec ident="identifier">
+               <desc>Référence univoque à la ressource dans un contexte donné.
+                  Il est recommandé d’identifier la ressource au moyen d’une chaîne de caractères 
+                  ou d’un numéro conforme à un système formel d’identification. Les systèmes d'information 
+                  officiels comprennent notamment le « Uniform Resource Identifier » 
+                  (URI / identificateur de ressources uniformes), qui inclut le « Uniform Resource Locator » (URL), 
+                  le « Digital Object Identifier » (DOI / identificateur d’objet numérique) 
+                  et le « International Standard Book Number » (ISBN).</desc>
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+            <elementSpec ident="language">
+               <desc>La langue du contenu intellectuel de la ressource.
+                  Il est recommandé d’utiliser une des valeurs définies dans la RFC 3066 qui, 
+                  avec la norme ISO 639, définit des codes de langues primaires à deux et à trois caractères, 
+                  ainsi que des sous‑codes facultatifs. Exemples : « en » ou « eng » pour l’anglais, 
+                  « fr » ou « fre » pour le français, « akk » pour l’akkadien et « en-UK » pour l’anglais 
+                  utilisé au Royaume-Uni.</desc>
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="code">
+                     <desc>code</desc>
+                     <datatype>
+                        <dataRef name="languagecode"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+            <elementSpec ident="publisher">
+               <desc>L’entité responsable de la mise à disposition ou diffusion de la ressource. 
+                  Les exemples d’éditeur comprennent une personne, une organisation ou un service. 
+                  Généralement, on utilisera le nom de l’éditeur (le nomd’une maison d’édition) pour désigner cette entité.
+                  Il s'agit de la personne physique ou morale responsable de l’édition 
+                  ou de la publication de la ressource.
+               </desc>
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+            <elementSpec ident="relation">
+               <desc>Référence à une ressource apparentée.
+                  Il est recommandé d’identifier la ressource apparentée par une chaîne de caractères 
+                  ou d’un numéro conforme à un système d’identification officiel.
+                  L'élément Relation est utilisé pour indiquer toutes les relations méréologiques 
+                  (de tout à partie), notamment les références bibliographiques de l’ouvrage dont 
+                  est extraite une image, ou le titre du périodique dont est issu un article, ou 
+                  la collection dont fait partie une monographie. Cet élément peut ainsi contenir 
+                  un titre, un ou plusieurs noms d’auteur, une date.
+                  Il sert aussi à donner des liens vers des ressources qui mentionnent celle décrite, 
+                  telle une notice de catalogue en ligne.
+               </desc>
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="refine">
+                     <desc>refine</desc>
+                     <valList type="closed">
+                        <valItem ident="isVersionOf"/>
+                        <valItem ident="hasVersion"/>
+                        <valItem ident="isReplacedBy"/>
+                        <valItem ident="replaces"/>
+                        <valItem ident="isRequiredBy"/>
+                        <valItem ident="requires"/>
+                        <valItem ident="isPartOf"/>
+                        <valItem ident="hasPart"/>
+                        <valItem ident="isReferencedBy"/>
+                        <valItem ident="references"/>
+                        <valItem ident="isFormatOf"/>
+                        <valItem ident="hasFormat"/>
+                     </valList>
+                  </attDef>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+            <elementSpec ident="rights">
+               <desc>Informations sur les droits associés à la ressource.
+                  Généralement, l’élément gestion des droits contient une mention de la gestion 
+                  des droits afférents à la ressource ou une référence au service fournissant 
+                  cette information. L’information sur les droits englobe souvent les droits 
+                  de propriété intellectuelle (IPR), le copyright et divers droits de propriété. 
+                  Si l’élément gestion de droits est absent, aucune hypothèse ne peut être émise 
+                  sur les droits associés à la ressource.
+                  L'élément Rights permet de déclarer les droits applicables à la ressource décrite.
+                  Cet élément peut indiquer les restrictions portant sur l’utilisation de la ressource, 
+                  le titulaire des droits auquel il est nécessaire de s’adresser pour connaître 
+                  les conditions d’utilisation de la ressource, mais aussi une URL pointant vers un document 
+                  décrivant les droits applicables à la ressource.
+                  L'absence d'information ne vaut pas déclaration de liberté d'utilisation. Il est donc 
+                  nécessaire d'indiquer « public domain » ou « domaine public » pour les ressources entrées 
+                  dans le domaine public et libres de droit.
+               </desc>
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+            <elementSpec ident="source">
+               <desc>Référence à une ressource dont la ressource décrite est dérivée.
+                  La ressource décrite peut être dérivée de la source en tout ou partie. 
+                  La pratique recommandée est d’identifier la ressource mentionnée dans l’élément 
+                  Source par une chaîne de caractères ou par un numéro en conformité avec un système 
+                  formel d’identification.
+               </desc>
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+            <elementSpec ident="subject">
+               <desc xml:lang="fr">Thème du contenu de la ressource.
+                  Généralement, le sujet est exprimé sous forme de mots clés ou d’expressions 
+                  ou par des codes de classification décrivant un thème de la ressource. 
+                  La pratique recommandée est de choisir une valeur dans un vocabulaire 
+                  contrôlé ou dans un plan de classification.
+               </desc>
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+            <elementSpec ident="subject.language">
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="code">
+                     <desc>code</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+            
+            <elementSpec ident="title">
+               <desc xml:lang="fr">Nom donné à la ressource : le titre est généralement le nom formel 
+                  sous lequel la ressource est connue.
+               </desc>
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="refine">
+                     <desc>refine</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+            
+            <elementSpec ident="type">
+               <desc>Nature ou genre du contenu de la ressource.
+                  L’élément type contient des termes qui décrivent des catégories, des fonctions, des genres généraux 
+                  ou des niveaux d’agrégation de contenu. La pratique recommandée est de choisir une valeur 
+                  dans un vocabulaire contrôlé (par exemple, dans la liste du DCMI Type Vocabulary). 
+                  Pour décrire la manifestation physique ou numérique de la ressource, utiliser l’élément Format.
+               </desc>
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="code">
+                     <desc>code</desc>
+                     <datatype>
+                        <dataRef name="openlist"/>
+                     </datatype>
+                     <valList type="open">
+                        <valItem ident="collection" />
+                        <valItem ident="dataset" />
+                        <valItem ident="event" />
+                        <valItem ident="image" />
+                        <valItem ident="interactiveresource" />
+                        <valItem ident="movingimage" />
+                        <valItem ident="physicalobject" />
+                        <valItem ident="service" />
+                        <valItem ident="software" />
+                        <valItem ident="sound" />
+                        <valItem ident="stillimage" />
+                        <valItem ident="text" />
+                     </valList>
+                  </attDef>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+            <elementSpec ident="type.linguistic">
+               <desc>Type de données linguistiques</desc>
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="code">
+                     <desc>code</desc>
+                     <valList type="closed">
+                        <valItem ident="lexicon">
+                           <desc>Lexicon</desc>
+                        </valItem>
+                        <valItem ident="primary_text">
+                           <desc>Primary Text</desc>
+                        </valItem>
+                        <valItem ident="language_description">
+                           <desc>Language Description</desc>
+                        </valItem>
+                     </valList>
+                  </attDef>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+            <elementSpec ident="type.functionality">
+               <content>
+                  <textNode/>
+               </content>
+               <attList>
+                  <attDef ident="code">
+                     <desc>code</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="language">
+                     <desc>language</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="scheme">
+                     <desc>scheme</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
+            </elementSpec>
+
+         </schemaSpec>
+      </body>
+  </text>
+</TEI>

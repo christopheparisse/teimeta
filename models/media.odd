@@ -31,7 +31,7 @@
 	<text>
 		<body>
 			<!-- definition de TEI_CORPO_METADATA-->
-			<schemaSpec ident="TEI_CORPO_METADATA" start="TEI" rend="media_odd.css">
+			<schemaSpec ident="TEI_CORPO_METADATA" start="TEI" rend="media-css.css">
 				<!-- ajouter teiCorpus par la suite si collections -->
 
 				<!-- required modules -->
@@ -76,6 +76,8 @@
 				<elementSpec ident="fileDesc" module="header">
 					<desc xml:lang="fr">Titre, diffusion et données primaires</desc>
 					<desc xml:lang="en">Title, diffusion and primary data</desc>
+					<desc xml:lang="es">Título, difusión y datos primarios</desc>
+					<desc xml:lang="ja">タイトル、拡散および主要データ</desc>
 					<content>
 						<elementRef key="sourceDesc" minOccurs="1" maxOccurs="1"/>
 					</content>
@@ -85,6 +87,8 @@
 				<elementSpec ident="sourceDesc" module="header" mode="change">
 					<desc xml:lang="fr">Données sources</desc>
 					<desc xml:lang="en">Sources of the data</desc>
+					<desc xml:lang="es">Fuentes de los datos</desc>
+					<desc xml:lang="ja">データのソース</desc>
 					<content>
 						<elementRef key="recordingStmt" minOccurs="1" maxOccurs="1"/>
 					</content>
@@ -92,50 +96,19 @@
 				
 				<elementSpec ident="recordingStmt" module="spoken">
 					<desc xml:lang="fr">Enregistrement, données primaires</desc>
-					<desc xml:lang="en">Recording, primary data </desc>
+					<desc xml:lang="en">Recording, primary data</desc>
+					<desc xml:lang="es">Grabación, datos primarios</desc>
+					<desc xml:lang="ja">録音、プライマリデータ</desc>
 					<content>
 						<elementRef key="recording" minOccurs="1" maxOccurs="unbounded"/>
 					</content>
-					
-					<!--  Des exemples  -->
-					<exemplum versionDate="2016-10-04" xml:lang="fr">
-						<egXML xmlns="http://www.tei-c.org/ns/Examples">
-							<sourceDesc>
-								<recordingStmt>
-									<recording>
-										<p> une balise media par enregistrement</p>
-										<media type="audio" mimeType="audio/wav" dur-iso="P36M"
-											url="xxx">
-											<p> un signal audio anonymisé</p>
-											<desc type="anonymisation" subtype="oui"/>
-											<desc type="qualite" subtype="peu_bruite"/>
-										</media>
-									</recording>
-									<recording>
-										<media type="video" mimeType="video/mp4" dur-iso="P36M"
-											url="xxx">
-											<p> un signal video anonymisé</p>
-											<desc type="anonymisation" subtype="oui"/>
-											<desc type="qualite" subtype="peu_bruite"/>
-										</media>
-									</recording>
-									<recording>
-										<media type="audio" mimeType="audio/wav" dur-iso="P36M"
-											url="xxx">
-											<p> un signal audio non anonymisé</p>
-											<desc type="anonymisation" subtype="non"/>
-											<desc type="qualite" subtype="peu_bruite"/>
-										</media>
-									</recording>
-								</recordingStmt>
-							</sourceDesc>
-						</egXML>
-					</exemplum>
 				</elementSpec>
 				
 				<elementSpec ident="recording" module="spoken">
 					<desc xml:lang="fr">Informations sur l'enregistrement</desc>
 					<desc xml:lang="en">Recording information</desc>
+					<desc xml:lang="es">Información de grabación</desc>
+					<desc xml:lang="ja">記録情報</desc>
 					<content>
 						<sequence minOccurs="1" maxOccurs="unbounded">
 							<elementRef key="p" corresp="media"/>
@@ -149,8 +122,10 @@
 				</elementSpec>
 				
 				<elementSpec ident="p" corresp="media" module="core">
-					<desc xml:lang="fr">Media information</desc>
+					<desc xml:lang="fr">Information média</desc>
 					<desc xml:lang="en">Media information</desc>
+					<desc xml:lang="es">Información de los medios</desc>
+					<desc xml:lang="ja">メディア：各メディアの期間が異なる可能性があります</desc>
 					<content>
 						<textNode/>
 					</content>
@@ -162,7 +137,9 @@
 				
 				<elementSpec ident="media" module="spoken">
 					<desc xml:lang="fr">Média : chaque media peut avoir une durée différente</desc>
-					<desc xml:lang="en">Media: each media could have a different duration </desc>
+					<desc xml:lang="en">Media: each media could have a different duration</desc>
+					<desc xml:lang="es">Medios: cada medio puede tener una duración diferente</desc>
+					<desc xml:lang="ja"></desc>
 					<content>
 						<sequence minOccurs="1" maxOccurs="1">
 							<elementRef key="desc" corresp="quality"/>
@@ -199,6 +176,8 @@
 						<attDef ident="dur-iso" usage="req" mode="change">
 							<desc xml:lang="fr">durée du média</desc>
 							<desc xml:lang="en">media duration</desc>
+							<desc xml:lang="es">duración de los medios</desc>
+							<desc xml:lang="ja">メディア期間</desc>
 							<datatype>
 								<dataRef name="duration"/>
 							</datatype>
@@ -210,6 +189,8 @@
 						<attDef ident="url" mode="change">
 							<desc xml:lang="fr">url du média</desc>
 							<desc xml:lang="en">media url</desc>
+							<desc xml:lang="es">url del medio</desc>
+							<desc xml:lang="ja">メディアURL</desc>
 							<datatype>
 								<dataRef name="anyURI"/>
 							</datatype>
@@ -267,18 +248,26 @@
 								<valItem ident="anonymization">
 									<desc xml:lang="fr">anonymisée</desc>
 									<desc xml:lang="en">anonymized</desc>
+									<desc xml:lang="es">anonimizado</desc>
+									<desc xml:lang="ja">匿名化された</desc>
 								</valItem>
 								<valItem ident="no_anonymization">
 									<desc xml:lang="fr">non anonymisée</desc>
 									<desc xml:lang="en">no anonymization</desc>
+									<desc xml:lang="es">no anonimizado</desc>
+									<desc xml:lang="ja">匿名化なし</desc>
 								</valItem>
 								<valItem ident="partially_anonymized">
 									<desc xml:lang="fr">anonymisation partielle</desc>
 									<desc xml:lang="en">partially anonymized</desc>
+									<desc xml:lang="es">parcialmente anonimizado</desc>
+									<desc xml:lang="ja">部分的に匿名化された</desc>
 								</valItem>
 								<valItem ident="OTHER">
 									<desc xml:lang="fr">Autre</desc>
 									<desc xml:lang="en">Other</desc>
+									<desc xml:lang="es">Otro</desc>
+									<desc xml:lang="ja">その他</desc>
 								</valItem>
 							</valList>
 						</attDef>

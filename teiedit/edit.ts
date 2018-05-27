@@ -467,7 +467,7 @@ function generateMultiple(ec, abspath) {
 
 function editDataType(datatype, ident) {
 //    console.log('DATATYPE', datatype);
-    if (datatype.remarks) console.log("datatype remarks", datatype.remarks.ident, datatype.remarks, datatype);
+    // if (datatype.remarks) console.log("datatype remarks", datatype.remarks.ident, datatype.remarks, datatype);
     let s = '<div class="nodeEdit">\n';
     // il faut editer l'élément texte du noeud
     let uniq = createID();
@@ -501,7 +501,11 @@ function editDataType(datatype, ident) {
             }
             */
             // choix dans une liste
-            s +='<select class="listattr ' + UPname + '" id="' + uniq + '" ';
+            s +='<select class="listattr ' + UPname;
+            if (datatype.remarks && datatype.remarks.ident) {
+                s += ' ' + datatype.remarks.ident;
+            }
+            s += '" id="' + uniq + '" ';
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
@@ -532,7 +536,11 @@ function editDataType(datatype, ident) {
             s += '</datalist>\n';
             */
             // choix dans une liste avec ajout possible
-            s += '<select class="listattr ' + UPname + '" id="' + uniq + '" \n';
+            s += '<select class="listattr ' + UPname;
+            if (datatype.remarks && datatype.remarks.ident) {
+                s += ' ' + datatype.remarks.ident;
+            }
+            s += '" id="' + uniq + '" \n';
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
@@ -573,7 +581,11 @@ function editDataType(datatype, ident) {
             */
             s += ' ' + styleTime();
             s += '</label>\n';
-            s += '<input class="' + UPname + '" name="' + uniq + '" id="' + uniq + '" ';
+            s += '<input class="' + UPname;
+            if (datatype.remarks && datatype.remarks.ident) {
+                s += ' ' + datatype.remarks.ident;
+            }
+            s += '" name="' + uniq + '" id="' + uniq + '" ';
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
@@ -593,7 +605,11 @@ function editDataType(datatype, ident) {
                 s += '</label>\n';
             }
             */
-            s += '<input class="' + UPname + '" type="date" name="' + uniq + '" id="' + uniq + '" ';
+            s += '<input class="' + UPname;
+            if (datatype.remarks && datatype.remarks.ident) {
+                s += ' ' + datatype.remarks.ident;
+            }
+            s += '" type="date" name="' + uniq + '" id="' + uniq + '" ';
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
@@ -616,7 +632,11 @@ function editDataType(datatype, ident) {
                 s += '</label>\n';
             }
             */
-            s += '<input class="' + UPname + '" name="' + uniq + '" id="' + uniq + '" ';
+            s += '<input class="' + UPname;
+            if (datatype.remarks && datatype.remarks.ident) {
+                s += ' ' + datatype.remarks.ident;
+            }
+            s += '" name="' + uniq + '" id="' + uniq + '" ';
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
@@ -673,7 +693,7 @@ function generateElement(elt, validatedStyle) {
         let lprof = recursiveDepth * odd.odd.params.leftShift;
         if (odd.odd.params.displayFullpath && (elt.attr.length === 0 && (!elt.content || !elt.content.datatype)))
             classdisplay = "noUP";
-        if (elt.remarks) console.log("elt remarks (on) ", elt.ident, elt);
+        // if (elt.remarks) console.log("elt remarks (on) ", elt.ident, elt);
         if (elt.remarks) {
             s += '<div title="' + elt.absolutepath + '" ';
             s += 'class="nodeField node-' + classOf(elt.usage) + " " + classdisplay;
@@ -749,7 +769,7 @@ function generateElement(elt, validatedStyle) {
         recursiveDepth --; // cancel recursiveDepth
         let lprof = recursiveDepth * odd.odd.params.leftShift;
         if (elt.remarks) {
-            if (elt.remarks) console.log("elt remarks (off) ", elt.ident, elt);
+            // if (elt.remarks) console.log("elt remarks (off) ", elt.ident, elt);
             s += '<div class="nodeField noUP node-' + classOf(elt.usage) + " " + classdisplay;
             s += (elt.remarks.ident) ? " " + elt.remarks.ident + '" ' : '" ';
             s += 'style="' + elt.remarks.cssvalue + '">\n';

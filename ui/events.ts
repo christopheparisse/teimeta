@@ -2,6 +2,22 @@
  * events.ts
  * author: Christophe Parisse
  * main procedures to load, save, and call teiedit functions
+ * 
+ * Use case
+ * 1) openXml() --> choose a local file --> loadXml(data/file/url)
+ *      if ODD in XML then loadODD(file/url)
+ *      else choose ODD file or choose predefined ODD or already loaded ODD --> (loadOdd data/file/url)
+ * 2) newXml()
+ *      choose ODD file or choose predefined ODD or already loaded ODD --> (loadOdd data/file/url)
+ * 3) chooseOdd()
+ *      choose ODD file to be used in later openXml() or newXml()
+ *      if the user want to replace current ODD, he has to save first
+ * 4) chooseCss()
+ *      choose a CSS file to be used in later openXml() or newXml()
+ *      the predefined CSS can be used only with predefined ODD (see above)
+ * 
+ * choix obligatoire internes
+ *      loadCss(data/ulr/file)
  */
 
 import * as edit from '../teiedit/edit';
@@ -17,14 +33,32 @@ const NEWFILENAME = msg.msg('newfile');
 
 export let teiData = {
     oddName: '',
+    cssName: '',
     fileName: '',
     dataOdd: null,
+    dataCss: null,
     dataTei: null,
     html: null,
     new: true,
     parser: null,
     doc: null,
     system: ''
+};
+
+export function openXml() {
+    // checked changes - the user can cancel if needed
+    checkChange(() => { // if ok ask the user for a file
+        opensave.chooseOpenFile(function(err, name, data) {
+            if (!err) { // if not cancelled
+                if (!teiData.dataOdd) {
+                    newFile(function() { finishLoad(1, null, null); } );
+                } else {
+                    finishLoad(0, name, data);
+                }
+            } else
+                console.log(name, err);
+        });
+    });
 };
 
 function finishLoad(err, name, data) {
@@ -67,22 +101,6 @@ export function checkChange(fun) {
     );
 }
 
-export function open() {
-    // checked changes
-    checkChange(() => {
-        opensave.chooseOpenFile(function(err, name, data) {
-            if (!err) {
-                if (!teiData.dataOdd) {
-                    newFile(function() { finishLoad(1, null, null); } );
-                } else {
-                    finishLoad(0, name, data);
-                }
-            } else
-                console.log(name, err);
-        });
-    });
-};
-
 export function newFile(callback) {
     // checked changes
     checkChange(() => {
@@ -95,6 +113,12 @@ export function newFile(callback) {
                     emptyFile();
                     if (callback) callback(0);
                     return;
+                }
+                let lcss = localStorage.getItem("previousCSS");
+                var jcss = JSON.parse(lcss);
+                console.log('newfile CSS', jcss);
+                if (lcss) {
+                    openCssLoad(jcss.cssName, jcss.data);
                 }
                 openOddLoad(js.oddName, js.data);
                 if (callback) callback(0);
@@ -122,6 +146,12 @@ export function reLoad(callback) {
                 if (callback) callback(0);
                 return;
             }
+            let lcss = localStorage.getItem("previousCSS");
+            var jcss = JSON.parse(lcss);
+            console.log('newfile CSS', jcss);
+            if (lcss) {
+                openCssLoad(jcss.cssName, jcss.data);
+            }
             openOddLoad(js.oddName, js.data);
             finishLoad(0, lxname, lx);
             if (callback) callback(0);
@@ -134,16 +164,28 @@ export function reLoad(callback) {
     }
 }
 
+export function openOddCssLoad(nameOdd, dataOdd, nameCss, dataCss) {
+    openCssLoad(nameCss, dataCss);
+    openOddLoad(nameOdd, dataOdd);
+}
+
 export function openOddLoad(name, data) {
     teiData.oddName = name;
     let el = document.getElementById('oddname');
     el.innerHTML = "ODD: " + name;
     teiData.dataOdd = odd.loadOdd(data);
     load.loadTei(null, teiData);
-    teiData.html = edit.generateHTML(teiData);
+    if (teiData.dataCss) {
+        let cssHtml =  '<style>' + teiData.dataCss + '</style>\n';
+        teiData.html = cssHtml + edit.generateHTML(teiData);
+    } else {
+        teiData.html = edit.generateHTML(teiData);
+    }
     teiData.fileName = NEWFILENAME;
     teiData.new = true;
 
+    el = document.getElementById('cssname');
+    if (el) el.innerHTML = "CSS: " + teiData.cssName;
     el = document.getElementById('filename');
     el.innerHTML = msg.msg('file') + teiData.fileName;
     el = document.getElementById('teidata');
@@ -164,14 +206,39 @@ export function openOdd() {
     });
 };
 
+export function openCssLoad(name, data) {
+    teiData.cssName = name;
+    let el = document.getElementById('cssname');
+    if (el) el.innerHTML = "CSS: " + name;
+    teiData.dataCss = data;
+    // console.log("CSS: ", name, data);
+    let js = JSON.stringify({data: data, cssName: name});
+    localStorage.setItem("previousCSS", js);
+}
+
+export function openCss() {
+    // checked changes
+    checkChange(() => {
+        opensave.chooseOpenFile(function(err, name, data) {
+            if (!err) {
+                openCssLoad(name, data);
+            } else
+                console.log(name, err);
+        });
+    });
+};
+
 export function emptyFile() {
     let dt = document.getElementById('teidata');
     dt.innerHTML = '';
     teiData.oddName = msg.msg('nofilename');
     teiData.fileName = msg.msg('nofilename');
+    teiData.cssName = msg.msg('nofilename');
     teiData.new = true;
     let el = document.getElementById('oddname');
     el.innerHTML = "ODD: " + teiData.oddName;
+    el = document.getElementById('cssname');
+    if (el) el.innerHTML = "CSS: " + teiData.cssName;
     el = document.getElementById('filename');
     el.innerHTML = msg.msg('file') + teiData.fileName;
 }
