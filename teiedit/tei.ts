@@ -54,9 +54,10 @@ export function generateTEI(teiData) {
         //return;
     }
 */
+    let s = '';
     if (!teiData.doc) {
         if (teiData.dataOdd.namespace) {
-            let s = '<?xml version="1.0" encoding="UTF-8"?>';
+            s = '<?xml version="1.0" encoding="UTF-8"?>';
             s += '<' + teiData.dataOdd.rootTEI + ' xmlns="' + teiData.dataOdd.namespace + '"></' + teiData.dataOdd.rootTEI + '>'
             teiData.doc = new dom().parseFromString(s, 'text/xml');
         } else {
@@ -68,8 +69,9 @@ export function generateTEI(teiData) {
     // first generate the root otherwise it would be duplicated
     generateFilledElement(eltspec, teiData.doc, eltspec.node);
     if (eltspec.content)
-        generateTEIContent(eltspec.content, teiData.doc, eltspec.node);
+        s += generateTEIContent(eltspec.content, teiData.doc, eltspec.node);
     // add oddname to teiData.doc
+    // console.log(s);
     eltspec.node.setAttribute("xml:base", teiData.oddName);
     return teiData.doc.toString();
 }
@@ -80,7 +82,7 @@ function generateElement(espec, doc, node) {
         console.log("Error: geneElemts:", espec);
         return "";
     }
-if (edit.values[espec.validatedESID].select === 'ok' /* || espec.usage === 'req' */) {
+    if (edit.values[espec.validatedESID].select === 'ok' /* || espec.usage === 'req' */) {
         // si node est vide en créer un en dernier fils du node d'au dessus
         let current = espec.node;
         if (!current) {
@@ -95,7 +97,6 @@ if (edit.values[espec.validatedESID].select === 'ok' /* || espec.usage === 'req'
         }
     } else {
         // supprimer le noeud si c'est autorisé
-        //console.log(espec.absolutepath, " non imprimé car non validé: ", edit.values[espec.validatedESID]);
         if (espec.node && (odd.odd.params.canRemove || espec.usage === 'opt')) {
             espec.node.parentNode.removeChild(espec.node);
             espec.node = null;
@@ -160,8 +161,6 @@ function createAbsolutePath(path, doc) {
         if (nds.length > 1) {
             let s = p.slice(0,i).join('/');
             s = '<!-- attention element ' + s + " n'est pas unique. -->";
-            //console.log(s);
-            // alert.alertUser(s);
         }
         if (nds.length > 0) {
             node = nds[0];
@@ -217,12 +216,16 @@ function generateFilledElement(elt, doc, node) {
                 elt.attr[i].datatype.valueContent = elt.attr[i].rend;
             } else {
                 let v = edit.values[elt.attr[i].datatype.valueContentID].value;
-                // console.log(v);
                 elt.attr[i].datatype.valueContent = encodeXML(String(v));
             }
             node.setAttribute(elt.attr[i].ident, elt.attr[i].datatype.valueContent);
             s += ' ' + elt.attr[i].ident + '="' + elt.attr[i].datatype.valueContent + '"';
         }
+    }
+    // write corresp attribute if it exists
+    if (elt.corresp) {
+        node.setAttribute('corresp', elt.corresp);
+        s += ' ' + elt.corresp;
     }
     s += '>';
     if (elt.content && elt.content.datatype) {

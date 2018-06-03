@@ -92,7 +92,8 @@ export class ElementCount {
     minOccurs = '1'; // 0, 1, 2, unbounded
     maxOccurs = '1'; // 0, 1, 2, unbounded
     model = null; // nom de l'elementSpec de référence (elementRef) ou des elementSpec (tableau pour la sequence)
-    ident = null; //
+    ident = null; // identifiant
+    corresp = null; // complement for the identifiant
     type = ''; // elementRef or sequence
     eCI = []; // element Count Items
     /* PAS UTILISE ???
@@ -132,7 +133,7 @@ export class AttrDef {
 export class ValItem {
     // Informations de l'ODD
     ident = '';
-    desc = '';
+    desc = null; // type Desc structure
 }
 
 export class Remarks {
@@ -179,7 +180,8 @@ function cpBloc(cp, obj) {
         inner.minOccurs = obj[i].minOccurs; // oneOrMore, one, zeroOrMore, twoOrMore
         inner.maxOccurs = obj[i].maxOccurs; // oneOrMore, one, zeroOrMore, twoOrMore
         inner.model = obj[i].model; // model ne sera jamais modifié
-        inner.ident = obj[i].ident; // model ne sera jamais modifié
+        inner.ident = obj[i].ident; // ident ne sera jamais modifié
+        inner.corresp = obj[i].corresp; // corresp ne sera jamais modifié
         inner.type = obj[i].type;
         inner.parent = obj[i].parent;
         inner.eCI = []; // element Count Items

@@ -68,7 +68,6 @@ export function checkOddTei(data, teiData) {
         let attr = root.getAttribute("xml:base");
         if (attr) return attr;
     }
-    //console.log(teiData.dataTei);
     return '';
 }
 
@@ -80,8 +79,8 @@ export function checkOddTei(data, teiData) {
  */
 export function loadTei(data, teiData, noreload=false) {
     // get XML ready
-    if (noreload) teiData.parser = new DOMParser();
-    if (noreload) teiData.doc = data 
+    if (!noreload) teiData.parser = new DOMParser();
+    if (!noreload) teiData.doc = data 
         ? new dom().parseFromString(data.toString(), 'text/xml')
         : null;
 
@@ -124,7 +123,6 @@ export function loadTei(data, teiData, noreload=false) {
         // 1 = nombre minimal de root autorisés
         // 1 = nombre maximal de root autorisés
     }
-    //console.log(teiData.dataTei);
     return true;
 }
 
@@ -252,7 +250,9 @@ function loadElementRef(ec, node, path, parent) {
     ec.eCI.push(eci);
 
     // load from TEI
-    let nodes = node ? odd.getChildrenByName(node, ec.ident) : [];
+    let nodes = node ? odd.getChildrenByName(node, ec.ident, ec.corresp) : [];
+    console.log("loadElementRef " + ec.ident + '/' + ec.corresp);
+    // filtering the elements (nodes) using corresp field if necessairy
     path =  path + '/' + ec.model;
     // si c'est vide
     if (nodes.length === 0) {
@@ -290,9 +290,19 @@ function loadSequence(ec, node, path, parent) {
     // load from TEI
     let nnodes = []; // tableau de tableau de nodes
     // pour tous les modèles de la séquence on cherche les noeuds correspondants
-    if (node)
-        for (let er of ec.ident)
-            nnodes.push(node ? odd.getChildrenByName(node, er) : []);
+    console.log("loadSequence", ec);
+    if (node) {
+        for (let n = 0; n < ec.ident.length; n++) {
+            console.log("LS ", ec.ident[n], ec.corresp[n]);
+            if (node) {
+                // filtering the elements (nodes) using corresp field if necessary
+                let elts = odd.getChildrenByName(node, ec.ident[n], ec.corresp[n]);
+                nnodes.push(elts);    
+            } else {
+                nnodes.push([]);    
+            }
+        }
+    }
     let maxlg = 0;
     for (let k = 0; k < nnodes.length ; k++)
         if (maxlg < nnodes[k].length) maxlg = nnodes[k].length;

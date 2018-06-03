@@ -489,8 +489,14 @@ function editDataType(datatype, ident) {
             }
             //console.log("datatype:", datatype.valueContent, datatype.rend, datatype);
             datatype.valueContentID = uniq;
-            if (!datatype.valueContent) // si vide mettre le premier de la liste
-                datatype.valueContent =  datatype.rend;
+            if (!datatype.valueContent) {
+                // if empty put rend value if exists else put first element
+                if (datatype.rend) {
+                    datatype.valueContent = datatype.rend;
+                } else if (datatype.vallist) {
+                    datatype.valueContent = datatype.vallist[0].ident;
+                }
+            }
             values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
             // edition de la valeur
             /*
@@ -515,13 +521,21 @@ function editDataType(datatype, ident) {
                     datatype.vallist[k].ident + '" ';
                 if (datatype.valueContent === datatype.vallist[k].ident)
                     s  += 'selected="selected" ';
-                s += '>' + datatype.vallist[k].desc + '</option>\n';
+                s += '>' + odd.textDesc(datatype.vallist[k].desc, odd.odd.params.language) + '</option>\n';
             }
             s += '</select>\n';
             break;
         case 'openlist':
             // attributs avec liste
             datatype.valueContentID = uniq;
+            if (!datatype.valueContent) {
+                // if empty put rend value if exists else put first element
+                if (datatype.rend) {
+                    datatype.valueContent = datatype.rend;
+                } else if (datatype.vallist) {
+                    datatype.valueContent = datatype.vallist[0].ident;
+                }
+            }
             values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
             /*
             s +='<input type=text class="awesomplete listattr" data-minchars="0" list="' + uniq + '" value="' + datatype.valueContent + '" ';
@@ -530,7 +544,7 @@ function editDataType(datatype, ident) {
             for (let k in datatype.vallist) {
                 s += '<option value="' +
                     datatype.vallist[k].ident + '" ';
-                    s += '>' + datatype.vallist[k].desc;
+                    s += '>' + odd.textDesc(datatype.vallist[k].desc, odd.odd.params.language);
                     s += '</option>\n';
             }
             s += '</datalist>\n';
@@ -565,7 +579,7 @@ function editDataType(datatype, ident) {
                     s  += 'selected="selected" ';
                     selected = true;                    
                 }
-                s += '>' + datatype.vallist[k].desc + '</option>\n';
+                s += '>' + odd.textDesc(datatype.vallist[k].desc, odd.odd.params.language) + '</option>\n';
             }
             s += '</select>\n';
             break;

@@ -30,9 +30,14 @@ function tagES(k, c) {
  * @param name 
  * @returns [list of nodes]
  */
-export function getChildrenByName(node, name) {
+export function getChildrenByName(node, name, corresp=null) {
     let children = [];
-    for (let child in node.childNodes) {
+    for (let child = 0; child < node.childNodes.length; child++) {
+        if (corresp) {
+            console.log(node.childNodes[child]);
+            let a = node.childNodes[child].getAttribute('corresp');
+            if (a !== corresp) continue;
+        }
         if (node.childNodes[child].nodeType === 1) {
             if (node.childNodes[child].tagName === name) children.push(node.childNodes[child]);
         }
@@ -41,7 +46,6 @@ export function getChildrenByName(node, name) {
 }
 
 function readElementSpec(elementspec, node) {
-    // console.log(nodes);
     // find all about elementSpec
 
     // récupérer tous les attributs potentiels
@@ -61,18 +65,15 @@ function readElementSpec(elementspec, node) {
     let c =  new schema.Content();
     if (readContent(c, node)) elementspec.content = c;
 
-    //console.log('IDENT remarks',elementspec.ident);
     // le champ remarksContent
     let rc =  new schema.Remarks();
     if (readRemarks(rc, node, "element")) {
-        //console.log("content element", rc);
         elementspec.remarks = rc;
     }
     rc =  new schema.Remarks();
     if (readRemarks(rc, node, "content")) {
         // elementspec.remarksContent = rc;
         if (elementspec.content.datatype) {
-            //console.log("content content", rc);
             elementspec.content.datatype.remarks = rc;
         } else {
             let s = msg.msg('remarksnodatatype');
@@ -232,7 +233,10 @@ function readContent(content, node) {
                 content.datatype.type = 'openlist';
             else
                 content.datatype.type = 'list';
-            content.datatype.rend = content.rend;
+            if (!content.rend)
+                content.datatype.rend = vl.vallist[0].ident;
+            else
+                content.datatype.rend = content.rend;
         }
     }
     return d.length;
@@ -249,6 +253,7 @@ function getElementRef(elementCount, node) {
     getMinMax(elementCount, node);
     elementCount.model = tagElementSpec(node);
     elementCount.ident = keyElementSpec(node);
+    elementCount.corresp = correspElementSpec(node);
     elementCount.type = 'elementRef';
     if (odd.listElementRef[elementCount.model] === undefined)
         odd.listElementRef[elementCount.model] = 1;
@@ -262,9 +267,12 @@ function getSequence(elementCount, node) {
     let s = getChildrenByName(node, 'elementRef');
     elementCount.model = [];
     elementCount.ident = [];
+    elementCount.corresp = [];
     for (let i in s) {
         let t = keyElementSpec(s[i]);
         elementCount.ident.push(t);
+        t = correspElementSpec(s[i]);
+        elementCount.corresp.push(t);
         t = tagElementSpec(s[i]);
         elementCount.model.push(t);
         if (odd.listElementRef[t] === undefined)
@@ -284,15 +292,22 @@ function keyElementSpec(node) {
     return node.getAttribute('key');
 }
 
+function correspElementSpec(node) {
+    return node.getAttribute('corresp');
+}
+
 export function textDesc(desc, lg) {
-    console.log('lang:',lg);
     if (!lg) {
         lg = 'en';
     }
     for (let i=0; i<desc.langs.length; i++) {
-        console.log(desc.langs[i], desc.texts[i]);
         if (lg === desc.langs[i]) return entities.decodeXML(desc.texts[i]);
     }
+    // did not find language
+    for (let i=0; i<desc.langs.length; i++) {
+        if ('en' === desc.langs[i]) return entities.decodeXML(desc.texts[i]);
+    }
+    // if no english show first
     return entities.decodeXML( desc.texts.length > 0 ? desc.texts[0] : '' );
 }
 
@@ -351,13 +366,15 @@ function readAttrDef(attrDef, node) {
             if (attrDef.datatype.type !== 'openlist')
                 attrDef.datatype.type = 'list';
         }
+        if (!attrDef.rend)
+            attrDef.datatype.rend = attrDef.datatype.vallist[0].ident;
+        else
+            attrDef.datatype.rend = attrDef.rend;
     }
     let rc =  new schema.Remarks();
     if (readRemarks(rc, node, "element")) {
-        //console.log('remarks attrdef', rc);
         attrDef.datatype.remarks = rc;
     }
-    //console.log(attrDef.ident, attrDef.rend, attrDef);
 }
 
 /**
@@ -367,9 +384,9 @@ function readAttrDef(attrDef, node) {
  * @param node 
  */
 function valList(data, node) {
-    let valList = node.getElementsByTagName("valList");
-    if (valList.length > 0) {
-        data.vallistType = valList[0].getAttribute("type");
+    let vl = node.getElementsByTagName("valList");
+    if (vl.length > 0) {
+        data.vallistType = vl[0].getAttribute("type");
         data.vallist = [];
         // find all about element
         let valItem = node.getElementsByTagName("valItem");
@@ -377,13 +394,20 @@ function valList(data, node) {
             let vi = new schema.ValItem();
             let attr = valItem[k].getAttribute("ident");
             if (attr) vi.ident = attr;
-            let desc = valItem[k].getElementsByTagName("desc");
-            if (desc.length>0) vi.desc = desc[0].textContent;
-            if (!vi.desc) vi.desc = vi.ident;
+            // le champ desc
+            let d =  new schema.Desc();
+            if (readDesc(d, valItem[k])) {
+                vi.desc = d;
+            } else {
+                d.langs = [''];
+                d.texts = [vi.ident];
+                d.renditions = [''];
+                vi.desc = d;
+            }
             data.vallist.push(vi);
         }
     }
-    return valList.length;
+    return vl.length;
 }
 
 /**
@@ -425,7 +449,6 @@ export function loadOdd(data) {
     odd.namespace = schemaSpec[0].getAttribute("ns");
     // récupérer attribut cssfile
     odd.cssfile = schemaSpec[0].getAttribute("rend");
-    console.log('remarks cssfile : [', odd.cssfile, ']');
     odd.remarks = false;
     // récupérer attribut other entries (corresp)
     attr = schemaSpec[0].getAttribute("corresp");
@@ -446,7 +469,7 @@ export function loadOdd(data) {
     for (let i in odd.listElementRef) {
         // check if all elementRef exist as elementSpec
         if (!odd.listElementSpec[i]) {
-            error += msg.msg('notdefelementref1') + i + msg.msg('notdefelementref2');
+            error += msg.msg('notdefelementref1') + '[' + i + ']' + msg.msg('notdefelementref2') + '<br/>';
         }
     }
     for (let i in odd.listElementSpec) {
@@ -461,7 +484,6 @@ export function loadOdd(data) {
     } else {
         rootElt.usage = 'req';
     }
-    //console.log(odd);
     if (error) {
         alert.alertUser(error);
         return null;

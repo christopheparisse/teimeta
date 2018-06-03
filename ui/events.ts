@@ -116,7 +116,7 @@ export function newFile(callback) {
                 }
                 let lcss = localStorage.getItem("previousCSS");
                 var jcss = JSON.parse(lcss);
-                console.log('newfile CSS', jcss);
+                // console.log('newfile CSS', jcss);
                 if (lcss) {
                     openCssLoad(jcss.cssName, jcss.data);
                 }
@@ -148,7 +148,7 @@ export function reLoad(callback) {
             }
             let lcss = localStorage.getItem("previousCSS");
             var jcss = JSON.parse(lcss);
-            console.log('newfile CSS', jcss);
+            // console.log('newfile CSS', jcss);
             if (lcss) {
                 openCssLoad(jcss.cssName, jcss.data);
             }

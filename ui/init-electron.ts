@@ -67,7 +67,7 @@ function bodyKeys(e) {
     }
     if (e.which === 83 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl S
         e.preventDefault();
-        events.saveAsLocal(() => {});
+        events.saveAs(() => {});
     }
     if (e.which === 81 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl Q
         quit();            
