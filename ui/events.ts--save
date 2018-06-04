@@ -8,7 +8,6 @@
  *      if ODD in XML then loadODD(file/url)
  *      else choose ODD file or choose predefined ODD or already loaded ODD --> (loadOdd data/file/url)
  * 2) newXml()
- *      check changes + 
  *      choose ODD file or choose predefined ODD or already loaded ODD --> (loadOdd data/file/url)
  * 3) chooseOdd()
  *      choose ODD file to be used in later openXml() or newXml()
