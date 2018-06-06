@@ -7,8 +7,11 @@
  */
 
 let saveAs = require('file-saver');
+import * as alert from './alert';
 
-export function openLocalFile(fn) {
+export let system = 'electron';
+
+export function openLocalFile(fun) {
     /*
     var nBytes = 0,
         oFiles = document.getElementById("upload-input-transcript").files,
@@ -84,3 +87,14 @@ export function saveFileLocal(type, name, data) {
     var l = name.substr(p1);
     saveAs.saveAs(blob, l);
 };
+
+export function openSpecificLocalFile(oddname, displayname, xmlname, xmldata, funCallback) {
+    function fun(err, name, data) {
+        funCallback(err, name, displayname, data, xmlname, xmldata);
+    }
+    alert.askUserModal(
+        'The file <b>' + xmlname + '</b> uses an Odd file named <b>' + oddname +
+        '</b> - please locate it on you computer.',
+        function(response) { if (response) chooseOpenFile(fun) }
+    );    
+}

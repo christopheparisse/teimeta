@@ -6,6 +6,8 @@ let path = require('path');
 let remote = require('electron').remote;
 let saveAs = require('file-saver');
 
+export let system = 'file';
+
 /**
  * available in main
  */
@@ -102,4 +104,11 @@ export function saveFileLocal(type, name, data) {
 
 export function openLocalFile(fn) {
     // for compatibility
+}
+
+export function openSpecificLocalFile(oddname, displayname, xmlname, xmldata, funCallback) {
+    function fun(err, data) {
+        funCallback(err, oddname, displayname, data, xmlname, xmldata);
+    }
+    openFile(oddname, fun);    
 }

@@ -46,15 +46,45 @@ export let teiData = {
     system: ''
 };
 
+function dispname(s:string) {
+    let p = s.lastIndexOf('/');
+    if (p === -1) p = s.lastIndexOf('\\');
+    if (p === -1) return s;
+    return s.substring(p+1);
+}
+
+function afterOpenXmlFile(err, oddname, displayname, odddata, xmlname, xmldata) {
+    if (!err) {
+        openOddLoad(oddname, displayname, odddata);
+        finishOpenXml(xmlname, xmldata);
+    }                    
+}
+
 export function openXml() {
     // checked changes - the user can cancel if needed
     checkChange(() => { // if ok ask the user for a file
         opensave.chooseOpenFile(function(err, name, data) {
             if (!err) { // if not cancelled
-                if (!teiData.dataOdd) {
-                    newFile(function() { finishLoad(1, null, null); } );
+                let oddname:string = load.checkOddTei(data, teiData);
+                if (!oddname) {
+                    // find an odd
+                    findOdd(name, data);
+                } else if (oddname.substring(0,4) !== "http") {
+                    // an odd is indicated in the xml file
+                    // it is not an external address so cannot access directly if not electron
+                    let displayname = dispname(oddname);
+                    opensave.openSpecificLocalFile(oddname, displayname, name, data, afterOpenXmlFile);
                 } else {
-                    finishLoad(0, name, data);
+                    // an odd is indicated in the xml file
+                    // try to open it
+                    let displayname = dispname(oddname);
+                    readTextFile(oddname, function (text) {
+                        // console.log("read ODD: ", oddname, text);
+                        if (text) {
+                            openOddLoad(oddname, displayname, text);
+                            finishOpenXml(name, data);
+                        }
+                    });
                 }
             } else
                 console.log(name, err);
@@ -62,7 +92,53 @@ export function openXml() {
     });
 };
 
-function finishLoad(err, name, data) {
+/**
+ * method findOdd
+ * ask the user for choices: open ODD, use predefined ODD, use previous ODD (if possible)
+ */
+function findOdd(nameXml, dataXml) {
+    function openChooseOdd(choice) {
+        switch (choice) {
+            case 'computer':
+                // open local odd
+                opensave.chooseOpenFile(function(err, name, data) {
+                    if (!err) {
+                        openOddLoad(name, name, data);
+                        finishOpenXml(nameXml, dataXml);
+                    } else {
+                        console.log('cancel open odd for xml file: ', nameXml);
+                    }
+                });
+                break;
+            case 'current':
+                // open with current odd
+                finishOpenXml(nameXml, dataXml);
+                break;
+
+            case 'oddteispoken':
+                oddTeiOral();
+                break;
+
+            case 'oddolac':
+                oddOlacDc();
+                break;
+
+            case 'oddmedia':
+                oddMedia();
+                break;
+                
+            default:
+                break;
+        }
+    }
+    if (teiData.dataOdd) {
+        alert.askUserModalForOdd(teiData.oddName, true, openChooseOdd);
+    } else {
+        alert.askUserModalForOdd('', false, openChooseOdd);
+    }
+}
+
+function finishOpenXml(name, data) {
     teiData.fileName = name;
     let el = document.getElementById('filename');
     el.innerHTML = msg.msg('file') + name;
@@ -75,34 +151,43 @@ function finishLoad(err, name, data) {
     //console.log(edit.values);
 }
 
-export function newFile(callback) {
+export function newXml(choice) {
     // checked changes
     checkChange(() => {
-        try {
-            let ls = localStorage.getItem("previousODD");
-            if (ls) {
-                var js = JSON.parse(ls);
-                if (!js.version || js.version !== schema.version) {
-                    //console.log('ancienne version de localstorage');
+        if (choice === 'new') {
+            // open local odd
+            opensave.chooseOpenFile(function(err, name, data) {
+                if (!err) {
+                    openOddLoad(name, name, data);
+                    finishOpenXml(null, null);
+                } else {
+                    console.log('cancel open odd for new xml file');
+                }
+            });
+        } else {
+            try {
+                let ls = localStorage.getItem("previousODD");
+                if (ls) {
+                    var js = JSON.parse(ls);
+                    if (!js.version || js.version !== schema.version) {
+                        //console.log('ancienne version de localstorage');
+                        emptyFile();
+                        return;
+                    }
+                    let lcss = localStorage.getItem("previousCSS");
+                    var jcss = JSON.parse(lcss);
+                    // console.log('newfile CSS', jcss);
+                    if (lcss) {
+                        openCssLoad(jcss.cssName, jcss.data);
+                    }
+                    openOddLoad(js.oddName, js.oddName, js.data);
+                } else {
                     emptyFile();
-                    if (callback) callback(0);
-                    return;
                 }
-                let lcss = localStorage.getItem("previousCSS");
-                var jcss = JSON.parse(lcss);
-                // console.log('newfile CSS', jcss);
-                if (lcss) {
-                    openCssLoad(jcss.cssName, jcss.data);
-                }
-                openOddLoad(js.oddName, js.data);
-                if (callback) callback(0);
-            } else {
+            } catch (error) {
+                console.log(error);
                 emptyFile();
             }
-        } catch (error) {
-            console.log(error);
-            emptyFile();
-            if (callback) callback(0);
         }
     });
 }
@@ -153,8 +238,8 @@ export function reLoad(callback) {
             if (lcss) {
                 openCssLoad(jcss.cssName, jcss.data);
             }
-            openOddLoad(js.oddName, js.data);
-            finishLoad(0, lxname, lx);
+            openOddLoad(js.oddName, js.oddName, js.data);
+            finishOpenXml(lxname, lx);
             if (callback) callback(0);
         } else {
             emptyFile();
@@ -167,13 +252,13 @@ export function reLoad(callback) {
 
 export function openOddCssLoad(nameOdd, dataOdd, nameCss, dataCss) {
     openCssLoad(nameCss, dataCss);
-    openOddLoad(nameOdd, dataOdd);
+    openOddLoad(nameOdd, nameOdd, dataOdd);
 }
 
-export function openOddLoad(name, data) {
+export function openOddLoad(name, displayname, data) {
     teiData.oddName = name;
     let el = document.getElementById('oddname');
-    el.innerHTML = "ODD: " + name;
+    el.innerHTML = "ODD: " + displayname;
     teiData.dataOdd = odd.loadOdd(data);
     load.loadTei(null, teiData);
     if (teiData.dataCss) {
@@ -200,7 +285,7 @@ export function openOdd() {
     checkChange(() => {
         opensave.chooseOpenFile(function(err, name, data) {
             if (!err) {
-                openOddLoad(name, data);
+                openOddLoad(name, name, data);
             } else
                 console.log(name, err);
         });
@@ -283,3 +368,38 @@ export function saveAsLocal(fun) {
     opensave.saveFileLocal('xml', teiData.fileName, ed);
     if (fun && typeof fun === 'function') fun();
 };
+
+
+export function readTextFile(file, callback) {
+    var rawFile:any = new XMLHttpRequest();
+    // rawFile.overrideMimeType("text/xml");
+    rawFile.responseType = "text";
+    rawFile.open("GET", file, true);
+    rawFile.onload = function(e) {
+        if (rawFile.readyState === 4 && rawFile.status == "200") {
+            callback(rawFile.responseText);
+        }
+    }
+    rawFile.send(null);
+}
+
+export function oddLoadUrl(url, namedisplayed) {
+    // checked changes
+    checkChange(() => {
+        readTextFile(url, function(text) {
+            openOddLoad(url, namedisplayed, text);
+        });
+    });
+}
+
+export function oddMedia() {
+    oddLoadUrl('http://ct3.ortolang.fr/teimeta/media.odd', msg.msg('predefoddmedia'));
+}
+
+export function oddTeiOral() {
+    oddLoadUrl('http://ct3.ortolang.fr/teimeta/teispoken.odd', msg.msg('predefoddteispoken'));
+}
+
+export function oddOlacDc() {
+    oddLoadUrl('http://ct3.ortolang.fr/teimeta/olac.odd', msg.msg('predefoddolacdc'));
+}

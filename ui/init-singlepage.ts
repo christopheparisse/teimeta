@@ -46,7 +46,7 @@ function bodyKeys(e) {
     }
     if (e.which === 78 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl N
         e.preventDefault();
-        events.newFile(null); // checked changes
+        events.newXml('new'); // checked changes
     }
 }
 
@@ -55,7 +55,7 @@ export function init() {
     // load params
     common.loadParams();
     // load previous data
-    events.newFile(null);
+    events.newXml('previous');
 
     common.init(bodyKeys);
     window.addEventListener("beforeunload", function (e) {

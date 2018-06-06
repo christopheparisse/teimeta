@@ -77,7 +77,7 @@ function bodyKeys(e) {
     }
     if (e.which === 78 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl N
         e.preventDefault();
-        events.newFile(null);
+        events.newXml(null);
     }
 }
 
@@ -85,7 +85,7 @@ export function init() {
     events.teiData.system = 'electron';
     common.loadParams();
     // load previous data
-    events.newFile(null);
+    events.newXml(null);
 
     ipcRenderer.on('open', function(event, arg) {
         events.openXml();

@@ -7,6 +7,7 @@
 
 let saveAs = require('file-saver');
 let picoModal = require('picomodal');
+import * as msg from './messages';
 
 export function alertUser(s) {
     picoModal(s).show();
@@ -84,6 +85,49 @@ export function askUserModalYesNoCancel(s, fun) {
                 modal.close('cancel');
             } else if (evt.target && evt.target.matches(".no")) {
                 modal.close('no');
+            }
+        });
+    }).afterClose((modal, event) => {
+        fun(event.detail);
+    }).show();
+}
+
+export function askUserModalForOdd(previousname, loaded, fun) {
+    let s1 = "You must choose an ODD file. Please make a choice.";
+    let s2 = "Use the currently loaded ODD:";
+    let s3 = "Choose and ODD file on your computer";
+    let s4 = "Choose a predefined ODD file:";
+    let s5 = "Ok.";
+    let s6 = "Cancel";
+    let s91 = msg.msg("oddteispoken");
+    let s92 = msg.msg("oddolac");
+    let s93 = msg.msg("oddmedia");
+    picoModal({
+        content: '<p>' + s1 + '</p>' +
+            (loaded ? "<button class='current'>" + s2 + " " + previousname + "</button>" : "") +
+            "<button class='computer'>" + s3 + "</button><br/>" +
+            s4 + "<br/>" +
+            "<button class='s91'>" + s91 + "</button><br/>" +
+            "<button class='s92'>" + s92 + "</button><br/>" +
+            "<button class='s93'>" + s93 + "</button><br/>" +
+            "<p class='footer'>" +
+//            "<button class='ok'>" + s5 + "</button>" +
+            "<button class='cancel'>" + s6 + "</button>" +
+            "</p>"
+    }).afterCreate(modal => {
+        modal.modalElem().addEventListener("click", evt => {
+            if (evt.target && evt.target.matches(".current")) {
+                modal.close('current');
+            } else if (evt.target && evt.target.matches(".computer")) {
+                modal.close('computer');
+            } else if (evt.target && evt.target.matches(".s91")) {
+                modal.close('oddteispoken');
+            } else if (evt.target && evt.target.matches(".s92")) {
+                modal.close('oddolac');
+            } else if (evt.target && evt.target.matches(".s93")) {
+                modal.close('oddmedia');
+            } else if (evt.target && evt.target.matches(".cancel")) {
+                modal.close('cancel');
             }
         });
     }).afterClose((modal, event) => {

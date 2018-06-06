@@ -11,57 +11,6 @@ import * as syscall from './opensave';
 import * as help from './help';
 let picoModal = require('picomodal');
 
-function readTextFile(file, callback) {
-    var rawFile:any = new XMLHttpRequest();
-    // rawFile.overrideMimeType("text/xml");
-    rawFile.responseType = "text";
-    rawFile.open("GET", file, true);
-    rawFile.onload = function(e) {
-        if (rawFile.readyState === 4 && rawFile.status == "200") {
-            callback(rawFile.responseText);
-        }
-    }
-    rawFile.send(null);
-}
-
-export function oddMedia() {
-    // checked changes
-    events.checkChange(() => {
-        readTextFile('http://ct3.ortolang.fr/teimeta/media.odd?v=' + schema.version, function(text) {
-            events.openOddLoad(msg.msg('predefoddmedia'), text);
-        });
-    });
-}
-
-export function oddTeiOral() {
-    // checked changes
-    events.checkChange(() => {
-        readTextFile('http://ct3.ortolang.fr/teimeta/teispoken.odd?v=' + schema.version, function(text) {
-            events.openOddLoad(msg.msg('predefoddteispoken'), text);
-        });
-    });
-}
-
-export function oddPartDesc() {
-    // checked changes
-    events.checkChange(() => {
-        readTextFile('http://ct3.ortolang.fr/teimeta/olac.odd?v=' + schema.version, function(text) {
-            events.openOddLoad(msg.msg('predefoddolacdc'), text);
-        });
-        /*
-        readTextFile('http://ct3.ortolang.fr/teimeta/olac-css.odd', 
-            function(textOdd) {
-                readTextFile('http://ct3.ortolang.fr/teimeta/olac-css.css',
-                    function(textCss) {
-                        events.openOddCssLoad('Ct3:olac-css.odd', textOdd, "Ct3:Olac-css.css", textCss);
-                    }
-                );
-            }
-        );
-        */
-    });
-}
-
 // to check if parameters are changed
 let changeParams = false;
 
@@ -151,8 +100,8 @@ export function setLanguage(lg, reload=true) {
     el.textContent = msg.msg("cssopen");
     el = document.getElementById('menuhelp');
     el.textContent = msg.msg("menuhelp");
-    el = document.getElementById('teispoken');
-    el.textContent = msg.msg("teispoken");
+    el = document.getElementById('oddteispoken');
+    el.textContent = msg.msg("oddteispoken");
     el = document.getElementById('oddolac');
     el.textContent = msg.msg("oddolac");
     el = document.getElementById('oddmedia');
@@ -293,11 +242,11 @@ export function init(funbodykeys) {
     el.addEventListener("click", oddParams);
 
     el = document.getElementById('odd-media');
-    el.addEventListener("click", oddMedia);
+    el.addEventListener("click", events.oddMedia);
     el = document.getElementById('odd-teioral');
-    el.addEventListener("click", oddTeiOral);
+    el.addEventListener("click", events.oddTeiOral);
     el = document.getElementById('odd-partdesc');
-    el.addEventListener("click", oddPartDesc);
+    el.addEventListener("click", events.oddOlacDc);
     
     el = document.getElementById('showall');
     el.addEventListener("click", edit.showAll);

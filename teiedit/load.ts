@@ -251,7 +251,6 @@ function loadElementRef(ec, node, path, parent) {
 
     // load from TEI
     let nodes = node ? odd.getChildrenByName(node, ec.ident, ec.corresp) : [];
-    console.log("loadElementRef " + ec.ident + '/' + ec.corresp);
     // filtering the elements (nodes) using corresp field if necessairy
     path =  path + '/' + ec.model;
     // si c'est vide
@@ -290,10 +289,8 @@ function loadSequence(ec, node, path, parent) {
     // load from TEI
     let nnodes = []; // tableau de tableau de nodes
     // pour tous les modèles de la séquence on cherche les noeuds correspondants
-    console.log("loadSequence", ec);
     if (node) {
         for (let n = 0; n < ec.ident.length; n++) {
-            console.log("LS ", ec.ident[n], ec.corresp[n]);
             if (node) {
                 // filtering the elements (nodes) using corresp field if necessary
                 let elts = odd.getChildrenByName(node, ec.ident[n], ec.corresp[n]);
