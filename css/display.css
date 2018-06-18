@@ -68,6 +68,7 @@ nav li ul li a {
     width: auto;
     min-width: 100px;
     padding: 0 20px;
+    text-align: center;
 }
 /*Display the dropdown on hover*/
 nav ul li a:hover + .hidden, .hidden:hover {
@@ -310,4 +311,52 @@ select {
 
 .fa-check-square-o { 
     color:blue;
+}
+
+/*Style for popup ODD choice*/
+#aumomodal {
+    background: whitesmoke;
+}
+.aumo {
+    display:block;
+    min-width:100px;
+    height: 30px;
+    text-align: left;
+    line-height: 30px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #fff;
+    background: darkblue;
+    text-decoration: none;
+    border-collapse: collapse;
+	border-radius: 4px;
+}
+
+.aumo br {
+    margin: 0;
+    padding: 0;
+}
+
+.aumobutton {
+    border: 1px solid white;
+}
+
+.aumobutton:hover {
+    background: #19c589;
+}
+
+.aumoinfo {
+    background: blue;
+    font-size: large;
+}
+.aumotitle {
+    background: blue;
+    font-size: large;
+}
+
+.aumocancel {
+    border: 1px solid white;
+}
+
+.aumocancel:hover {
+    background: #19c589;
 }

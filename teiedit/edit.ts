@@ -216,7 +216,7 @@ export function setOnOff(event, id, styleOn, styleOff) {
 function setStyleOnOff(id, val: boolean, styleOn, styleOff) {
     let node = document.getElementById(id);
     if (!node) {
-        console.log("no id found for ", id);
+        //console.log("no id found for ", id);
         return;
     }
     if (val) {
@@ -494,7 +494,7 @@ function editDataType(datatype, ident) {
                 if (datatype.rend) {
                     datatype.valueContent = datatype.rend;
                 } else if (datatype.vallist) {
-                    datatype.valueContent = datatype.vallist[0].ident;
+                    datatype.valueContent = (datatype.vallist.length>0) ? datatype.vallist[0].ident: "";
                 }
             }
             values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
@@ -533,7 +533,7 @@ function editDataType(datatype, ident) {
                 if (datatype.rend) {
                     datatype.valueContent = datatype.rend;
                 } else if (datatype.vallist) {
-                    datatype.valueContent = datatype.vallist[0].ident;
+                    datatype.valueContent = (datatype.vallist.length > 0) ? datatype.vallist[0].ident : "";
                 }
             }
             values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };

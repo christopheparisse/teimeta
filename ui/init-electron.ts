@@ -8,7 +8,7 @@ import * as events from './events';
 import * as odd from '../teiedit/odd';
 import * as edit from '../teiedit/edit';
 import * as syscall from './opensave';
-import * as help from './help';
+import * as version from './version';
 import * as common from './common';
 
 function quit() {
@@ -77,7 +77,7 @@ function bodyKeys(e) {
     }
     if (e.which === 78 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl N
         e.preventDefault();
-        events.newXml(null);
+        events.newXml('new');
     }
 }
 
@@ -85,7 +85,7 @@ export function init() {
     events.teiData.system = 'electron';
     common.loadParams();
     // load previous data
-    events.newXml(null);
+    events.newXml('previous');
 
     ipcRenderer.on('open', function(event, arg) {
         events.openXml();
@@ -100,7 +100,7 @@ export function init() {
         events.saveAs(() => {});
     });
     ipcRenderer.on('help', function(event, arg) {
-        help.about();
+        version.about();
     });
     ipcRenderer.on('quit', function(event, arg) {
         quit();            

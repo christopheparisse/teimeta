@@ -4,10 +4,7 @@
 
 import * as events from './events';
 import * as odd from '../teiedit/odd';
-import * as schema from '../teiedit/schema';
 import * as edit from '../teiedit/edit';
-import * as syscall from './opensave';
-import * as help from './help';
 import * as common from './common';
 import * as msg from './messages';
 

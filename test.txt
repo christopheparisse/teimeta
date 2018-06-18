@@ -1,0 +1,7 @@
+
+1) ouverture xml local sans odd inclus ni css inclus
+	1a) ask for odd and answer load local
+	1b) ask for odd and answer previous odd if alreadt loaded
+	1c) cancel
+2) ouverture xml local avec odd inclus sans css inclus
+3) ouverture xml local avec odd inclus et css inclus

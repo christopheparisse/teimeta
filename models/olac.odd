@@ -18,7 +18,8 @@
   </teiHeader>
   <text>
       <body>
-         <schemaSpec ident="OLAC" ns="http://www.language-archives.org/OLAC/0.4/" start="olac">
+         <schemaSpec ident="OLAC" ns="http://www.language-archives.org/OLAC/0.4/" start="olac"
+					 	rend="http://ct3.ortolang.fr/teimeta/olac.css">
             <altIdent type="xmlns:xsi">http://www.w3.org/2001/XMLSchema-instance</altIdent>
             <altIdent type="xsi:schemaLocation">http://www.language-archives.org/OLAC/0.4/ http://www.language-archives.org/OLAC/0.4/olac.xsd</altIdent>
 
@@ -50,22 +51,28 @@
                   <elementRef key="type.functionality" minOccurs="0" maxOccurs="unbounded"/>
                </content>
             </elementSpec>
-            
+
             <elementSpec ident="contributor">
                <desc>Entité responsable de contributions au contenu de la ressource.
-                  Les exemples de contributeur comprennent une personne, une organisation ou un service. 
+                  Les exemples de contributeur comprennent une personne, une organisation ou un service.
                   Généralement, on utilisera le nom d’un contributeur pour désigner cette entité.
                </desc>
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-even</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="refine">
                      <desc>refine</desc>
                      <datatype>
                         <dataRef name="openlist"/>
                      </datatype>
-                     <valList type="open">
+                     <valList type="openlist">
                         <valItem ident="annotator" />
                         <valItem ident="author" />
                         <valItem ident="compiler" />
@@ -97,12 +104,18 @@
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
@@ -116,37 +129,55 @@
                <content>
                   <textNode/>
                </content>
+                <remarks style="element">
+                    <p><ident>row-odd</ident></p>
+                </remarks>
+								<remarks style="content">
+ 									 <p><ident>css-content</ident></p>
+ 							 </remarks>
                <attList>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
-            
+
             <elementSpec ident="creator">
                <desc xml:lang="fr">L’entité principalement responsable de la création du contenu de la ressource.
-                  Les exemples de créateur comprennent une personne, une organisation ou un service. 
+                  Les exemples de créateur comprennent une personne, une organisation ou un service.
                   Généralement, on utilisera le nom du créateur pour désigner cette entité.
                </desc>
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-even</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="refine">
                      <desc>refine</desc>
                      <datatype>
                         <dataRef name="openlist"/>
                      </datatype>
-                     <valList type="open">
+                     <valList type="openlist">
                         <valItem ident="annotator" />
                         <valItem ident="author" />
                         <valItem ident="compiler" />
@@ -179,29 +210,44 @@
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+	                    <remarks style="element">
+	                        <p><ident>css-i-language</ident></p>
+	                    </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
 
             <elementSpec ident="date">
-               <desc>Date d’un événement dans le cycle de vie de la ressource. 
+               <desc>Date d’un événement dans le cycle de vie de la ressource.
                   Il s’agira généralement de la date de création ou de mise à disposition de la ressource.
                </desc>
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-odd</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="code">
                      <desc>code</desc>
                      <datatype>
                         <dataRef name="date"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-code</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="refine">
                      <desc>refine</desc>
@@ -221,16 +267,22 @@
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
- 
+
             <elementSpec ident="description">
                <desc xml:lang="fr">Une présentation du contenu de la ressource.
                   Les exemples de description comprennent notamment : résumé, table des matières, référence à une représentation graphique du contenu, exposé du contenu en texte libre.
@@ -240,75 +292,117 @@
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-even</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
- 
+
             <elementSpec ident="format">
                <desc>La manifestation (ou matérialisation) physique ou numérique de la ressource.
-                  Typiquement, le format peut comprendre le type de medium ou les dimensions de la ressource. 
-                  L’élément Format peut être utilisé pour identifier le logiciel, le matériel ou tout autre équipement 
+                  Typiquement, le format peut comprendre le type de medium ou les dimensions de la ressource.
+                  L’élément Format peut être utilisé pour identifier le logiciel, le matériel ou tout autre équipement
                   nécessaire pour afficher ou exploiter la ressource. Les exemples de dimensions comprennent la taille et la durée.
                </desc>
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-odd</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="code">
                      <desc>code</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-code</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
- 
+
             <elementSpec ident="format.cpu">
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-even</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="code">
                      <desc>code</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-code</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
@@ -317,24 +411,39 @@
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-odd</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="code">
                      <desc>code</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-code</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
@@ -343,18 +452,30 @@
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-even</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
@@ -363,24 +484,39 @@
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-odd</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="code">
                      <desc>code</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-code</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
@@ -389,122 +525,179 @@
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-even</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
 
             <elementSpec ident="identifier">
                <desc>Référence univoque à la ressource dans un contexte donné.
-                  Il est recommandé d’identifier la ressource au moyen d’une chaîne de caractères 
-                  ou d’un numéro conforme à un système formel d’identification. Les systèmes d'information 
-                  officiels comprennent notamment le « Uniform Resource Identifier » 
-                  (URI / identificateur de ressources uniformes), qui inclut le « Uniform Resource Locator » (URL), 
-                  le « Digital Object Identifier » (DOI / identificateur d’objet numérique) 
+                  Il est recommandé d’identifier la ressource au moyen d’une chaîne de caractères
+                  ou d’un numéro conforme à un système formel d’identification. Les systèmes d'information
+                  officiels comprennent notamment le « Uniform Resource Identifier »
+                  (URI / identificateur de ressources uniformes), qui inclut le « Uniform Resource Locator » (URL),
+                  le « Digital Object Identifier » (DOI / identificateur d’objet numérique)
                   et le « International Standard Book Number » (ISBN).</desc>
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-odd</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
 
             <elementSpec ident="language">
                <desc>La langue du contenu intellectuel de la ressource.
-                  Il est recommandé d’utiliser une des valeurs définies dans la RFC 3066 qui, 
-                  avec la norme ISO 639, définit des codes de langues primaires à deux et à trois caractères, 
-                  ainsi que des sous‑codes facultatifs. Exemples : « en » ou « eng » pour l’anglais, 
-                  « fr » ou « fre » pour le français, « akk » pour l’akkadien et « en-UK » pour l’anglais 
+                  Il est recommandé d’utiliser une des valeurs définies dans la RFC 3066 qui,
+                  avec la norme ISO 639, définit des codes de langues primaires à deux et à trois caractères,
+                  ainsi que des sous‑codes facultatifs. Exemples : « en » ou « eng » pour l’anglais,
+                  « fr » ou « fre » pour le français, « akk » pour l’akkadien et « en-UK » pour l’anglais
                   utilisé au Royaume-Uni.</desc>
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-even</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="code">
                      <desc>code</desc>
                      <datatype>
                         <dataRef name="languagecode"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-code</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
 
             <elementSpec ident="publisher">
-               <desc>L’entité responsable de la mise à disposition ou diffusion de la ressource. 
-                  Les exemples d’éditeur comprennent une personne, une organisation ou un service. 
+               <desc>L’entité responsable de la mise à disposition ou diffusion de la ressource.
+                  Les exemples d’éditeur comprennent une personne, une organisation ou un service.
                   Généralement, on utilisera le nom de l’éditeur (le nomd’une maison d’édition) pour désigner cette entité.
-                  Il s'agit de la personne physique ou morale responsable de l’édition 
+                  Il s'agit de la personne physique ou morale responsable de l’édition
                   ou de la publication de la ressource.
                </desc>
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-odd</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
 
             <elementSpec ident="relation">
                <desc>Référence à une ressource apparentée.
-                  Il est recommandé d’identifier la ressource apparentée par une chaîne de caractères 
+                  Il est recommandé d’identifier la ressource apparentée par une chaîne de caractères
                   ou d’un numéro conforme à un système d’identification officiel.
-                  L'élément Relation est utilisé pour indiquer toutes les relations méréologiques 
-                  (de tout à partie), notamment les références bibliographiques de l’ouvrage dont 
-                  est extraite une image, ou le titre du périodique dont est issu un article, ou 
-                  la collection dont fait partie une monographie. Cet élément peut ainsi contenir 
+                  L'élément Relation est utilisé pour indiquer toutes les relations méréologiques
+                  (de tout à partie), notamment les références bibliographiques de l’ouvrage dont
+                  est extraite une image, ou le titre du périodique dont est issu un article, ou
+                  la collection dont fait partie une monographie. Cet élément peut ainsi contenir
                   un titre, un ou plusieurs noms d’auteur, une date.
-                  Il sert aussi à donner des liens vers des ressources qui mentionnent celle décrite, 
+                  Il sert aussi à donner des liens vers des ressources qui mentionnent celle décrite,
                   telle une notice de catalogue en ligne.
                </desc>
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-even</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="refine">
                      <desc>refine</desc>
@@ -528,100 +721,142 @@
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
 
             <elementSpec ident="rights">
                <desc>Informations sur les droits associés à la ressource.
-                  Généralement, l’élément gestion des droits contient une mention de la gestion 
-                  des droits afférents à la ressource ou une référence au service fournissant 
-                  cette information. L’information sur les droits englobe souvent les droits 
-                  de propriété intellectuelle (IPR), le copyright et divers droits de propriété. 
-                  Si l’élément gestion de droits est absent, aucune hypothèse ne peut être émise 
+                  Généralement, l’élément gestion des droits contient une mention de la gestion
+                  des droits afférents à la ressource ou une référence au service fournissant
+                  cette information. L’information sur les droits englobe souvent les droits
+                  de propriété intellectuelle (IPR), le copyright et divers droits de propriété.
+                  Si l’élément gestion de droits est absent, aucune hypothèse ne peut être émise
                   sur les droits associés à la ressource.
                   L'élément Rights permet de déclarer les droits applicables à la ressource décrite.
-                  Cet élément peut indiquer les restrictions portant sur l’utilisation de la ressource, 
-                  le titulaire des droits auquel il est nécessaire de s’adresser pour connaître 
-                  les conditions d’utilisation de la ressource, mais aussi une URL pointant vers un document 
+                  Cet élément peut indiquer les restrictions portant sur l’utilisation de la ressource,
+                  le titulaire des droits auquel il est nécessaire de s’adresser pour connaître
+                  les conditions d’utilisation de la ressource, mais aussi une URL pointant vers un document
                   décrivant les droits applicables à la ressource.
-                  L'absence d'information ne vaut pas déclaration de liberté d'utilisation. Il est donc 
-                  nécessaire d'indiquer « public domain » ou « domaine public » pour les ressources entrées 
+                  L'absence d'information ne vaut pas déclaration de liberté d'utilisation. Il est donc
+                  nécessaire d'indiquer « public domain » ou « domaine public » pour les ressources entrées
                   dans le domaine public et libres de droit.
                </desc>
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-odd</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
 
             <elementSpec ident="source">
                <desc>Référence à une ressource dont la ressource décrite est dérivée.
-                  La ressource décrite peut être dérivée de la source en tout ou partie. 
-                  La pratique recommandée est d’identifier la ressource mentionnée dans l’élément 
-                  Source par une chaîne de caractères ou par un numéro en conformité avec un système 
+                  La ressource décrite peut être dérivée de la source en tout ou partie.
+                  La pratique recommandée est d’identifier la ressource mentionnée dans l’élément
+                  Source par une chaîne de caractères ou par un numéro en conformité avec un système
                   formel d’identification.
                </desc>
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-even</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
 
             <elementSpec ident="subject">
                <desc xml:lang="fr">Thème du contenu de la ressource.
-                  Généralement, le sujet est exprimé sous forme de mots clés ou d’expressions 
-                  ou par des codes de classification décrivant un thème de la ressource. 
-                  La pratique recommandée est de choisir une valeur dans un vocabulaire 
+                  Généralement, le sujet est exprimé sous forme de mots clés ou d’expressions
+                  ou par des codes de classification décrivant un thème de la ressource.
+                  La pratique recommandée est de choisir une valeur dans un vocabulaire
                   contrôlé ou dans un plan de classification.
                </desc>
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-odd</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
@@ -630,74 +865,110 @@
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-even</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="code">
                      <desc>code</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-code</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
-            
+
             <elementSpec ident="title">
-               <desc xml:lang="fr">Nom donné à la ressource : le titre est généralement le nom formel 
+               <desc xml:lang="fr">Nom donné à la ressource : le titre est généralement le nom formel
                   sous lequel la ressource est connue.
                </desc>
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-odd</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="refine">
                      <desc>refine</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-refine</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
-            
+
             <elementSpec ident="type">
                <desc>Nature ou genre du contenu de la ressource.
-                  L’élément type contient des termes qui décrivent des catégories, des fonctions, des genres généraux 
-                  ou des niveaux d’agrégation de contenu. La pratique recommandée est de choisir une valeur 
-                  dans un vocabulaire contrôlé (par exemple, dans la liste du DCMI Type Vocabulary). 
+                  L’élément type contient des termes qui décrivent des catégories, des fonctions, des genres généraux
+                  ou des niveaux d’agrégation de contenu. La pratique recommandée est de choisir une valeur
+                  dans un vocabulaire contrôlé (par exemple, dans la liste du DCMI Type Vocabulary).
                   Pour décrire la manifestation physique ou numérique de la ressource, utiliser l’élément Format.
                </desc>
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-even</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="code">
                      <desc>code</desc>
                      <datatype>
                         <dataRef name="openlist"/>
                      </datatype>
-                     <valList type="open">
+                     <valList type="openlist">
                         <valItem ident="collection" />
                         <valItem ident="dataset" />
                         <valItem ident="event" />
@@ -717,12 +988,18 @@
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
@@ -732,6 +1009,12 @@
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-odd</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="code">
                      <desc>code</desc>
@@ -752,12 +1035,18 @@
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>
@@ -766,24 +1055,39 @@
                <content>
                   <textNode/>
                </content>
+							 <remarks style="element">
+									 <p><ident>row-even</ident></p>
+							 </remarks>
+							 <remarks style="content">
+									 <p><ident>css-content</ident></p>
+							 </remarks>
                <attList>
                   <attDef ident="code">
                      <desc>code</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-code</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="language">
                      <desc>language</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-language</ident></p>
+                     </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
+										 <remarks style="element">
+                         <p><ident>css-i-scheme</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>

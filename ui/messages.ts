@@ -1,5 +1,3 @@
-import { message } from "gulp-typescript/release/utils";
-
 /**
  * messages.ts
  * author: Christophe Parisse
@@ -52,12 +50,12 @@ let messages_fra = {
     title: "Edition de métadonnées TEI / CORLI",
     xmlopen: "Ouvrir",
     xmlsave: "Sauver",
-    oddopen: "Choisir ODD",
+    xmlnew: "Nouveau",
+    oddapply: "Appliquer fichier ODD",
+    cssapply: "Appliquer fichier CSS",
     menuhelp: "Aide",
-    oddpredef: "ODD prédéfinis:",
-    oddteispoken: "TEI Oral",
-    oddolac: "Olac/DC",
-    oddmedia: "Médias",
+    applyoddcss: "Appliquer ODD/CSS",
+    oddpredef: "ODD prédéfinis",
     menuparam: "Paramètres",
     paramfullpath: "Afficher les chemins complets ",
     paramshift: "Décalage en pixels des imbrications: ",
@@ -75,8 +73,8 @@ let messages_fra = {
     newfile: 'nouveau-fichier.xml',
     choicelanguage: 'Langues',
     predefodd: "ODD prédéfinis",
-    xmlnew: "Nouveau",
-    cssopen: "Choisir CSS",
+    ok: 'ok',
+    cancel: 'cancel',
 };
 
 let messages_spa = {
@@ -109,8 +107,11 @@ let messages_spa = {
     title: "Editar metadatos TEI / CORLI",
     xmlopen: "Abrir",
     xmlsave: "Guardar",
-    oddopen: "Elige ODD",
+    xmlnew: "Nuevo",
+    oddapply: "Aplicar el archivo ODD",
+    cssapply: "Aplicar el archivo CSS",
     menuhelp: "Ayuda",
+    applyoddcss: "Aplicar ODD/CSS",
     oddpredef: "ODD predefinida:",
     oddteispoken: "TEI Oral",
     oddolac: "Olac/DC",
@@ -134,8 +135,8 @@ let messages_spa = {
 */
     choicelanguage: 'Languages',
     predefodd: "ODD predefinda",
-    xmlnew: "Nuevo",
-    cssopen: "Elige CSS",
+    ok: 'ok',
+    cancel: 'cancel',
 };
 
 let messages_jpn = {
@@ -168,8 +169,11 @@ let messages_jpn = {
     title: "メタデータの編集 TEI / CORLI",
     xmlopen: "開いた",
     xmlsave: "セーブ",
-    oddopen: "ODDの選択",
+    xmlnew: "新しい",
+    oddapply: "Apply ODD file",
+    cssapply: "Apply CSS file",
     menuhelp: "助けて",
+    applyoddcss: "Apply ODD/CSS",
     oddpredef: "定義済みODD",
     oddteispoken: "TEI 話された",
     oddolac: "Olac/DC",
@@ -193,8 +197,8 @@ let messages_jpn = {
 */
     choicelanguage: '語',
     predefodd: "定義済みODD",
-    xmlnew: "新しい",
-    cssopen: "CSSの選択",
+    ok: 'ok',
+    cancel: 'cancel',
 };
 
 let shortHelp_eng = `
@@ -244,8 +248,11 @@ let messages_eng = {
     title: "Metadata edition TEI / CORLI",
     xmlopen: "Open",
     xmlsave: "Save",
-    oddopen: "Choose ODD",
+    xmlnew: "New",
+    oddapply: "Apply ODD file",
+    cssapply: "Apply CSS file",
     menuhelp: "Help",
+    applyoddcss: "Apply ODD/CSS",
     oddpredef: "Predefined ODD:",
     oddteispoken: "TEI Spoken",
     oddolac: "Olac/DC",
@@ -267,17 +274,37 @@ let messages_eng = {
     newfile: 'new-file.xml',
     choicelanguage: 'Languages',
     predefodd: "Predefined ODD",
-    xmlnew: "New",
-    cssopen: "Choose CSS",
+    ok: 'OK',
+    cancel: 'Cancel',
     pleaseloadcss1: "The original CSS file ",
     pleaseloadcss2: " is absent: do you want to load it?",
     usedefaultcss: "The CSS file is not found. Default CSS values will be used",
     pleaseloadodd1: "The ODD file ",
     pleaseloadodd2: " is absent: you have to give its location.",
     nooddavailable: "The ODD file is not found. The XML file cannot be edited.",
+    askoddInfo: "You must choose an ODD file. Please make a choice.",
+    askoddCurrent: "Use the currently loaded ODD",
+    askoddLocalOdd: "Choose and ODD file on your computer",
+    askoddPredef: "Choose a predefined ODD file",
 };
 
 let language: any = messages_eng;
+
+let oddprefdefined = [
+    { label: "TEI Spoken", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", labelcss: "", css: "" },
+    { label: "Olac/DC", odd: "http://ct3.ortolang.fr/teimeta/olac.odd", labelcss: "", css: "" },
+    { label: "Media", odd: "http://ct3.ortolang.fr/teimeta/media.odd", labelcss: "", css: "" },
+    { label: "TEI Spoken FileDesc", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", 
+        labelcss: "FileDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenfile.css" },
+    { label: "TEI Spoken ProfileDesc", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", 
+        labelcss: "ProfileDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenprofile.css" },
+    { label: "TEI Spoken EncodingDesc", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", 
+        labelcss: "EncodingDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenencoding.css" },
+];
+
+export function oddpredefs() {
+    return oddprefdefined;
+}
 
 export function setLanguage(lang) {
     if (lang.toLowerCase() === 'fr' || lang.toLowerCase() === 'fra') {

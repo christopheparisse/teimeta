@@ -209,6 +209,9 @@
 							<elementRef key="sourceDesc"/>
 						</sequence>
 					</content>
+					<remarks style="element">
+						<p><ident>css-fileDesc</ident></p>
+					</remarks>
 				</elementSpec>
 
 				<elementSpec ident="profileDesc" module="header">
@@ -222,6 +225,9 @@
 							<elementRef key="langUsage"/>
 						</sequence>
 					</content>
+					<remarks style="element">
+						<p><ident>css-profileDesc</ident></p>
+					</remarks>
 				</elementSpec>
 
 				<elementSpec ident="encodingDesc" module="header">
@@ -234,6 +240,9 @@
 							<elementRef key="appInfo"/>
 						</sequence>
 					</content>
+					<remarks style="element">
+						<p><ident>css-encodingDesc</ident></p>
+					</remarks>
 				</elementSpec>
 
 
@@ -800,7 +809,7 @@
 							<!-- mode="s"= default value qui signifie spoken -->
 						</attDef>
 						<attDef ident="subtype" usage="req" mode="change" rend="mode.face_to_face">
-							
+
 							<valList>
 								<!-- pas de choix autre volontairement -->
 								<valItem ident="mode.face_to_face">
@@ -833,7 +842,7 @@
 					<desc xml:lang="en">Linked resource</desc>
 					<attList>
 						<attDef ident="type" usage="req" mode="change" rend="constitution.single">
-							
+
 							<valList>
 								<valItem ident="constitution.single">
 									<desc xml:lang="fr">ressource autonome</desc>
@@ -1290,7 +1299,7 @@
 					<attList>
 						<attDef ident="ana" usage="req" mode="change">
 							<valList>
-								
+
 								<valItem ident="occupation.before_school">
 									<desc xml:lang="fr">avant la scolarisation</desc>
 									<desc xml:lang="en">before school</desc>
@@ -1362,7 +1371,7 @@
 				<!-- settingDesc : recording et medias-->
 				<elementSpec ident="settingDesc" module="corpus" mode="change" n="1">
 					<desc xml:lang="fr">Session enregistrée : lieu, langue,date</desc>
-					<desc xml:lang="en">Seeting: place, language,date</desc>
+					<desc xml:lang="en">Setting: place, language,date</desc>
 
 					<content>
 						<sequence minOccurs="1" maxOccurs="1">

@@ -34,7 +34,7 @@ export function getChildrenByName(node, name, corresp=null) {
     let children = [];
     for (let child = 0; child < node.childNodes.length; child++) {
         if (corresp) {
-            console.log(node.childNodes[child]);
+            //console.log(node.childNodes[child]);
             let a = node.childNodes[child].getAttribute('corresp');
             if (a !== corresp) continue;
         }
@@ -367,7 +367,7 @@ function readAttrDef(attrDef, node) {
                 attrDef.datatype.type = 'list';
         }
         if (!attrDef.rend)
-            attrDef.datatype.rend = attrDef.datatype.vallist[0].ident;
+            attrDef.datatype.rend = (attrDef.datatype.vallist.length > 0) ? attrDef.datatype.vallist[0].ident : "";
         else
             attrDef.datatype.rend = attrDef.rend;
     }
@@ -475,12 +475,12 @@ export function loadOdd(data) {
     for (let i in odd.listElementSpec) {
         // check if all elementRef exist as elementSpec
         if (odd.listElementSpec[i].access !== odd.rootTEI && !odd.listElementRef[odd.listElementSpec[i].access]) {
-            warning += msg.msg('notusedelementref1') + odd.listElementSpec[i].access + msg.msg('notusedelementref2');
+            warning += msg.msg('notusedelementref1') + odd.listElementSpec[i].access + msg.msg('notusedelementref2') + '<br/>';
         }
     }
     let rootElt = odd.listElementSpec[odd.rootTEI];
     if (!rootElt) {
-        error += msg.msg('nodefrootelement') + odd.rootTEI + "\n";
+        error += msg.msg('nodefrootelement') + odd.rootTEI + '<br/>';
     } else {
         rootElt.usage = 'req';
     }

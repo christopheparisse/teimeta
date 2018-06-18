@@ -73,9 +73,9 @@ export function askUserModalYesNoCancel(s, fun) {
     picoModal({
         content: "<p>" + s + "</p>" +
             "<p class='footer'>" +
-            "<button class='yes'>Sauver</button>" +
-            "<button class='no'>Ne pas sauver</button>" +
-            "<button class='cancel'>Annuler</button> " +
+            "<button class='yes'>Save</button>" +
+            "<button class='no'>Don't save</button>" +
+            "<button class='cancel'>Cancel</button> " +
             "</p>"
     }).afterCreate(modal => {
         modal.modalElem().addEventListener("click", evt => {
@@ -93,41 +93,43 @@ export function askUserModalYesNoCancel(s, fun) {
 }
 
 export function askUserModalForOdd(previousname, loaded, fun) {
-    let s1 = "You must choose an ODD file. Please make a choice.";
-    let s2 = "Use the currently loaded ODD:";
-    let s3 = "Choose and ODD file on your computer";
-    let s4 = "Choose a predefined ODD file:";
-    let s5 = "Ok.";
-    let s6 = "Cancel";
-    let s91 = msg.msg("oddteispoken");
-    let s92 = msg.msg("oddolac");
-    let s93 = msg.msg("oddmedia");
+    let askoddInfo = msg.msg('askoddInfo');
+    let askoddCurrent = msg.msg('askoddCurrent');
+    let askoddLocalOdd = msg.msg('askoddLocalOdd');
+    let askoddPredef = msg.msg('askoddPredef');
+//    let askoddOk = msg.msg('ok');
+    let askoddCancel = msg.msg('cancel');
+
+    let box = '<div id="aumomodal"><p class="aumo aumotitle">' + askoddInfo + '</p>' +
+    (loaded ? "<button class='aumo aumobutton current'>" + askoddCurrent + " " + previousname + "</button>" : "") +
+    "</br>" + "<button class='aumo aumobutton computer'>" + askoddLocalOdd + "</button><br/>" +
+    '<p class="aumo aumoinfo">' + askoddPredef + "<p/>";
+
+    for (let s=0; s < (msg.oddpredefs()).length; s++) {
+        box += "<button class='aumo aumobutton aumoid" + s + "'>" + (msg.oddpredefs())[s].label + "</button><br/>";
+    }
+
+    box += "<button class='aumo aumocancel cancel'>" + askoddCancel + "</button></div>";
+
     picoModal({
-        content: '<p>' + s1 + '</p>' +
-            (loaded ? "<button class='current'>" + s2 + " " + previousname + "</button>" : "") +
-            "<button class='computer'>" + s3 + "</button><br/>" +
-            s4 + "<br/>" +
-            "<button class='s91'>" + s91 + "</button><br/>" +
-            "<button class='s92'>" + s92 + "</button><br/>" +
-            "<button class='s93'>" + s93 + "</button><br/>" +
-            "<p class='footer'>" +
-//            "<button class='ok'>" + s5 + "</button>" +
-            "<button class='cancel'>" + s6 + "</button>" +
-            "</p>"
+        content: box
     }).afterCreate(modal => {
         modal.modalElem().addEventListener("click", evt => {
-            if (evt.target && evt.target.matches(".current")) {
-                modal.close('current');
-            } else if (evt.target && evt.target.matches(".computer")) {
-                modal.close('computer');
-            } else if (evt.target && evt.target.matches(".s91")) {
-                modal.close('oddteispoken');
-            } else if (evt.target && evt.target.matches(".s92")) {
-                modal.close('oddolac');
-            } else if (evt.target && evt.target.matches(".s93")) {
-                modal.close('oddmedia');
-            } else if (evt.target && evt.target.matches(".cancel")) {
-                modal.close('cancel');
+            if (evt.target) {
+                if (evt.target.matches(".current")) {
+                    modal.close('current');
+                } else if (evt.target.matches(".computer")) {
+                    modal.close('computer');
+                } else if (evt.target.matches(".cancel")) {
+                    modal.close('cancel');
+                } else {
+                    for (let s=0; s < (msg.oddpredefs()).length; s++) {
+                        let l = "aumoid" + s;
+                        if (evt.target.matches("." + l)) {
+                            modal.close(l);
+                        }
+                    }
+                }
             }
         });
     }).afterClose((modal, event) => {

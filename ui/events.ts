@@ -5,21 +5,21 @@
  * 
  * Use case
  * 1) openXml() --> choose a local file --> loadXml(data/file/url)
- *      if ODD in XML then loadODD(file/url)
+ *      if ODD in XML then loadODD(url) or ask for (file)
  *      else choose ODD file or choose predefined ODD or already loaded ODD --> (loadOdd data/file/url)
+ *      if CSS in ODD file same thing as above but with CSS 
  * 2) newXml()
  *      check changes + 
  *      choose ODD file or choose predefined ODD or already loaded ODD --> (loadOdd data/file/url)
  * 3) chooseOdd()
  *      choose ODD file to be used in later openXml() or newXml()
- *      if the user want to replace current ODD, he has to save first
+ *      if the user want to replace current ODD, he has to save first but change is immediate otherwise the user 
+ *      has to use newXml() as above
  * 4) chooseCss()
  *      choose a CSS file to be used in later openXml() or newXml()
- *      the predefined CSS can be used only with predefined ODD (see above)
- * 
- * choix obligatoire internes
- *      loadCss(data/ulr/file)
- */
+ *      the predefined CSS can be used immediatly
+ *
+ **/
 
 import * as edit from '../teiedit/edit';
 import * as odd from '../teiedit/odd';
@@ -69,6 +69,10 @@ export function openXml() {
                 if (!oddname) {
                     // find an odd
                     findOdd(name, data);
+                } else if (oddname === teiData.oddName) {
+                    // same as current odd
+                    // do not reload
+                    finishOpenXml(name, data);
                 } else if (oddname.substring(0,4) !== "http") {
                     // an odd is indicated in the xml file
                     // it is not an external address so cannot access directly if not electron
@@ -115,19 +119,26 @@ function findOdd(nameXml, dataXml) {
                 finishOpenXml(nameXml, dataXml);
                 break;
 
-            case 'oddteispoken':
-                oddTeiOral();
-                break;
-
-            case 'oddolac':
-                oddOlacDc();
-                break;
-
-            case 'oddmedia':
-                oddMedia();
-                break;
-                
             default:
+                if (choice && choice.substring(0,6) === 'aumoid') {
+                    let c = choice.substring(6);
+                    if (isNaN(parseInt(c))) {
+                        console.log('bad choice:', choice, "[", c, "]");
+                        alert.alertUser('bad choice: ' + choice + " [" + c + "]");
+                        return;
+                    }
+                    let n = (msg.oddpredefs())[c];
+                    if (n && n.odd) {
+                        if (n.css) {
+                            oddCssLoadUrls(n.odd, n.label, n.css, n.labelcss);
+                        } else {
+                            oddLoadUrl(n.odd, n.label);
+                        }
+                    } else {
+                        console.log('bad number in choice:', choice, msg.oddpredefs());
+                        alert.alertUser('bad number in choice: ' + choice);
+                    }
+                }
                 break;
         }
     }
@@ -139,11 +150,21 @@ function findOdd(nameXml, dataXml) {
 }
 
 function finishOpenXml(name, data) {
-    teiData.fileName = name;
+    teiData.fileName = name ? name : msg.msg('newfile');
     let el = document.getElementById('filename');
     el.innerHTML = msg.msg('file') + name;
+    // test if cssfile is needed
+    if (teiData.dataOdd && teiData.dataOdd.cssfile) {
+        testCss(teiData.dataOdd.cssfile);
+    }
+    // now load XML
     load.loadTei(data, teiData);
-    teiData.html = edit.generateHTML(teiData);
+    if (teiData.dataCss) {
+        let cssHtml =  '<style id="cssstyle">' + teiData.dataCss + '</style>\n';
+        teiData.html = cssHtml + edit.generateHTML(teiData);
+    } else {
+        teiData.html = edit.generateHTML(teiData);
+    }
     el = document.getElementById('teidata');
     el.innerHTML = teiData.html;
     teiData.new = false;
@@ -151,19 +172,44 @@ function finishOpenXml(name, data) {
     //console.log(edit.values);
 }
 
+function afterOpenCssFile(err, cssname, displayname, cssdata, unused1, unused2) {
+    if (!err) {
+        openCssLoad(cssname, displayname, cssdata);
+    }                    
+}
+
+function testCss(cssname) {
+    if (!cssname) {
+        // nothing to do
+        return;
+    } else if (cssname === teiData.cssName) {
+        // same as current css
+        // do not reload
+        return;
+    } else if (cssname.substring(0,4) !== "http") {
+        // an css is indicated in the odd file
+        // it is not an external address so cannot access directly if not electron
+        let displayname = dispname(cssname);
+        opensave.openSpecificLocalFile(cssname, cssname, null, null, afterOpenCssFile);
+    } else {
+        // an odd is indicated in the xml file
+        // try to open it
+        let displayname = dispname(cssname);
+        readTextFile(cssname, function (text) {
+            // console.log("read ODD: ", oddname, text);
+            if (text) {
+                openCssLoad(cssname, displayname, text);
+            }
+        });
+    }
+}
+
 export function newXml(choice) {
     // checked changes
     checkChange(() => {
-        if (choice === 'new') {
-            // open local odd
-            opensave.chooseOpenFile(function(err, name, data) {
-                if (!err) {
-                    openOddLoad(name, name, data);
-                    finishOpenXml(null, null);
-                } else {
-                    console.log('cancel open odd for new xml file');
-                }
-            });
+        if (choice !== 'previous') {
+            // find an odd
+            findOdd(null, null);
         } else {
             try {
                 let ls = localStorage.getItem("previousODD");
@@ -178,7 +224,7 @@ export function newXml(choice) {
                     var jcss = JSON.parse(lcss);
                     // console.log('newfile CSS', jcss);
                     if (lcss) {
-                        openCssLoad(jcss.cssName, jcss.data);
+                        openCssLoad(jcss.cssName, jcss.cssName, jcss.data);
                     }
                     openOddLoad(js.oddName, js.oddName, js.data);
                 } else {
@@ -236,7 +282,7 @@ export function reLoad(callback) {
             var jcss = JSON.parse(lcss);
             // console.log('newfile CSS', jcss);
             if (lcss) {
-                openCssLoad(jcss.cssName, jcss.data);
+                openCssLoad(jcss.cssName, jcss.cssName, jcss.data);
             }
             openOddLoad(js.oddName, js.oddName, js.data);
             finishOpenXml(lxname, lx);
@@ -250,9 +296,9 @@ export function reLoad(callback) {
     }
 }
 
-export function openOddCssLoad(nameOdd, dataOdd, nameCss, dataCss) {
-    openCssLoad(nameCss, dataCss);
-    openOddLoad(nameOdd, nameOdd, dataOdd);
+export function openOddCssLoad(nameOdd, dispNameOdd, dataOdd, nameCss, dispNameCss, dataCss) {
+    openCssLoad(nameCss, dispNameCss, dataCss);
+    openOddLoad(nameOdd, dispNameOdd, dataOdd);
 }
 
 export function openOddLoad(name, displayname, data) {
@@ -262,7 +308,7 @@ export function openOddLoad(name, displayname, data) {
     teiData.dataOdd = odd.loadOdd(data);
     load.loadTei(null, teiData);
     if (teiData.dataCss) {
-        let cssHtml =  '<style>' + teiData.dataCss + '</style>\n';
+        let cssHtml =  '<style id="cssstyle">' + teiData.dataCss + '</style>\n';
         teiData.html = cssHtml + edit.generateHTML(teiData);
     } else {
         teiData.html = edit.generateHTML(teiData);
@@ -283,19 +329,31 @@ export function openOddLoad(name, displayname, data) {
 export function openOdd() {
     // checked changes
     checkChange(() => {
+        // save in all cases and put in name + data
+        saveStorage();
+        let lxdata = localStorage.getItem("previousXML");
+        let lxname = localStorage.getItem("previousXMLName");
+        // find an odd
+        findOdd(lxname, lxdata);
+        /*
         opensave.chooseOpenFile(function(err, name, data) {
             if (!err) {
                 openOddLoad(name, name, data);
+                // test if cssfile is needed
+                if (teiData.dataOdd && teiData.dataOdd.cssfile) {
+                    testCss(teiData.dataOdd.cssfile);
+                }
             } else
                 console.log(name, err);
         });
+        */
     });
 };
 
-export function openCssLoad(name, data) {
+export function openCssLoad(name, displayname, data) {
     teiData.cssName = name;
     let el = document.getElementById('cssname');
-    if (el) el.innerHTML = "CSS: " + name;
+    if (el) el.innerHTML = "CSS: " + displayname;
     teiData.dataCss = data;
     // console.log("CSS: ", name, data);
     let js = JSON.stringify({data: data, cssName: name});
@@ -307,7 +365,10 @@ export function openCss() {
     checkChange(() => {
         opensave.chooseOpenFile(function(err, name, data) {
             if (!err) {
-                openCssLoad(name, data);
+                // save in all cases and put in name + data
+                saveStorage();
+                openCssLoad(name, name, data);
+                reLoad(null);
             } else
                 console.log(name, err);
         });
@@ -384,22 +445,15 @@ export function readTextFile(file, callback) {
 }
 
 export function oddLoadUrl(url, namedisplayed) {
-    // checked changes
-    checkChange(() => {
-        readTextFile(url, function(text) {
-            openOddLoad(url, namedisplayed, text);
-        });
+    readTextFile(url, function(text) {
+        openOddLoad(url, namedisplayed, text);
     });
 }
 
-export function oddMedia() {
-    oddLoadUrl('http://ct3.ortolang.fr/teimeta/media.odd', msg.msg('predefoddmedia'));
-}
-
-export function oddTeiOral() {
-    oddLoadUrl('http://ct3.ortolang.fr/teimeta/teispoken.odd', msg.msg('predefoddteispoken'));
-}
-
-export function oddOlacDc() {
-    oddLoadUrl('http://ct3.ortolang.fr/teimeta/olac.odd', msg.msg('predefoddolacdc'));
+export function oddCssLoadUrls(urlOdd, namedisplayedOdd, urlCss, namedisplayedCss) {
+    readTextFile(urlOdd, function(textOdd) {
+        readTextFile(urlCss, function(textCss) {
+            openOddCssLoad(urlOdd, namedisplayedOdd, textOdd, urlCss, namedisplayedCss, textCss);
+        });
+    });
 }

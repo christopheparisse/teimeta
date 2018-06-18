@@ -5,10 +5,10 @@
 import * as events from './events';
 import * as odd from '../teiedit/odd';
 import * as msg from './messages';
-import * as schema from '../teiedit/schema';
 import * as edit from '../teiedit/edit';
 import * as syscall from './opensave';
-import * as help from './help';
+import * as version from './version';
+import * as alert from './alert';
 let picoModal = require('picomodal');
 
 // to check if parameters are changed
@@ -88,32 +88,31 @@ export function setLanguage(lg, reload=true) {
         msg.setLanguage('en');
     }
 
-    let el = document.getElementById('title');
-    el.textContent = msg.msg("title");
-    el = document.getElementById('xmlopen');
-    el.textContent = msg.msg("xmlopen");
-    el = document.getElementById('xmlsave');
-    el.textContent = msg.msg("xmlsave");
-    el = document.getElementById('oddopen');
-    el.textContent = msg.msg("oddopen");
-    el = document.getElementById('cssopen');
-    el.textContent = msg.msg("cssopen");
-    el = document.getElementById('menuhelp');
-    el.textContent = msg.msg("menuhelp");
-    el = document.getElementById('oddteispoken');
-    el.textContent = msg.msg("oddteispoken");
-    el = document.getElementById('oddolac');
-    el.textContent = msg.msg("oddolac");
-    el = document.getElementById('oddmedia');
-    el.textContent = msg.msg("oddmedia");
-    el = document.getElementById('menuparam');
-    el.textContent = msg.msg("menuparam");
-    el = document.getElementById('xmlnew');
-    el.textContent = msg.msg("xmlnew");
-    el = document.getElementById('predefodd');
-    el.textContent = msg.msg("predefodd");
-    el = document.getElementById('choicelanguage');
-    el.textContent = msg.msg("choicelanguage");
+    try {
+        let el = document.getElementById('title');
+        el.textContent = msg.msg("title");
+        el = document.getElementById('xmlopen');
+        el.textContent = msg.msg("xmlopen");
+        el = document.getElementById('xmlsave');
+        el.textContent = msg.msg("xmlsave");
+        el = document.getElementById('oddapply');
+        el.textContent = msg.msg("oddapply");
+        el = document.getElementById('cssapply');
+        el.textContent = msg.msg("cssapply");
+        el = document.getElementById('xmlnew');
+        el.textContent = msg.msg("xmlnew");
+        el = document.getElementById('menuhelp');
+        el.textContent = msg.msg("menuhelp");
+        el = document.getElementById('menuparam');
+        el.textContent = msg.msg("menuparam");
+        el = document.getElementById('applyoddcss');
+        el.textContent = msg.msg("applyoddcss");
+        el = document.getElementById('choicelanguage');
+        el.textContent = msg.msg("choicelanguage");
+    } catch (error) {
+        alert.alertUser('Erreur de message: ' + error.toString());
+        console.log(error);
+    }
 
     changeParams = false;
     saveParams();
@@ -225,29 +224,39 @@ export function loadParams() {
 export function init(funbodykeys) {
     let el;
     el = document.getElementById('titledate');
-    el.textContent = ' - ' + help.version;
+    el.textContent = ' - ' + version.version;
     el = document.getElementsByTagName('body');
     el[0].addEventListener("keydown", funbodykeys);
     el = document.getElementById('file-open');
     el.addEventListener("click", events.openXml);
-    el = document.getElementById('file-open-odd');
+    el = document.getElementById('file-new');
+    el.addEventListener("click", events.newXml);
+    el = document.getElementById('file-apply-odd');
     el.addEventListener("click", events.openOdd);
-    el = document.getElementById('file-open-css');
+    el = document.getElementById('file-apply-css');
     el.addEventListener("click", events.openCss);
     el = document.getElementById('file-saveas');
     el.addEventListener("click", events.saveAsLocal);
     el = document.getElementById('help');
-    el.addEventListener("click", help.about);
+    el.addEventListener("click", version.about);
     el = document.getElementById('top2-params');
     el.addEventListener("click", oddParams);
 
+    /*
     el = document.getElementById('odd-media');
     el.addEventListener("click", events.oddMedia);
     el = document.getElementById('odd-teioral');
     el.addEventListener("click", events.oddTeiOral);
     el = document.getElementById('odd-partdesc');
     el.addEventListener("click", events.oddOlacDc);
-    
+    el = document.getElementById('odd-teioralfile');
+    el.addEventListener("click", events.oddTeiOralFile);
+    el = document.getElementById('odd-teioralprofile');
+    el.addEventListener("click", events.oddTeiOralProfile);
+    el = document.getElementById('odd-teioralencoding');
+    el.addEventListener("click", events.oddTeiOralEncoding);
+    */
+
     el = document.getElementById('showall');
     el.addEventListener("click", edit.showAll);
     el = document.getElementById('hideall');

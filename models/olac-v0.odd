@@ -59,9 +59,6 @@
                <content>
                   <textNode/>
                </content>
-                <remarks style="element">
-                    <p><ident>contributor-css</ident></p>
-                </remarks>
                <attList>
                   <attDef ident="refine">
                      <desc>refine</desc>
@@ -119,9 +116,6 @@
                <content>
                   <textNode/>
                </content>
-                <remarks style="element">
-                    <p><ident>coverage-css</ident></p>
-                </remarks>
                <attList>
                   <attDef ident="language">
                      <desc>language</desc>
@@ -185,9 +179,6 @@
                      <datatype>
                         <dataRef name="string"/>
                      </datatype>
-                    <remarks style="element">
-                        <p><ident>creator-data-css</ident></p>
-                    </remarks>
                   </attDef>
                   <attDef ident="scheme">
                      <desc>scheme</desc>
