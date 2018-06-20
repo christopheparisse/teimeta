@@ -438,13 +438,22 @@ export function save(fun) {
 };
 
 export function saveAsLocal(fun) {
-    var ed = tei.generateTEI(teiData);
-    // console.log(ed);
-    edit.change(false);
-    opensave.saveFileLocal('xml', teiData.fileName, ed);
-    if (fun && typeof fun === 'function') fun();
+    function saveit(name) {
+        var ed = tei.generateTEI(teiData);
+        // console.log(ed);
+        edit.change(false);
+        opensave.saveFileLocal('xml', name, ed);
+        if (fun && typeof fun === 'function') fun();
+    }
+    if (teiData.fileName === msg.msg('newfile')) {
+        alert.promptUserModal("Please give the name of your new file: ",
+            function(newname) {
+                if (newname) saveit(newname);
+            });
+    } else {
+        saveit(teiData.fileName);
+    }
 };
-
 
 export function readTextFile(file, callback) {
     var rawFile:any = new XMLHttpRequest();
