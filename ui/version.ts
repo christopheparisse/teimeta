@@ -5,8 +5,8 @@
 import * as alert from './alert';
 import * as msg from './messages';
 
-export let version = '0.5.5';
-export let date = '18-06-2018';
+export let version = '0.5.6';
+export let date = '21-06-2018';
 
 export function about() {
     var s = msg.msg('versionname') + version + " - " + date + "</br></br>";

@@ -8,10 +8,11 @@
 
 import * as odd from './odd';
 import * as schema from './schema';
-import * as tei from './tei';
 import * as load from './load';
 import * as alert from '../ui/alert';
 import * as msg from '../ui/messages';
+
+let resizeList = [];
 
 export let values = {};
 let changed = false; // start with no change made. If set to true then the data has to be saved.
@@ -396,8 +397,10 @@ export function hideAll() {
  * @param elist 
  */
 export function generateHTML(teiData) {
-    recursiveDepth = 0; 
-    return generateElement(teiData.dataTei, 'root');
+    recursiveDepth = 0;
+    resizeList = [];
+    let r = generateElement(teiData.dataTei, 'root');
+    return {script: resizeList, html: r};
 }
 
 export function highlight(e) {
@@ -600,6 +603,7 @@ function editDataType(datatype, ident) {
                 s += ' ' + datatype.remarks.ident;
             }
             s += '" name="' + uniq + '" id="' + uniq + '" ';
+            resizeList.push(uniq);
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
@@ -624,6 +628,7 @@ function editDataType(datatype, ident) {
                 s += ' ' + datatype.remarks.ident;
             }
             s += '" type="date" name="' + uniq + '" id="' + uniq + '" ';
+            resizeList.push(uniq);
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
@@ -651,6 +656,7 @@ function editDataType(datatype, ident) {
                 s += ' ' + datatype.remarks.ident;
             }
             s += '" name="' + uniq + '" id="' + uniq + '" ';
+            resizeList.push(uniq);
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }

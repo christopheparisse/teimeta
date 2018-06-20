@@ -221,6 +221,17 @@ export function loadParams() {
     }
 }
 
+export function resizable (id, factor) {
+    let el:any = document.getElementById(id);
+    if (!el) return;
+    var int = Number(factor) || 7.7;
+    function resize() {el.style.width = ((el.value.length+1) * int) + 'px'}
+    var e = 'keyup,keypress,focus,blur,change'.split(',');
+    for (var i in e) el.addEventListener(e[i],resize,false);
+    resize();
+}
+
+//resizable(document.getElementById('txt'),7);
 export function init(funbodykeys) {
     let el;
     el = document.getElementById('titledate');

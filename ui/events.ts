@@ -29,6 +29,7 @@ import * as load from '../teiedit/load';
 import * as opensave from './opensave';
 import * as alert from './alert';
 import * as msg from './messages';
+import * as common from './common';
 
 const NEWFILENAME = msg.msg('newfile');
 
@@ -149,6 +150,12 @@ function findOdd(nameXml, dataXml) {
     }
 }
 
+function executeResizeList(list) {
+    for (let f in list) {
+        common.resizable(list[f], 8.8);
+    }
+}
+
 function finishOpenXml(name, data) {
     teiData.fileName = name ? name : msg.msg('newfile');
     let el = document.getElementById('filename');
@@ -159,14 +166,18 @@ function finishOpenXml(name, data) {
     }
     // now load XML
     load.loadTei(data, teiData);
+    let h; // result from generateHTML
     if (teiData.dataCss) {
         let cssHtml =  '<style id="cssstyle">' + teiData.dataCss + '</style>\n';
-        teiData.html = cssHtml + edit.generateHTML(teiData);
+        h = edit.generateHTML(teiData);
+        teiData.html = cssHtml + h.html;
     } else {
-        teiData.html = edit.generateHTML(teiData);
+        h = edit.generateHTML(teiData);
+        teiData.html = h.html;
     }
     el = document.getElementById('teidata');
     el.innerHTML = teiData.html;
+    executeResizeList(h.script);
     teiData.new = false;
     //console.log("openfile TEI", teiData.dataTei);
     //console.log(edit.values);
@@ -307,11 +318,14 @@ export function openOddLoad(name, displayname, data) {
     el.innerHTML = "ODD: " + displayname;
     teiData.dataOdd = odd.loadOdd(data);
     load.loadTei(null, teiData);
+    let h; // result from generateHTML
     if (teiData.dataCss) {
         let cssHtml =  '<style id="cssstyle">' + teiData.dataCss + '</style>\n';
-        teiData.html = cssHtml + edit.generateHTML(teiData);
+        h = edit.generateHTML(teiData);
+        teiData.html = cssHtml + h.html;
     } else {
-        teiData.html = edit.generateHTML(teiData);
+        h = edit.generateHTML(teiData);
+        teiData.html = h.html;
     }
     teiData.fileName = NEWFILENAME;
     teiData.new = true;
@@ -322,6 +336,7 @@ export function openOddLoad(name, displayname, data) {
     el.innerHTML = msg.msg('file') + teiData.fileName;
     el = document.getElementById('teidata');
     el.innerHTML = teiData.html;
+    executeResizeList(h.script);
     let js = JSON.stringify({data: data, oddName: name, version: schema.version});
     localStorage.setItem("previousODD", js);
 }
