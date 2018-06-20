@@ -6,8 +6,7 @@
  * @param {file} object
  */
 
-let saveAs = require('file-saver');
-import * as alert from './alert';
+import * as common from './common';
 
 export let system = 'electron';
 
@@ -70,31 +69,7 @@ export function chooseOpenFile(callback) {
  * @param data 
  */
 export function saveFile(name, data) {
-    saveFileLocal('xml', name, data);
+    common.saveFileLocal('xml', name, data);
 }
 
 export function chooseSaveFile(type, fun) {}
-
-export function saveFileLocal(type, name, data) {
-    var blob = new Blob([data], {
-        type : "text/plain;charset=utf-8"
-    });
-    // {type: 'text/css'});
-    var p1 = name.lastIndexOf('/');
-    var p2 = name.lastIndexOf('\\');
-    if (p1 < p2) p1 = p2;
-    if (p1 === -1) p1 = 0;
-    var l = name.substr(p1);
-    saveAs.saveAs(blob, l);
-};
-
-export function openSpecificLocalFile(oddname, displayname, xmlname, xmldata, funCallback) {
-    function fun(err, name, data) {
-        funCallback(err, name, displayname, data, xmlname, xmldata);
-    }
-    alert.askUserModal(
-        'The file <b>' + xmlname + '</b> uses an Odd file named <b>' + oddname +
-        '</b> - please locate it on you computer.',
-        function(response) { if (response) chooseOpenFile(fun) }
-    );    
-}

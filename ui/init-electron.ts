@@ -67,7 +67,7 @@ function bodyKeys(e) {
     }
     if (e.which === 83 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl S
         e.preventDefault();
-        events.saveAs(() => {});
+        events.save(() => {});
     }
     if (e.which === 81 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl Q
         quit();            
@@ -84,8 +84,6 @@ function bodyKeys(e) {
 export function init() {
     events.teiData.system = 'electron';
     common.loadParams();
-    // load previous data
-    events.newXml('previous');
 
     ipcRenderer.on('open', function(event, arg) {
         events.openXml();
@@ -106,6 +104,12 @@ export function init() {
         quit();            
     });
 
+    // the file-saveas is a real save
+    let el = document.getElementById('file-saveas');
+    el.addEventListener("click", events.save);
+
     common.init(bodyKeys);
     common.setLanguage(odd.odd.params.language, false);
+    // load previous data
+    events.newXml('previous');
 }

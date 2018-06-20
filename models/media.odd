@@ -31,7 +31,7 @@
 	<text>
 		<body>
 			<!-- definition de TEI_CORPO_METADATA-->
-			<schemaSpec ident="TEI_CORPO_METADATA" start="TEI" rend="media-css.css">
+			<schemaSpec ident="TEI_CORPO_METADATA" start="TEI">
 				<!-- ajouter teiCorpus par la suite si collections -->
 
 				<!-- required modules -->

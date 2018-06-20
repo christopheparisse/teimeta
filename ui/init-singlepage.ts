@@ -51,8 +51,10 @@ export function init() {
     events.teiData.system = 'html';
     // load params
     common.loadParams();
-    // load previous data
-    events.newXml('previous');
+
+    // the file-saveas is a download save
+    let el = document.getElementById('file-saveas');
+    el.addEventListener("click", events.saveAsLocal);
 
     common.init(bodyKeys);
     window.addEventListener("beforeunload", function (e) {
@@ -67,6 +69,8 @@ export function init() {
     });
 
     common.setLanguage(odd.odd.params.language, false);
+    // load previous data
+    events.newXml('previous');
 }
 
 // in case the document is already rendered

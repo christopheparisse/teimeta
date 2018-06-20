@@ -36,18 +36,20 @@
 					<content>
 						<sequence minOccurs="1" maxOccurs="1">
 							<elementRef key="NODE"/>
+							<elementRef key="AttrText"/>
 						</sequence>
 					</content>
 				</elementSpec>
 
 				<elementSpec ident="NODE" module="header" mode="change">
-					<desc xml:lang="fr">TEST/NODE: (unique) + 0-max</desc>
-					<desc xml:lang="en">TEST/NODE: (unique) + 0-max</desc>
+					<desc xml:lang="fr">TEST/NODE: (unique) + 0-max (fr)</desc>
+					<desc xml:lang="en">TEST/NODE: (unique) + 0-max (en)</desc>
 					<content>
                         <elementRef key="OpenListAttr" minOccurs="1" maxOccurs="2" />
                         <elementRef key="List" minOccurs="0" maxOccurs="unbounded" />
                         <elementRef key="OList2" minOccurs="0" maxOccurs="unbounded" />
                         <elementRef key="OpenListNode" minOccurs="1" maxOccurs="unbounded" />
+						<elementRef key="Text" minOccurs="1" maxOccurs="2" />
 					</content>
 				</elementSpec>
 
@@ -100,6 +102,9 @@
 					<desc xml:lang="es">Edition de Textos node</desc>
 					<content>
 						<textNode/>
+						<datatype>
+							<dataRef name="multiline"/>
+						</datatype>
 					</content>
 				</elementSpec>
 

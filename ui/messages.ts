@@ -73,8 +73,8 @@ let messages_fra = {
     newfile: 'nouveau-fichier.xml',
     choicelanguage: 'Langues',
     predefodd: "ODD prédéfinis",
-    ok: 'ok',
-    cancel: 'cancel',
+    ok: 'OK',
+    cancel: 'Annuler',
 };
 
 let messages_spa = {
@@ -135,8 +135,8 @@ let messages_spa = {
 */
     choicelanguage: 'Languages',
     predefodd: "ODD predefinda",
-    ok: 'ok',
-    cancel: 'cancel',
+    ok: 'OK',
+    cancel: 'Cancelar',
 };
 
 let messages_jpn = {
@@ -197,8 +197,8 @@ let messages_jpn = {
 */
     choicelanguage: '語',
     predefodd: "定義済みODD",
-    ok: 'ok',
-    cancel: 'cancel',
+    ok: 'OK',
+    cancel: 'キャンセル',
 };
 
 let shortHelp_eng = `

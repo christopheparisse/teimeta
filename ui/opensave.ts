@@ -1,10 +1,8 @@
 /* use strict */
 
 let fs = require('fs');
-let path = require('path');
 // var dialog = require('electron').dialog;
 let remote = require('electron').remote;
-let saveAs = require('file-saver');
 
 export let system = 'file';
 
@@ -89,26 +87,6 @@ export function saveFile(fname, data, callback = null) {
     }
 };
 
-export function saveFileLocal(type, name, data) {
-    var blob = new Blob([data], {
-        type : "text/plain;charset=utf-8"
-    });
-    // {type: 'text/css'});
-    var p1 = name.lastIndexOf('/');
-    var p2 = name.lastIndexOf('\\');
-    if (p1 < p2) p1 = p2;
-    if (p1 === -1) p1 = 0;
-    var l = name.substr(p1);
-    saveAs.saveAs(blob, l);
-};
-
 export function openLocalFile(fn) {
     // for compatibility
-}
-
-export function openSpecificLocalFile(oddname, displayname, xmlname, xmldata, funCallback) {
-    function fun(err, data) {
-        funCallback(err, oddname, displayname, data, xmlname, xmldata);
-    }
-    openFile(oddname, fun);    
 }

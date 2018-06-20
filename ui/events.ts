@@ -31,8 +31,6 @@ import * as alert from './alert';
 import * as msg from './messages';
 import * as common from './common';
 
-const NEWFILENAME = msg.msg('newfile');
-
 export let teiData = {
     oddName: '',
     cssName: '',
@@ -78,7 +76,7 @@ export function openXml() {
                     // an odd is indicated in the xml file
                     // it is not an external address so cannot access directly if not electron
                     let displayname = dispname(oddname);
-                    opensave.openSpecificLocalFile(oddname, displayname, name, data, afterOpenXmlFile);
+                    common.openSpecificLocalFile(oddname, displayname, name, data, afterOpenXmlFile);
                 } else {
                     // an odd is indicated in the xml file
                     // try to open it
@@ -131,9 +129,15 @@ function findOdd(nameXml, dataXml) {
                     let n = (msg.oddpredefs())[c];
                     if (n && n.odd) {
                         if (n.css) {
-                            oddCssLoadUrls(n.odd, n.label, n.css, n.labelcss);
+                            oddCssLoadUrls(n.odd, n.label, n.css, n.labelcss,
+                                function(){
+                                    finishOpenXml(nameXml, dataXml);
+                                });
                         } else {
-                            oddLoadUrl(n.odd, n.label);
+                            oddLoadUrl(n.odd, n.label,
+                                function(){
+                                    finishOpenXml(nameXml, dataXml);
+                                });
                         }
                     } else {
                         console.log('bad number in choice:', choice, msg.oddpredefs());
@@ -159,7 +163,7 @@ function executeResizeList(list) {
 function finishOpenXml(name, data) {
     teiData.fileName = name ? name : msg.msg('newfile');
     let el = document.getElementById('filename');
-    el.innerHTML = msg.msg('file') + name;
+    el.innerHTML = msg.msg('file') + teiData.fileName;
     // test if cssfile is needed
     if (teiData.dataOdd && teiData.dataOdd.cssfile) {
         testCss(teiData.dataOdd.cssfile);
@@ -201,7 +205,7 @@ function testCss(cssname) {
         // an css is indicated in the odd file
         // it is not an external address so cannot access directly if not electron
         let displayname = dispname(cssname);
-        opensave.openSpecificLocalFile(cssname, cssname, null, null, afterOpenCssFile);
+        common.openSpecificLocalFile(cssname, cssname, teiData.oddName, null, afterOpenCssFile);
     } else {
         // an odd is indicated in the xml file
         // try to open it
@@ -238,6 +242,8 @@ export function newXml(choice) {
                         openCssLoad(jcss.cssName, jcss.cssName, jcss.data);
                     }
                     openOddLoad(js.oddName, js.oddName, js.data);
+                    //alert.alertUser('here is previous');
+                    finishOpenXml(null, null);
                 } else {
                     emptyFile();
                 }
@@ -250,7 +256,7 @@ export function newXml(choice) {
 }
 
 export function dumpHtml() {
-    opensave.saveFileLocal("html", "page.html", teiData.html);
+    common.saveFileLocal("html", "page.html", teiData.html);
 }
 
 export function checkChange(fun) {
@@ -327,7 +333,7 @@ export function openOddLoad(name, displayname, data) {
         h = edit.generateHTML(teiData);
         teiData.html = h.html;
     }
-    teiData.fileName = NEWFILENAME;
+    teiData.fileName = msg.msg('newfile');
     teiData.new = true;
 
     el = document.getElementById('cssname');
@@ -427,7 +433,7 @@ export function saveStorage() {
 };
 
 export function save(fun) {
-    if (teiData.fileName !== NEWFILENAME) {
+    if (teiData.fileName !== msg.msg('newfile')) {
             var ed = tei.generateTEI(teiData);
             edit.change(false);
             opensave.saveFile(teiData.fileName, ed);
@@ -437,17 +443,22 @@ export function save(fun) {
     }
 };
 
-export function saveAsLocal(fun) {
+export function saveAsLocal(fun, force = false) {
     function saveit(name) {
         var ed = tei.generateTEI(teiData);
         // console.log(ed);
         edit.change(false);
-        opensave.saveFileLocal('xml', name, ed);
+        common.saveFileLocal('xml', name, ed);
         if (fun && typeof fun === 'function') fun();
     }
-    if (teiData.fileName === msg.msg('newfile')) {
+    let nf = msg.msg('newfile');
+    if (teiData.fileName === nf || force === true) {
         alert.promptUserModal("Please give the name of your new file: ",
             function(newname) {
+                if (!newname) return;
+                teiData.fileName = newname;
+                let el = document.getElementById('filename');
+                el.innerHTML = msg.msg('file') + teiData.fileName;
                 if (newname) saveit(newname);
             });
     } else {
@@ -468,16 +479,18 @@ export function readTextFile(file, callback) {
     rawFile.send(null);
 }
 
-export function oddLoadUrl(url, namedisplayed) {
+export function oddLoadUrl(url, namedisplayed, fun) {
     readTextFile(url, function(text) {
         openOddLoad(url, namedisplayed, text);
+        fun();
     });
 }
 
-export function oddCssLoadUrls(urlOdd, namedisplayedOdd, urlCss, namedisplayedCss) {
+export function oddCssLoadUrls(urlOdd, namedisplayedOdd, urlCss, namedisplayedCss, fun) {
     readTextFile(urlOdd, function(textOdd) {
         readTextFile(urlCss, function(textCss) {
             openOddCssLoad(urlOdd, namedisplayedOdd, textOdd, urlCss, namedisplayedCss, textCss);
+            fun();
         });
     });
 }

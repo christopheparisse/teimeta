@@ -10,6 +10,7 @@ import * as syscall from './opensave';
 import * as version from './version';
 import * as alert from './alert';
 let picoModal = require('picomodal');
+let saveAs = require('file-saver');
 
 // to check if parameters are changed
 let changeParams = false;
@@ -246,12 +247,15 @@ export function init(funbodykeys) {
     el.addEventListener("click", events.openOdd);
     el = document.getElementById('file-apply-css');
     el.addEventListener("click", events.openCss);
-    el = document.getElementById('file-saveas');
-    el.addEventListener("click", events.saveAsLocal);
     el = document.getElementById('help');
     el.addEventListener("click", version.about);
     el = document.getElementById('top2-params');
     el.addEventListener("click", oddParams);
+
+    /*
+    let el = document.getElementById('file-saveas');
+    el.addEventListener("click", this is different for the web and the electron version);
+    */
 
     /*
     el = document.getElementById('odd-media');
@@ -296,4 +300,28 @@ export function init(funbodykeys) {
     window['dbg'] = {};
     window['dbg'].tei = events.teiData;
     window['dbg'].v = edit.values;
+}
+
+export function saveFileLocal(type, name, data) {
+    var blob = new Blob([data], {
+        type : "text/plain;charset=utf-8"
+    });
+    // {type: 'text/css'});
+    var p1 = name.lastIndexOf('/');
+    var p2 = name.lastIndexOf('\\');
+    if (p1 < p2) p1 = p2;
+    if (p1 === -1) p1 = 0;
+    var l = name.substr(p1);
+    saveAs.saveAs(blob, l);
+};
+
+export function openSpecificLocalFile(oddname, displayname, xmlname, xmldata, funCallback) {
+    function fun(err, data) {
+        funCallback(err, oddname, displayname, data, xmlname, xmldata);
+    }
+    alert.askUserModal(
+        'The file <b>' + xmlname + '</b> uses a file named <b>' + oddname +
+        '</b> - please locate it on you computer.',
+        function(response) { if (response) syscall.chooseOpenFile(fun) }
+    );    
 }
