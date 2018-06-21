@@ -287,6 +287,12 @@ input {
     font-size: large;
 }
 
+input.date {
+    background-color: #F7F7F7;
+    width: 180px;
+    font-size: large;
+}
+
 strong {
     font-size: x-large;
 }
@@ -333,7 +339,7 @@ select {
 	border-radius: 4px;
 }
 
-.aumo br {
+.aumo p {
     margin: 0;
     padding: 0;
 }

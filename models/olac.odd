@@ -233,12 +233,12 @@
                <content>
                   <textNode/>
                </content>
-							 <remarks style="element">
-									 <p><ident>row-odd</ident></p>
-							 </remarks>
-							 <remarks style="content">
-									 <p><ident>css-content</ident></p>
-							 </remarks>
+                    <remarks style="element">
+                            <p><ident>row-odd</ident></p>
+                    </remarks>
+                    <remarks style="content">
+                            <p><ident>css-content</ident></p>
+                    </remarks>
                <attList>
                   <attDef ident="code">
                      <desc>code</desc>

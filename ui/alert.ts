@@ -101,12 +101,12 @@ export function askUserModalForOdd(previousname, loaded, fun) {
     let askoddCancel = msg.msg('cancel');
 
     let box = '<div id="aumomodal"><p class="aumo aumotitle">' + askoddInfo + '</p>' +
-    (loaded ? "<button class='aumo aumobutton current'>" + askoddCurrent + " " + previousname + "</button>" : "") +
-    "</br>" + "<button class='aumo aumobutton computer'>" + askoddLocalOdd + "</button><br/>" +
-    '<p class="aumo aumoinfo">' + askoddPredef + "<p/>";
+    (loaded ? "<button class='aumo aumobutton current'>" + askoddCurrent + " " + previousname + "</button>" : "")
+        + "<button class='aumo aumobutton computer'>" + askoddLocalOdd + "</button>" +
+        '<p class="aumo aumoinfo">' + askoddPredef + "<p/>";
 
     for (let s=0; s < (msg.oddpredefs()).length; s++) {
-        box += "<button class='aumo aumobutton aumoid" + s + "'>" + (msg.oddpredefs())[s].label + "</button><br/>";
+        box += "<button class='aumo aumobutton aumoid" + s + "'>" + (msg.oddpredefs())[s].label + "</button>";
     }
 
     box += "<button class='aumo aumocancel cancel'>" + askoddCancel + "</button></div>";

@@ -623,12 +623,11 @@ function editDataType(datatype, ident) {
                 s += '</label>\n';
             }
             */
-            s += '<input class="' + UPname;
+            s += '<input class="date ' + UPname;
             if (datatype.remarks && datatype.remarks.ident) {
                 s += ' ' + datatype.remarks.ident;
             }
             s += '" type="date" name="' + uniq + '" id="' + uniq + '" ';
-            resizeList.push(uniq);
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
