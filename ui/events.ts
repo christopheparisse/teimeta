@@ -128,12 +128,15 @@ function findOdd(nameXml, dataXml) {
                     }
                     let n = (msg.oddpredefs())[c];
                     if (n && n.odd) {
-                        if (n.css) {
+                        if (n.css && n.css !== "#clean#") {
                             oddCssLoadUrls(n.odd, n.label, n.css, n.labelcss,
                                 function(){
                                     finishOpenXml(nameXml, dataXml);
                                 });
                         } else {
+                            if (n.css === "#clean#") {
+                                cleanCss();
+                            }
                             oddLoadUrl(n.odd, n.label,
                                 function(){
                                     finishOpenXml(nameXml, dataXml);
@@ -154,6 +157,13 @@ function findOdd(nameXml, dataXml) {
     }
 }
 
+export function cleanCss() {
+    teiData.cssName = "";
+    teiData.dataCss = "";
+    let js = JSON.stringify({data: "", cssName: ""});
+    localStorage.setItem("previousCSS", js);
+}
+
 function executeResizeList(list) {
     for (let f in list) {
         common.resizable(list[f], 8.8);
@@ -161,30 +171,33 @@ function executeResizeList(list) {
 }
 
 function finishOpenXml(name, data) {
+    function finishIt() {
+        // now load XML
+        load.loadTei(data, teiData);
+        let h; // result from generateHTML
+        if (teiData.dataCss) {
+            let cssHtml =  '<style id="cssstyle">' + teiData.dataCss + '</style>\n';
+            h = edit.generateHTML(teiData);
+            teiData.html = cssHtml + h.html;
+        } else {
+            h = edit.generateHTML(teiData);
+            teiData.html = h.html;
+        }
+        el = document.getElementById('teidata');
+        el.innerHTML = teiData.html;
+        executeResizeList(h.script);
+        teiData.new = false;
+        //console.log("openfile TEI", teiData.dataTei);
+        //console.log(edit.values);
+    }
     teiData.fileName = name ? name : msg.msg('newfile');
     let el = document.getElementById('filename');
     el.innerHTML = msg.msg('file') + teiData.fileName;
     // test if cssfile is needed
     if (teiData.dataOdd && teiData.dataOdd.cssfile) {
-        testCss(teiData.dataOdd.cssfile);
+        testCss(teiData.dataOdd.cssfile, finishIt);
     }
-    // now load XML
-    load.loadTei(data, teiData);
-    let h; // result from generateHTML
-    if (teiData.dataCss) {
-        let cssHtml =  '<style id="cssstyle">' + teiData.dataCss + '</style>\n';
-        h = edit.generateHTML(teiData);
-        teiData.html = cssHtml + h.html;
-    } else {
-        h = edit.generateHTML(teiData);
-        teiData.html = h.html;
-    }
-    el = document.getElementById('teidata');
-    el.innerHTML = teiData.html;
-    executeResizeList(h.script);
-    teiData.new = false;
-    //console.log("openfile TEI", teiData.dataTei);
-    //console.log(edit.values);
+    finishIt();
 }
 
 function afterOpenCssFile(err, cssname, displayname, cssdata, unused1, unused2) {
@@ -193,19 +206,22 @@ function afterOpenCssFile(err, cssname, displayname, cssdata, unused1, unused2) 
     }                    
 }
 
-function testCss(cssname) {
+function testCss(cssname, fun) {
     if (!cssname) {
         // nothing to do
+        if (fun) fun();
         return;
     } else if (cssname === teiData.cssName) {
         // same as current css
         // do not reload
+        if (fun) fun();
         return;
     } else if (cssname.substring(0,4) !== "http") {
         // an css is indicated in the odd file
         // it is not an external address so cannot access directly if not electron
         let displayname = dispname(cssname);
         common.openSpecificLocalFile(cssname, cssname, teiData.oddName, null, afterOpenCssFile);
+        if (fun) fun();
     } else {
         // an odd is indicated in the xml file
         // try to open it
@@ -214,6 +230,7 @@ function testCss(cssname) {
             // console.log("read ODD: ", oddname, text);
             if (text) {
                 openCssLoad(cssname, displayname, text);
+                if (fun) fun();
             }
         });
     }
@@ -319,32 +336,40 @@ export function openOddCssLoad(nameOdd, dispNameOdd, dataOdd, nameCss, dispNameC
 }
 
 export function openOddLoad(name, displayname, data) {
+    function finishOL() {
+        let h; // result from generateHTML
+        if (teiData.dataCss) {
+            let cssHtml =  '<style id="cssstyle">' + teiData.dataCss + '</style>\n';
+            h = edit.generateHTML(teiData);
+            teiData.html = cssHtml + h.html;
+        } else {
+            h = edit.generateHTML(teiData);
+            teiData.html = h.html;
+        }
+        teiData.fileName = msg.msg('newfile');
+        teiData.new = true;
+    
+        el = document.getElementById('cssname');
+        if (el) el.innerHTML = "CSS: " + teiData.cssName;
+        el = document.getElementById('filename');
+        el.innerHTML = msg.msg('file') + teiData.fileName;
+        el = document.getElementById('teidata');
+        el.innerHTML = teiData.html;
+        executeResizeList(h.script);
+        let js = JSON.stringify({data: data, oddName: name, version: schema.version});
+        localStorage.setItem("previousODD", js);
+    }
+
     teiData.oddName = name;
     let el = document.getElementById('oddname');
     el.innerHTML = "ODD: " + displayname;
     teiData.dataOdd = odd.loadOdd(data);
     load.loadTei(null, teiData);
-    let h; // result from generateHTML
-    if (teiData.dataCss) {
-        let cssHtml =  '<style id="cssstyle">' + teiData.dataCss + '</style>\n';
-        h = edit.generateHTML(teiData);
-        teiData.html = cssHtml + h.html;
+    if (teiData.dataOdd.cssfile) {
+        testCss(teiData.dataOdd.cssfile, finishOL);
     } else {
-        h = edit.generateHTML(teiData);
-        teiData.html = h.html;
+        finishOL();
     }
-    teiData.fileName = msg.msg('newfile');
-    teiData.new = true;
-
-    el = document.getElementById('cssname');
-    if (el) el.innerHTML = "CSS: " + teiData.cssName;
-    el = document.getElementById('filename');
-    el.innerHTML = msg.msg('file') + teiData.fileName;
-    el = document.getElementById('teidata');
-    el.innerHTML = teiData.html;
-    executeResizeList(h.script);
-    let js = JSON.stringify({data: data, oddName: name, version: schema.version});
-    localStorage.setItem("previousODD", js);
 }
 
 export function openOdd() {
@@ -356,18 +381,6 @@ export function openOdd() {
         let lxname = localStorage.getItem("previousXMLName");
         // find an odd
         findOdd(lxname, lxdata);
-        /*
-        opensave.chooseOpenFile(function(err, name, data) {
-            if (!err) {
-                openOddLoad(name, name, data);
-                // test if cssfile is needed
-                if (teiData.dataOdd && teiData.dataOdd.cssfile) {
-                    testCss(teiData.dataOdd.cssfile);
-                }
-            } else
-                console.log(name, err);
-        });
-        */
     });
 };
 

@@ -53,6 +53,7 @@ let messages_fra = {
     xmlnew: "Nouveau",
     oddapply: "Appliquer fichier ODD",
     cssapply: "Appliquer fichier CSS",
+    cssclean: "Vider CSS file",
     menuhelp: "Aide",
     applyoddcss: "Appliquer ODD/CSS",
     oddpredef: "ODD prédéfinis",
@@ -110,6 +111,7 @@ let messages_spa = {
     xmlnew: "Nuevo",
     oddapply: "Aplicar el archivo ODD",
     cssapply: "Aplicar el archivo CSS",
+    cssclean: "Limpiar el archivo CSS",
     menuhelp: "Ayuda",
     applyoddcss: "Aplicar ODD/CSS",
     oddpredef: "ODD predefinida:",
@@ -172,6 +174,7 @@ let messages_jpn = {
     xmlnew: "新しい",
     oddapply: "Apply ODD file",
     cssapply: "Apply CSS file",
+    cssclean: "Clean CSS file",
     menuhelp: "助けて",
     applyoddcss: "Apply ODD/CSS",
     oddpredef: "定義済みODD",
@@ -251,6 +254,7 @@ let messages_eng = {
     xmlnew: "New",
     oddapply: "Apply ODD file",
     cssapply: "Apply CSS file",
+    cssclean: "Clean CSS file",
     menuhelp: "Help",
     applyoddcss: "Apply ODD/CSS",
     oddpredef: "Predefined ODD:",
@@ -291,7 +295,7 @@ let messages_eng = {
 let language: any = messages_eng;
 
 let oddprefdefined = [
-    { label: "TEI Spoken", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", labelcss: "", css: "" },
+    { label: "TEI Spoken", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", labelcss: "", css: "#clean#" },
     { label: "Olac/DC", odd: "http://ct3.ortolang.fr/teimeta/olac.odd", labelcss: "", css: "" },
     { label: "Media", odd: "http://ct3.ortolang.fr/teimeta/media.odd", labelcss: "", css: "" },
     { label: "TEI Spoken FileDesc", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", 

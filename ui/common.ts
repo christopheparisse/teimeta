@@ -100,6 +100,8 @@ export function setLanguage(lg, reload=true) {
         el.textContent = msg.msg("oddapply");
         el = document.getElementById('cssapply');
         el.textContent = msg.msg("cssapply");
+        el = document.getElementById('cssclean');
+        el.textContent = msg.msg("cssclean");
         el = document.getElementById('xmlnew');
         el.textContent = msg.msg("xmlnew");
         el = document.getElementById('menuhelp');
@@ -236,7 +238,7 @@ export function resizable (id, factor) {
 export function init(funbodykeys) {
     let el;
     el = document.getElementById('titledate');
-    el.textContent = ' - ' + version.version;
+    el.textContent = ' - ' + version.version + ' - ' + version.date;
     el = document.getElementsByTagName('body');
     el[0].addEventListener("keydown", funbodykeys);
     el = document.getElementById('file-open');
@@ -247,6 +249,8 @@ export function init(funbodykeys) {
     el.addEventListener("click", events.openOdd);
     el = document.getElementById('file-apply-css');
     el.addEventListener("click", events.openCss);
+    el = document.getElementById('file-clean-css');
+    el.addEventListener("click", events.cleanCss);
     el = document.getElementById('help');
     el.addEventListener("click", version.about);
     el = document.getElementById('top2-params');

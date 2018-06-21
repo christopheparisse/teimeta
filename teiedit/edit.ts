@@ -11,6 +11,7 @@ import * as schema from './schema';
 import * as load from './load';
 import * as alert from '../ui/alert';
 import * as msg from '../ui/messages';
+import { teiData } from '../ui/events';
 
 let resizeList = [];
 
@@ -445,7 +446,7 @@ function generateMultiple(ec, abspath) {
     // console.log(ec); // ec.parentElementSpec.ident
     let idm = typeof(ec.ident) === 'string' ? ec.ident : (ec.ident.join('-'));
     s += '<div class="contentCountMany UPCM-' + idm + '" id="' + uniqCreate + '" ';
-    if (odd.odd.remarks === false)
+    if (odd.odd.remarks === false || !teiData.cssName)
         s += ' style="border: 1px solid black; border-radius: 4px;"';
     s += ' >\n';
     // on peut en rajouter ... ou supprimer
