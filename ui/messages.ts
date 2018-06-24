@@ -53,7 +53,7 @@ let messages_fra = {
     xmlnew: "Nouveau",
     oddapply: "Appliquer fichier ODD",
     cssapply: "Appliquer fichier CSS",
-    cssclean: "Vider CSS file",
+    cssclean: "Vider fichier CSS",
     menuhelp: "Aide",
     applyoddcss: "Appliquer ODD/CSS",
     oddpredef: "ODD prédéfinis",

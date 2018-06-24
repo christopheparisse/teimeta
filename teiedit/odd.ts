@@ -176,6 +176,8 @@ function getDataRef(node) : string {
             return 'date';
         case 'languagecode':
             return 'languagecode';
+        case 'countrycode':
+            return 'countrycode';
         default:
             console.log('unknow type for dataRef:', n, 'in', node.tagName);
             return 'string';

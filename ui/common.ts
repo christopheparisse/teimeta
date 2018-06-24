@@ -321,8 +321,9 @@ export function saveFileLocal(type, name, data) {
 };
 
 export function openSpecificLocalFile(oddname, displayname, xmlname, xmldata, funCallback) {
-    function fun(err, data) {
-        funCallback(err, oddname, displayname, data, xmlname, xmldata);
+    function fun(err, name, data) {
+        // name should be the same as oddname but the user might have changed it
+        funCallback(err, name, name, data, xmlname, xmldata);
     }
     alert.askUserModal(
         'The file <b>' + xmlname + '</b> uses a file named <b>' + oddname +

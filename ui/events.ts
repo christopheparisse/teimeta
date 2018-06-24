@@ -160,6 +160,8 @@ function findOdd(nameXml, dataXml) {
 export function cleanCss() {
     teiData.cssName = "";
     teiData.dataCss = "";
+    let el = document.getElementById('cssname');
+    if (el) el.innerHTML = "CSS: ";
     let js = JSON.stringify({data: "", cssName: ""});
     localStorage.setItem("previousCSS", js);
 }

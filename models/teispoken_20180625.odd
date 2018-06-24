@@ -222,7 +222,7 @@
 							<elementRef key="textDesc"/>
 							<elementRef key="particDesc"/>
 							<elementRef key="settingDesc"/>
-							<elementRef key="langUsage"/>
+<!--							<elementRef key="langUsage"/> dans settingDesc ??? -->
 						</sequence>
 					</content>
 					<remarks style="element">
@@ -1422,7 +1422,11 @@
 					<desc xml:lang="en">Country</desc>
 					<attList>
 						<!-- attribut ref= norme iso ISO 3366-1 => Indiquer le pays de recueil , donnée minimale en général connue, fr par défaut -->
-						<attDef ident="name" usage="req" mode="change" rend="fr"/>
+						<attDef ident="name" usage="req" mode="change" rend="fr">
+							<datatype>
+								<dataRef name="countrycode"/>
+							</datatype>
+						</attDef>
 					</attList>
 				</elementSpec>
 
@@ -1520,7 +1524,7 @@
 						<attDef ident="usage" usage="req" mode="change" rend="100"/>
 						<attDef ident="ident" usage="req" mode="change" rend="fr">
 							<datatype>
-								<dataRef name="languageiso"/>
+								<dataRef name="languagecode"/>
 							</datatype>
 						</attDef>
 					</attList>

@@ -10,6 +10,7 @@ import * as odd from './odd';
 import * as schema from './schema';
 import * as load from './load';
 import * as iso639 from './iso639';
+import * as iso3166 from './countries';
 import * as alert from '../ui/alert';
 import * as msg from '../ui/messages';
 import { teiData } from '../ui/events';
@@ -600,8 +601,8 @@ function editDataType(datatype, ident) {
                 }
             }
             values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
-            // edition de la valeur
-            // choix dans une liste
+            // edit the value
+            // choice in a list
             s +='<select class="listattr iso ' + UPname;
             if (datatype.remarks && datatype.remarks.ident) {
                 s += ' ' + datatype.remarks.ident;
@@ -617,6 +618,38 @@ function editDataType(datatype, ident) {
                 if (datatype.valueContent === iso639.code639[k].code)
                     s  += 'selected="selected" ';
                 s += '>' + iso639.code639[k].name + ' - ' + iso639.code639[k].desc + '</option>\n';
+            }
+            s += '</select>\n';
+            break;
+        case 'countrycode':
+            //console.log("datatype:", datatype.valueContent, datatype.rend, datatype);
+            datatype.valueContentID = uniq;
+            if (!datatype.valueContent) {
+                // if empty put rend value if exists else put first element
+                if (datatype.rend) {
+                    datatype.valueContent = datatype.rend;
+                } else if (datatype.vallist) {
+                    datatype.valueContent = (datatype.vallist.length>0) ? datatype.vallist[0].ident: "";
+                }
+            }
+            values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
+            // edit the value
+            // choice in a list
+            s +='<select class="listattr iso ' + UPname;
+            if (datatype.remarks && datatype.remarks.ident) {
+                s += ' ' + datatype.remarks.ident;
+            }
+            s += '" id="' + uniq + '" ';
+            if (datatype.remarks) {
+                s += 'style="' + datatype.remarks.cssvalue + '" \n';
+            }
+            s +='onchange="window.ui.setText(event, \'' + uniq + '\');" >\n';
+            for (let k=0; k < iso3166.iso3666Alpha2.length; k++) {
+                s += '<option value="' +
+                iso3166.iso3666Alpha2[k].code + '" ';
+                if (datatype.valueContent === iso3166.iso3666Alpha2[k].code)
+                    s  += 'selected="selected" ';
+                s += '>' + iso3166.iso3666Alpha2[k].name + '</option>\n';
             }
             s += '</select>\n';
             break;
