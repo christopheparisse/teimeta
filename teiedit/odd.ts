@@ -154,6 +154,8 @@ function getDataRef(node) : string {
     switch(n) {
         case 'string':
             return 'string';
+        case 'multiline':
+            return 'multiline';
         case 'decimal':
             return 'number';
         case 'NCName':

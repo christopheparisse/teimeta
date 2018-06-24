@@ -1,0 +1,38 @@
+<style>
+body{ background:#728EB2; color:#FFF; }
+/*( 'box-sizing' will not work with this code )*/
+textarea{
+  /* box-sizing: padding-box; */
+  overflow:hidden;
+  /* demo only: */
+  padding:10px;
+  width:250px;
+  font-size:14px;
+  margin:50px auto;
+  display:block;
+  border-radius:10px;
+  border:6px solid #556677;
+}
+</style>
+
+<script>
+var textarea = document.querySelector('textarea');
+
+textarea.addEventListener('keydown', autosize);
+
+function autosize(){
+  var el = this;
+  setTimeout(function(){
+    el.style.cssText = 'height:auto; padding:0';
+    // for box-sizing other than "content-box" use:
+    // el.style.cssText = '-moz-box-sizing:content-box';
+    el.style.cssText = 'height:' + el.scrollHeight + 'px';
+  },0);
+}
+</script>
+
+<p>This solution is OBSOLETE, checkout my better solution - <a
+href='https://codepen.io/vsync/pen/frudD'
+target='_blank'>https://codepen.io/vsync/pen/frudD</a>
+
+<textarea rows='1' placeholder='Auto-Expanding Textarea'></textarea>

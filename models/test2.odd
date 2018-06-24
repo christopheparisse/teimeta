@@ -102,9 +102,7 @@
 					<desc xml:lang="es">Edition de Textos node</desc>
 					<content>
 						<textNode/>
-						<datatype>
-							<dataRef name="multiline"/>
-						</datatype>
+						<dataRef name="multiline"/>
 					</content>
 				</elementSpec>
 
@@ -118,7 +116,7 @@
 							<desc xml:lang="en">AttrDesc: Getting Text Attribute</desc>
 							<desc xml:lang="es">AttrDesc: Edition de Textos attributos</desc>
 							<datatype>
-								<dataRef name="string"/>
+								<dataRef name="languagecode"/>
 							</datatype>
 						</attDef>
 					</attList>

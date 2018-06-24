@@ -137,9 +137,15 @@ function verifyDatatype(datatype) {
             } 
         }
         if (found === false) {
+            // this item wa created by the user.
             let vi = new schema.ValItem();
             vi.ident = datatype.valueContent;
-            vi.desc = vi.ident;
+            // creation of a description with only the value and the discription is the same as the value for
+            // items that were created by the users
+            vi.desc = new schema.Desc();
+            vi.desc.langs.push("eng");
+            vi.desc.texts.push(vi.ident);
+            vi.desc.renditions.push(vi.ident);
             datatype.vallist.push(vi);
         }
     }

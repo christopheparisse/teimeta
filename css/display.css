@@ -203,6 +203,10 @@ nav input[type=checkbox]:checked ~ #menu{
     */
 }
 
+.contentCountSimple {
+    display: block;
+}
+
 .plusCM {
     float: left;
     margin-right: 5px;
@@ -301,6 +305,11 @@ select {
     font-size: large;
 }
 
+select.iso {
+    font-size: smaller;
+    width: 600px;
+}
+
 .optional {
     background-color: #88FFFF;
 }
@@ -321,6 +330,19 @@ select {
     color:blue;
 }
 
+.multiline {
+    display: block;
+    box-sizing: padding-box;
+    overflow: hidden;
+    min-width: 50px;
+    padding: 0px;
+}
+
+button.ok {
+    background-color: blue;
+    color: white;
+}
+
 /*Style for popup ODD choice*/
 #aumomodal {
     background: whitesmoke;
@@ -333,7 +355,7 @@ select {
     line-height: 30px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #fff;
-    background: darkblue;
+    background-color: darkblue;
     text-decoration: none;
     border-collapse: collapse;
 	border-radius: 4px;

@@ -9,6 +9,7 @@
 import * as odd from './odd';
 import * as schema from './schema';
 import * as load from './load';
+import * as iso639 from './iso639';
 import * as alert from '../ui/alert';
 import * as msg from '../ui/messages';
 import { teiData } from '../ui/events';
@@ -587,6 +588,38 @@ function editDataType(datatype, ident) {
             }
             s += '</select>\n';
             break;
+        case 'languagecode':
+            //console.log("datatype:", datatype.valueContent, datatype.rend, datatype);
+            datatype.valueContentID = uniq;
+            if (!datatype.valueContent) {
+                // if empty put rend value if exists else put first element
+                if (datatype.rend) {
+                    datatype.valueContent = datatype.rend;
+                } else if (datatype.vallist) {
+                    datatype.valueContent = (datatype.vallist.length>0) ? datatype.vallist[0].ident: "";
+                }
+            }
+            values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
+            // edition de la valeur
+            // choix dans une liste
+            s +='<select class="listattr iso ' + UPname;
+            if (datatype.remarks && datatype.remarks.ident) {
+                s += ' ' + datatype.remarks.ident;
+            }
+            s += '" id="' + uniq + '" ';
+            if (datatype.remarks) {
+                s += 'style="' + datatype.remarks.cssvalue + '" \n';
+            }
+            s +='onchange="window.ui.setText(event, \'' + uniq + '\');" >\n';
+            for (let k=0; k < iso639.code639.length; k++) {
+                s += '<option value="' +
+                iso639.code639[k].code + '" ';
+                if (datatype.valueContent === iso639.code639[k].code)
+                    s  += 'selected="selected" ';
+                s += '>' + iso639.code639[k].name + ' - ' + iso639.code639[k].desc + '</option>\n';
+            }
+            s += '</select>\n';
+            break;
         case 'duration':
             datatype.valueContentID = uniq;
             values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
@@ -635,6 +668,32 @@ function editDataType(datatype, ident) {
             s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
             if (datatype.valueContent) s += ' value="' + datatype.valueContent + '"';
             s += ' />\n';
+            break;
+        case 'multiline':
+            datatype.valueContentID = uniq;
+            values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
+            // edition de la valeur
+            /*
+            if (usage === 'req') {
+                s += '<label for="' + uniq + '">';
+                s += '<em>obligatoire</em>';
+                s += '</label>\n';
+            }
+            */
+            s += '<textarea rows="2" class="multiline autosize ' + UPname;
+            if (datatype.remarks && datatype.remarks.ident) {
+                s += ' ' + datatype.remarks.ident;
+            }
+            s += '" name="' + uniq + '" id="' + uniq + '" ';
+            //resizeList.push(uniq);
+            if (datatype.remarks) {
+                s += 'style="' + datatype.remarks.cssvalue + '" \n';
+            }
+            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+//            if (datatype.valueContent) s += ' value="' + datatype.valueContent + '"';
+            s += ' >';
+            if (datatype.valueContent) s += datatype.valueContent;
+            s += '</textarea>\n';
             break;
         case 'anyURI':
         case 'uri':
@@ -708,6 +767,7 @@ function generateElement(elt, validatedStyle) {
         elt.usage = 'opt'; // created by the user
     // test if the elemennt is to be displayed or if this is something to edit in it
     let classdisplay = "UP-" + elt.ident;
+    s += '<div class="contentCountSimple UPCM-' + elt.ident + '">\n';
     if (elt.corresp) classdisplay += "-" + elt.corresp;
     if (odd.odd.params.displayFullpath || elt.attr.length > 0 || (elt.content && elt.content.datatype)) {
         let lprof = recursiveDepth * odd.odd.params.leftShift;
@@ -819,6 +879,7 @@ function generateElement(elt, validatedStyle) {
         s += '</div>\n';
         recursiveDepth ++; // reset recursiveDepth
     }
+    s += '</div>\n';
     recursiveDepth --;
     return s;
 }

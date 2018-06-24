@@ -225,6 +225,7 @@ export function loadParams() {
 }
 
 export function resizable (id, factor) {
+    // deal with input tags
     let el:any = document.getElementById(id);
     if (!el) return;
     var int = Number(factor) || 7.7;

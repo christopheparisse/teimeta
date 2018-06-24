@@ -34,6 +34,11 @@ export function promptUserModal(s, fun) {
                 modal.close(false);
             }
         });
+        modal.modalElem().addEventListener("keydown", evt => {
+            if (evt.key === "Enter" && !evt.target.matches(".cancel")) {
+                modal.close(true);
+            }
+        });
     }).afterClose((modal, event) => {
         if (!event.detail) {
             fun('');
@@ -62,6 +67,11 @@ export function askUserModal(s, fun) {
                 modal.close(true);
             } else if (evt.target && evt.target.matches(".cancel")) {
                 modal.close();
+            }
+        });
+        modal.modalElem().addEventListener("keydown", evt => {
+            if (evt.key === "Enter" && !evt.target.matches(".cancel")) {
+                modal.close(true);
             }
         });
     }).afterClose((modal, event) => {
