@@ -1509,7 +1509,7 @@
 
 				<!-- langUsage : langue de l'enregistrement, plusieurs possibles avec % d'utilisation-->
 				<elementSpec ident="langUsage" module="header" mode="change" n="1">
-					<desc xml:lang="fr">Langue(s) parlée dans la session (si plusieurs pourcentage d'utilisation)</desc>
+					<desc xml:lang="fr">Langue(s) parlée dans la session (si plusieurs, alors pourcentage d'utilisation)</desc>
 					<desc xml:lang="en">Recording language(s), a percentage if several languages</desc>
 					<content>
 						<elementRef key="language" minOccurs="1" maxOccurs="unbounded"/>
@@ -1517,7 +1517,7 @@
 				</elementSpec>
 
 				<elementSpec ident="language" module="header">
-					<desc xml:lang="fr">Langue(s) de la situation, si plusieurs pourcentage d'utilisation</desc>
+					<desc xml:lang="fr">Langue(s) de la situation, si plusieurs, alors pourcentage d'utilisation</desc>
 					<desc xml:lang="en">Situation language(s), a percentage if several languages</desc>
 					<attList>
 						<!-- code iso RFC 3066"-->

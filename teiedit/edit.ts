@@ -306,6 +306,25 @@ export function createEC(event, id) {
 	referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
     */
     referenceNode.insertAdjacentHTML('beforeend', s);
+    // call resize if necessary
+    executeResizeList(resizeList);
+}
+
+function resizable (id, factor) {
+    // deal with input tags
+    let el:any = document.getElementById(id);
+    if (!el) return;
+    var int = Number(factor) || 7.7;
+    function resize() {el.style.width = ((el.value.length+1) * int) + 'px'}
+    var e = 'keyup,keypress,focus,blur,change'.split(',');
+    for (var i in e) el.addEventListener(e[i],resize,false);
+    resize();
+}
+
+export function executeResizeList(list) {
+    for (let f in list) {
+        resizable(list[f], 8.8);
+    }
 }
 
 export function setText(event, id) {

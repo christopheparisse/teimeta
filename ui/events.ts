@@ -166,12 +166,6 @@ export function cleanCss() {
     localStorage.setItem("previousCSS", js);
 }
 
-function executeResizeList(list) {
-    for (let f in list) {
-        common.resizable(list[f], 8.8);
-    }
-}
-
 function finishOpenXml(name, data) {
     function finishIt() {
         // now load XML
@@ -187,7 +181,7 @@ function finishOpenXml(name, data) {
         }
         el = document.getElementById('teidata');
         el.innerHTML = teiData.html;
-        executeResizeList(h.script);
+        edit.executeResizeList(h.script);
         teiData.new = false;
         //console.log("openfile TEI", teiData.dataTei);
         //console.log(edit.values);
@@ -357,7 +351,7 @@ export function openOddLoad(name, displayname, data) {
         el.innerHTML = msg.msg('file') + teiData.fileName;
         el = document.getElementById('teidata');
         el.innerHTML = teiData.html;
-        executeResizeList(h.script);
+        edit.executeResizeList(h.script);
         let js = JSON.stringify({data: data, oddName: name, version: schema.version});
         localStorage.setItem("previousODD", js);
     }
