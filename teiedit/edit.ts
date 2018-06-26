@@ -732,7 +732,7 @@ function editDataType(datatype, ident) {
                 s += '</label>\n';
             }
             */
-            s += '<textarea rows="2" class="multiline autosize ' + UPname;
+            s += '<textarea rows="1" class="multiline autosize ' + UPname;
             if (datatype.remarks && datatype.remarks.ident) {
                 s += ' ' + datatype.remarks.ident;
             }

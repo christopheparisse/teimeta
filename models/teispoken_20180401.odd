@@ -91,7 +91,7 @@
 							<valList >
 								<valItem ident="audio/wav" >
 									<desc xml:lang="fr">format wav</desc>
-									<desc xml:lang="en">wav format</desc>
+									<desc xml:lang="en">Wav format</desc>
 								</valItem>
 								<valItem ident="audio/mp3" >
 									<desc xml:lang="fr">format mp3</desc>
@@ -201,7 +201,7 @@
 
 				<elementSpec ident="fileDesc" module="header">
 					<desc xml:lang="fr">Titre, citation, diffusion et données primaires ~ signal audio/vidéo</desc>
-					<desc xml:lang="en">Title, citation, diffusion and primary data ~ signal audio/video</desc>
+					<desc xml:lang="en">Title, citation, diffusion and primary data ~ signal audio/vidéo</desc>
 					<content>
 						<sequence minOccurs="1" maxOccurs="1">
 							<elementRef key="titleStmt"/>
@@ -222,7 +222,7 @@
 							<elementRef key="textDesc"/>
 							<elementRef key="particDesc"/>
 							<elementRef key="settingDesc"/>
-<!--							<elementRef key="langUsage"/> dans settingDesc ??? -->
+							<elementRef key="langUsage"/>
 						</sequence>
 					</content>
 					<remarks style="element">
@@ -269,16 +269,15 @@
 
 				<elementSpec ident="desc" module="core">
 					<desc xml:lang="fr">Description courte</desc>
-					<desc xml:lang="en">Short Description</desc>
+					<desc xml:lang="fr">Short Description</desc>
 					<content>
 						<textNode/>
-						<dataRef name="multiline"/>
 					</content>
 				</elementSpec>
 
 				<elementSpec ident="idno" corresp="title" module="header">
 					<desc xml:lang="fr">Titre de la ressource, nom d'usage </desc>
-					<desc xml:lang="en">Resource title, usual title</desc>
+					<desc xml:lang="fr">Resource title, usual title</desc>
 					<content>
 						<textNode/>
 					</content>
@@ -293,7 +292,7 @@
 
 				<elementSpec ident="bibl" module="core">
 					<desc xml:lang="fr">Citation(s) accompagnant la ressource: projet, équipe de recherche, référence bibliographique</desc>
-					<desc xml:lang="en">Citation(s) : project, research team, scientific reference</desc>
+					<desc xml:lang="fr">Citation(s) : project, research team, scientific reference</desc>
 					<content>
 						<textNode/>
 					</content>
@@ -403,7 +402,7 @@
 	  				"Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes Conditions"-->
 				<elementSpec ident="publicationStmt" module="header" mode="change" n="1">
 					<desc xml:lang="fr">Diffusion : identifiant unique, diffusion, sites web, licence</desc>
-					<desc xml:lang="en">Distribution : handle, publisher, pubPlace, license</desc>
+					<desc xml:lang="en">Diffusion : handle, publisher, pubPlace, license</desc>
 					<content>
 						<elementRef key="publisher" minOccurs="1" maxOccurs="unbounded"/>
 						<elementRef key="pubPlace" minOccurs="0" maxOccurs="unbounded"/>
@@ -417,7 +416,7 @@
 
 				<elementSpec ident="availability" module="header">
 					<desc xml:lang="fr">Conditions de diffusion</desc>
-					<desc xml:lang="en">Conditions of distribution</desc>
+					<desc xml:lang="fr">Conditions de diffusion</desc>
 					<content>
 						<elementRef key="licence" minOccurs="1" maxOccurs="unbounded"/>
 					</content>
@@ -433,7 +432,7 @@
 
 				<elementSpec ident="licence" module="header">
 					<desc xml:lang="fr">License de diffusion</desc>
-					<desc xml:lang="en">Distribution Licence</desc>
+					<desc xml:lang="fr">Diffusion Licence</desc>
 					<content>
 						<textNode/>
 					</content>
@@ -481,7 +480,7 @@
 
 				<elementSpec ident="publisher" module="core">
 					<desc xml:lang="fr">Projet, archive diffusant la ressource</desc>
-					<desc xml:lang="en">Project,archive including this resource</desc>
+					<desc xml:lang="en">Project,archive for ressource distribution</desc>
 					<content>
 						<textNode/>
 						<dataRef name="anyURI"/>
@@ -490,7 +489,7 @@
 
 				<elementSpec ident="pubPlace" module="core">
 					<desc xml:lang="fr">Diffusion dans d'autres sites</desc>
-					<desc xml:lang="en">Other website for this resource</desc>
+					<desc xml:lang="en">Other diffusion places</desc>
 					<content>
 						<elementRef key="ref" minOccurs="1" maxOccurs="unbounded"/>
 						<textNode/>
@@ -550,14 +549,14 @@
 
 				<elementSpec ident="ref">
 					<desc xml:lang="fr">URL</desc>
-					<desc xml:lang="en">URL</desc>
+					<desc xml:lang="fr">URL</desc>
 					<content>
 						<textNode/>
 					</content>
 					<attList>
 						<attDef ident="target" usage="req" mode="change">
 							<desc xml:lang="fr">Lien vers la ressource (URL)</desc>
-							<desc xml:lang="en">Resource target (URL)</desc>
+							<desc xml:lang="en">URL</desc>
 							<datatype>
 								<dataRef name="anyURI"/>
 							</datatype>
@@ -617,7 +616,7 @@
 
 				<elementSpec ident="recording" module="spoken">
 					<desc xml:lang="fr">Session, Enregistrement : une même session peut correspondre plusieurs fichiers (qualité et/ou format différents)</desc>
-					<desc xml:lang="en">Recording : a same recording could have several files(in different quality or format) </desc>
+					<desc xml:lang="fr">Recording : a same recording could have several files(differnce in quality or format) </desc>
 					<content>
 						<elementRef key="p" minOccurs="0" maxOccurs="1"/>
 						<elementRef key="media" minOccurs="1" maxOccurs="1"/>
@@ -636,7 +635,7 @@
 					<attList>
 						<attDef ident="type" usage="req" mode="change">
 							<desc xml:lang="fr">audio/vidéo</desc>
-							<desc xml:lang="en">audio/video</desc>
+							<desc xml:lang="en">audio/vidéo</desc>
 							<valList>
 								<valItem ident="quality.type.audio" >
 									<desc xml:lang="fr">signal audio</desc>
@@ -644,7 +643,7 @@
 								</valItem>
 								<valItem ident="quality.type.video" >
 									<desc xml:lang="fr">signal vidéo</desc>
-									<desc xml:lang="en">video signal</desc>
+									<desc xml:lang="en">vidéo signal</desc>
 								</valItem>
 								<valItem ident="quality.type.other" >
 									<desc xml:lang="fr">autre Signal</desc>
@@ -831,7 +830,7 @@
 								</valItem>
 								<valItem ident="mode.visioconference">
 									<desc xml:lang="fr">en visioconférence</desc>
-									<desc xml:lang="en">video conference</desc>
+									<desc xml:lang="en">visioconférence</desc>
 								</valItem>
 							</valList>
 						</attDef>
@@ -851,7 +850,7 @@
 								</valItem>
 								<valItem ident="constitution.composite">
 									<desc xml:lang="fr">ressource liée à une autre ou sous-partie</desc>
-									<desc xml:lang="en">linked resource or subset</desc>
+									<desc xml:lang="en">linked resource oe subset</desc>
 								</valItem>
 								<valItem ident="constitution.frags">
 									<desc xml:lang="fr">extrait</desc>
@@ -882,7 +881,7 @@
 								</valItem>
 								<valItem ident="derivation.revision">
 									<desc xml:lang="fr">révision d'une autre ressource</desc>
-									<desc xml:lang="en">release of another resource</desc>
+									<desc xml:lang="en">revision od another resource</desc>
 								</valItem>
 								<valItem ident="derivation.translation">
 									<desc xml:lang="fr">traduction d'une ressource</desc>
@@ -961,7 +960,7 @@
 								<valItem ident="nature.activity">
 									<desc xml:lang="fr">les locuteurs sont engagés dans une activité
 										: jeu vidéo, montage de meuble, visite, tâche, ...</desc>
-									<desc xml:lang="en">speakers are implied in an activity : video
+									<desc xml:lang="en">speakers are engaged in an activity : video
 										game, furniture assembly, visit, task ...</desc>
 								</valItem>
 								<valItem ident="unknown">
@@ -1006,7 +1005,7 @@
 									<desc xml:lang="fr">thème initial/ordre du jour/consigne donnée
 										aux locuteurs sur le contenu ou les modalités de
 										l'échange</desc>
-									<desc xml:lang="en">initial theme/instructions given to speakers on content or setting modalities</desc>
+									<desc xml:lang="en">initial thème/insctructions to speakers on content or modality</desc>
 								</valItem>
 								<valItem ident="instruction.spontaneous">
 									<desc xml:lang="fr">spontané</desc>
@@ -1121,21 +1120,17 @@
 						</attDef>
 						<attDef ident="sex" usage="req" mode="change">
 							<desc xml:lang="fr">Sexe</desc>
-							<desc xml:lang="en">Gender</desc>
+							<desc xml:lang="en">Sex</desc>
 							<valList >
 								<valItem ident="1">
-								<desc xml:lang="fr">masculin</desc>
-								<desc xml:lang="en">male</desc>
+									<desc>masculin</desc>
 								</valItem>
 								<valItem ident="2">
-								<desc xml:lang="fr">féminin</desc>
-								<desc xml:lang="en">female</desc>
+									<desc>feminin</desc>
 								</valItem>
 								<valItem ident="9">
-									<desc xml:lang="fr">inconnu (voix au téléphone, foule, locuteur générique
+									<desc>inconnu (voix au téléphone, foule, locuteur générique
 										élève/public/...)</desc>
-									<desc xml:lang="en">unknown (voice over the phone, crowd, global speaker 
-										student/audience/...)</desc>
 								</valItem>
 							</valList>
 						</attDef>
@@ -1148,18 +1143,18 @@
 						</attDef>
 						<attDef ident="role" usage="rec" rendition="role" mode="change">
 							<desc xml:lang="fr">Rôle</desc>
-							<desc xml:lang="en">Role</desc>
+							<desc xml:lang="fr">Role</desc>
 							<datatype>
 								<dataRef name="openlist"/>
 							</datatype>
 							<valList>
 								<valItem ident="role.target_child">
 									<desc xml:lang="fr">enfant sujet de l'étude</desc>
-									<desc xml:lang="en">child study subject</desc>
+									<desc xml:lang="en">child study target</desc>
 								</valItem>
 								<valItem ident="role.target_adult">
 									<desc xml:lang="fr">adulte sujet de l'étude</desc>
-									<desc xml:lang="en">adult study subject</desc>
+									<desc xml:lang="en">adult study target</desc>
 								</valItem>
 								<valItem ident="role.child">
 									<desc xml:lang="fr">enfant</desc>
@@ -1200,7 +1195,7 @@
 
 				<elementSpec ident="socecStatus" module="namesdates">
 					<desc xml:lang="fr">Indice socio-économique</desc>
-					<desc xml:lang="en">Socio-economic Status</desc>
+					<desc xml:lang="en">Social-economic Status</desc>
 					<content>
 						<textNode/>
 					</content>
@@ -1315,7 +1310,7 @@
 								</valItem>
 								<valItem ident="occupation.professional_activity">
 									<desc xml:lang="fr">en activite</desc>
-									<desc xml:lang="en">active</desc>
+									<desc xml:lang="en">in professional situation</desc>
 								</valItem>
 								<valItem ident="occupation.retirement">
 									<desc xml:lang="fr">retraite</desc>
@@ -1351,7 +1346,7 @@
 							<desc xml:lang="fr">Code Iso</desc>
 							<desc xml:lang="en">Iso code</desc>
 							<datatype>
-								<dataRef name="languagecode"/>
+								<dataRef name="string"/>
 							</datatype>
 						</attDef>
 						<attDef ident="level" usage="req" mode="change" rend="language.first">
@@ -1361,8 +1356,8 @@
 									<desc xml:lang="en">first language</desc>
 								</valItem>
 								<valItem ident="language.second">
-									<desc xml:lang="fr">langue seconde</desc>
-									<desc xml:lang="en">second language</desc>
+									<desc xml:lang="fr">seconde</desc>
+									<desc xml:lang="en">second</desc>
 								</valItem>
 								<valItem ident="language.unknown">
 									<desc xml:lang="fr">inconnue</desc>
@@ -1422,11 +1417,7 @@
 					<desc xml:lang="en">Country</desc>
 					<attList>
 						<!-- attribut ref= norme iso ISO 3366-1 => Indiquer le pays de recueil , donnée minimale en général connue, fr par défaut -->
-						<attDef ident="name" usage="req" mode="change" rend="fr">
-							<datatype>
-								<dataRef name="countrycode"/>
-							</datatype>
-						</attDef>
+						<attDef ident="name" usage="req" mode="change" rend="fr"/>
 					</attList>
 				</elementSpec>
 
@@ -1475,8 +1466,8 @@
 				</elementSpec>
 
 				<elementSpec ident="date" module="core">
-					<desc xml:lang="fr">Intervalle (depuis/jusqu'à) ou date exacte</desc>
-					<desc xml:lang="en">Interval (from/to) or exact date</desc>
+					<desc xml:lang="fr">Intervalle (depuis/jusqu'à) ou date exacte
+					</desc>
 					<!-- ds le modèle normalement contrainte soit when soit before/after
 					-->
 					<content>
@@ -1509,7 +1500,7 @@
 
 				<!-- langUsage : langue de l'enregistrement, plusieurs possibles avec % d'utilisation-->
 				<elementSpec ident="langUsage" module="header" mode="change" n="1">
-					<desc xml:lang="fr">Langue(s) parlée dans la session (si plusieurs, alors pourcentage d'utilisation)</desc>
+					<desc xml:lang="fr">Langue(s) parlée dans la session (si plusieurs pourcentage d'utilisation)</desc>
 					<desc xml:lang="en">Recording language(s), a percentage if several languages</desc>
 					<content>
 						<elementRef key="language" minOccurs="1" maxOccurs="unbounded"/>
@@ -1517,16 +1508,12 @@
 				</elementSpec>
 
 				<elementSpec ident="language" module="header">
-					<desc xml:lang="fr">Langue(s) de la situation, si plusieurs, alors pourcentage d'utilisation</desc>
+					<desc xml:lang="fr">Langue(s) de la situation, si plusieurs pourcentage d'utilisation</desc>
 					<desc xml:lang="en">Situation language(s), a percentage if several languages</desc>
 					<attList>
 						<!-- code iso RFC 3066"-->
 						<attDef ident="usage" usage="req" mode="change" rend="100"/>
-						<attDef ident="ident" usage="req" mode="change" rend="fr">
-							<datatype>
-								<dataRef name="languagecode"/>
-							</datatype>
-						</attDef>
+						<attDef ident="ident" usage="req" mode="change" rend="fr"/>
 					</attList>
 				</elementSpec>
 
@@ -1569,7 +1556,7 @@
 
 				<elementSpec ident="projectDesc" module="header" mode="change" n="1">
 					<desc xml:lang="fr">Description étendue du projet</desc>
-					<desc xml:lang="en">Extended project description </desc>
+					<desc xml:lang="en">Free additional text on project</desc>
 					<content>
 						<elementRef key="p" minOccurs="1" maxOccurs="unbounded"/>
 					</content>
@@ -1600,7 +1587,7 @@
 								</valItem>
 								<valItem ident="transcription.annotation_software" >
 									<desc xml:lang="fr">logiciel de transcription</desc>
-									<desc xml:lang="en">transcription software</desc>
+									<desc xml:lang="en">transcription softaware</desc>
 								</valItem>
 								<valItem ident="transcription.anonymization_transcription" >
 									<desc xml:lang="fr">anonymisation de la transcription</desc>
@@ -1615,11 +1602,11 @@
 							<valList>
 								<valItem ident="annotation.orthographic">
 									<desc xml:lang="fr">orthographique</desc>
-									<desc xml:lang="en">orthographic</desc>
+									<desc xml:lang="en">orthography</desc>
 								</valItem>
 								<valItem ident="annotation.prosodical">
 									<desc xml:lang="fr">prosodique</desc>
-									<desc xml:lang="en">prosodic</desc>
+									<desc xml:lang="en">prosodical</desc>
 								</valItem>
 								<valItem ident="annotation.syntactic">
 									<desc xml:lang="fr">syntaxique</desc>

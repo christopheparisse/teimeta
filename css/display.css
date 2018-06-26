@@ -305,7 +305,7 @@ select {
     font-size: large;
 }
 
-select.iso {
+.iso {
     font-size: smaller;
     width: 600px;
 }

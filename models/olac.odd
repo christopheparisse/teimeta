@@ -59,12 +59,13 @@
                </desc>
                <content>
                   <textNode/>
+						<dataRef name="multiline"/>
                </content>
 							 <remarks style="element">
 									 <p><ident>row-even</ident></p>
 							 </remarks>
 							 <remarks style="content">
-									 <p><ident>css-content</ident></p>
+									 <p><ident>css-m-content</ident></p>
 							 </remarks>
                <attList>
                   <attDef ident="refine">
@@ -99,10 +100,10 @@
                         <valItem ident="translator" />
                      </valList>
                   </attDef>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -128,18 +129,19 @@
                </desc>
                <content>
                   <textNode/>
+						<dataRef name="multiline"/>
                </content>
                 <remarks style="element">
                     <p><ident>row-odd</ident></p>
                 </remarks>
 								<remarks style="content">
- 									 <p><ident>css-content</ident></p>
+ 									 <p><ident>css-m-content</ident></p>
  							 </remarks>
                <attList>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -164,12 +166,13 @@
                </desc>
                <content>
                   <textNode/>
+						<dataRef name="multiline"/>
                </content>
 							 <remarks style="element">
 									 <p><ident>row-even</ident></p>
 							 </remarks>
 							 <remarks style="content">
-									 <p><ident>css-content</ident></p>
+									 <p><ident>css-m-content</ident></p>
 							 </remarks>
                <attList>
                   <attDef ident="refine">
@@ -205,10 +208,10 @@
                         <valItem ident="translator" />
                      </valList>
                   </attDef>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 	                    <remarks style="element">
 	                        <p><ident>css-i-language</ident></p>
@@ -262,10 +265,10 @@
                         <valItem ident="modified" />
                      </valList>
                   </attDef>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -291,18 +294,19 @@
                </desc>
                <content>
                   <textNode/>
+						<dataRef name="multiline"/>
                </content>
 							 <remarks style="element">
 									 <p><ident>row-even</ident></p>
 							 </remarks>
 							 <remarks style="content">
-									 <p><ident>css-content</ident></p>
+									 <p><ident>css-m-content</ident></p>
 							 </remarks>
                <attList>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -328,12 +332,13 @@
                </desc>
                <content>
                   <textNode/>
+						<dataRef name="multiline"/>
                </content>
 							 <remarks style="element">
 									 <p><ident>row-odd</ident></p>
 							 </remarks>
 							 <remarks style="content">
-									 <p><ident>css-content</ident></p>
+									 <p><ident>css-m-content</ident></p>
 							 </remarks>
                <attList>
                   <attDef ident="code">
@@ -345,10 +350,10 @@
                          <p><ident>css-i-code</ident></p>
                      </remarks>
                   </attDef>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -386,10 +391,10 @@
                          <p><ident>css-i-code</ident></p>
                      </remarks>
                   </attDef>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -427,10 +432,10 @@
                          <p><ident>css-i-code</ident></p>
                      </remarks>
                   </attDef>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -459,10 +464,10 @@
 									 <p><ident>css-content</ident></p>
 							 </remarks>
                <attList>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -500,10 +505,10 @@
                          <p><ident>css-i-code</ident></p>
                      </remarks>
                   </attDef>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -532,10 +537,10 @@
 									 <p><ident>css-content</ident></p>
 							 </remarks>
                <attList>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -571,10 +576,10 @@
 									 <p><ident>css-content</ident></p>
 							 </remarks>
                <attList>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -618,10 +623,10 @@
                          <p><ident>css-i-code</ident></p>
                      </remarks>
                   </attDef>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -648,18 +653,19 @@
                </desc>
                <content>
                   <textNode/>
+						<dataRef name="multiline"/>
                </content>
 							 <remarks style="element">
 									 <p><ident>row-odd</ident></p>
 							 </remarks>
 							 <remarks style="content">
-									 <p><ident>css-content</ident></p>
+									 <p><ident>css-m-content</ident></p>
 							 </remarks>
                <attList>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -691,12 +697,13 @@
                </desc>
                <content>
                   <textNode/>
+						<dataRef name="multiline"/>
                </content>
 							 <remarks style="element">
 									 <p><ident>row-even</ident></p>
 							 </remarks>
 							 <remarks style="content">
-									 <p><ident>css-content</ident></p>
+									 <p><ident>css-m-content</ident></p>
 							 </remarks>
                <attList>
                   <attDef ident="refine">
@@ -716,10 +723,10 @@
                         <valItem ident="hasFormat"/>
                      </valList>
                   </attDef>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -756,6 +763,7 @@
                </desc>
                <content>
                   <textNode/>
+						<dataRef name="multiline"/>
                </content>
 							 <remarks style="element">
 									 <p><ident>row-odd</ident></p>
@@ -764,10 +772,10 @@
 									 <p><ident>css-content</ident></p>
 							 </remarks>
                <attList>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -794,18 +802,19 @@
                </desc>
                <content>
                   <textNode/>
+						<dataRef name="multiline"/>
                </content>
 							 <remarks style="element">
 									 <p><ident>row-even</ident></p>
 							 </remarks>
 							 <remarks style="content">
-									 <p><ident>css-content</ident></p>
+									 <p><ident>css-m-content</ident></p>
 							 </remarks>
                <attList>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -832,18 +841,19 @@
                </desc>
                <content>
                   <textNode/>
+						<dataRef name="multiline"/>
                </content>
 							 <remarks style="element">
 									 <p><ident>row-odd</ident></p>
 							 </remarks>
 							 <remarks style="content">
-									 <p><ident>css-content</ident></p>
+									 <p><ident>css-m-content</ident></p>
 							 </remarks>
                <attList>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -881,10 +891,10 @@
                          <p><ident>css-i-code</ident></p>
                      </remarks>
                   </attDef>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -908,12 +918,13 @@
                </desc>
                <content>
                   <textNode/>
+						<dataRef name="multiline"/>
                </content>
 							 <remarks style="element">
 									 <p><ident>row-odd</ident></p>
 							 </remarks>
 							 <remarks style="content">
-									 <p><ident>css-content</ident></p>
+									 <p><ident>css-m-content</ident></p>
 							 </remarks>
                <attList>
                   <attDef ident="refine">
@@ -925,10 +936,10 @@
                          <p><ident>css-i-refine</ident></p>
                      </remarks>
                   </attDef>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -955,12 +966,13 @@
                </desc>
                <content>
                   <textNode/>
+						<dataRef name="multiline"/>
                </content>
 							 <remarks style="element">
 									 <p><ident>row-even</ident></p>
 							 </remarks>
 							 <remarks style="content">
-									 <p><ident>css-content</ident></p>
+									 <p><ident>css-m-content</ident></p>
 							 </remarks>
                <attList>
                   <attDef ident="code">
@@ -983,10 +995,10 @@
                         <valItem ident="text" />
                      </valList>
                   </attDef>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -1030,10 +1042,10 @@
                         </valItem>
                      </valList>
                   </attDef>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
@@ -1071,10 +1083,10 @@
                          <p><ident>css-i-code</ident></p>
                      </remarks>
                   </attDef>
-                  <attDef ident="language">
+                  <attDef ident="language" rend="fre">
                      <desc>language</desc>
                      <datatype>
-                        <dataRef name="string"/>
+                        <dataRef name="languagecode"/>
                      </datatype>
 										 <remarks style="element">
                          <p><ident>css-i-language</ident></p>
