@@ -23,9 +23,9 @@ gulp.task('electron-js', function () {
 
 gulp.task('electron-html', function () {
   // construct index.html
-   return gulp.src('./html/index.html')
-       .pipe(include())
-       .pipe(gulp.dest('.'));
+  return gulp.src(['./html/index.html','./html/body.html','./html/head.html'])
+      .pipe(include())
+      .pipe(gulp.dest('.'));
 });
 
 gulp.task('electron-css', function () {
@@ -74,7 +74,7 @@ gulp.task('page-css', function () {
 
 gulp.task('page-html', function () {
   // construct index.html
-   return gulp.src('./html/teimeta.html')
+   return gulp.src(['./html/teimeta.html','./html/body.html','./html/head.html'])
        .pipe(include())
        .pipe(gulp.dest('.'));
 });
