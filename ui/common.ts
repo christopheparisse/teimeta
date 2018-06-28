@@ -112,6 +112,8 @@ export function setLanguage(lg, reload=true) {
         el.textContent = msg.msg("applyoddcss");
         el = document.getElementById('choicelanguage');
         el.textContent = msg.msg("choicelanguage");
+        el = document.getElementById('paramlinks');
+        el.textContent = msg.msg("paramlinks");
     } catch (error) {
         alert.alertUser('Erreur de message: ' + error.toString());
         console.log(error);
@@ -224,6 +226,10 @@ export function loadParams() {
     }
 }
 
+function link(url) {
+    window.open(url,'_blank');
+}
+
 //resizable(document.getElementById('txt'),7);
 export function init(funbodykeys) {
     let el;
@@ -246,25 +252,14 @@ export function init(funbodykeys) {
     el = document.getElementById('top2-params');
     el.addEventListener("click", oddParams);
 
-    /*
-    let el = document.getElementById('file-saveas');
-    el.addEventListener("click", this is different for the web and the electron version);
-    */
-
-    /*
-    el = document.getElementById('odd-media');
-    el.addEventListener("click", events.oddMedia);
-    el = document.getElementById('odd-teioral');
-    el.addEventListener("click", events.oddTeiOral);
-    el = document.getElementById('odd-partdesc');
-    el.addEventListener("click", events.oddOlacDc);
-    el = document.getElementById('odd-teioralfile');
-    el.addEventListener("click", events.oddTeiOralFile);
-    el = document.getElementById('odd-teioralprofile');
-    el.addEventListener("click", events.oddTeiOralProfile);
-    el = document.getElementById('odd-teioralencoding');
-    el.addEventListener("click", events.oddTeiOralEncoding);
-    */
+    el = document.getElementById('link-ortolang');
+    el.addEventListener("click", function() { link('https://www.ortolang.fr')});
+    el = document.getElementById('link-metadoc');
+    el.addEventListener("click", function() { link('http://ct3.ortolang.fr/teimeta-doc/')});
+    el = document.getElementById('link-teiconvert');
+    el.addEventListener("click", function() { link('http://ct3.ortolang.fr/teiconvert/')});
+    el = document.getElementById('link-teicorpo');
+    el.addEventListener("click", function() { link('http://ct3.ortolang.fr/tei-corpo/')});
 
     el = document.getElementById('showall');
     el.addEventListener("click", edit.showAll);

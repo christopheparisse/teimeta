@@ -76,6 +76,7 @@ let messages_fra = {
     predefodd: "ODD prédéfinis",
     ok: 'OK',
     cancel: 'Annuler',
+    paramlinks: "Paramètres / Liens",
 };
 
 let messages_spa = {
@@ -139,6 +140,7 @@ let messages_spa = {
     predefodd: "ODD predefinda",
     ok: 'OK',
     cancel: 'Cancelar',
+    paramlinks: "Parameters / Links",
 };
 
 let messages_jpn = {
@@ -202,6 +204,7 @@ let messages_jpn = {
     predefodd: "定義済みODD",
     ok: 'OK',
     cancel: 'キャンセル',
+    paramlinks: "Parameters / Links",
 };
 
 let shortHelp_eng = `
@@ -290,6 +293,7 @@ let messages_eng = {
     askoddCurrent: "Use the currently loaded ODD",
     askoddLocalOdd: "Choose and ODD file on your computer",
     askoddPredef: "Choose a predefined ODD file",
+    paramlinks: "Parameters / Links",
 };
 
 let language: any = messages_eng;
