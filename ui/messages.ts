@@ -308,6 +308,12 @@ let oddprefdefined = [
         labelcss: "ProfileDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenprofile.css" },
     { label: "TEI Spoken EncodingDesc", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", 
         labelcss: "EncodingDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenencoding.css" },
+        /*
+    { label: "TEST", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", 
+        labelcss: "EncodingDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenencoding.css" },
+    { label: "TEST", odd: "file:///devlopt/teimeta/models/tei_p.odd", 
+        labelcss: "EncodingDesc", css: "" },
+        */
 ];
 
 export function oddpredefs() {

@@ -33,8 +33,8 @@ function tagES(k, c) {
 export function getChildrenByName(node, name, corresp=null) {
     let children = [];
     for (let child = 0; child < node.childNodes.length; child++) {
-        if (corresp) {
-            //console.log(node.childNodes[child]);
+        if (node.childNodes[child].getAttribute && corresp) {
+            console.log(node.childNodes[child]);
             let a = node.childNodes[child].getAttribute('corresp');
             if (a !== corresp) continue;
         }
@@ -425,8 +425,20 @@ export function loadOdd(data) {
     let warning = '';
     // get XML ready
     let parser = new DOMParser();
+    let doc;
     // let doc = parser.parseFromString(data, "text/xml");
-    let doc = new dom().parseFromString(data.toString(), 'text/xml');
+    try {
+        doc = new dom().parseFromString(data.toString(), 'text/xml');
+        if (doc.documentElement.nodeName == "parsererror") {
+    //        checkErrorXML(doc.getElementsByTagName("parsererror")[0]);
+            alert.alertUser("The ODD file is not valid: Operation canceled.")
+            console.log("Erros in ODD file")
+        } else {
+            console.log("No errors found");
+        }
+    } catch(e) {
+        alert.alertUser("The ODD file is not valid: Operation canceled (catch) " + e.toString());
+    }
     let ns = doc.documentElement.namespaceURI;
     select = xpath.useNamespaces({"tei": ns});
     let schemaSpec = select("//tei:schemaSpec", doc);
