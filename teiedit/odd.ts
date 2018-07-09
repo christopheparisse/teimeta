@@ -458,22 +458,33 @@ export function loadOdd(data) {
         alert.alertUser(s);
         return null;
     }
-    // récupérer attribut ident
+    // get attribute ident
     odd.rootIdent = schemaSpec[0].getAttribute("ident");
+    // get all altIdent
+    let eAlt = getChildrenByName(schemaSpec[0], 'altIdent');
+    // read the elementSpec
+    for (let i=0; i < eAlt.length ; i++) {
+        let type = eAlt[i].getAttribute("type");
+        let content = eAlt[i].textContent;
+        // console.log("altIdent", type, content);
+        odd.altIdent.push({type:type, value:content});
+    }
+
+    // get all elementSpec
     let eSpec = getChildrenByName(schemaSpec[0], 'elementSpec');
-    // récupérer attribut namespace
+    // get attribute namespace
     odd.namespace = schemaSpec[0].getAttribute("ns");
-    // récupérer attribut cssfile
+    // get attribute cssfile
     odd.cssfile = schemaSpec[0].getAttribute("rend");
     odd.remarks = false;
-    // récupérer attribut other entries (corresp)
+    // get attribute other entries (corresp)
     attr = schemaSpec[0].getAttribute("corresp");
     if (attr) {
         let n = attr.split(' ');
         if (n>1)
             odd.entries = n;
     }
-    // lire les elementSpec
+    // read the elementSpec
     for (let i=0; i < eSpec.length ; i++) {
         var es = new schema.ElementSpec();
         readElementSpec(es, eSpec[i]);

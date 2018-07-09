@@ -23,12 +23,13 @@ export class PARAMS {
 }
 
 export class SCHEMA {
-    listElementSpec = {}; // avoir tous les elementSpec sous la main et les controler
-    listElementRef = {}; // avoir tous les elementRef sous la main et les controler
-    rootTEI = null; // pointeur de base du schema (attribut start de schemaSpec)
+    listElementSpec = {}; // all the elementSpec available here so as to be able to control and check
+    listElementRef = {}; // all the elementRef available here so as to be able to control and check
+    rootTEI = null; // pointer to schema root (start attribute of schemaSpec)
     rootIdent = ''; // valeur de l'attribut ident du schemaSpec de root
     params =  new PARAMS();
     namespace = ''; // namespace of the resulting xml
+    altIdent = []; // other namespace information
     entries = null; // entry points other than rootTEI
     cssfile = ''; // information about user specified presentation
     remarks = false; // if there is some user css then don't use full css default design

@@ -58,7 +58,10 @@ export function generateTEI(teiData) {
     if (!teiData.doc) {
         if (teiData.dataOdd.namespace) {
             s = '<?xml version="1.0" encoding="UTF-8"?>';
-            s += '<' + teiData.dataOdd.rootTEI + ' xmlns="' + teiData.dataOdd.namespace + '"></' + teiData.dataOdd.rootTEI + '>'
+            if (teiData.dataOdd.namespace !== 'nonamespace')
+                s += '<' + teiData.dataOdd.rootTEI + ' xmlns="' + teiData.dataOdd.namespace + '"></' + teiData.dataOdd.rootTEI + '>'
+            else
+                s += '<' + teiData.dataOdd.rootTEI + '></' + teiData.dataOdd.rootTEI + '>'
             teiData.doc = new dom().parseFromString(s, 'text/xml');
         } else {
             teiData.doc = new dom().parseFromString(basicTEI, 'text/xml');
@@ -68,6 +71,10 @@ export function generateTEI(teiData) {
     }
     // first generate the root otherwise it would be duplicated
     generateFilledElement(eltspec, teiData.doc, eltspec.node);
+    console.log(teiData.odd, teiData.dataOdd);
+    for (let i=0; i<teiData.dataOdd.altIdent.length; i++) {
+        eltspec.node.setAttribute(teiData.dataOdd.altIdent[i].type, teiData.dataOdd.altIdent[i].value);
+    }
     if (eltspec.content)
         s += generateTEIContent(eltspec.content, teiData.doc, eltspec.node);
     // add oddname to teiData.doc
