@@ -46,6 +46,7 @@ function getNodeText(node) {
  * @returns {*} true if ok
  */
 export function checkOddTei(data, teiData) {
+    if (!teiData.dataOdd) return ''; // no odd already loaded
     // get XML ready
     teiData.parser = new DOMParser();
     teiData.doc = data 
