@@ -7,7 +7,6 @@ import * as odd from './odd';
 import * as edit from './edit';
 
 let entities = require("entities");
-let dom = require('xmldom').DOMParser;
 
 let basicTEI = '<?xml version="1.0" encoding="UTF-8"?>\
 <TEI xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:svg="http://www.w3.org/2000/svg"\
@@ -62,16 +61,16 @@ export function generateTEI(teiData) {
                 s += '<' + teiData.dataOdd.rootTEI + ' xmlns="' + teiData.dataOdd.namespace + '"></' + teiData.dataOdd.rootTEI + '>'
             else
                 s += '<' + teiData.dataOdd.rootTEI + '></' + teiData.dataOdd.rootTEI + '>'
-            teiData.doc = new dom().parseFromString(s, 'text/xml');
+            teiData.doc = new DOMParser().parseFromString(s, 'text/xml');
         } else {
-            teiData.doc = new dom().parseFromString(basicTEI, 'text/xml');
+            teiData.doc = new DOMParser().parseFromString(basicTEI, 'text/xml');
         }
         teiData.root = teiData.doc.documentElement;
         eltspec.node = teiData.root;
     }
     // first generate the root otherwise it would be duplicated
     generateFilledElement(eltspec, teiData.doc, eltspec.node);
-    console.log(teiData.odd, teiData.dataOdd);
+    // console.log("generateTEI", teiData.dataOdd);
     for (let i=0; i<teiData.dataOdd.altIdent.length; i++) {
         eltspec.node.setAttribute(teiData.dataOdd.altIdent[i].type, teiData.dataOdd.altIdent[i].value);
     }
@@ -80,7 +79,9 @@ export function generateTEI(teiData) {
     // add oddname to teiData.doc
     // console.log(s);
     eltspec.node.setAttribute("xml:base", teiData.oddName);
-    return teiData.doc.toString();
+    var xmls = new XMLSerializer();
+    // return teiData.doc.toString();
+    return xmls.serializeToString(teiData.doc);
 }
 
 function generateElement(espec, doc, node) {

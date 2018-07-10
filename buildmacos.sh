@@ -1,1 +1,1 @@
-electron-packager temp-electron --platform=darwin --asar=true --overwrite --icon=temp-electron/favicon.icns
+electron-packager temp-electron --platform=darwin --asar --overwrite --icon=temp-electron/favicon.icns

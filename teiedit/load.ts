@@ -13,7 +13,6 @@ import * as alert from '../ui/alert';
 import * as msg from '../ui/messages';
 
 let entities = require("entities");
-let dom = require('xmldom').DOMParser;
 
 export let ptrListElementSpec = null; // closure variable
 
@@ -50,7 +49,7 @@ export function checkOddTei(data, teiData) {
     // get XML ready
     teiData.parser = new DOMParser();
     teiData.doc = data 
-        ? new dom().parseFromString(data.toString(), 'text/xml')
+        ? teiData.parser.parseFromString(data.toString(), 'text/xml')
         : null;
 
     // find root
@@ -82,7 +81,7 @@ export function loadTei(data, teiData, noreload=false) {
     // get XML ready
     if (!noreload) teiData.parser = new DOMParser();
     if (!noreload) teiData.doc = data 
-        ? new dom().parseFromString(data.toString(), 'text/xml')
+        ? teiData.parser.parseFromString(data.toString(), 'text/xml')
         : null;
 
     // find root

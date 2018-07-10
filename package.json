@@ -55,7 +55,6 @@
     "fs": "0.0.1-security",
     "picomodal": "^3.0.0",
     "rome": "^2.1.22",
-    "xmldom": "latest",
     "xpath": "0.0.23"
   }
 }

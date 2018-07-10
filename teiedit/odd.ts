@@ -14,7 +14,6 @@ import * as schema from './schema';
 export let odd : schema.SCHEMA = new schema.SCHEMA();
 
 let entities = require("entities");
-let dom = require('xmldom').DOMParser;
 let xpath = require('xpath');
 let select;
 // import * as system from '../system/opensave';
@@ -34,7 +33,7 @@ export function getChildrenByName(node, name, corresp=null) {
     let children = [];
     for (let child = 0; child < node.childNodes.length; child++) {
         if (node.childNodes[child].getAttribute && corresp) {
-            console.log(node.childNodes[child]);
+            // console.log(node.childNodes[child]);
             let a = node.childNodes[child].getAttribute('corresp');
             if (a !== corresp) continue;
         }
@@ -333,7 +332,7 @@ function innerXml(s) {
 function readDesc(desc, node) {
     let d = getChildrenByName(node, 'desc');
     for (let i in d) {
-        desc.texts.push(innerXml(d[i].toString()));
+        desc.texts.push(innerXml(d[i].textContent));
         desc.langs.push(d[i].getAttribute('xml:lang'));
         desc.renditions.push(d[i].getAttribute('rendition'));
     }
@@ -428,7 +427,7 @@ export function loadOdd(data) {
     let doc;
     // let doc = parser.parseFromString(data, "text/xml");
     try {
-        doc = new dom().parseFromString(data.toString(), 'text/xml');
+        doc = parser.parseFromString(data.toString(), 'text/xml');
         if (doc.documentElement.nodeName == "parsererror") {
     //        checkErrorXML(doc.getElementsByTagName("parsererror")[0]);
             alert.alertUser("The ODD file is not valid: Operation canceled.")
