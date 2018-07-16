@@ -137,7 +137,8 @@
 			</egXML>
 
 			<!-- definition de TEI_CORPO_METADATA-->
-			<schemaSpec ident="TEI_CORPO_METADATA" start="TEI" ns="http://www.tei-c.org/ns/1.0" corresp="/TEI/profileDesc/particDesc /TEI/fileDesc/sourceDesc">
+			<schemaSpec ident="TEI_CORPO_METADATA" start="TEI" ns="http://www.tei-c.org/ns/1.0">
+				<!-- not used:  corresp="/TEI/profileDesc/particDesc /TEI/fileDesc/sourceDesc" -->
 				<!-- ajouter teiCorpus par la suite si collections -->
 
 				<!-- required modules -->

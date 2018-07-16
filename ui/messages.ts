@@ -17,8 +17,8 @@ La sauvegarde (cliquer sur "Sauver") se fait dans le répertoire de télécharge
 <i class="create fa fa-plus-square fa-color-expand"></i> indique qu'un élément ou un bloc peut être ajouté au fichier. Il sera validé ou non en utilisant les icones précédentes.</br>
 <i class="hidebutton fa fa-size2 fa-star-half-o fa-color-toggle"></i> permet de montrer ou cacher une partie du fichier.</br>
 </br>
-Pour toute information, aller sur <a href="http://ct3.ortolang.fr/teimeta/readme.php" target="_blank">http://ct3.ortolang.fr/teimeta/readme.php</a><br/>
-Pour télécharger ce logiciel, aller sur <a href="https://github.com/christopheparisse/teimeta" target="_blank">https://github.com/christopheparisse/teimeta</a><br/>
+Pour toute information (documentation, téléchargement), aller sur <a href="http://ct3.ortolang.fr/teimeta-doc/" target="_blank">http://ct3.ortolang.fr/teimeta-doc/</a><br/>
+Pour télécharger les sources de ce logiciel, aller sur <a href="https://github.com/christopheparisse/teimeta" target="_blank">https://github.com/christopheparisse/teimeta</a><br/>
 Pour signaler une erreur ou proposer une fonctionnalité, aller sur <a href="https://github.com/christopheparisse/teimeta/issues" target="_blank">https://github.com/christopheparisse/teimeta/issues</a><br/>
 `;
 
@@ -49,7 +49,9 @@ let messages_fra = {
     leavinghtml: 'Il semble que vous avez édité quelque chose. Si vous partez sans sauver vos changements seront perdus.',
     title: "Edition de métadonnées TEI / ORTOLANG / CORLI",
     xmlopen: "Ouvrir",
-    xmlsave: "Sauver",
+    xmlsave1: "Sauver",
+    xmlsave2: "Sauver le fichier XML",
+    xmlsaveas: "Sauver sous ...",
     xmlnew: "Nouveau",
     oddapply: "Appliquer fichier ODD",
     cssapply: "Appliquer fichier CSS",
@@ -76,6 +78,16 @@ let messages_fra = {
     predefodd: "ODD prédéfinis",
     ok: 'OK',
     cancel: 'Annuler',
+    pleaseloadcss1: "Le fichier CSS original ",
+    pleaseloadcss2: " est absent: voulez vous le charger ?",
+    usedefaultcss: "Le fichier CSS est absent. La CSS par défaut sera utilisée",
+    pleaseloadodd1: "Le fichier ODD ",
+    pleaseloadodd2: " est absent: vous devez indiquer son emplacement.",
+    nooddavailable: "Le fichier ODD est absent. Il est impossible d'éditer le fichier XML.",
+    askoddInfo: "Vous devez choisir un fichier ODD.",
+    askoddCurrent: "Utiliser le fichier ODD actuel ",
+    askoddLocalOdd: "Choisir un fichier ODD sur votre ordinateur",
+    askoddPredef: "Choisir un fichier ODD prédéfini",
     paramlinks: "Paramètres / Liens",
 };
 
@@ -108,7 +120,9 @@ let messages_spa = {
 */
     title: "Editar metadatos TEI / ORTOLANG / CORLI",
     xmlopen: "Abrir",
-    xmlsave: "Guardar",
+    xmlsave1: "Guardar",
+    xmlsave2: "Guardar XML archivo",
+    xmlsaveas: "Guardar como ...",
     xmlnew: "Nuevo",
     oddapply: "Aplicar el archivo ODD",
     cssapply: "Aplicar el archivo CSS",
@@ -172,7 +186,9 @@ let messages_jpn = {
 */
     title: "メタデータの編集 TEI / ORTOLANG / CORLI",
     xmlopen: "開いた",
-    xmlsave: "セーブ",
+    xmlsave1: "セーブ",
+    xmlsave2: "セーブ XML file",
+    xmlsaveas: "セーブ as ...",
     xmlnew: "新しい",
     oddapply: "Apply ODD file",
     cssapply: "Apply CSS file",
@@ -221,8 +237,8 @@ Saving (click "Save") is performed in the download directory (or elsewhere, acco
 <i class="create fa fa-plus-square fa-color-expand"></i> indicate whether an element or a bloc can be added to the file. It will be validated or not using the previous icons.</br>
 <i class="hidebutton fa fa-size2 fa-star-half-o fa-color-toggle"></i> allows to show or hide part of the file.</br>
 </br>
-For all information, go to <a href="http://ct3.ortolang.fr/teimeta/readme.php" target="_blank">http://ct3.ortolang.fr/teimeta/readme.php</a><br/>
-To download the tool, go to <a href="https://github.com/christopheparisse/teimeta" target="_blank">https://github.com/christopheparisse/teimeta</a><br/>
+For all information (downloading, documentation), go to <a href="http://ct3.ortolang.fr/teimeta-doc/" target="_blank">http://ct3.ortolang.fr/teimeta-doc/</a><br/>
+To download the sources of the tool, go to <a href="https://github.com/christopheparisse/teimeta" target="_blank">https://github.com/christopheparisse/teimeta</a><br/>
 To signal an error or a problem, or ask for improvments, go to <a href="https://github.com/christopheparisse/teimeta/issues" target="_blank">https://github.com/christopheparisse/teimeta/issues</a><br/>
 `;
 
@@ -253,7 +269,9 @@ let messages_eng = {
     leavinghtml: 'It looks like you have been editing something. If you leave before saving, your changes will be lost.',
     title: "Metadata edition TEI / ORTOLANG / CORLI",
     xmlopen: "Open",
-    xmlsave: "Save",
+    xmlsave1: "Save",
+    xmlsave2: "Save XML file",
+    xmlsaveas: "SaveAs ...",
     xmlnew: "New",
     oddapply: "Apply ODD file",
     cssapply: "Apply CSS file",
@@ -289,7 +307,7 @@ let messages_eng = {
     pleaseloadodd1: "The ODD file ",
     pleaseloadodd2: " is absent: you have to give its location.",
     nooddavailable: "The ODD file is not found. The XML file cannot be edited.",
-    askoddInfo: "You must choose an ODD file. Please make a choice.",
+    askoddInfo: "You must choose an ODD file.",
     askoddCurrent: "Use the currently loaded ODD",
     askoddLocalOdd: "Choose and ODD file on your computer",
     askoddPredef: "Choose a predefined ODD file",

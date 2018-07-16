@@ -104,9 +104,12 @@ export function init() {
         quit();            
     });
 
-    // the file-saveas is a real save
-    let el = document.getElementById('file-saveas');
+    // the file-save is a real save
+    let el = document.getElementById('file-save');
     el.addEventListener("click", events.save);
+    // the file-saveas always ask for name
+    el = document.getElementById('file-saveas');
+    el.addEventListener("click", events.saveAs);
 
     common.init(bodyKeys);
     common.setLanguage(odd.odd.params.language, false);

@@ -52,8 +52,11 @@ export function init() {
     // load params
     common.loadParams();
 
-    // the file-saveas is a download save
-    let el = document.getElementById('file-saveas');
+    // the file-save is a download save
+    let el = document.getElementById('file-save');
+    el.addEventListener("click", events.saveLocal);
+    //  and a saveas
+    el = document.getElementById('file-saveas');
     el.addEventListener("click", events.saveAsLocal);
 
     common.init(bodyKeys);

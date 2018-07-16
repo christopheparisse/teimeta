@@ -452,14 +452,15 @@ export function save(fun) {
     }
 };
 
-export function saveAsLocal(fun, force = false) {
-    function saveit(name) {
-        var ed = tei.generateTEI(teiData);
-        // console.log(ed);
-        edit.change(false);
-        common.saveFileLocal('xml', name, ed);
-        if (fun && typeof fun === 'function') fun();
-    }
+function saveit(name, fun) {
+    var ed = tei.generateTEI(teiData);
+    // console.log(ed);
+    edit.change(false);
+    common.saveFileLocal('xml', name, ed);
+    if (fun && typeof fun === 'function') fun();
+}
+
+export function saveLocal(fun, force = false) {
     let nf = msg.msg('newfile');
     if (teiData.fileName === nf || force === true) {
         alert.promptUserModal("Please give the name of your new file: ",
@@ -468,11 +469,22 @@ export function saveAsLocal(fun, force = false) {
                 teiData.fileName = newname;
                 let el = document.getElementById('filename');
                 el.innerHTML = msg.msg('file') + teiData.fileName;
-                if (newname) saveit(newname);
+                if (newname) saveit(newname, fun);
             });
     } else {
-        saveit(teiData.fileName);
+        saveit(teiData.fileName, fun);
     }
+};
+
+export function saveAsLocal(fun, force = false) {
+    alert.promptUserModal("Please give the name of your new file: ",
+        function(newname) {
+            if (!newname) return;
+            teiData.fileName = newname;
+            let el = document.getElementById('filename');
+            el.innerHTML = msg.msg('file') + teiData.fileName;
+            if (newname) saveit(newname, fun);
+        });
 };
 
 export function readTextFile(file, callback) {

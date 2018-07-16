@@ -30,7 +30,7 @@ export class SCHEMA {
     params =  new PARAMS();
     namespace = ''; // namespace of the resulting xml
     altIdent = []; // other namespace information
-    entries = null; // entry points other than rootTEI
+    // entries = null; // entry points other than rootTEI - not used
     cssfile = ''; // information about user specified presentation
     remarks = false; // if there is some user css then don't use full css default design
 

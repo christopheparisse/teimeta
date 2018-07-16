@@ -477,12 +477,13 @@ export function loadOdd(data) {
     odd.cssfile = schemaSpec[0].getAttribute("rend");
     odd.remarks = false;
     // get attribute other entries (corresp)
+    /*
     attr = schemaSpec[0].getAttribute("corresp");
     if (attr) {
         let n = attr.split(' ');
-        if (n>1)
+        if (n.length>0)
             odd.entries = n;
-    }
+    */
     // read the elementSpec
     for (let i=0; i < eSpec.length ; i++) {
         var es = new schema.ElementSpec();
