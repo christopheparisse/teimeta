@@ -1,0 +1,5 @@
+.title-element { display: block; background-color: brown; }
+.desc-element { display: block; border: 2px solid blue; background-color: burlywood; }
+.div-element { display: block; background-color: darkgreen; }
+.p-element { display: block; background-color: lightgreen; }
+.div-type { background-color: chocolate; color: black; }

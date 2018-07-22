@@ -84,6 +84,8 @@ export function loadTei(data, teiData, noreload=false) {
         ? teiData.parser.parseFromString(data.toString(), 'text/xml')
         : null;
 
+    if (!teiData.dataOdd) return ''; // no odd loaded
+
     // find root
     let root = null;
     let path = '/' + teiData.dataOdd.rootTEI; // root but must be unique !

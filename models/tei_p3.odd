@@ -10,7 +10,7 @@
 		<fileDesc>
 			<titleStmt>
       <title>
-        <idno type="title">Edition simple de fichier TEI avec des p</idno>
+        <idno type="title">Edition simple de fichier TEI avec des div et des p</idno>
         <bibl> CORLI et IRCOM paragraphs.odd </bibl>
         <desc> Tester les fonctionnalités de base</desc>
       </title>
@@ -46,29 +46,24 @@
 				<!-- structure generale teiHeader -->
 				<elementSpec ident="teiHeader" module="header" mode="change">
 					<content>
-						<sequence minOccurs="1" maxOccurs="1">
-							<elementRef key="fileDesc"/>
-						</sequence>
+						<elementRef key="fileDesc" minOccurs="1" maxOccurs="1"/>
 					</content>
+					<remarks style="element">
+<!--					<ab>background-color: lightgreen; border-radius: 8px; margin: 3px; margin-top: 10px;</ab> -->
+						<p><ident>filedesc</ident></p>
+					</remarks>
 				</elementSpec>
 
 				<elementSpec ident="text">
 					<content>
-						<sequence minOccurs="1" maxOccurs="1">
-							<elementRef key="body"/>
-						</sequence>
+						<elementRef key="body" minOccurs="1" maxOccurs="1"/>
 					</content>
 				</elementSpec>
 
 				<elementSpec ident="fileDesc" module="header">
 					<content>
-						<sequence minOccurs="1" maxOccurs="1">
-							<elementRef key="titleStmt"/>
-						</sequence>
+						<elementRef key="titleStmt" minOccurs="1" maxOccurs="1"/>
 					</content>
-					<remarks style="element">
-						<p><ident>css-fileDesc</ident></p>
-					</remarks>
 				</elementSpec>
 
 				<elementSpec ident="titleStmt" module="header" mode="change" n="1">
@@ -86,6 +81,9 @@
 						<textNode/>
 						<elementRef key="desc" minOccurs="1" maxOccurs="1"/>
 					</content>
+					<remarks style="element">
+						<p><ident>title</ident></p>
+					</remarks>
 				</elementSpec>
 
 				<elementSpec ident="desc" module="core">
@@ -95,76 +93,54 @@
 						<textNode/>
 						<dataRef name="multiline"/>
 					</content>
+					<remarks style="element">
+						<p><ident>desc</ident></p>
+					</remarks>
 				</elementSpec>
 
 				<elementSpec ident="body">
 					<content>
-						<elementRef key="div" minOccurs="0" maxOccurs="unbounded" corresp="d1"/>
-					</content>
-				</elementSpec>
-
-				<elementSpec ident="div" corresp="d1">
-					<desc xml:lang="fr">Div ou chapitres</desc>
-					<desc xml:lang="en">Divisions or chapters</desc>
-					<content>
-						<sequence minOccurs="1" maxOccurs="1">
-							<elementRef key="head" minOccurs="0" maxOccurs="1"/>
-							<elementRef key="div" minOccurs="0" maxOccurs="unbounded" corresp="d2"/>
-						</sequence>
-					</content>
-				</elementSpec>
-
-				<elementSpec ident="div" corresp="d2">
-					<desc xml:lang="fr">Div ou chapitres</desc>
-					<desc xml:lang="en">Divisions or chapters</desc>
-					<content>
-						<elementRef key="div" minOccurs="0" maxOccurs="unbounded" corresp="d3"/>
-					</content>
-				</elementSpec>
-
-				<elementSpec ident="div" corresp="d3">
-					<desc xml:lang="fr">Div ou chapitres</desc>
-					<desc xml:lang="en">Divisions or chapters</desc>
-					<content>
+						<elementRef key="div" minOccurs="0" maxOccurs="unbounded"/>
 						<elementRef key="p" minOccurs="0" maxOccurs="unbounded"/>
 					</content>
 				</elementSpec>
-<!--
-				<elementSpec ident="div" corresp="d2">
+
+				<elementSpec ident="div">
 					<desc xml:lang="fr">Div ou chapitres</desc>
 					<desc xml:lang="en">Divisions or chapters</desc>
 					<content>
 						<sequence minOccurs="1" maxOccurs="1">
 							<elementRef key="head" minOccurs="0" maxOccurs="1"/>
-							<elementRef key="div" minOccurs="0" maxOccurs="unbounded" corresp="d3"/>
+							<elementRef key="div" minOccurs="0" maxOccurs="unbounded"/>
 						</sequence>
-					</content>
-				</elementSpec>
-
-				<elementSpec ident="div" corresp="d3">
-					<desc xml:lang="fr">Div ou chapitres</desc>
-					<desc xml:lang="en">Divisions or chapters</desc>
-					<content>
 						<sequence minOccurs="1" maxOccurs="1">
 							<elementRef key="head" minOccurs="0" maxOccurs="1"/>
 							<elementRef key="p" minOccurs="0" maxOccurs="unbounded"/>
 						</sequence>
 					</content>
+					<remarks style="element">
+						<p><ident>div</ident></p>
+					</remarks>
 				</elementSpec>
--->
+
 				<elementSpec ident="p">
 					<content>
 						<textNode/>
 						<dataRef name="multiline"/>
 					</content>
+					<remarks style="element">
+						<p><ident>p</ident></p>
+					</remarks>
 				</elementSpec>
 
 				<elementSpec ident="head">
-					<desc xml:lang="en">Description or title</desc>
 					<content>
 						<textNode/>
 						<dataRef name="multiline"/>
 					</content>
+					<remarks style="element">
+						<p><ident>head</ident></p>
+					</remarks>
 				</elementSpec>
 
 			</schemaSpec>

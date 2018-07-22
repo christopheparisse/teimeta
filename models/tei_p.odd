@@ -30,7 +30,8 @@
 
 	<text>
 		<body>
-			<schemaSpec ident="TEI_P" start="TEI">
+			<schemaSpec ident="TEI_P" start="TEI" ns="http://www.tei-c.org/ns/1.0"
+				rend="tei_p.css">
 				<!-- structure generale TEI -->
 
 				<!-- structure generale TEI -->
@@ -48,6 +49,10 @@
 					<content>
 						<elementRef key="fileDesc" minOccurs="1" maxOccurs="1"/>
 					</content>
+					<remarks style="element">
+<!--					<ab>background-color: lightgreen; border-radius: 8px; margin: 3px; margin-top: 10px;</ab> -->
+						<p><ident>filedesc</ident></p>
+					</remarks>
 				</elementSpec>
 
 				<elementSpec ident="text">
@@ -60,9 +65,6 @@
 					<content>
 						<elementRef key="titleStmt" minOccurs="1" maxOccurs="1"/>
 					</content>
-					<remarks style="element">
-						<p><ident>css-fileDesc</ident></p>
-					</remarks>
 				</elementSpec>
 
 				<elementSpec ident="titleStmt" module="header" mode="change" n="1">
@@ -80,6 +82,12 @@
 						<textNode/>
 						<elementRef key="desc" minOccurs="1" maxOccurs="1"/>
 					</content>
+					<remarks style="element">
+						<p><ident>title-element</ident></p>
+					</remarks>
+					<remarks style="content">
+						<p><ident>title-content</ident></p>
+					</remarks>
 				</elementSpec>
 
 				<elementSpec ident="desc" module="core">
@@ -89,6 +97,12 @@
 						<textNode/>
 						<dataRef name="multiline"/>
 					</content>
+					<remarks style="element">
+						<p><ident>desc-element</ident></p>
+					</remarks>
+					<remarks style="content">
+						<p><ident>desc-content</ident></p>
+					</remarks>
 				</elementSpec>
 
 				<elementSpec ident="body">
@@ -102,17 +116,41 @@
 					<desc xml:lang="fr">Div ou chapitres</desc>
 					<desc xml:lang="en">Divisions or chapters</desc>
 					<content>
-						<!--
-							<sequence minOccurs="1" maxOccurs="1">
-								<elementRef key="head" minOccurs="0" maxOccurs="1"/>
-								<elementRef key="div" minOccurs="0" maxOccurs="unbounded"/>
-							</sequence>
-						-->
 						<sequence minOccurs="1" maxOccurs="1">
 							<elementRef key="head" minOccurs="0" maxOccurs="1"/>
 							<elementRef key="p" minOccurs="0" maxOccurs="unbounded"/>
 						</sequence>
 					</content>
+					<attList>
+						<attDef ident="type" usage="req" mode="change">
+							<desc>Type</desc>
+							<datatype>
+								<dataRef name="string"/>
+							</datatype>
+							<remarks style="element">
+								<p><ident>div-type</ident></p>
+							</remarks>
+						</attDef>
+						<attDef ident="version" usage="req" mode="change">
+							<desc>Version</desc>
+							<valList>
+								<valItem ident="v1">
+									<desc xml:lang="fr">version 1</desc>
+									<desc xml:lang="en">first version</desc>
+								</valItem>
+								<valItem ident="v2">
+									<desc xml:lang="fr">version 2</desc>
+									<desc xml:lang="en">second version</desc>
+								</valItem>
+							</valList>
+							<remarks style="element">
+								<p><ident>div-version</ident></p>
+							</remarks>
+						</attDef>
+					</attList>
+					<remarks style="element">
+						<p><ident>div-element</ident></p>
+					</remarks>
 				</elementSpec>
 
 				<elementSpec ident="p">
@@ -120,13 +158,22 @@
 						<textNode/>
 						<dataRef name="multiline"/>
 					</content>
+					<remarks style="element">
+						<p><ident>p-element</ident></p>
+					</remarks>
+					<remarks style="content">
+						<p><ident>p-content</ident></p>
+					</remarks>
 				</elementSpec>
 
 				<elementSpec ident="head">
 					<content>
 						<textNode/>
-						<dataRef name="multiline"/>
+						<dataRef name="string"/>
 					</content>
+					<remarks style="element">
+						<p><ident>head-element</ident></p>
+					</remarks>
 				</elementSpec>
 
 			</schemaSpec>

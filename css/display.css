@@ -148,7 +148,9 @@ nav input[type=checkbox]:checked ~ #menu{
  */
 
 .nodeIdent {
+    /*
     display: inline;
+    */
     border: 1px solid #551cd9;
     border-collapse: collapse;
 	border-radius: 2px;
@@ -164,12 +166,14 @@ nav input[type=checkbox]:checked ~ #menu{
     /*
     border: 2px solid blue;
 	border-radius: 2px;
-    */
-    border-collapse: collapse;
     margin-top: 5px;
     margin-bottom: 5px;
+    */
+    border-collapse: collapse;
     padding: 2px;
+    /*
     display: inline;
+    */
 }
 
 .eltDesc {
@@ -232,7 +236,9 @@ nav input[type=checkbox]:checked ~ #menu{
 }
 
 .nodeField {
+    /*
     display: inline-block;
+    */
     font-size: large;
 }
 
