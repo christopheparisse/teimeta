@@ -39,12 +39,12 @@ function getNodeText(node) {
 }
 
 /**
- * @method load
+ * @method getOddFromXml
  * @param {*} data raw data content of TEI file 
  * @param {*} dataOdd array of ElementSpec from odd.ts - loadOdd
  * @returns {*} true if ok
  */
-export function checkOddTei(data, teiData) {
+export function getOddFromXml(data, teiData) {
     if (!teiData.dataOdd) return ''; // no odd already loaded
     // get XML ready
     teiData.parser = new DOMParser();
@@ -78,6 +78,7 @@ export function checkOddTei(data, teiData) {
  * @returns {*} true if ok
  */
 export function loadTei(data, teiData, noreload=false) {
+    console.log("call of loadTei ", data, teiData, noreload);
     // get XML ready
     if (!noreload) teiData.parser = new DOMParser();
     if (!noreload) teiData.doc = data 
@@ -156,6 +157,7 @@ function verifyDatatype(datatype) {
 
 export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
     let c = schema.copyElementSpec(es);
+    console.log('loadElementSpec ', c.access, path);
     // creation d'un élément initial vide pour le noeud courant
     c.node = node;
     c.parentElementSpec = parent;
@@ -216,6 +218,7 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
             }
         }
         // load content
+        // with node recursivity is allowed because we follow node which is not recursive
         if (!c.content) return c;
         for (let ec of c.content.sequencesRefs) {
             // ec au format ElementCount
@@ -234,6 +237,13 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
          * les éléments non renseignés sont inclus pas défaut ou non
          */
         if (!c.content) return c;
+        // check recursivity
+        if (isRecursive(c.parentElementSpec, c.access)) {
+            c.content = null;
+            c.recursive = true;
+            console.log('recursive stop at ', c.access, c.absolutepath);
+            return c;
+        }
         c.validatedES = odd.odd.params.defaultNewElement ? 'ok' : ''; // l'élément n'existait pas et il n'est pas validé par l'utilisateur
         for (let ec of c.content.sequencesRefs) {
             // ec au format ElementCount
@@ -246,6 +256,16 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
         }
     }
     return c;
+}
+
+function isRecursive(es, name) {
+    if (!es) return;
+    // es is an elementSpec
+    if (es.access === name) return true;
+    if (es.parentElementSpec)
+        return isRecursive(es.parentElementSpec, name);
+    else
+        return false;
 }
 
 function loadElementRef(ec, node, path, parent) {

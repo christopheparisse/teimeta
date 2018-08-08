@@ -21,29 +21,11 @@
  *
  **/
 
-import * as edit from '../teiedit/edit';
-import * as odd from '../teiedit/odd';
-import * as schema from '../teiedit/schema';
-import * as tei from '../teiedit/tei';
-import * as load from '../teiedit/load';
+import * as teimeta from '../teiedit/teimeta';
 import * as opensave from './opensave';
 import * as alert from './alert';
 import * as msg from './messages';
 import * as common from './common';
-
-export let teiData = {
-    oddName: '',
-    cssName: '',
-    fileName: '',
-    dataOdd: null,
-    dataCss: null,
-    dataTei: null,
-    html: null,
-    new: true,
-    parser: null,
-    doc: null,
-    system: ''
-};
 
 function dispname(s:string) {
     let p = s.lastIndexOf('/');
@@ -63,28 +45,34 @@ export function openXml() {
     // checked changes - the user can cancel if needed
     checkChange(() => { // if ok ask the user for a file
         opensave.chooseOpenFile(function(err, name, data) {
-            if (!err) { // if not cancelled
-                let oddname:string = load.checkOddTei(data, teiData);
+            if (!err) { // if not cancelled - use data
+                // try to find the odd name
+                let oddname:string = teimeta.initXml(name, data);
                 if (!oddname) {
-                    // find an odd
+                    // find an odd and then this function will open the XML
                     findOdd(name, data);
-                } else if (oddname === teiData.oddName) {
+                } else if (oddname === teimeta.teiData.oddName) {
                     // same as current odd
-                    // do not reload
+                    // do not reload - open XML
                     finishOpenXml(name, data);
                 } else if (oddname.substring(0,4) !== "http") {
                     // an odd is indicated in the xml file
-                    // it is not an external address so cannot access directly if not electron
+                    // it is not an external address 
+                    // so cannot access directly if not electron
                     let displayname = dispname(oddname);
+                    // open ODD then open XML
                     common.openSpecificLocalFile(oddname, displayname, name, data, afterOpenXmlFile);
                 } else {
                     // an odd is indicated in the xml file
                     // try to open it
                     let displayname = dispname(oddname);
+                    // read ODD
                     readTextFile(oddname, function (text) {
                         // console.log("read ODD: ", oddname, text);
                         if (text) {
+                            // load ODD
                             openOddLoad(oddname, displayname, text);
+                            // then open XML
                             finishOpenXml(name, data);
                         }
                     });
@@ -150,16 +138,16 @@ function findOdd(nameXml, dataXml) {
                 break;
         }
     }
-    if (teiData.dataOdd) {
-        alert.askUserModalForOdd(teiData.oddName, true, openChooseOdd);
+    if (teimeta.teiData.dataOdd) {
+        alert.askUserModalForOdd(teimeta.teiData.oddName, true, openChooseOdd);
     } else {
         alert.askUserModalForOdd('', false, openChooseOdd);
     }
 }
 
 export function cleanCss() {
-    teiData.cssName = "";
-    teiData.dataCss = "";
+    teimeta.teiData.cssName = "";
+    teimeta.teiData.dataCss = "";
     let el = document.getElementById('cssname');
     if (el) el.innerHTML = "CSS: ";
     let js = JSON.stringify({data: "", cssName: ""});
@@ -168,30 +156,24 @@ export function cleanCss() {
 
 function finishOpenXml(name, data) {
     function finishIt() {
-        // now load XML
-        load.loadTei(data, teiData);
-        let h; // result from generateHTML
-        if (teiData.dataCss) {
-            let cssHtml =  '<style id="cssstyle">' + teiData.dataCss + '</style>\n';
-            h = edit.generateHTML(teiData);
-            teiData.html = cssHtml + h.html;
-        } else {
-            h = edit.generateHTML(teiData);
-            teiData.html = h.html;
-        }
+        teimeta.loadXml(name, data);
         el = document.getElementById('teidata');
-        el.innerHTML = teiData.html;
-        edit.executeResizeList(h.script);
-        teiData.new = false;
-        //console.log("openfile TEI", teiData.dataTei);
+        if (el) {
+            el.innerHTML = teimeta.teiData.html;
+        } else {
+            alert.alertUser('HTML error: see console log');
+            console.log('no <div id="teidata"></div> element defined in HTML. Cannot load TEIMETA html form.');
+            }
+        teimeta.finalize();
+        //console.log("openfile TEI", teimeta.teiData.dataTei);
         //console.log(edit.values);
     }
-    teiData.fileName = name ? name : msg.msg('newfile');
+    teimeta.teiData.fileName = name ? name : msg.msg('newfile');
     let el = document.getElementById('filename');
-    el.innerHTML = msg.msg('file') + teiData.fileName;
+    el.innerHTML = msg.msg('file') + teimeta.teiData.fileName;
     // test if cssfile is needed
-    if (teiData.dataOdd && teiData.dataOdd.cssfile) {
-        testCss(teiData.dataOdd.cssfile, finishIt);
+    if (teimeta.teiData.dataOdd && teimeta.teiData.dataOdd.cssfile) {
+        testCss(teimeta.teiData.dataOdd.cssfile, finishIt);
     }
     finishIt();
 }
@@ -207,7 +189,7 @@ function testCss(cssname, fun) {
         // nothing to do
         if (fun) fun();
         return;
-    } else if (cssname === teiData.cssName) {
+    } else if (cssname === teimeta.teiData.cssName) {
         // same as current css
         // do not reload
         if (fun) fun();
@@ -216,7 +198,7 @@ function testCss(cssname, fun) {
         // an css is indicated in the odd file
         // it is not an external address so cannot access directly if not electron
         let displayname = dispname(cssname);
-        common.openSpecificLocalFile(cssname, cssname, teiData.oddName, null, afterOpenCssFile);
+        common.openSpecificLocalFile(cssname, cssname, teimeta.teiData.oddName, null, afterOpenCssFile);
         if (fun) fun();
     } else {
         // an odd is indicated in the xml file
@@ -237,13 +219,13 @@ export function newXml(choice) {
     checkChange(() => {
         if (choice !== 'previous') {
             // find an odd
-            findOdd(null, null);
+            findOdd(msg.msg('newfile'), null);
         } else {
             try {
                 let ls = localStorage.getItem("previousODD");
                 if (ls) {
                     var js = JSON.parse(ls);
-                    if (!js.version || js.version !== schema.version) {
+                    if (!js.version || js.version !== teimeta.teiData.version) {
                         //console.log('ancienne version de localstorage');
                         emptyFile();
                         return;
@@ -256,7 +238,7 @@ export function newXml(choice) {
                     }
                     openOddLoad(js.oddName, js.oddName, js.data);
                     //alert.alertUser('here is previous');
-                    finishOpenXml(null, null);
+                    finishOpenXml(msg.msg('newfile'), null);
                 } else {
                     emptyFile();
                 }
@@ -269,11 +251,11 @@ export function newXml(choice) {
 }
 
 export function dumpHtml() {
-    common.saveFileLocal("html", "page.html", teiData.html);
+    common.saveFileLocal("html", "page.html", teimeta.teiData.html);
 }
 
 export function checkChange(fun) {
-    if (edit.change() === false) {
+    if (teimeta.teiData.edit.change() === false) {
         fun();
         return;
     }
@@ -281,7 +263,7 @@ export function checkChange(fun) {
         msg.msg('askforsave'),
         (ret) => {
             if (ret === 'yes') { //save
-                if (teiData.system === 'electron') {
+                if (teimeta.teiData.system === 'electron') {
                     save(fun);
                 } else {
                     saveAsLocal(fun);
@@ -302,7 +284,7 @@ export function reLoad(callback) {
         let lxname = localStorage.getItem("previousXMLName");
         if (ls && lx) {
             var js = JSON.parse(ls);
-            if (!js.version || js.version !== schema.version) {
+            if (!js.version || js.version !== teimeta.teiData.version) {
                 //console.log('ancienne version de localstorage');
                 emptyFile();
                 if (callback) callback(0);
@@ -332,37 +314,48 @@ export function openOddCssLoad(nameOdd, dispNameOdd, dataOdd, nameCss, dispNameC
 }
 
 export function openOddLoad(name, displayname, data) {
+
+    /*
+
+    teimeta.loadXml(null, msg.msg('newfile'));
+    el = document.getElementById('filename');
+    if (el) el.innerHTML = msg.msg('file') + teimeta.teiData.fileName;
+
+    el = document.getElementById('teidata');
+    if (el) {
+        el.innerHTML = teimeta.teiData.html;
+    } else {
+        alert.alertUser('HTML error: see log');
+        console.log('no teidata element defined in HTML. Cannot load TEIMETA html form.');
+    }
+    let h; // result from generateHTML
+    if (teimeta.teiData.dataCss) {
+        let cssHtml =  '<style id="cssstyle">' + teimeta.teiData.dataCss + '</style>\n';
+        h = edit.generateHTML(teimeta.teiData);
+        teimeta.teiData.html = cssHtml + h.html;
+    } else {
+        h = edit.generateHTML(teimeta.teiData);
+        teimeta.teiData.html = h.html;
+    }
+    teimeta.teiData.fileName = msg.msg('newfile');
+    teimeta.teiData.new = true;
+
+    edit.executeResizeList(h.script);
+
+    */
+
     function finishOL() {
-        let h; // result from generateHTML
-        if (teiData.dataCss) {
-            let cssHtml =  '<style id="cssstyle">' + teiData.dataCss + '</style>\n';
-            h = edit.generateHTML(teiData);
-            teiData.html = cssHtml + h.html;
-        } else {
-            h = edit.generateHTML(teiData);
-            teiData.html = h.html;
-        }
-        teiData.fileName = msg.msg('newfile');
-        teiData.new = true;
-    
         el = document.getElementById('cssname');
-        if (el) el.innerHTML = "CSS: " + teiData.cssName;
-        el = document.getElementById('filename');
-        el.innerHTML = msg.msg('file') + teiData.fileName;
-        el = document.getElementById('teidata');
-        el.innerHTML = teiData.html;
-        edit.executeResizeList(h.script);
-        let js = JSON.stringify({data: data, oddName: name, version: schema.version});
+        if (el) el.innerHTML = "CSS: " + teimeta.teiData.cssName;
+        let js = JSON.stringify({data: data, oddName: name, version: teimeta.teiData.version});
         localStorage.setItem("previousODD", js);
     }
 
-    teiData.oddName = name;
     let el = document.getElementById('oddname');
-    el.innerHTML = "ODD: " + displayname;
-    teiData.dataOdd = odd.loadOdd(data);
-    load.loadTei(null, teiData);
-    if (teiData.dataOdd.cssfile) {
-        testCss(teiData.dataOdd.cssfile, finishOL);
+    if (el) el.innerHTML = "ODD: " + displayname;
+    teimeta.initOdd(name, data);
+    if (teimeta.teiData.dataOdd.cssfile) {
+        testCss(teimeta.teiData.dataOdd.cssfile, finishOL);
     } else {
         finishOL();
     }
@@ -381,10 +374,9 @@ export function openOdd() {
 };
 
 export function openCssLoad(name, displayname, data) {
-    teiData.cssName = name;
     let el = document.getElementById('cssname');
     if (el) el.innerHTML = "CSS: " + displayname;
-    teiData.dataCss = data;
+    teimeta.initCss(name, data);
     // console.log("CSS: ", name, data);
     let js = JSON.stringify({data: data, cssName: name});
     localStorage.setItem("previousCSS", js);
@@ -407,28 +399,33 @@ export function openCss() {
 
 export function emptyFile() {
     let dt = document.getElementById('teidata');
-    dt.innerHTML = '';
-    teiData.oddName = msg.msg('nofilename');
-    teiData.fileName = msg.msg('nofilename');
-    teiData.cssName = msg.msg('nofilename');
-    teiData.new = true;
+    if (dt) {
+        dt.innerHTML = '';
+    } else {
+        alert.alertUser('HTML error: see console log');
+        console.log('no <div id="teidata"></div> element defined in HTML. Cannot load TEIMETA html form.');
+    }
+    teimeta.teiData.oddName = msg.msg('nofilename');
+    teimeta.teiData.fileName = msg.msg('nofilename');
+    teimeta.teiData.cssName = msg.msg('nofilename');
+    teimeta.teiData.new = true;
     let el = document.getElementById('oddname');
-    el.innerHTML = "ODD: " + teiData.oddName;
+    el.innerHTML = "ODD: " + teimeta.teiData.oddName;
     el = document.getElementById('cssname');
-    if (el) el.innerHTML = "CSS: " + teiData.cssName;
+    if (el) el.innerHTML = "CSS: " + teimeta.teiData.cssName;
     el = document.getElementById('filename');
-    el.innerHTML = msg.msg('file') + teiData.fileName;
+    el.innerHTML = msg.msg('file') + teimeta.teiData.fileName;
 }
 
 export function saveAs(fun) {    
     opensave.chooseSaveFile('xml', function(err, name) {
         if (!err) {
-            teiData.fileName = name;
+            teimeta.teiData.fileName = name;
             let el = document.getElementById('filename');
-            el.innerHTML = msg.msg('file') + teiData.fileName;
-            var ed = tei.generateTEI(teiData);
-            opensave.saveFile(teiData.fileName, ed);
-            edit.change(false);
+            el.innerHTML = msg.msg('file') + teimeta.teiData.fileName;
+            var ed = teimeta.generateXml();
+            opensave.saveFile(teimeta.teiData.fileName, ed);
+            teimeta.teiData.edit.change(false);
             if (fun && typeof fun === "function") fun();
         } else
             console.log('saveas cancelled', name, err);
@@ -436,16 +433,16 @@ export function saveAs(fun) {
 };
 
 export function saveStorage() {
-    var ed = tei.generateTEI(teiData);
+    var ed = teimeta.generateXml();
     localStorage.setItem("previousXML", ed);
-    localStorage.setItem("previousXMLName", teiData.fileName);
+    localStorage.setItem("previousXMLName", teimeta.teiData.fileName);
 };
 
 export function save(fun) {
-    if (teiData.fileName !== msg.msg('newfile')) {
-            var ed = tei.generateTEI(teiData);
-            edit.change(false);
-            opensave.saveFile(teiData.fileName, ed);
+    if (teimeta.teiData.fileName !== msg.msg('newfile')) {
+            var ed = teimeta.generateXml();
+            teimeta.teiData.edit.change(false);
+            opensave.saveFile(teimeta.teiData.fileName, ed);
             if (fun && typeof fun === 'function') fun();
     } else {
         return saveAs(fun);
@@ -453,26 +450,26 @@ export function save(fun) {
 };
 
 function saveit(name, fun) {
-    var ed = tei.generateTEI(teiData);
+    var ed = teimeta.generateXml();
     // console.log(ed);
-    edit.change(false);
+    teimeta.teiData.edit.change(false);
     common.saveFileLocal('xml', name, ed);
     if (fun && typeof fun === 'function') fun();
 }
 
 export function saveLocal(fun, force = false) {
     let nf = msg.msg('newfile');
-    if (teiData.fileName === nf || force === true) {
+    if (teimeta.teiData.fileName === nf || force === true) {
         alert.promptUserModal("Please give the name of your new file: ",
             function(newname) {
                 if (!newname) return;
-                teiData.fileName = newname;
+                teimeta.teiData.fileName = newname;
                 let el = document.getElementById('filename');
-                el.innerHTML = msg.msg('file') + teiData.fileName;
+                el.innerHTML = msg.msg('file') + teimeta.teiData.fileName;
                 if (newname) saveit(newname, fun);
             });
     } else {
-        saveit(teiData.fileName, fun);
+        saveit(teimeta.teiData.fileName, fun);
     }
 };
 
@@ -480,9 +477,9 @@ export function saveAsLocal(fun, force = false) {
     alert.promptUserModal("Please give the name of your new file: ",
         function(newname) {
             if (!newname) return;
-            teiData.fileName = newname;
+            teimeta.teiData.fileName = newname;
             let el = document.getElementById('filename');
-            el.innerHTML = msg.msg('file') + teiData.fileName;
+            el.innerHTML = msg.msg('file') + teimeta.teiData.fileName;
             if (newname) saveit(newname, fun);
         });
 };

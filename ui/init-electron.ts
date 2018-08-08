@@ -5,9 +5,7 @@
 
 const ipcRenderer = require('electron').ipcRenderer;
 import * as events from './events';
-import * as odd from '../teiedit/odd';
-import * as edit from '../teiedit/edit';
-import * as syscall from './opensave';
+import * as teimeta from '../teiedit/teimeta';
 import * as version from './version';
 import * as common from './common';
 
@@ -82,7 +80,7 @@ function bodyKeys(e) {
 }
 
 export function init() {
-    events.teiData.system = 'electron';
+    teimeta.teiData.system = 'electron';
     common.loadParams();
 
     ipcRenderer.on('open', function(event, arg) {
@@ -112,7 +110,7 @@ export function init() {
     el.addEventListener("click", events.saveAs);
 
     common.init(bodyKeys);
-    common.setLanguage(odd.odd.params.language, false);
+    common.setLanguage(teimeta.teiData.params.language, false);
     // load previous data
     events.newXml('previous');
 }

@@ -120,6 +120,10 @@
 							<elementRef key="head" minOccurs="0" maxOccurs="1"/>
 							<elementRef key="p" minOccurs="0" maxOccurs="unbounded"/>
 						</sequence>
+						<sequence minOccurs="1" maxOccurs="1">
+							<elementRef key="head" minOccurs="0" maxOccurs="1"/>
+							<elementRef key="div" minOccurs="0" maxOccurs="unbounded"/>
+						</sequence>
 					</content>
 					<attList>
 						<attDef ident="type" usage="req" mode="change">

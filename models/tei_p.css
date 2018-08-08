@@ -2,4 +2,5 @@
 .desc-element { display: block; border: 2px solid blue; background-color: burlywood; }
 .div-element { display: block; background-color: darkgreen; }
 .p-element { display: block; background-color: lightgreen; }
-.div-type { background-color: chocolate; color: black; }
+.p-content { background-color: black; color: white; }
+.div-type { background-color: chocolate; color: blue; }

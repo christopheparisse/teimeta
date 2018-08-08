@@ -3,8 +3,7 @@
  */
 
 import * as events from './events';
-import * as odd from '../teiedit/odd';
-import * as edit from '../teiedit/edit';
+import * as teimeta from '../teiedit/teimeta';
 import * as common from './common';
 import * as msg from './messages';
 
@@ -48,7 +47,7 @@ function bodyKeys(e) {
 }
 
 export function init() {
-    events.teiData.system = 'html';
+    teimeta.teiData.system = 'html';
     // load params
     common.loadParams();
 
@@ -61,7 +60,7 @@ export function init() {
 
     common.init(bodyKeys);
     window.addEventListener("beforeunload", function (e) {
-        if (edit.change() === false) {
+        if (teimeta.teiData.edit.change() === false) {
             return undefined;
         }
 
@@ -71,7 +70,7 @@ export function init() {
         return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
     });
 
-    common.setLanguage(odd.odd.params.language, false);
+    common.setLanguage(teimeta.teiData.params.language, false);
     // load previous data
     events.newXml('previous');
 }

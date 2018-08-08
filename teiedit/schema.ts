@@ -6,16 +6,16 @@
  * the description of the schema and the loading edition saving of the xml files are now independant
  */
 
-export let version = "3.3"; // version du format
+export let version = "3.3"; // version of the format
 
 export class PARAMS {
     // Default PARAMETRES
-    defaultNewElement = true; // si true les éléments non existants sont inclus par défaut
-    leftShift = 5; // taille en pixel du décalage des imbrications
-    groupingStyle = 'border'; // style d'affichage des groupes d'éléments duplicables
-    validateRequired = false; // si true on a le droit de ne pas valider (de supprimer) les éléments obligatoires
-    language = 'fr'; // nom de la langue des champs desc
-    displayFullpath = false; // affichage ou non du chemin complet des tags
+    defaultNewElement = true; // if true the non existing elements are included by default
+    leftShift = 5; // size in pixel of the hanging size of the imbrications
+    groupingStyle = 'border'; // display style of the groups of duplicable elements
+    validateRequired = false; // if true it is possible to not validate (ie remove) obligatory elements
+    language = 'fr'; // language name of the desc fields
+    displayFullpath = false; // display or not the full path of the tags
     canRemove = false; // allows to remove existing nodes
     fmt = '?:00:00'; // format for time length of media
     nbdigits = 0; // number of digits allowed in the decimal part of a number
@@ -26,7 +26,7 @@ export class SCHEMA {
     listElementSpec = {}; // all the elementSpec available here so as to be able to control and check
     listElementRef = {}; // all the elementRef available here so as to be able to control and check
     rootTEI = null; // pointer to schema root (start attribute of schemaSpec)
-    rootIdent = ''; // valeur de l'attribut ident du schemaSpec de root
+    rootIdent = ''; // value of the attribute ident in the root schemaSpec
     params =  new PARAMS();
     namespace = ''; // namespace of the resulting xml
     altIdent = []; // other namespace information
@@ -35,45 +35,47 @@ export class SCHEMA {
     remarks = false; // if there is some user css then don't use full css default design
 
     init() {
-        this.listElementSpec = {}; // avoir tous les elementSpec sous la main et les controler
-        this.listElementRef = {}; // avoir tous les elementRef sous la main et les controler
-        this.rootTEI = null; // pointeur de base du schema (attribut start de schemaSpec)
-        this.rootIdent = ''; // valeur de l'attribut ident du schemaSpec de root
+        this.listElementSpec = {}; // contains all elementSpec to access and check them easily
+        this.listElementRef = {}; // conntains all elementRef to access and check them easily
+        this.rootTEI = null; // pointer to the root of the schema (start attribute of schemaSpec)
+        this.rootIdent = ''; // ident attribute of the root of the schemaSpec
     }
 }
 
 export class ElementSpec {
-    // Informations de l'ODD
-    ident = ''; // nom de l'élément
-    corresp = ''; // complément du nom pour unicité dans le fichier XML
-    access = ''; // combinaison unique ident+corresp indentifiant de manière unique les elementSpec
-    desc = null; // structure de type Desc
-    module = ''; // non utilisé
-    mode = ''; // non utilisé
-    content = null; // pointeur sur les enfants.
-    attr = []; // les attributs
-    usage = ''; // champ indiquant l'usage: obligatory (req), recommended (rec), optional (opt ou '')
-    // Informations pour éditer la TEI
+    // Information from the ODD
+    ident = ''; // name of the element
+    corresp = ''; // addon to the name (ident) to ensure unicity in the XML when several
+                    // node have the same name but a different presentation
+    access = ''; // unique combinaison of ident+corresp that identify in unique manner elementSpec
+    desc = null; // Desc type structure
+    module = ''; // not used
+    mode = ''; // not used
+    content = null; // pointer the node children
+    attr = []; // the attributes
+    usage = ''; // field for usage: obligatory (req), recommended (rec), optional (opt ou '')
+    // Information to edit the TEI
     absolutepath = '';
-    validatedES = ''; // champ indiquant le statut de la part de l'utilisateur
-    // '' (vide) champ pas validé ou effacé
-    // 'del' = champ à effacer
-    // 'ok' = champ validé
-    // 'edit' = champ à conserver mais en cours d'édition
+    validatedES = ''; // field to provide the status from the user
+    // '' (empty) not validated or removed
+    // 'del' = to be removed
+    // 'ok' = validated field
+    // 'edit' = field not to be removed but in editing process
     validatedESID = '';
-    node = null; // utilisé pour retrouver les éléments orignaux
-    // si null alors création ex nihilo dans un emplacement absolu
+    node = null; // pointing to the original elements of the DOM
+    // if node === null then ex nihilo creation in an absolute xml path
     parentElementSpec = null; // pointer to parent element for validation when validating elementSpec
     style = ''; // style for presenting the data (block or hidden)
     remarks = null; // class Remarks for CSS presentation of the global element
     // remarksContent = null; // class Remarks for CSS presentation of the main field of content.datatype
     // if exist it is the datatype
     // either default style (empty) or user specified style
+    recursive = false; // if true the node point another node that is above in the tree
 }
 
 export class Content {
-    sequencesRefs = []; // des ElementCount contenant des sequence ou des elementRef
-    datatype = null; // infos pour l'edition
+    sequencesRefs = []; // contains ElementCount with sequence or elementRef
+    datatype = null; // information (format) for edition
 }
 
 export class DataType {

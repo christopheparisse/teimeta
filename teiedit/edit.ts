@@ -13,7 +13,25 @@ import * as iso639 from './iso639';
 import * as iso3166 from './countries';
 import * as alert from '../ui/alert';
 import * as msg from '../ui/messages';
-import { teiData } from '../ui/events';
+import * as teimeta from './teimeta';
+
+function initEditFunctions() {
+    // for user interface in html pages
+    if (!window['ui']) window['ui'] = {};
+    window['ui'].setOnOffES = teimeta.teiData.edit.setOnOffES;
+    window['ui'].setText = teimeta.teiData.edit.setText;
+    window['ui'].createEC = teimeta.teiData.edit.createEC;
+    window['ui'].setOpenlist = teimeta.teiData.edit.setOpenlist;
+    window['ui'].initOpenlist = teimeta.teiData.edit.initOpenlist;
+    window['ui'].toggleES = teimeta.teiData.edit.toggleES;
+    window['ui'].checkTime = teimeta.teiData.edit.checkTime;
+    window['ui'].highlight = teimeta.teiData.edit.highlight;
+    window['ui'].odd = teimeta.teiData.dataOdd;
+    // for debugging purposes
+    window['dbg'] = {};
+    window['dbg'].tei = teimeta.teiData;
+    window['dbg'].v = teimeta.teiData.edit.values;
+}
 
 let resizeList = [];
 
@@ -419,6 +437,7 @@ export function hideAll() {
  * @param elist 
  */
 export function generateHTML(teiData) {
+    initEditFunctions();
     recursiveDepth = 0;
     resizeList = [];
     let r = generateElement(teiData.dataTei, 'root');
@@ -467,7 +486,7 @@ function generateMultiple(ec, abspath) {
     // console.log(ec); // ec.parentElementSpec.ident
     let idm = typeof(ec.ident) === 'string' ? ec.ident : (ec.ident.join('-'));
     s += '<div class="contentCountMany UPCM-' + idm + '" id="' + uniqCreate + '" ';
-    if (odd.odd.remarks === false || !teiData.cssName)
+    if (odd.odd.remarks === false || !teimeta.teiData.cssName)
         s += ' style="border: 1px solid black; border-radius: 4px;"';
     s += ' >\n';
     // on peut en rajouter ... ou supprimer
