@@ -103,6 +103,18 @@ gulp.task('electron', function(done) {
     });
 });
 
+gulp.task('page-test1', function () {
+  // copy test
+  return gulp.src('test/**')
+    .pipe(gulp.dest('/Library/WebServer/Documents/test/'))
+});
+
+gulp.task('page-test2', function () {
+  // copy test teimeta
+  return gulp.src('temp-page/**')
+    .pipe(gulp.dest('/Library/WebServer/Documents/temp-page/'))
+});
+
 gulp.task('page', function(done) {
 //    runSequence('page-src', 'page-ui2', 'page-js', function() {
     runSequence('page-html', 'page-src', 'page-ui2', function() {
@@ -110,3 +122,11 @@ gulp.task('page', function(done) {
         done();
     });
 });
+
+gulp.task('test', function(done) {
+      runSequence('page-test1', 'page-test2', function() {
+          console.log('ok.');
+          done();
+      });
+  });
+  

@@ -11,7 +11,8 @@
     "electron": "gulp electron; cd temp-electron ; npm install",
     "readme": "marky-markdown README.md > readme.html",
     "webpack": "webpack --mode=none",
-    "iso639": "awk -f iso639.awk models/ISO-639-2_utf-8.txt | grep -v \"|\" > teiedit/iso639.js"
+    "iso639": "awk -f iso639.awk models/ISO-639-2_utf-8.txt | grep -v \"|\" > teiedit/iso639.js",
+    "test": "gulp page; webpack --mode=none; gulp test"
   },
   "keywords": [
     "Electron",

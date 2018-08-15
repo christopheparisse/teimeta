@@ -1,0 +1,35 @@
+<html>
+<script src="../temp-page/lib.js"></script>
+<link rel="stylesheet" href="../temp-page/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" type="../temp-page/text/css" href="css/internal.css">
+<style>
+pre {
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+</style>
+<body>
+  <span><b>Please edit the data and then</b></span>
+  <button id="test101" type="button" onclick="saveTheData();"><b><em>Save the data</em></b></button>
+  <hr/>
+  <div id="teimeta"></div>
+  <pre id="info">Nothing yet.</pre>
+</body>
+<script>
+
+readXmlOddCss('http://localhost/test/test101.xml', 'http://localhost/test/test101.odd', null,
+  function (h) {
+    var el = document.getElementById('teimeta');
+    el.innerHTML = h;
+    finalizeHTML();
+  });
+
+function saveTheData() {
+  var r = generateXml();
+  saveFileLocal('xml', 'test101-result.xml', r);
+  var el = document.getElementById('info');
+  info.textContent = r;
+}
+
+</script>
+</html>
