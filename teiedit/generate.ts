@@ -1,8 +1,10 @@
 /*
+ * @module generate.ts
+ * @author Christophe Parisse
  * Saving the results and the TEI or XML file
  */
 
-import * as alert from '../ui/alert';
+import * as alert from './alert';
 import * as odd from './odd';
 import * as edit from './edit';
 
@@ -13,6 +15,11 @@ let basicTEI = '<?xml version="1.0" encoding="UTF-8"?>\
      xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns="http://www.tei-c.org/ns/1.0">\
 </TEI>';
 
+/**
+ * changes < and > to html codes
+ * @param {string} s - string to be processed
+ * @return {string} - new string content 
+ */
 function encodeXML(s) {
     if (odd.odd.params.encodeXMLFull)
         return entities.encodeXML(s);
@@ -21,12 +28,14 @@ function encodeXML(s) {
     return s;
 }
 
+/**
+ * clean xml values in DOM from unused (empty) attributes
+ * @param {Object} node - DOM top node recursively processed
+ */
 function clean(node) {
     var nodes=[], values=[];
     for (let att, i = 0, atts = node.attributes, n = atts.length; i < n; i++) {
             att = atts[i];
-//            nodes.push(att.nodeName);
-//            values.push(att.nodeValue);
             if (!/\S/.test(att.nodeValue)) {
                 node.removeAttribute(att.nodeName);
                 i --;
@@ -45,14 +54,13 @@ function clean(node) {
     }
 }
 
+/**
+ * gather the new state of the XML object edited by teimeta
+ * @param {Object} teiData - object stored in teimeta module
+ * @return {string} - xml content edited by teimeta library
+ */
 export function generateTEI(teiData) {
     let eltspec = teiData.dataTei;
-/*    if (!edit.values[eltspec.validatedESID].select) {
-        console.log(eltspec.absolutepath, " racine imprimée bien que non validée", edit.values[eltspec.validatedESID]);
-        //alert.alertUser(eltspec.absolutepath + " racine non imprimé car non validée ? >" + edit.values[eltspec.validatedESID].select + "<");
-        //return;
-    }
-*/
     let s = '';
     if (!teiData.doc) {
         if (teiData.dataOdd.namespace) {
@@ -84,6 +92,13 @@ export function generateTEI(teiData) {
     return xmls.serializeToString(teiData.doc);
 }
 
+/**
+ * internal: process Element
+ * @param {ElementSpec} espec - node in schema representation
+ * @param {Object} doc - DOM main document 
+ * @param {Object} node - DOM node corresponding to espec parameter 
+ * @return {string} - return value as string format of the current node
+ */
 function generateElement(espec, doc, node) {
     let s = '';
     if (!edit.values[espec.validatedESID]) {
@@ -91,7 +106,7 @@ function generateElement(espec, doc, node) {
         return "";
     }
     if (edit.values[espec.validatedESID].select === 'ok' /* || espec.usage === 'req' */) {
-        // si node est vide en créer un en dernier fils du node d'au dessus
+        // if node is empty create one at the end, son of the node above
         let current = espec.node;
         if (!current) {
             current = doc.createElement(espec.ident);
@@ -104,7 +119,7 @@ function generateElement(espec, doc, node) {
             s += generateTEIContent(espec.content, doc, current);
         }
     } else {
-        // supprimer le noeud si c'est autorisé
+        // suppress a node is this is allowed
         if (espec.node && (odd.odd.params.canRemove || espec.usage === 'opt')) {
             espec.node.parentNode.removeChild(espec.node);
             espec.node = null;
@@ -150,25 +165,18 @@ function setTextNode(node, val, doc) {
  * creates a path from top of xml file and returns last node created
  * @param path 
  * @param doc
- * @returns node 
+ * @return node 
  */
 function createAbsolutePath(path, doc) {
     let p = path.split('/').slice(1);
-    // le nom de l'élément racine est ignoré
-    // on pourrait controler si le nom de l'élément correspond au nom donné dans l'ODD
-    /*
-    if (p[0] !== 'TEI') {
-        let s = 'impossible de créer des chemins qui ne commencent pas par TEI';
-        alert.alertUser(s);
-        return null;
-    }
-    */
+    // the name of the root element is ignored
+    // It should be possible to control if this name is the one provided in the ODD
     let node = doc.documentElement;
     for (let i = 1; i < p.length; i++) {
         let nds = odd.getChildrenByName(node, p[i]);
         if (nds.length > 1) {
             let s = p.slice(0,i).join('/');
-            s = '<!-- attention element ' + s + " n'est pas unique. -->";
+            s = '<!-- warning element ' + s + " is not uniq. -->";
         }
         if (nds.length > 0) {
             node = nds[0];
@@ -181,18 +189,32 @@ function createAbsolutePath(path, doc) {
     return node;
 }
 
+/**
+ * internal: switch process to other Element(s)
+ * @param {*} espec - list of nodes in schema representation
+ * @param {Object} doc - DOM main document 
+ * @param {Object} current - DOM node corresponding to espec parameter 
+ * @return {string} - return value as string format of the current node
+ */
 function generateElementRef(eci, doc, current) {
     let s = '';
-    // pointeur sur l'élément dans ec
+    // pointer to element in ec
     for ( let i = 0; i < eci.eCI.length ; i++) {
         s += generateElement(eci.eCI[i].element, doc, current);
     }
     return s;
 }
 
+/**
+ * internal: switch process to a sequence of Element(s)
+ * @param {*} espec - list of nodes in schema representation
+ * @param {Object} doc - DOM main document 
+ * @param {Object} current - DOM node corresponding to espec parameter 
+ * @return {string} - return value as string format of the current node
+ */
 function generateSequence(eci, doc, current) {
     let s = '';
-    // pointeur sur l'élément dans ec
+    // pointer to element in ec
     for ( let i = 0; i < eci.eCI.length ; i++) {
         for ( let k = 0; k < eci.eCI[i].element.length; k++) {
             s += generateElement(eci.eCI[i].element[k], doc, current);
@@ -201,10 +223,17 @@ function generateSequence(eci, doc, current) {
     return s;
 }
 
+/**
+ * internal: switch process to the content of a node
+ * @param {*} ct - content of a node in schema representation
+ * @param {Object} doc - DOM main document 
+ * @param {Object} current - DOM node corresponding to espec parameter 
+ * @return {string} - return value as string format of the current node
+ */
 function generateTEIContent(ct, doc, current) {
     let s = '';
     for (let ec of ct.sequencesRefs) {
-        // ec au format ElementCount
+        // ec at ElementCount format
         if (ec.type === 'elementRef') {
             s += generateElementRef(ec, doc, current);
         } else {
@@ -214,10 +243,17 @@ function generateTEIContent(ct, doc, current) {
     return s;
 }
 
+/**
+ * internal: generate value for an Element with fieds to be edited
+ * @param {*} elt - node in schema representation
+ * @param {Object} doc - DOM main document 
+ * @param {Object} current - DOM node corresponding to espec parameter 
+ * @return {string} - return value as string format of the current node
+ */
 function generateFilledElement(elt, doc, node) {
     let s = '';
     s += '<' + elt.ident;
-    // attributs
+    // attributes
     for (let i = 0; i < elt.attr.length; i++) {
         if (elt.attr[i].ident) {
             if (!elt.attr[i].datatype.type) {

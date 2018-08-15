@@ -1,0 +1,287 @@
+/*
+ * css for the automatically generated part
+ */
+
+.infofiles {
+    padding-top: 10px;
+    font-size: 110%;
+    background-color: darkblue;
+    color: #fff;
+}
+
+.headtopi {
+    padding-left: 4px;
+    vertical-align: middle;
+}
+
+.headtopt {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.fa-color-required { color: #fb1820; }
+.fa-color-optional { color: #2d8924; }
+.fa-color-expand { color: #551cd9; }
+.fa-color-toggle { color: #26cdd9; }
+
+/*
+.fa-choice-toggle { color: #099ff6; }
+.fa-choice-set { color: #01feaa; }
+.fa-choice-expand { color: #2803fc; }
+.fa-choice-not-set { color: #e8176b; }
+.violet-klein { color: #551cd9; }
+*/
+
+/*
+ * nodeContent
+ */
+
+.nodeIdent {
+    /*
+    display: inline;
+    */
+    border: 1px solid #551cd9;
+    border-collapse: collapse;
+	border-radius: 2px;
+    font-weight: bold;
+}
+
+.showonoff {
+    display: inline;
+}
+
+.nodeContent {
+    width:"100%";
+    /*
+    border: 2px solid blue;
+	border-radius: 2px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    */
+    border-collapse: collapse;
+    padding: 2px;
+    /*
+    display: inline;
+    */
+}
+
+.eltDesc {
+    display: inline;
+    font-style: italic;
+    font-size: smaller;
+    background-color: lightgray;
+}
+
+.eltDescBlock {
+    display: block;
+    font-style: italic;
+    font-size: smaller;
+    background-color: lightgray;
+}
+
+.toggle {
+    display: inline;
+}
+
+.contentCountMany {
+    /*
+        ici optionel pour les blocs à ajouter
+    */
+    display: block;
+
+    /*
+    border: 1px solid black;
+	border-radius: 4px;
+    background-color: #88AAFF;
+    */
+}
+
+.contentCountSimple {
+    display: block;
+}
+
+.plusCM {
+    float: left;
+    margin-right: 5px;
+    margin-top: 0px;
+    color: blue;
+    /*
+    border: 1px solid blue;
+	border-radius: 4px;
+    */
+}
+
+.content {
+    display: block;
+    clear: both;
+}
+
+.headSequence {
+    display: block;
+}
+
+.validate {
+    display: inline-block;
+}
+
+.nodeField {
+    /*
+    display: inline-block;
+    */
+    font-size: large;
+}
+
+.headSequence .nodeField {
+    display: block;
+}
+
+.headHRef {
+    display: inline-block;
+/*    border: 1px solid grey; */
+}
+
+.highlight {
+    border: 3px solid green;
+}
+
+.nodeEdit {
+    display: inline-block;
+}
+
+.nodeAttr {
+    display: inline-block;
+    font-size: initial;
+}
+
+.nodeAttr label {
+    margin-left: 5px;
+    margin-right: 5px;
+    font-style: italic;
+    font-size: smaller;
+    background-color: lightgray;
+}
+
+.nodeField label {
+    margin-left: 5px;
+    margin-right: 5px;
+    /*
+    border: 1px solid blue;
+	border-radius: 4px;
+    */
+    font-style: italic;
+    font-size: smaller;
+    background-color: lightgray;
+}
+
+.nodeField em {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+input {
+    background-color: #F7F7F7;
+    min-width: 30px!important;
+    max-width: 800px!important;
+    transition: width 0.25s;
+    font-size: large;
+}
+
+input.date {
+    background-color: #F7F7F7;
+    width: 180px;
+    font-size: large;
+}
+
+strong {
+    font-size: x-large;
+}
+
+select {
+    font-size: large;
+}
+
+.iso {
+    font-size: smaller;
+    width: 600px;
+}
+
+.optional {
+    background-color: #88FFFF;
+}
+
+.recommended {
+    background-color: #88AAFF;
+}
+
+.obligatory {
+    background-color: white;
+}
+
+.fa-square-o { 
+    color:blue;
+}
+
+.fa-check-square-o { 
+    color:blue;
+}
+
+.multiline {
+    display: block;
+    box-sizing: padding-box;
+    overflow: hidden;
+    min-width: 50px;
+    padding: 0px;
+}
+
+button.ok {
+    background-color: blue;
+    color: white;
+}
+
+/*Style for popup ODD choice*/
+#aumomodal {
+    background: whitesmoke;
+}
+.aumo {
+    display:block;
+    min-width:100px;
+    height: 30px;
+    text-align: left;
+    line-height: 30px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #fff;
+    background-color: darkblue;
+    text-decoration: none;
+    border-collapse: collapse;
+	border-radius: 4px;
+}
+
+.aumo p {
+    margin: 0;
+    padding: 0;
+}
+
+.aumobutton {
+    border: 1px solid white;
+}
+
+.aumobutton:hover {
+    background: #19c589;
+}
+
+.aumoinfo {
+    background: blue;
+    font-size: large;
+}
+.aumotitle {
+    background: blue;
+    font-size: large;
+}
+
+.aumocancel {
+    border: 1px solid white;
+}
+
+.aumocancel:hover {
+    background: #19c589;
+}

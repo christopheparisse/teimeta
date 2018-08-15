@@ -1,0 +1,25 @@
+<html>
+<script src="temp-page/lib.js"></script>
+<link rel="stylesheet" href="temp-page/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" type="temp-page/text/css" href="css/internal.css">
+<body>
+  <span><b>Please edit the data and then</b></span>
+  <button type="button" onclick="saveTheData();"><b><em>Save the data</em></b></button>
+  <hr/>
+  <div id="teimeta"></div>
+</body>
+<script>
+
+readXmlOddCss(null, 'http://localhost/test2.odd', null,
+  function (h) {
+    var el = document.getElementById('teimeta');
+    el.innerHTML = h;
+    finalize();
+  });
+
+function saveTheData() {
+  saveFileLocal('xml', 'test3-result.xml', generateXml());
+}
+
+</script>
+</html>

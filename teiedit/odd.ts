@@ -7,8 +7,8 @@
  * @exports Element ElementCount ElementCountItem ElementSpec Content Attr Val ValItem
  */
 
-import * as alert from '../ui/alert';
-import * as msg from '../ui/messages';
+import * as alert from './alert';
+import * as msg from '../msg/messages';
 import * as schema from './schema';
 
 export let odd : schema.SCHEMA = new schema.SCHEMA();
@@ -44,6 +44,11 @@ export function getChildrenByName(node, name, corresp=null) {
     return children;
 }
 
+/**
+ * read a elementSpec in the ODD description from an odd node
+ * @param elementspec 
+ * @param node 
+ */
 function readElementSpec(elementspec, node) {
     // find all about elementSpec
 
@@ -92,6 +97,12 @@ function readElementSpec(elementspec, node) {
     }
 }
 
+/**
+ * read a remarks description from the ODD
+ * @param rm 
+ * @param node 
+ * @param style 
+ */
 function readRemarks(rm, node, style) {
     let d = getChildrenByName(node, 'remarks');
     for (let i in d) {
@@ -107,6 +118,11 @@ function readRemarks(rm, node, style) {
     return null;
 }
 
+/**
+ * process a remarks description from the ODD
+ * @param rm 
+ * @param node 
+ */
 function processRemarks(rm, node) {
     // ab field : must be unique
     let d = getChildrenByName(node, 'ab');
@@ -145,6 +161,10 @@ function processRemarks(rm, node) {
     return rm;
 }
 
+/**
+ * find a datatype description from the ODD
+ * @param node 
+ */
 function getDataRef(node) : string {
     let d = getChildrenByName(node, 'dataRef');
     if (d.length < 1) return '';
@@ -183,6 +203,11 @@ function getDataRef(node) : string {
     }
 }
 
+/**
+ * read a content description from the ODD
+ * @param content 
+ * @param node 
+ */
 function readContent(content, node) {
     let d = getChildrenByName(node, 'content');
     if (d.length > 1) {
@@ -245,6 +270,11 @@ function readContent(content, node) {
     return d.length;
 }
 
+/**
+ * get mix max values for content from the ODD
+ * @param elementCount 
+ * @param node 
+ */
 function getMinMax(elementCount, node) {
     let a = node.getAttribute('minOccurs');
     if (a) elementCount.minOccurs = a;
@@ -252,6 +282,11 @@ function getMinMax(elementCount, node) {
     if (a) elementCount.maxOccurs = a;
 }
 
+/**
+ * create content of elementCount reference
+ * @param elementCount 
+ * @param node 
+ */
 function getElementRef(elementCount, node) {
     getMinMax(elementCount, node);
     elementCount.model = tagElementSpec(node);
@@ -264,6 +299,11 @@ function getElementRef(elementCount, node) {
         odd.listElementRef[elementCount.model]++;
 }
 
+/**
+ * create content of elementCount sequence
+ * @param elementCount 
+ * @param node 
+ */
 function getSequence(elementCount, node) {
     getMinMax(elementCount, node);
     elementCount.type = 'sequence';
@@ -285,20 +325,40 @@ function getSequence(elementCount, node) {
     }
 }
 
+/**
+ * construct a tag with corresp and key parts of a node
+ * @param {Object} node 
+ * @return {string} tag value
+ */
 function tagElementSpec(node) {
     let k = node.getAttribute('key');
     let c = node.getAttribute('corresp');
     return tagES(k, c);
 }
 
+/**
+ * access the key part of a node
+ * @param {Object} node 
+ * @return {string} key value
+ */
 function keyElementSpec(node) {
     return node.getAttribute('key');
 }
 
+/**
+ * access the corresp part of a node
+ * @param {Object} node 
+ * @return {string} corresp value
+ */
 function correspElementSpec(node) {
     return node.getAttribute('corresp');
 }
 
+/**
+ * access to text value of a Desc
+ * @param desc 
+ * @param lg 
+ */
 export function textDesc(desc, lg) {
     if (!lg) {
         lg = 'en';
@@ -314,6 +374,11 @@ export function textDesc(desc, lg) {
     return entities.decodeXML( desc.texts.length > 0 ? desc.texts[0] : '' );
 }
 
+/**
+ * access to rendition value of a Desc
+ * @param desc 
+ * @param lg 
+ */
 function rendition(desc, lg) {
     if (lg === undefined) return desc.rendition.length > 0 ? desc.rendition[0] : '';
     for (let i=0; i<desc.langs.length; i++) {
@@ -322,6 +387,12 @@ function rendition(desc, lg) {
     return desc.rendition.length > 0 ? desc.rendition[0] : '';
 }
 
+/**
+ * normalizes text value for XML
+ * suppress XML tags
+ * @param {string} s XML text
+ * @return {string} cleaned text
+ */
 function innerXml(s) {
     if (!s) return '';
     let pat = /\<.*?\>(.*)\<.*?\>/;
@@ -329,6 +400,12 @@ function innerXml(s) {
     return (r) ? r[1] : s;
 }
 
+/**
+ * read a Desc description from the ODD
+ * @param desc 
+ * @param node 
+ * @return {numeric} length of desc
+ */
 function readDesc(desc, node) {
     let d = getChildrenByName(node, 'desc');
     for (let i in d) {
@@ -339,6 +416,11 @@ function readDesc(desc, node) {
     return d.length;
 }
 
+/**
+ * read an attribute description from the ODD
+ * @param attrDef 
+ * @param node 
+ */
 function readAttrDef(attrDef, node) {
     attrDef.ident = node.getAttribute('ident');
     attrDef.usage = node.getAttribute('usage');
@@ -383,8 +465,9 @@ function readAttrDef(attrDef, node) {
 /**
  * @method valList
  * fonction de traitement des listes de valeurs pour les attributs
- * @param Attr structure 
- * @param node 
+ * @param {Object} data - Attr structure 
+ * @param {Object} node - node of an ODD 
+ * @return {numeric} length of node
  */
 function valList(data, node) {
     let vl = node.getElementsByTagName("valList");
@@ -417,7 +500,7 @@ function valList(data, node) {
  * @method loadOdd
  * parse tous les elementSpec du odd et appele sous-fonction pour les champs Content
  * @param data : contenu d'un fichier xml
- * @returns structure teiOdd (modèle de données du ODD)
+ * @return structure teiOdd (modèle de données du ODD)
  */
 export function loadOdd(data) {
     let error = '';

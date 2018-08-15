@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+    <?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+	<teiHeader>
+		<fileDesc>
+			<titleStmt>
+      <title>
+        <idno type="title">Test pour le logiciel TEIMETA</idno>
+        <bibl> CORLI et IRCOM test.odd </bibl>
+        <desc> Ne pas encombrer l'écran et tester les fonctionnalités de base</desc>
+      </title>
+      <principal>
+        <name type="org"> CORLI - IRCOM </name>
+        <name type="org"> Christophe Parisse, Carole Etienne, Loic Liégeois, ... </name>
+      </principal>
+			</titleStmt>
+			<publicationStmt>
+				<publisher>CORLI wiki</publisher>
+			</publicationStmt>
+			<sourceDesc>
+				<p>written from IRCOM/CORLI recommandations</p>
+			</sourceDesc>
+		</fileDesc>
+	</teiHeader>
+
+	<text>
+		<body>
+			<!-- definition de TEI_CORPO_METADATA-->
+			<schemaSpec ident="TEST_CORPO_METADATA" start="TEST">
+				<!-- ajouter teiCorpus par la suite si collections -->
+
+				<!-- structure generale TEST -->
+				<elementSpec ident="TEST" module="textstructure" mode="change">
+					<content>
+						<sequence minOccurs="1" maxOccurs="1">
+							<elementRef key="NODE"/>
+							<elementRef key="AttrText"/>
+						</sequence>
+					</content>
+				</elementSpec>
+
+				<elementSpec ident="NODE" module="header" mode="change">
+					<desc xml:lang="fr">TEST/NODE: (unique) + 0-max (fr)</desc>
+					<desc xml:lang="en">TEST/NODE: (unique) + 0-max (en)</desc>
+					<content>
+                        <elementRef key="OpenListAttr" minOccurs="1" maxOccurs="2" />
+                        <elementRef key="List" minOccurs="0" maxOccurs="unbounded" />
+                        <elementRef key="OList2" minOccurs="0" maxOccurs="unbounded" />
+                        <elementRef key="OpenListNode" minOccurs="1" maxOccurs="unbounded" />
+						<elementRef key="Text" minOccurs="1" maxOccurs="2" />
+					</content>
+				</elementSpec>
+
+				<elementSpec ident="OpenListNode" module="test">
+					<desc xml:lang="fr">Saisie de Liste ouverte Node</desc>
+					<desc xml:lang="en">Getting OpenList Node</desc>
+					<desc xml:lang="es">Edition de Listos abritos Node</desc>
+					<content>
+                        <dataRef name="openlist"/>
+                        <valList>
+                            <valItem ident="un"/>
+                            <valItem ident="petit"/>
+                            <valItem ident="test"/>
+                            <valItem ident="pour"/>
+                            <valItem ident="les"/>
+                            <valItem ident="listes"/>
+                            <valItem ident="ouvertes"/>
+                        </valList>
+					</content>
+				</elementSpec>
+
+				<elementSpec ident="OpenListAttr" module="test">
+					<desc xml:lang="fr">Saisie de Liste ouverte Attr</desc>
+					<desc xml:lang="en">Getting OpenList Attr</desc>
+					<desc xml:lang="es">Edition de Listos abritos Attr</desc>
+					<attList>
+						<attDef ident="test" usage="req" mode="change">
+							<desc xml:lang="fr">AttrDesc: TEST (openlist)</desc>
+							<desc xml:lang="en">AttrDesc: TEST (openlist)</desc>
+							<desc xml:lang="es">AttrDesc: TEST (openlist)</desc>
+							<datatype>
+								<dataRef name="openlist"/>
+							</datatype>
+                            <valList>
+                                <valItem ident="un"/>
+                                <valItem ident="petit"/>
+                                <valItem ident="test"/>
+                                <valItem ident="pour"/>
+                                <valItem ident="les"/>
+                                <valItem ident="listes"/>
+                                <valItem ident="ouvertes"/>
+                            </valList>
+						</attDef>
+					</attList>
+				</elementSpec>
+
+				<elementSpec ident="Text" module="test">
+					<desc xml:lang="fr">Saisie de Noeud Texte</desc>
+					<desc xml:lang="en">Getting Text Node</desc>
+					<desc xml:lang="es">Edition de Textos node</desc>
+					<content>
+						<textNode/>
+						<dataRef name="multiline"/>
+					</content>
+				</elementSpec>
+
+				<elementSpec ident="AttrText" module="test">
+					<desc xml:lang="fr">Saisie d'Attribut Texte</desc>
+					<desc xml:lang="en">Getting Text Attribute</desc>
+					<desc xml:lang="es">Edition de Textos attributos</desc>
+					<attList>
+						<attDef ident="value" usage="req" mode="change">
+							<desc xml:lang="fr">AttrDesc: Saisie d'Attribut Texte</desc>
+							<desc xml:lang="en">AttrDesc: Getting Text Attribute</desc>
+							<desc xml:lang="es">AttrDesc: Edition de Textos attributos</desc>
+							<datatype>
+								<dataRef name="languagecode"/>
+							</datatype>
+						</attDef>
+					</attList>
+				</elementSpec>
+
+				<elementSpec ident="List" module="test">
+					<desc xml:lang="fr">Saisie de liste</desc>
+					<desc xml:lang="en">Getting list</desc>
+					<desc xml:lang="es">Edition de lista</desc>
+					<attList>
+						<attDef ident="type" usage="req" mode="change">
+							<desc xml:lang="fr">Saisie d'Attribut Liste</desc>
+							<desc xml:lang="en">Getting List Attribute</desc>
+							<desc xml:lang="es">Edition de Lista attributos</desc>
+							<valList type="openlist">
+								<valItem ident="abc"/>
+								<valItem ident="def"/>
+								<valItem ident="hij"/>
+								<valItem ident="klm"/>
+							</valList>
+						</attDef>
+					</attList>
+				</elementSpec>
+
+				<elementSpec ident="OList2" module="test">
+					<desc xml:lang="fr">Saisie de liste</desc>
+					<desc xml:lang="en">Getting list</desc>
+					<desc xml:lang="es">Edition de lista</desc>
+					<attList>
+						<attDef ident="type" usage="req" mode="change">
+							<desc xml:lang="fr">Saisie d'Attribut Liste</desc>
+							<desc xml:lang="en">Getting List Attribute</desc>
+							<desc xml:lang="es">Edition de Lista attributos</desc>
+							<datatype>
+								<dataRef name="openlist"/>
+							</datatype>
+							<valList>
+							</valList>
+						</attDef>
+					</attList>
+				</elementSpec>
+
+			</schemaSpec>
+		</body>
+	</text>
+</TEI>

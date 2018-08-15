@@ -9,22 +9,22 @@
 import * as edit from './edit';
 import * as odd from './odd';
 import * as schema from './schema';
-import * as alert from '../ui/alert';
-import * as msg from '../ui/messages';
+import * as alert from './alert';
+import * as msg from '../msg/messages';
 
 let entities = require("entities");
 
 export let ptrListElementSpec = null; // closure variable
 
 /*
- * CHARGEMENT DU FICHIER TEI
+ * loading the XML file
  */
 
 /**
  * @method getNodeText
  * get text of current node only
- * @param node
- * @returns value of text
+ * @param {Object} node
+ * @returns {string} value of text
  */
 function getNodeText(node) {
     var txt = '';
@@ -72,16 +72,15 @@ export function getOddFromXml(data, teiData) {
 }
 
 /**
- * @method load
  * @param {*} data raw data content of TEI file 
  * @param {*} dataOdd array of ElementSpec from odd.ts - loadOdd
  * @returns {*} true if ok
  */
-export function loadTei(data, teiData, noreload=false) {
-    console.log("call of loadTei ", data, teiData, noreload);
+export function loadTei(data, teiData) {
+    // console.log("call of loadTei ", data, teiData, noreload);
     // get XML ready
-    if (!noreload) teiData.parser = new DOMParser();
-    if (!noreload) teiData.doc = data 
+    if (!teiData.parser) teiData.parser = new DOMParser();
+    if (!teiData.doc) teiData.doc = data 
         ? teiData.parser.parseFromString(data.toString(), 'text/xml')
         : null;
 
@@ -129,6 +128,10 @@ export function loadTei(data, teiData, noreload=false) {
     return true;
 }
 
+/**
+ * check dataType value
+ * @param {Object} datatype - dataType object
+ */
 function verifyDatatype(datatype) {
     if (datatype.type === 'openlist' && datatype.valueContent !== '') {
         // check if valueContent fait partie du openlist
@@ -155,9 +158,18 @@ function verifyDatatype(datatype) {
     if (!datatype.valueContent && datatype.rend) datatype.valueContent = datatype.rend;
 }
 
+/**
+ * load elementSpec data from the node - manage element array of any size
+ * @param es 
+ * @param node 
+ * @param path 
+ * @param minOcc 
+ * @param maxOcc 
+ * @param parent 
+ */
 export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
     let c = schema.copyElementSpec(es);
-    console.log('loadElementSpec ', c.access, path);
+    // console.log('loadElementSpec ', c.access, path);
     // creation d'un élément initial vide pour le noeud courant
     c.node = node;
     c.parentElementSpec = parent;
@@ -258,6 +270,11 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
     return c;
 }
 
+/**
+ * test if an elementSpec has already be seen in a tree branch to avoid recursive processing
+ * @param es 
+ * @param name 
+ */
 function isRecursive(es, name) {
     if (!es) return;
     // es is an elementSpec
@@ -268,6 +285,13 @@ function isRecursive(es, name) {
         return false;
 }
 
+/**
+ * load elementRef data from the node
+ * @param ec 
+ * @param node 
+ * @param path 
+ * @param parent 
+ */
 function loadElementRef(ec, node, path, parent) {
     // ec est un ElementCount
     // préparer le premier élément ElementCountItem
@@ -313,6 +337,13 @@ function loadElementRef(ec, node, path, parent) {
     }
 }
 
+/**
+ * load Sequence data from the node
+ * @param ec 
+ * @param node 
+ * @param path 
+ * @param parent 
+ */
 function loadSequence(ec, node, path, parent) {
     // load from TEI
     let nnodes = []; // tableau de tableau de nodes

@@ -1,3 +1,8 @@
+/**
+ * @module countries.ts
+ * @author Christophe Parisse
+ * list of codes for iso contries reference
+ */
 export let iso3666Alpha2 =
 [
     { code: "AF", name: "Afghanistan" },

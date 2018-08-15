@@ -1,3 +1,8 @@
+/**
+ * @module iso639.ts
+ * @author Christophe Parisse
+ * list of codes for iso languages reference
+ */
 export let code639 = [
 { code: "abk", code2: "", code2l: "ab", name: "Abkhazian", desc: "abkhaze" },
 { code: "ace", code2: "", code2l: "", name: "Achinese", desc: "aceh" },

@@ -12,8 +12,13 @@ gulp.task('electron-teiedit', function () {
 });
 
 gulp.task('electron-ui', function () {
-  return gulp.src(['ui/opensave.ts', 'ui/init-electron.ts', 'ui/events.ts', 'ui/common.ts', 'ui/version.ts', 'ui/alert.ts', 'ui/messages.ts'])
+  return gulp.src(['ui/opensave.ts', 'ui/init-electron.ts', 'ui/events.ts', 'ui/common.ts', 'ui/version.ts', 'ui/alert.ts'])
     .pipe(gulp.dest('temp-electron/ui/'))
+});
+
+gulp.task('electron-msg', function () {
+  return gulp.src(['msg/messages.ts'])
+    .pipe(gulp.dest('temp-electron/msg/'))
 });
 
 gulp.task('electron-js', function () {
@@ -25,7 +30,7 @@ gulp.task('electron-html', function () {
   // construct index.html
   return gulp.src(['./html/index.html','./html/body.html','./html/head.html'])
       .pipe(include())
-      .pipe(gulp.dest('.'));
+      .pipe(gulp.dest('temp-electron/tmp/'));
 });
 
 gulp.task('electron-css', function () {
@@ -34,7 +39,7 @@ gulp.task('electron-css', function () {
 });
 
 gulp.task('electron-main', function () {
-  return gulp.src(['index.js', 'index.html', 'favicon.icns', 'favicon.ico', 'package.json'])
+  return gulp.src(['index.js', 'temp-electron/tmp/index.html', 'favicon.icns', 'favicon.ico', 'package.json'])
     .pipe(gulp.dest('temp-electron/'))
 });
 
@@ -44,7 +49,7 @@ gulp.task('electron-ts', function () {
         .js.pipe(gulp.dest("."));
 });
 
-gulp.task('electron-src', ['electron-teiedit', 'electron-ui', 'electron-css', 'electron-main']);
+gulp.task('electron-src', ['electron-teiedit', 'electron-ui', 'electron-msg', 'electron-css', 'electron-main']);
 
 gulp.task('page-teiedit', function () {
   return gulp.src('teiedit/*.ts')
@@ -52,8 +57,13 @@ gulp.task('page-teiedit', function () {
 });
 
 gulp.task('page-ui', function () {
-  return gulp.src(['ui/opensave-singlepage.ts', 'ui/init-singlepage.ts', 'ui/events.ts', 'ui/common.ts', 'ui/version.ts', 'ui/alert.ts', 'ui/messages.ts'])
+  return gulp.src(['ui/opensave-singlepage.ts', 'ui/init-singlepage.ts', 'ui/events.ts', 'ui/common.ts', 'ui/version.ts', 'ui/alert.ts'])
     .pipe(gulp.dest('temp-page/ui/'))
+});
+
+gulp.task('page-msg', function () {
+  return gulp.src(['msg/messages.ts'])
+    .pipe(gulp.dest('temp-page/msg/'))
 });
 
 gulp.task('page-ui2', function () {
@@ -76,15 +86,15 @@ gulp.task('page-html', function () {
   // construct index.html
    return gulp.src(['./html/teimeta.html','./html/body.html','./html/head.html'])
        .pipe(include())
-       .pipe(gulp.dest('.'));
+       .pipe(gulp.dest('temp-page/tmp/'));
 });
 
 gulp.task('page-main', function () {
-  return gulp.src(['teimeta.html', 'favicon.ico'])
+  return gulp.src(['temp-page/tmp/teimeta.html', 'favicon.ico'])
     .pipe(gulp.dest('temp-page/'))
 });
 
-gulp.task('page-src', ['page-teiedit', 'page-ui', 'page-css', 'page-main']);
+gulp.task('page-src', ['page-teiedit', 'page-ui', 'page-msg', 'page-css', 'page-main']);
 
 gulp.task('electron', function(done) {
     runSequence('electron-html', 'electron-src', 'electron-ts', function() {

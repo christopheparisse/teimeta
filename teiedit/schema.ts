@@ -1,4 +1,3 @@
-
 /**
  * schema.ts
  * @author Christophe Parisse
@@ -89,61 +88,65 @@ export class DataType {
 }
 
 export class ElementCount {
-    // les tableaux contiennent des éléments étendus
-    // un élément étendu est un objet qui permet de gérer
-    // un nombre quelconque d'éléments dupliqués et validés ou non
+    // the arrays contain extended elements
+    // an extended element is an object that allows to handle
+    // an unlimited number of duplicated elements, validated or not
     minOccurs = '1'; // 0, 1, 2, unbounded
     maxOccurs = '1'; // 0, 1, 2, unbounded
-    model = null; // nom de l'elementSpec de référence (elementRef) ou des elementSpec (tableau pour la sequence)
-    ident = null; // identifiant
+    model = null; // name of the elementSpec of reference (elementRef) or of several elementSpec (array for sequences)
+    ident = null; // identifier
     corresp = null; // complement for the identifiant
     type = ''; // elementRef or sequence
     eCI = []; // element Count Items
-    /* PAS UTILISE ???
-    // parent = null; // utilisé pour retrouver les éléments orignaux et les nouveaux nodes
-    // si null alors un élément doit être créé et ajouté au node parent
-    */
     parentElementSpec = null; // pointer to parent element for validation when editing datatype
 }
 
 export class ElementCountItem {
     type = '';
-    model = null; // pour la copie du modèle dans le parent
-    element = null; // pointeur ElementSpec vers des elementSpec ou sur des Sequence
-    node = null; // utilisé pour retrouver les éléments orignaux et les nouveaux nodes
-    // si null alors un élément doit être créé et ajouté au node parent
+    model = null; // for a copy of the model of the parent
+    element = null; // pointer ElementSpec to other elementSpec or to Sequence
+    node = null; // used to find original nodes or new nodes 
+    // if null then an element has to be created and added to the parent
     parentElementSpec = null; // pointer to parent element for validation when validating elementSpec
 }
 
 export class Desc {
     // Informations de l'ODD
-    langs = []; // langues codées
-    texts = []; // autant que de langues
-    renditions = []; // autant que de langues
+    langs = []; // coded languages
+    texts = []; // as many as languages : the content of the description
+    renditions = []; // as many as languages : a content supplementary values for lists
 }
 
 export class AttrDef {
-    // Informations de l'ODD
+    // Information from the ODD
+    // content of an attribute
     ident = '';
     rend = '';
-    usage = ''; // champ indiquant l'usage: obligatory (req), recommanded (rec), optional (opt ou '')
+    usage = ''; // field marquing use: obligatory (req), recommanded (rec), optional (opt or '')
     mode = '';
     desc = null;
-    // items = []; ? valList dans datatype ?
     datatype = null;
 }
 
 export class ValItem {
-    // Informations de l'ODD
+    // Information from the ODD
+    // list of items
     ident = '';
     desc = null; // type Desc structure
 }
 
 export class Remarks {
+    // Information from the ODD/CSS
+    // for css presentation
     cssvalue = '';
     ident = '';
 }
 
+/**
+ * utilirary function to make a deep copy of elementSpec data
+ * @param {Object} obj - elementSpec pointer 
+ * @return {Object} - the copy
+ */
 export function copyElementSpec(obj): any {
     let cp: any = {};
     cp.ident = obj.ident; // nom de l'élément
@@ -168,6 +171,11 @@ export function copyElementSpec(obj): any {
     return cp;
 }
 
+/**
+ * copy of content within an elementSpec
+ * @param obj 
+ * @param parent 
+ */
 function copyContent(obj, parent): any {
     let cp: any = {};
     cp.datatype = (obj.datatype) ? copyDataType(obj.datatype, parent) : null;
@@ -177,37 +185,39 @@ function copyContent(obj, parent): any {
     return cp;
 }
 
+/**
+ * copy of array of children nodes within a elementSpec - recursive function
+ * @param cp 
+ * @param obj 
+ */
 function cpBloc(cp, obj) {
     for (let i in obj) {
         let inner: any = {};
         inner.minOccurs = obj[i].minOccurs; // oneOrMore, one, zeroOrMore, twoOrMore
         inner.maxOccurs = obj[i].maxOccurs; // oneOrMore, one, zeroOrMore, twoOrMore
-        inner.model = obj[i].model; // model ne sera jamais modifié
-        inner.ident = obj[i].ident; // ident ne sera jamais modifié
-        inner.corresp = obj[i].corresp; // corresp ne sera jamais modifié
+        inner.model = obj[i].model; // model is never modified
+        inner.ident = obj[i].ident; // ident is never modified
+        inner.corresp = obj[i].corresp; // corresp is never modified
         inner.type = obj[i].type;
         inner.parent = obj[i].parent;
         inner.eCI = []; // element Count Items
-        // pas besoin de copier, n'est pas utilisé dans ODD et sont générés dans load
-        /*
-        for (let k in obj[i].eCI) {
-            let eci = new ElementCountItem();
-            let e = obj[i].eCI[k];
-            eci.type = e.type;
-            inner.eCI.push(eci);
-        }
-        */
+        // copy of eCI is not necessary: elements not modified or handled in load.ts
         cp.push(inner);
     }
 }
 
+/**
+ * copy of attribute within a elementSpec
+ * @param oldattr 
+ * @param parent 
+ */
 function copyAttr(oldattr, parent): any {
     let newattr = [];
     for (let obj of oldattr) {
         let cp: any = {};
-        cp.ident = obj.ident; // nom de l'élément
+        cp.ident = obj.ident; // name of the element
         cp.rend = obj.rend;
-        cp.usage = obj.usage; // req ou rien
+        cp.usage = obj.usage; // req or nothing
         cp.mode = obj.mode;
         cp.desc = obj.desc;
         cp.datatype = (obj.datatype) ? copyDataType(obj.datatype, parent) : null;
@@ -216,6 +226,11 @@ function copyAttr(oldattr, parent): any {
     return newattr;
 }
 
+/**
+ * copy of dataType within a elementSpec
+ * @param obj 
+ * @param parent 
+ */
 function copyDataType(obj, parent): any {
     let cp: any = {};
     cp.type = obj.type;
@@ -224,7 +239,6 @@ function copyDataType(obj, parent): any {
     cp.valueContent = obj.valueContent;
     cp.valueContentID = obj.valueContentID;
     cp.parentElementSpec = parent;
-    cp.vallist = obj.vallist; // pas de duplication necessaire car ces elements ne sont pas modifiés
-// ?? cp.items = obj.items; // les items ne sont pas modifiés
+    cp.vallist = obj.vallist; // no duplication necessary because these elements wont be modified
     return cp;
 }

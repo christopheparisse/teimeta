@@ -2,8 +2,8 @@
  * version.ts
  */
 
-import * as alert from './alert';
-import * as msg from './messages';
+import * as alert from '../teiedit/alert';
+import * as msg from '../msg/messages';
 
 export let version = '0.6.2';
 export let date = '8-08-2018';

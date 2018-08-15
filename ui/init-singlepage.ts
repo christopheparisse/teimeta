@@ -5,7 +5,7 @@
 import * as events from './events';
 import * as teimeta from '../teiedit/teimeta';
 import * as common from './common';
-import * as msg from './messages';
+import * as msg from '../msg/messages';
 
 function bodyKeys(e) {
 /*    

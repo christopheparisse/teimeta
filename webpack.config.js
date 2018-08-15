@@ -1,9 +1,12 @@
 const path = require('path');
 
 module.exports = {
-  entry: '/devlopt/teimeta/temp-page/ui/init-singlepage.ts',
+  entry: {
+    bundle: '/devlopt/teimeta/temp-page/ui/init-singlepage.ts',
+    lib: '/devlopt/teimeta/temp-page/teiedit/lib.ts'
+  },
   output: {
-    filename: 'bundle.js',
+    filename: '[name].js',
     path: '/devlopt/teimeta/temp-page/'
   },
   resolve: {

@@ -23,8 +23,8 @@
 
 import * as teimeta from '../teiedit/teimeta';
 import * as opensave from './opensave';
-import * as alert from './alert';
-import * as msg from './messages';
+import * as alert from '../teiedit/alert';
+import * as msg from '../msg/messages';
 import * as common from './common';
 
 function dispname(s:string) {
@@ -67,7 +67,7 @@ export function openXml() {
                     // try to open it
                     let displayname = dispname(oddname);
                     // read ODD
-                    readTextFile(oddname, function (text) {
+                    teimeta.readTextFile(oddname, function (text) {
                         // console.log("read ODD: ", oddname, text);
                         if (text) {
                             // load ODD
@@ -139,9 +139,9 @@ function findOdd(nameXml, dataXml) {
         }
     }
     if (teimeta.teiData.dataOdd) {
-        alert.askUserModalForOdd(teimeta.teiData.oddName, true, openChooseOdd);
+        common.askUserModalForOdd(teimeta.teiData.oddName, true, openChooseOdd);
     } else {
-        alert.askUserModalForOdd('', false, openChooseOdd);
+        common.askUserModalForOdd('', false, openChooseOdd);
     }
 }
 
@@ -164,7 +164,7 @@ function finishOpenXml(name, data) {
             alert.alertUser('HTML error: see console log');
             console.log('no <div id="teidata"></div> element defined in HTML. Cannot load TEIMETA html form.');
             }
-        teimeta.finalize();
+        teimeta.finalizeHTML();
         //console.log("openfile TEI", teimeta.teiData.dataTei);
         //console.log(edit.values);
     }
@@ -204,7 +204,7 @@ function testCss(cssname, fun) {
         // an odd is indicated in the xml file
         // try to open it
         let displayname = dispname(cssname);
-        readTextFile(cssname, function (text) {
+        teimeta.readTextFile(cssname, function (text) {
             // console.log("read ODD: ", oddname, text);
             if (text) {
                 openCssLoad(cssname, displayname, text);
@@ -259,7 +259,7 @@ export function checkChange(fun) {
         fun();
         return;
     }
-    alert.askUserModalYesNoCancel(
+    common.askUserModalYesNoCancel(
         msg.msg('askforsave'),
         (ret) => {
             if (ret === 'yes') { //save
@@ -314,36 +314,6 @@ export function openOddCssLoad(nameOdd, dispNameOdd, dataOdd, nameCss, dispNameC
 }
 
 export function openOddLoad(name, displayname, data) {
-
-    /*
-
-    teimeta.loadXml(null, msg.msg('newfile'));
-    el = document.getElementById('filename');
-    if (el) el.innerHTML = msg.msg('file') + teimeta.teiData.fileName;
-
-    el = document.getElementById('teidata');
-    if (el) {
-        el.innerHTML = teimeta.teiData.html;
-    } else {
-        alert.alertUser('HTML error: see log');
-        console.log('no teidata element defined in HTML. Cannot load TEIMETA html form.');
-    }
-    let h; // result from generateHTML
-    if (teimeta.teiData.dataCss) {
-        let cssHtml =  '<style id="cssstyle">' + teimeta.teiData.dataCss + '</style>\n';
-        h = edit.generateHTML(teimeta.teiData);
-        teimeta.teiData.html = cssHtml + h.html;
-    } else {
-        h = edit.generateHTML(teimeta.teiData);
-        teimeta.teiData.html = h.html;
-    }
-    teimeta.teiData.fileName = msg.msg('newfile');
-    teimeta.teiData.new = true;
-
-    edit.executeResizeList(h.script);
-
-    */
-
     function finishOL() {
         el = document.getElementById('cssname');
         if (el) el.innerHTML = "CSS: " + teimeta.teiData.cssName;
@@ -484,29 +454,16 @@ export function saveAsLocal(fun, force = false) {
         });
 };
 
-export function readTextFile(file, callback) {
-    var rawFile:any = new XMLHttpRequest();
-    // rawFile.overrideMimeType("text/xml");
-    rawFile.responseType = "text";
-    rawFile.open("GET", file, true);
-    rawFile.onload = function(e) {
-        if (rawFile.readyState === 4 && rawFile.status == "200") {
-            callback(rawFile.responseText);
-        }
-    }
-    rawFile.send(null);
-}
-
 export function oddLoadUrl(url, namedisplayed, fun) {
-    readTextFile(url, function(text) {
+    teimeta.readTextFile(url, function(text) {
         openOddLoad(url, namedisplayed, text);
         fun();
     });
 }
 
 export function oddCssLoadUrls(urlOdd, namedisplayedOdd, urlCss, namedisplayedCss, fun) {
-    readTextFile(urlOdd, function(textOdd) {
-        readTextFile(urlCss, function(textCss) {
+    teimeta.readTextFile(urlOdd, function(textOdd) {
+        teimeta.readTextFile(urlCss, function(textCss) {
             openOddCssLoad(urlOdd, namedisplayedOdd, textOdd, urlCss, namedisplayedCss, textCss);
             fun();
         });

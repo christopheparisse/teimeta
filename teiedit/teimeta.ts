@@ -11,6 +11,7 @@ import * as odd from './odd';
 import * as load from './load';
 import * as edit from './edit';
 import * as generate from './generate';
+import * as alert from './alert';
 
 /*
 * internal values
@@ -29,13 +30,33 @@ export let teiData = {
     system: '', // name of running system (electron or html)
     edit: edit, // pointer to edition functions
     params: odd.odd.params, // pointer to parameters
-    version: schema.version,
-    script: null, // code to be executed when the HTML is loaded
-    // in the data display of the client
+    version: schema.version
 };
 
-export function finalize() {
-    if (teiData.script) edit.executeResizeList(teiData.script);
+/**
+ * load an url - provided here for testing purposes and to make it easier to implement interfaces with teimeta
+ * @param {string} file - url to be read
+ * @param {FileCallback} callback - function executed after the call 
+ */
+export function readTextFile(file, callback) {
+    var rawFile:any = new XMLHttpRequest();
+    // rawFile.overrideMimeType("text/xml");
+    rawFile.responseType = "text";
+    rawFile.open("GET", file, true);
+    rawFile.onload = function(e) {
+        if (rawFile.readyState === 4 && rawFile.status == "200") {
+            callback(rawFile.responseText);
+        }
+    }
+    rawFile.send(null);
+}
+
+/**
+ * to be executed after an HTMl string provided by teimeta has been loaded
+ * necessary to implement automatic resize of entry fields
+ */
+export function finalizeHTML() {
+    edit.finalize();
 }
 
 /**
@@ -76,11 +97,10 @@ export function loadXml(filename: string, data: string) {
     if (teiData.dataCss) {
         let cssHtml =  '<style id="cssstyle">' + teiData.dataCss + '</style>\n';
         h = edit.generateHTML(teiData);
-        teiData.html = cssHtml + h.html;
+        teiData.html = cssHtml + h;
     } else {
         h = edit.generateHTML(teiData);
-        teiData.html = h.html;
-        teiData.script = h.script;
+        teiData.html = h;
     }
     return true;
 }
@@ -129,23 +149,84 @@ export function initCss(filename: string, data: string) {
     teiData.dataCss = data;
 }
 
+/**
+ * gather the new state of the XML object edited by teimeta
+ * @return {string} - xml content edited by teimeta library
+ */
 export function generateXml() {
     return generate.generateTEI(teiData);
 }
 
 /**
  * @method loadXmlOddCss
- * this function takes as input the string content of the file to be open
- * the filename parameter is optional and is used for display
- * @param filenameXml
- * @param dataXml
- * @param filenameOdd
- * @param dataOdd
- * @param filenameCss
- * @param dataCss
+ * this function takes as input the string content of all the data
+ * filename parameters is optional (can be null) and are used for display
+ * if dataCss is null, no css is used (unless included in dataOdd)
+ * if dataXml is null, a new empty XML file is generated
+ * dataOdd cannot be null - an ODD must be specified
+ * @param {string} filenameXml - name of xml file
+ * @param {string} dataXml - content of xml file
+ * @param {string} filenameOdd - name of odd file
+ * @param {string} dataOdd - content of odd file
+ * @param {string} filenameCss - name of css file
+ * @param {string} dataCss - content of css file
  * @returns 'ok' / 'null'
  * the return values are stored in the teiData structure
  */
 export function loadXmlOddCss(filenameXml: string, dataXml: string, 
     filenameOdd: string, dataOdd: string, filenameCss: string, dataCss: string) {
+        if (dataCss) initCss(filenameCss, dataCss);
+        if (!dataOdd) {
+            alert.alertUser('no dataOdd in loadXmlOddCss: cannot edit xml/tei file');
+        }
+        initOdd(filenameOdd, dataOdd);
+        loadXml(filenameXml, dataXml);
+        return teiData.html;
+}
+
+/**
+ * @method readXmlOddCss
+ * this function takes as input three urls
+ * the urls are filenames that must be available though http protocol
+ * if filenameCss is null, no css is used (unless included in filenameOdd)
+ * if filenameXml is null, a new empty XML file is generated
+ * filenameOdd cannot be null - an ODD must be specified
+ * @param {string} filenameXml - name of xml file
+ * @param {string} filenameOdd - name of odd file
+ * @param {string} filenameCss - name of css file
+ * @returns 'ok' / 'null'
+ * the return values are stored in the teiData structure
+ */
+export function readXmlOddCss (filenameXml: string,  
+    filenameOdd: string, filenameCss: string, callback: any) {
+        function loadXml(filename, oddname, odddata, cssname, cssdata) {
+            if (filename) {
+                readTextFile(filename, 
+                function(data) {
+                    let h = loadXmlOddCss(filename, data, oddname, odddata, cssname, cssdata);
+                    callback(h);
+                });
+            } else {
+                let h = loadXmlOddCss(null, null, oddname, odddata, cssname, cssdata);
+                callback(h);
+            }
+        }
+        function loadOdd(filename, cssname, cssdata) {
+            if (filename) {
+                readTextFile(filename, 
+                function(data) {
+                    loadXml(filenameXml, filenameOdd, data, filenameCss, data);
+                });
+            } else {
+                alert.alertUser('cannot run readXmlOddCss with null filenameOdd');
+            }
+        }
+        if (filenameCss) {
+            readTextFile(filenameCss, 
+            function(data) {
+                loadOdd(filenameOdd, filenameCss, data);
+            });
+        } else {
+            loadOdd(filenameOdd, null, null);
+        }
 }

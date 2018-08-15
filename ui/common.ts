@@ -4,10 +4,10 @@
 
 import * as teimeta from '../teiedit/teimeta';
 import * as events from './events';
-import * as msg from './messages';
+import * as msg from '../msg/messages';
 import * as syscall from './opensave';
 import * as version from './version';
-import * as alert from './alert';
+import * as alert from '../teiedit/alert';
 let picoModal = require('picomodal');
 let saveAs = require('file-saver');
 
@@ -303,4 +303,72 @@ export function openSpecificLocalFile(oddname, displayname, xmlname, xmldata, fu
         '</b> - please locate it on you computer.',
         function(response) { if (response) syscall.chooseOpenFile(fun) }
     );    
+}
+
+export function askUserModalYesNoCancel(s, fun) {
+    picoModal({
+        content: "<p>" + s + "</p>" +
+            "<p class='footer'>" +
+            "<button class='yes'>Save</button>" +
+            "<button class='no'>Don't save</button>" +
+            "<button class='cancel'>Cancel</button> " +
+            "</p>"
+    }).afterCreate(modal => {
+        modal.modalElem().addEventListener("click", evt => {
+            if (evt.target && evt.target.matches(".yes")) {
+                modal.close('yes');
+            } else if (evt.target && evt.target.matches(".cancel")) {
+                modal.close('cancel');
+            } else if (evt.target && evt.target.matches(".no")) {
+                modal.close('no');
+            }
+        });
+    }).afterClose((modal, event) => {
+        fun(event.detail);
+    }).show();
+}
+
+export function askUserModalForOdd(previousname, loaded, fun) {
+    let askoddInfo = msg.msg('askoddInfo');
+    let askoddCurrent = msg.msg('askoddCurrent');
+    let askoddLocalOdd = msg.msg('askoddLocalOdd');
+    let askoddPredef = msg.msg('askoddPredef');
+//    let askoddOk = msg.msg('ok');
+    let askoddCancel = msg.msg('cancel');
+
+    let box = '<div id="aumomodal"><p class="aumo aumotitle">' + askoddInfo + '</p>' +
+    (loaded ? "<button class='aumo aumobutton current'>" + askoddCurrent + " " + previousname + "</button>" : "")
+        + "<button class='aumo aumobutton computer'>" + askoddLocalOdd + "</button>" +
+        '<p class="aumo aumoinfo">' + askoddPredef + "<p/>";
+
+    for (let s=0; s < (msg.oddpredefs()).length; s++) {
+        box += "<button class='aumo aumobutton aumoid" + s + "'>" + (msg.oddpredefs())[s].label + "</button>";
+    }
+
+    box += "<button class='aumo aumocancel cancel'>" + askoddCancel + "</button></div>";
+
+    picoModal({
+        content: box
+    }).afterCreate(modal => {
+        modal.modalElem().addEventListener("click", evt => {
+            if (evt.target) {
+                if (evt.target.matches(".current")) {
+                    modal.close('current');
+                } else if (evt.target.matches(".computer")) {
+                    modal.close('computer');
+                } else if (evt.target.matches(".cancel")) {
+                    modal.close('cancel');
+                } else {
+                    for (let s=0; s < (msg.oddpredefs()).length; s++) {
+                        let l = "aumoid" + s;
+                        if (evt.target.matches("." + l)) {
+                            modal.close(l);
+                        }
+                    }
+                }
+            }
+        });
+    }).afterClose((modal, event) => {
+        fun(event.detail);
+    }).show();
 }
