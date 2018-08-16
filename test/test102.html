@@ -10,14 +10,14 @@ pre {
 </style>
 <body>
   <span><b>Please edit the data and then</b></span>
-  <button id="test101" type="button" onclick="saveTheData();"><b><em>Save the data</em></b></button>
+  <button id="test102" type="button" onclick="saveTheData();"><b><em>Save the data</em></b></button>
   <hr/>
   <div id="teimeta"></div>
   <pre id="info">Nothing yet.</pre>
 </body>
 <script>
 
-readXmlOddCss(null, 'http://localhost/test/test101.odd', null,
+readXmlOddCss('http://localhost/test/test102.xml', 'http://localhost/test/test102.odd', null,
   function (h) {
     var el = document.getElementById('teimeta');
     el.innerHTML = h;
@@ -26,7 +26,7 @@ readXmlOddCss(null, 'http://localhost/test/test101.odd', null,
 
 function saveTheData() {
   var r = generateXml();
-  saveFileLocal('xml', 'test101-result.xml', r);
+  saveFileLocal('xml', 'test102-result.xml', r);
   var el = document.getElementById('info');
   info.textContent = r;
 }

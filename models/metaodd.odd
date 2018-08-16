@@ -180,6 +180,30 @@
                <content>
                   <elementRef key="elementRef" minOccurs="2" maxOccurs="unbounded" />
                </content>
+               <attList>
+                  <attDef ident="minOccurs" usage="opt">
+                     <desc>Minimum number of occurrences: 0, 1, or 2</desc>
+                     <datatype>
+                        <dataRef name="list"/>
+                        <valList type="closed">
+                            <valItem ident="0"/>
+                            <valItem ident="1"/>
+                            <valItem ident="2"/>
+                        </valList>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="maxOccurs" usage="opt">
+                     <desc>Maximum number of occurrences: 1, 2, or unbounded</desc>
+                     <datatype>
+                        <dataRef name="list"/>
+                        <valList type="closed">
+                            <valItem ident="1"/>
+                            <valItem ident="2"/>
+                            <valItem ident="unbounded"/>
+                        </valList>
+                     </datatype>
+                  </attDef>
+               </attList>
             </elementSpec>
             
             <elementSpec ident="elementRef" module="teimeta" mode="change" usage="opt">
@@ -196,6 +220,28 @@
                      <desc>Corresp pointer</desc>
                      <datatype>
                         <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="minOccurs" usage="opt">
+                     <desc>Minimum number of occurrences: 0, 1, or 2</desc>
+                     <datatype>
+                        <dataRef name="list"/>
+                        <valList type="closed">
+                            <valItem ident="0"/>
+                            <valItem ident="1"/>
+                            <valItem ident="2"/>
+                        </valList>
+                     </datatype>
+                  </attDef>
+                  <attDef ident="maxOccurs" usage="opt">
+                     <desc>Maximum number of occurrences: 1, 2, or unbounded</desc>
+                     <datatype>
+                        <dataRef name="list"/>
+                        <valList type="closed">
+                            <valItem ident="1"/>
+                            <valItem ident="2"/>
+                            <valItem ident="unbounded"/>
+                        </valList>
                      </datatype>
                   </attDef>
                </attList>

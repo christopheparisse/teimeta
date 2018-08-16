@@ -878,6 +878,7 @@ function editDataType(datatype, ident) {
         case 'anyURI':
         case 'url':
         case 'string':
+        case 'number':
         default:
             datatype.valueContentID = uniq;
             values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };

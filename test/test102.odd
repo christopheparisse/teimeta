@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+    <?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+    <?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+
+<TEI xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:svg="http://www.w3.org/2000/svg"
+	xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns="http://www.tei-c.org/ns/1.0"
+	xmlns:rng="http://relaxng.org/ns/structure/1.0">
+
+	<teiHeader>
+		<fileDesc>
+			<titleStmt>
+      <title>
+        <idno type="title">Personnalisation ODD pour les médias</idno>
+        <bibl> CORLI et IRCOM media.odd </bibl>
+        <desc> Ne pas encombrer l'écran et ne gérer que les médias </desc>
+      </title>
+      <principal>
+        <name type="org"> CORLI - IRCOM </name>
+        <name type="org"> Carole Etienne, Loic Liégeois, Christophe Parisse ... </name>
+      </principal>
+			</titleStmt>
+			<publicationStmt>
+				<publisher>CORLI wiki</publisher>
+			</publicationStmt>
+			<sourceDesc>
+				<p>written from IRCOM recommandations</p>
+			</sourceDesc>
+		</fileDesc>
+	</teiHeader>
+
+	<text>
+		<body>
+			<!-- definition de TEI_CORPO_METADATA-->
+			<schemaSpec ident="TEI_CORPO_METADATA" start="TEI">
+
+				<!-- structure generale TEI -->
+				<elementSpec ident="TEI" module="textstructure" mode="change">
+					<content>
+						<elementRef key="teiHeader" minOccurs="1" maxOccurs="1"/>
+					</content>
+				</elementSpec>
+
+				<!-- structure generale teiHeader -->
+				<elementSpec ident="teiHeader" module="header" mode="change">
+					<content>
+						<elementRef key="fileDesc" minOccurs="1" maxOccurs="1"/>
+					</content>
+				</elementSpec>
+
+				<elementSpec ident="fileDesc" module="header">
+					<desc xml:lang="fr">Titre, diffusion et données primaires</desc>
+					<desc xml:lang="en">Title, diffusion and primary data</desc>
+					<desc xml:lang="es">Título, difusión y datos primarios</desc>
+					<desc xml:lang="ja">タイトル、拡散および主要データ</desc>
+					<content>
+						<elementRef key="sourceDesc" minOccurs="1" maxOccurs="1"/>
+					</content>
+				</elementSpec>
+
+				<!-- recordingStmt : recording et medias-->
+				<elementSpec ident="sourceDesc" module="header" mode="change">
+					<desc xml:lang="fr">Données sources</desc>
+					<desc xml:lang="en">Sources of the data</desc>
+					<desc xml:lang="es">Fuentes de los datos</desc>
+					<desc xml:lang="ja">データのソース</desc>
+					<content>
+						<elementRef key="recordingStmt" minOccurs="1" maxOccurs="1"/>
+					</content>
+				</elementSpec>
+				
+				<elementSpec ident="recordingStmt" module="spoken">
+					<desc xml:lang="fr">Enregistrement, données primaires</desc>
+					<desc xml:lang="en">Recording, primary data</desc>
+					<desc xml:lang="es">Grabación, datos primarios</desc>
+					<desc xml:lang="ja">録音、プライマリデータ</desc>
+					<content>
+						<elementRef key="recording" minOccurs="1" maxOccurs="unbounded"/>
+					</content>
+				</elementSpec>
+				
+				<elementSpec ident="recording" module="spoken">
+					<desc xml:lang="fr">Informations sur l'enregistrement</desc>
+					<desc xml:lang="en">Recording information</desc>
+					<desc xml:lang="es">Información de grabación</desc>
+					<desc xml:lang="ja">記録情報</desc>
+					<content>
+						<sequence minOccurs="1" maxOccurs="unbounded">
+							<elementRef key="p" corresp="media"/>
+							<elementRef key="media" minOccurs="1" maxOccurs="1"/>
+						</sequence>
+					</content>
+					<remarks style="element">
+						<ab>background-color: lightblue; border-radius: 8px; margin: 3px;</ab>
+						<p><ident>recording-element</ident></p>
+					</remarks>
+				</elementSpec>
+				
+				<elementSpec ident="p" corresp="media" module="core">
+					<desc xml:lang="fr">Information média</desc>
+					<desc xml:lang="en">Media information</desc>
+					<desc xml:lang="es">Información de los medios</desc>
+					<desc xml:lang="ja">メディア：各メディアの期間が異なる可能性があります</desc>
+					<content>
+						<textNode/>
+					</content>
+					<remarks style="element">
+						<ab>background-color: lightgreen; border-radius: 8px; margin: 3px; margin-top: 10px;</ab>
+						<p><ident>media-p-element</ident></p>
+					</remarks>
+				</elementSpec>
+				
+				<elementSpec ident="media" module="spoken">
+					<desc xml:lang="fr">Média : chaque media peut avoir une durée différente</desc>
+					<desc xml:lang="en">Media: each media could have a different duration</desc>
+					<desc xml:lang="es">Medios: cada medio puede tener una duración diferente</desc>
+					<desc xml:lang="ja"></desc>
+					<content>
+						<sequence minOccurs="1" maxOccurs="1">
+							<elementRef key="desc" corresp="quality"/>
+							<elementRef key="desc" corresp="anonymization"/>
+						</sequence>
+					</content>
+					<attList>
+						<attDef ident="type" usage="req" mode="change">
+							<valList type="closed">
+								<valItem ident="audio"/>
+								<valItem ident="video"/>
+								<valItem ident="other"/>
+							</valList>
+							<remarks>
+								<ab>color:blue;</ab>
+								<p><ident>media-type</ident></p>
+							</remarks>
+						</attDef>
+						<attDef ident="mimeType" usage="req" mode="change">
+							<valList type="closed">
+								<valItem ident="audio/wav"/>
+								<valItem ident="audio/mp3"/>
+								<valItem ident="video/mp4"/>
+								<valItem ident="video/mov"/>
+								<valItem ident="video/wmv"/>
+								<valItem ident="video/avi"/>
+								<valItem ident="other"/>
+							</valList>
+							<remarks>
+								<ab>color:blue;</ab>
+								<p><ident>media-mimeType</ident></p>
+							</remarks>
+						</attDef>
+						<attDef ident="dur-iso" usage="req" mode="change">
+							<desc xml:lang="fr">durée du média</desc>
+							<desc xml:lang="en">media duration</desc>
+							<desc xml:lang="es">duración de los medios</desc>
+							<desc xml:lang="ja">メディア期間</desc>
+							<datatype>
+								<dataRef name="duration"/>
+							</datatype>
+							<remarks>
+								<ab>color:blue;</ab>
+								<p><ident>media-duriso</ident></p>
+							</remarks>
+						</attDef>
+						<attDef ident="url" mode="change">
+							<desc xml:lang="fr">url du média</desc>
+							<desc xml:lang="en">media url</desc>
+							<desc xml:lang="es">url del medio</desc>
+							<desc xml:lang="ja">メディアURL</desc>
+							<datatype>
+								<dataRef name="anyURI"/>
+							</datatype>
+							<remarks>
+								<ab>color:blue;</ab>
+								<p><ident>media-url</ident></p>
+							</remarks>
+						</attDef>
+					</attList>
+					<remarks style="element">
+						<ab>background-color: lightgreen; border-radius: 8px; margin: 3px;</ab>
+						<p><ident>media-element</ident></p>
+					</remarks>
+				</elementSpec>
+				
+				<elementSpec ident="desc" corresp="quality">
+					<attList>
+						<attDef ident="type" usage="req" mode="change">
+							<valList>
+								<valItem ident="quality"/>
+							</valList>
+						</attDef>
+						<attDef ident="subtype" usage="req" mode="change">
+							<valList>
+								<valItem ident="less_noisy">
+									<desc xml:lang="fr">bruité moins de 5%</desc>
+									<desc xml:lang="en">noisy less than 5%</desc>
+								</valItem>
+								<valItem ident="noisy">
+									<desc xml:lang="fr">inaudible ou bruité plus de 5%</desc>
+									<desc xml:lang="en">inaudible or noisy more than 5%</desc>
+								</valItem>
+								<valItem ident="soundproof_room">
+									<desc xml:lang="fr">chambre sourde</desc>
+									<desc xml:lang="en">soundproof</desc>
+								</valItem>
+								<valItem ident="OTHER">
+									<desc xml:lang="fr">Autre</desc>
+									<desc xml:lang="en">Other</desc>
+								</valItem>
+							</valList>
+						</attDef>
+					</attList>
+				</elementSpec>
+				
+				<elementSpec ident="desc" corresp="anonymization">
+					<attList>
+						<attDef ident="type" usage="req" mode="change">
+							<valList>
+								<valItem ident="anonymization"/>
+							</valList>
+						</attDef>
+						<attDef ident="subtype" usage="req" mode="change">
+							<valList>
+								<valItem ident="anonymization">
+									<desc xml:lang="fr">anonymisée</desc>
+									<desc xml:lang="en">anonymized</desc>
+									<desc xml:lang="es">anonimizado</desc>
+									<desc xml:lang="ja">匿名化された</desc>
+								</valItem>
+								<valItem ident="no_anonymization">
+									<desc xml:lang="fr">non anonymisée</desc>
+									<desc xml:lang="en">no anonymization</desc>
+									<desc xml:lang="es">no anonimizado</desc>
+									<desc xml:lang="ja">匿名化なし</desc>
+								</valItem>
+								<valItem ident="partially_anonymized">
+									<desc xml:lang="fr">anonymisation partielle</desc>
+									<desc xml:lang="en">partially anonymized</desc>
+									<desc xml:lang="es">parcialmente anonimizado</desc>
+									<desc xml:lang="ja">部分的に匿名化された</desc>
+								</valItem>
+								<valItem ident="OTHER">
+									<desc xml:lang="fr">Autre</desc>
+									<desc xml:lang="en">Other</desc>
+									<desc xml:lang="es">Otro</desc>
+									<desc xml:lang="ja">その他</desc>
+								</valItem>
+							</valList>
+						</attDef>
+					</attList>
+				</elementSpec>
+
+			</schemaSpec>
+		</body>
+	</text>
+</TEI>

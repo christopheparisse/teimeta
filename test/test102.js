@@ -12,17 +12,17 @@ function stripBOM(content) {
   return content;
 }
 
-console.log('test creation of empty XML from an ODD');
+console.log('compare open and save of the same XML without changes');
 const puppeteer = require('puppeteer');
 (async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.goto('http://localhost/test/test101.html');
-  await page.click('button#test101', { button: 'left' });
-  await page.pdf({path: 'test/test101.pdf', format: 'A4'});
+  await page.goto('http://localhost/test/test102.html');
+  await page.click('button#test102', { button: 'left' });
+  await page.pdf({path: 'test/test102.pdf', format: 'A4'});
   var data = await page.$eval('#info', el => el.innerText);
-  fs.writeFileSync('test/test101-result.xml', data);
-  var original = fs.readFileSync('test/test101.xml').toString();
+  fs.writeFileSync('test/test102-result.xml', data);
+  var original = fs.readFileSync('test/test102.xml').toString();
 /*
   original = stripBOM(original).replace(/&#10;/g, '').replace(/&#xA;/g, '');
   data = stripBOM(data).replace(/&#10;/g, '').replace(/&#xA;/g, '');
