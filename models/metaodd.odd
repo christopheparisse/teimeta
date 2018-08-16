@@ -101,6 +101,7 @@
                   <elementRef key="desc" minOccurs="0" maxOccurs="unbounded" />
                   <elementRef key="content" minOccurs="0" maxOccurs="1" />
                   <elementRef key="attList" minOccurs="0" maxOccurs="1" />
+                  <elementRef key="remarks" minOccurs="0" maxOccurs="1" />
                </content>
                <attList>
                   <attDef ident="ident" usage="req">
@@ -200,7 +201,7 @@
                </attList>
             </elementSpec>
             
-            <!-- structure generale text -->
+            <!-- attList -->
             <elementSpec ident="attList" module="teimeta" mode="change" usage="opt">
                <desc>List of attributes</desc>
                <content>
@@ -208,12 +209,14 @@
                </content>
             </elementSpec>
             
-            <!-- structure generale text -->
+            <!-- attDef -->
             <elementSpec ident="attDef" module="teimeta" mode="change">
                <desc>Definition of an attribute</desc>
                <content>
+                  <elementRef key="desc" minOccurs="0" maxOccurs="unbounded" />
                   <elementRef key="datatype" minOccurs="0" maxOccurs="1" />
                   <elementRef key="valList" minOccurs="0" maxOccurs="1" />
+                  <elementRef key="remarks" minOccurs="0" maxOccurs="2" />
                </content>
                <attList>
                   <attDef ident="ident">
@@ -223,10 +226,18 @@
                      </datatype>
                   </attDef>
                   <attDef ident="usage" usage="opt">
-                     <desc>Usage</desc>
-                     <datatype>
-                        <dataRef name="string"/>
-                     </datatype>
+                     <desc>Usage: required, optional, recommended</desc>
+                     <valList type="closed">
+                        <valItem ident="req">
+                        <desc>required</desc>
+                        </valItem>
+                        <valItem ident="opt">
+                        <desc>optional</desc>
+                        </valItem>
+                        <valItem ident="rec">
+                        <desc>recommended</desc>
+                        </valItem>
+                     </valList>
                   </attDef>
                   <attDef ident="mode" usage="opt">
                      <desc>Mode</desc>
@@ -249,14 +260,14 @@
                </attList>
             </elementSpec>
             
-            <!-- structure generale text -->
+            <!-- datatype -->
             <elementSpec ident="datatype" module="teimeta" mode="change" usage="opt">
                <content>
                   <elementRef key="dataRef" minOccurs="1" maxOccurs="1" />
                </content>
             </elementSpec>
             
-            <!-- structure generale text -->
+            <!-- dataRef -->
             <elementSpec ident="dataRef" module="teimeta" mode="change">
                <desc>Type of content</desc>
                <attList>
@@ -303,7 +314,7 @@
                </attList>
             </elementSpec>
             
-            <!-- structure generale text -->
+            <!-- valList -->
             <elementSpec ident="valList" module="teimeta" mode="change" usage="opt">
                <desc>List of values</desc>
                <content>
@@ -325,7 +336,7 @@
                </attList>
             </elementSpec>
             
-            <!-- structure generale text -->
+            <!-- valItem -->
             <elementSpec ident="valItem" module="teimeta" mode="change">
                <desc>Description of value</desc>
                <content>
@@ -341,9 +352,71 @@
                </attList>
             </elementSpec>
             
-            <!-- structure generale text -->
+            <!-- textNode -->
             <elementSpec ident="textNode" module="teimeta" mode="change" usage="opt">
                <desc>Text node</desc>
+            </elementSpec>
+            
+            <!-- remarks -->
+            <elementSpec ident="remarks" module="teimeta" mode="change" usage="opt">
+               <desc>remarks: Information about css presentation.</desc>
+               <content>
+                  <elementRef key="ab" minOccurs="0" maxOccurs="unbounded" />
+                  <elementRef key="p" minOccurs="0" maxOccurs="unbounded" />
+               </content>
+               <attList>
+                  <attDef ident="style">
+                     <desc>Indicate if the remarks target the content part of the node or the node itself.</desc>
+                     <valList type="closed">
+                        <valItem ident="element">
+                        <desc>remarks is applied to the element</desc>
+                        </valItem>
+                        <valItem ident="content">
+                        <desc>remarks is applied to the content</desc>
+                        </valItem>
+                     </valList>
+                  </attDef>
+               </attList>
+            </elementSpec>
+            
+            <!-- ab -->
+            <elementSpec ident="ab" module="teimeta" mode="change" usage="opt">
+               <desc>Raw CSS value to be applied directly to an element or a content.</desc>
+               <content>
+                  <textNode />
+               </content>
+            </elementSpec>
+            
+            <!-- p -->
+            <elementSpec ident="p" module="teimeta" mode="change" usage="opt">
+               <content>
+                  <elementRef key="item" minOccurs="0" maxOccurs="1" />
+                  <elementRef key="note" minOccurs="0" maxOccurs="1" />
+               </content>
+            </elementSpec>
+            
+            <!-- item -->
+            <elementSpec ident="item" module="teimeta" mode="change" usage="opt">
+               <desc>Identifier within a CSS file</desc>
+               <content>
+                  <textNode />
+               </content>
+            </elementSpec>
+            
+            <!-- note -->
+            <elementSpec ident="note" module="teimeta" mode="change" usage="opt">
+               <desc>Name + content to create a CSS value</desc>
+               <content>
+                  <textNode />
+               </content>
+               <attList>
+                  <attDef ident="type">
+                     <desc>ID</desc>
+                     <datatype>
+                        <dataRef name="string"/>
+                     </datatype>
+                  </attDef>
+               </attList>
             </elementSpec>
             
          </schemaSpec>
