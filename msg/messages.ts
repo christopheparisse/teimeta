@@ -339,7 +339,7 @@ export function oddpredefs() {
 }
 
 export function setLanguage(lang) {
-    if (lang.toLowerCase() === 'fr' || lang.toLowerCase() === 'fra') {
+    if (lang.toLowerCase() === 'fr' || lang.toLowerCase() === 'fra' || lang.toLowerCase() === 'fre') {
         language = messages_fra;
     } else if (lang.toLowerCase() === 'es' || lang.toLowerCase() === 'spa') {
         language = messages_spa;

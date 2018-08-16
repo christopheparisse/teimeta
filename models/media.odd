@@ -74,10 +74,10 @@
 				</elementSpec>
 
 				<elementSpec ident="fileDesc" module="header">
-					<desc xml:lang="fr">Titre, diffusion et données primaires</desc>
-					<desc xml:lang="en">Title, diffusion and primary data</desc>
-					<desc xml:lang="es">Título, difusión y datos primarios</desc>
-					<desc xml:lang="ja">タイトル、拡散および主要データ</desc>
+					<desc xml:lang="fre">Titre, diffusion et données primaires</desc>
+					<desc xml:lang="eng">Title, diffusion and primary data</desc>
+					<desc xml:lang="spa">Título, difusión y datos primarios</desc>
+					<desc xml:lang="jpn">タイトル、拡散および主要データ</desc>
 					<content>
 						<elementRef key="sourceDesc" minOccurs="1" maxOccurs="1"/>
 					</content>
@@ -85,30 +85,30 @@
 
 				<!-- recordingStmt : recording et medias-->
 				<elementSpec ident="sourceDesc" module="header" mode="change">
-					<desc xml:lang="fr">Données sources</desc>
-					<desc xml:lang="en">Sources of the data</desc>
-					<desc xml:lang="es">Fuentes de los datos</desc>
-					<desc xml:lang="ja">データのソース</desc>
+					<desc xml:lang="fre">Données sources</desc>
+					<desc xml:lang="eng">Sources of the data</desc>
+					<desc xml:lang="spa">Fuentes de los datos</desc>
+					<desc xml:lang="jpn">データのソース</desc>
 					<content>
 						<elementRef key="recordingStmt" minOccurs="1" maxOccurs="1"/>
 					</content>
 				</elementSpec>
 				
 				<elementSpec ident="recordingStmt" module="spoken">
-					<desc xml:lang="fr">Enregistrement, données primaires</desc>
-					<desc xml:lang="en">Recording, primary data</desc>
-					<desc xml:lang="es">Grabación, datos primarios</desc>
-					<desc xml:lang="ja">録音、プライマリデータ</desc>
+					<desc xml:lang="fre">Enregistrement, données primaires</desc>
+					<desc xml:lang="eng">Recording, primary data</desc>
+					<desc xml:lang="spa">Grabación, datos primarios</desc>
+					<desc xml:lang="jpn">録音、プライマリデータ</desc>
 					<content>
 						<elementRef key="recording" minOccurs="1" maxOccurs="unbounded"/>
 					</content>
 				</elementSpec>
 				
 				<elementSpec ident="recording" module="spoken">
-					<desc xml:lang="fr">Informations sur l'enregistrement</desc>
-					<desc xml:lang="en">Recording information</desc>
-					<desc xml:lang="es">Información de grabación</desc>
-					<desc xml:lang="ja">記録情報</desc>
+					<desc xml:lang="fre">Informations sur l'enregistrement</desc>
+					<desc xml:lang="eng">Recording information</desc>
+					<desc xml:lang="spa">Información de grabación</desc>
+					<desc xml:lang="jpn">記録情報</desc>
 					<content>
 						<sequence minOccurs="1" maxOccurs="unbounded">
 							<elementRef key="p" corresp="media"/>
@@ -122,10 +122,10 @@
 				</elementSpec>
 				
 				<elementSpec ident="p" corresp="media" module="core">
-					<desc xml:lang="fr">Information média</desc>
-					<desc xml:lang="en">Media information</desc>
-					<desc xml:lang="es">Información de los medios</desc>
-					<desc xml:lang="ja">メディア：各メディアの期間が異なる可能性があります</desc>
+					<desc xml:lang="fre">Information média</desc>
+					<desc xml:lang="eng">Media information</desc>
+					<desc xml:lang="spa">Información de los medios</desc>
+					<desc xml:lang="jpn">メディア：各メディアの期間が異なる可能性があります</desc>
 					<content>
 						<textNode/>
 					</content>
@@ -136,10 +136,10 @@
 				</elementSpec>
 				
 				<elementSpec ident="media" module="spoken">
-					<desc xml:lang="fr">Média : chaque media peut avoir une durée différente</desc>
-					<desc xml:lang="en">Media: each media could have a different duration</desc>
-					<desc xml:lang="es">Medios: cada medio puede tener una duración diferente</desc>
-					<desc xml:lang="ja"></desc>
+					<desc xml:lang="fre">Média : chaque media peut avoir une durée différente</desc>
+					<desc xml:lang="eng">Media: each media could have a different duration</desc>
+					<desc xml:lang="spa">Medios: cada medio puede tener una duración diferente</desc>
+					<desc xml:lang="jpn"></desc>
 					<content>
 						<sequence minOccurs="1" maxOccurs="1">
 							<elementRef key="desc" corresp="quality"/>
@@ -174,10 +174,10 @@
 							</remarks>
 						</attDef>
 						<attDef ident="dur-iso" usage="req" mode="change">
-							<desc xml:lang="fr">durée du média</desc>
-							<desc xml:lang="en">media duration</desc>
-							<desc xml:lang="es">duración de los medios</desc>
-							<desc xml:lang="ja">メディア期間</desc>
+							<desc xml:lang="fre">durée du média</desc>
+							<desc xml:lang="eng">media duration</desc>
+							<desc xml:lang="spa">duración de los medios</desc>
+							<desc xml:lang="jpn">メディア期間</desc>
 							<datatype>
 								<dataRef name="duration"/>
 							</datatype>
@@ -187,10 +187,10 @@
 							</remarks>
 						</attDef>
 						<attDef ident="url" mode="change">
-							<desc xml:lang="fr">url du média</desc>
-							<desc xml:lang="en">media url</desc>
-							<desc xml:lang="es">url del medio</desc>
-							<desc xml:lang="ja">メディアURL</desc>
+							<desc xml:lang="fre">url du média</desc>
+							<desc xml:lang="eng">media url</desc>
+							<desc xml:lang="spa">url del medio</desc>
+							<desc xml:lang="jpn">メディアURL</desc>
 							<datatype>
 								<dataRef name="anyURI"/>
 							</datatype>
@@ -216,20 +216,20 @@
 						<attDef ident="subtype" usage="req" mode="change">
 							<valList>
 								<valItem ident="less_noisy">
-									<desc xml:lang="fr">bruité moins de 5%</desc>
-									<desc xml:lang="en">noisy less than 5%</desc>
+									<desc xml:lang="fre">bruité moins de 5%</desc>
+									<desc xml:lang="eng">noisy less than 5%</desc>
 								</valItem>
 								<valItem ident="noisy">
-									<desc xml:lang="fr">inaudible ou bruité plus de 5%</desc>
-									<desc xml:lang="en">inaudible or noisy more than 5%</desc>
+									<desc xml:lang="fre">inaudible ou bruité plus de 5%</desc>
+									<desc xml:lang="eng">inaudible or noisy more than 5%</desc>
 								</valItem>
 								<valItem ident="soundproof_room">
-									<desc xml:lang="fr">chambre sourde</desc>
-									<desc xml:lang="en">soundproof</desc>
+									<desc xml:lang="fre">chambre sourde</desc>
+									<desc xml:lang="eng">soundproof</desc>
 								</valItem>
 								<valItem ident="OTHER">
-									<desc xml:lang="fr">Autre</desc>
-									<desc xml:lang="en">Other</desc>
+									<desc xml:lang="fre">Autre</desc>
+									<desc xml:lang="eng">Other</desc>
 								</valItem>
 							</valList>
 						</attDef>
@@ -246,28 +246,28 @@
 						<attDef ident="subtype" usage="req" mode="change">
 							<valList>
 								<valItem ident="anonymization">
-									<desc xml:lang="fr">anonymisée</desc>
-									<desc xml:lang="en">anonymized</desc>
-									<desc xml:lang="es">anonimizado</desc>
-									<desc xml:lang="ja">匿名化された</desc>
+									<desc xml:lang="fre">anonymisée</desc>
+									<desc xml:lang="eng">anonymized</desc>
+									<desc xml:lang="spa">anonimizado</desc>
+									<desc xml:lang="jpn">匿名化された</desc>
 								</valItem>
 								<valItem ident="no_anonymization">
-									<desc xml:lang="fr">non anonymisée</desc>
-									<desc xml:lang="en">no anonymization</desc>
-									<desc xml:lang="es">no anonimizado</desc>
-									<desc xml:lang="ja">匿名化なし</desc>
+									<desc xml:lang="fre">non anonymisée</desc>
+									<desc xml:lang="eng">no anonymization</desc>
+									<desc xml:lang="spa">no anonimizado</desc>
+									<desc xml:lang="jpn">匿名化なし</desc>
 								</valItem>
 								<valItem ident="partially_anonymized">
-									<desc xml:lang="fr">anonymisation partielle</desc>
-									<desc xml:lang="en">partially anonymized</desc>
-									<desc xml:lang="es">parcialmente anonimizado</desc>
-									<desc xml:lang="ja">部分的に匿名化された</desc>
+									<desc xml:lang="fre">anonymisation partielle</desc>
+									<desc xml:lang="eng">partially anonymized</desc>
+									<desc xml:lang="spa">parcialmente anonimizado</desc>
+									<desc xml:lang="jpn">部分的に匿名化された</desc>
 								</valItem>
 								<valItem ident="OTHER">
-									<desc xml:lang="fr">Autre</desc>
-									<desc xml:lang="en">Other</desc>
-									<desc xml:lang="es">Otro</desc>
-									<desc xml:lang="ja">その他</desc>
+									<desc xml:lang="fre">Autre</desc>
+									<desc xml:lang="eng">Other</desc>
+									<desc xml:lang="spa">Otro</desc>
+									<desc xml:lang="jpn">その他</desc>
 								</valItem>
 							</valList>
 						</attDef>

@@ -32,32 +32,6 @@
 		<body>
 			<!-- definition de TEI_CORPO_METADATA-->
 			<schemaSpec ident="TEI_CORPO_METADATA" start="TEI">
-				<!-- ajouter teiCorpus par la suite si collections -->
-
-				<!-- required modules -->
-				<moduleRef key="tei"/>
-				<!-- à compléter par : reg choice orig pour l'orthographe adapté -->
-				<moduleRef key="core"
-					include="title bibl desc name respStmt resp publisher pubPlace ref p media date "/>
-				<moduleRef key="header"
-					include="teiHeader fileDesc titleStmt idno principal publicationStmt availability licence sourceDesc profileDesc langUsage language
-					 encodingDesc appInfo application projectDesc classDecl taxonomy catDesc category"/>
-				<!-- à compléter par : body div text-->
-				<moduleRef key="textstructure" include="TEI text body div "/>
-				<!-- optional modules -->
-				<!-- à compléter par : u annotationBlock incident kinesic pause shift vocal-->
-				<moduleRef key="spoken"
-					include="recordingStmt recording transcriptionDesc annotationBlock u vocal kinesic incident pause"/>
-				<moduleRef key="namesdates"
-					include="persName surname listPerson person age occupation langKnowledge langKnown listPlace place country settlement district "/>
-				<moduleRef key="corpus"
-					include="activity textDesc channel constitution derivation domain factuality interaction preparedness purpose particDesc settingDesc setting"/>
-				<!-- à compléter par Christophe P -->
-				<moduleRef key="linking" include="anchor seg timeline when"/>
-				<moduleRef key="analysis" include=" w span spanGrp"/>
-				<!-- ajouter interp interpGrp-->
-				<moduleRef key="transcr"/>
-				<!-- utilisé ???-->
 
 				<!-- structure generale TEI -->
 				<elementSpec ident="TEI" module="textstructure" mode="change">

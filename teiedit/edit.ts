@@ -876,7 +876,6 @@ function editDataType(datatype, ident) {
             s += '</textarea>\n';
             break;
         case 'anyURI':
-        case 'uri':
         case 'url':
         case 'string':
         default:

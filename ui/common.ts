@@ -74,18 +74,18 @@ export function setCanRm(e) {
 }
 
 export function setLanguage(lg, reload=true) {
-    if (lg === 'fr' || lg === 'fra') {
-        teimeta.teiData.params.language = 'fr';
-        msg.setLanguage('fr');
+    if (lg === 'fr' || lg === 'fra' || lg === 'fre') {
+        teimeta.teiData.params.language = 'fre';
+        msg.setLanguage('fre');
     } else if (lg === 'es' || lg === 'esp') {
-        teimeta.teiData.params.language = 'es';
-        msg.setLanguage('es');
+        teimeta.teiData.params.language = 'esp';
+        msg.setLanguage('esp');
     } else if (lg === 'ja' || lg === 'jpn') {
-        teimeta.teiData.params.language = 'ja';
-        msg.setLanguage('ja');
+        teimeta.teiData.params.language = 'jpn';
+        msg.setLanguage('jpn');
     } else {
-        teimeta.teiData.params.language = 'en';
-        msg.setLanguage('en');
+        teimeta.teiData.params.language = 'eng';
+        msg.setLanguage('eng');
     }
 
     try {
