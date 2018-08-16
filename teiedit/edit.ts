@@ -1050,7 +1050,9 @@ function generateElement(elt, validatedStyle) {
         values[uniq] = { select: 'ok', eltSpec: elt.parentElementSpec };
         // on ne peut pas accepter les éléments non validés car ils sont cachés
         elt.validatedESID = uniq;
-        if (validatedStyle === 'optional') {
+        if (validatedStyle === 'optional' || elt.usage === 'opt') {
+            if (elt.usage === 'opt')
+                values[uniq] = { select: elt.validatedES, eltSpec: elt.parentElementSpec };
             // on peut valider
             s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
                 + classOf(elt.usage)
