@@ -185,6 +185,8 @@ function getDataRef(node) : string {
             return 'number';
         case 'anyURI':
             return 'anyURI';
+        case 'url':
+            return 'url';
         case 'duration':
             return 'duration';
         case 'list':

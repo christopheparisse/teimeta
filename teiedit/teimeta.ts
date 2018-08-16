@@ -78,6 +78,9 @@ export function loadXml(filename: string, data: string) {
     if (data === null) {
         // in this case, the XML is null, so we
         // just load a new XML which only the ODD
+        teiData.dataTei = null;
+        teiData.parser = null;
+        teiData.doc = null;
         load.loadTei(null, teiData);
         teiData.fileName = filename;
         teiData.new = true;

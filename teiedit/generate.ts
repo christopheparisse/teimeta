@@ -4,7 +4,7 @@
  * Saving the results and the TEI or XML file
  */
 
-import * as alert from './alert';
+// import * as alert from './alert';
 import * as odd from './odd';
 import * as edit from './edit';
 
@@ -262,8 +262,13 @@ function generateFilledElement(elt, doc, node) {
                 let v = edit.values[elt.attr[i].datatype.valueContentID].value;
                 elt.attr[i].datatype.valueContent = encodeXML(String(v));
             }
-            node.setAttribute(elt.attr[i].ident, elt.attr[i].datatype.valueContent);
-            s += ' ' + elt.attr[i].ident + '="' + elt.attr[i].datatype.valueContent + '"';
+            // test if empty and if this the case, if parameters not to fill empty attribute is true, then remove attribute
+            if (!elt.attr[i].datatype.valueContent && elt.attr[i].usage === 'opt' && !odd.odd.params.defaultNewElement) {
+                node.removeAttribute(elt.attr[i].ident);
+            } else {
+                node.setAttribute(elt.attr[i].ident, elt.attr[i].datatype.valueContent);
+                s += ' ' + elt.attr[i].ident + '="' + elt.attr[i].datatype.valueContent + '"';
+            }
         }
     }
     // write corresp attribute if it exists

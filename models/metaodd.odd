@@ -174,7 +174,7 @@
                </content>
             </elementSpec>
             
-            <elementSpec ident="sequence" module="teimeta" mode="change">
+            <elementSpec ident="sequence" module="teimeta" mode="change" usage="opt">
             <desc>Sequence: the "sequence" element allows to group together several nodes. Each element of a
             sequence point to an elementRef as described below.</desc>
                <content>
@@ -182,7 +182,7 @@
                </content>
             </elementSpec>
             
-            <elementSpec ident="elementRef" module="teimeta" mode="change">
+            <elementSpec ident="elementRef" module="teimeta" mode="change" usage="opt">
                <desc>elementRef: Pointer to an elementSpec. This indicates the descendant of a node is the node pointed to
                by elementRef.</desc>
                <attList>
@@ -268,7 +268,7 @@
             </elementSpec>
             
             <!-- dataRef -->
-            <elementSpec ident="dataRef" module="teimeta" mode="change">
+            <elementSpec ident="dataRef" module="teimeta" mode="change" usage="opt">
                <desc>Type of content</desc>
                <attList>
                   <attDef ident="name">
@@ -365,7 +365,7 @@
                   <elementRef key="p" minOccurs="0" maxOccurs="unbounded" />
                </content>
                <attList>
-                  <attDef ident="style">
+                  <attDef ident="style" usage="opt">
                      <desc>Indicate if the remarks target the content part of the node or the node itself.</desc>
                      <valList type="closed">
                         <valItem ident="element">
