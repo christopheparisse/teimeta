@@ -23,6 +23,10 @@ const puppeteer = require('puppeteer');
   await page.keyboard.type('RUNNING TEST103');
   await page.focus('.UPI-schemaSpec-start');
   await page.keyboard.type('TEST103');
+  await page.focus('.UPI-elementSpec-ident');
+  await page.keyboard.type('TEST103');
+  await page.focus('.UPI-desc-desc');
+  await page.keyboard.type('Automatized Test103');
 
   await page.click('button#test103', { button: 'left' });
   await page.pdf({path: 'test/test103.pdf', format: 'A4'});

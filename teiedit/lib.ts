@@ -60,6 +60,20 @@ global.finalizeHTML = teimeta.finalizeHTML;
  */
 global.generateXml = teimeta.generateXml;
 
+/**
+ * acces to parameters
+    defaultNewElement = true; // if true the non existing elements are included by default
+    leftShift = 5; // size in pixel of the hanging size of the imbrications
+    groupingStyle = 'border'; // display style of the groups of duplicable elements
+    validateRequired = false; // if true it is possible to not validate (ie remove) obligatory elements
+    language = 'fr'; // language name of the desc fields
+    displayFullpath = false; // display or not the full path of the tags
+    canRemove = false; // allows to remove existing nodes
+    fmt = '?:00:00'; // format for time length of media
+    nbdigits = 0; // number of digits allowed in the decimal part of a number
+    encodeXMLFull = false; // if true use entities.encodeXML otherwise only encodes < and >
+ */
+global.teimetaParams = teimeta.teiData.params;
 
 /*
  * the functions below as utilitary and to be used only for easy implementation
