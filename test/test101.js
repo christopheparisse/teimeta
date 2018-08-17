@@ -27,8 +27,12 @@ const puppeteer = require('puppeteer');
   original = stripBOM(original).replace(/&#10;/g, '').replace(/&#xA;/g, '');
   data = stripBOM(data).replace(/&#10;/g, '').replace(/&#xA;/g, '');
 */
+  original = stripBOM(original).replace(/\n/g, '');
+  data = stripBOM(data).replace(/\n/g, '');
+
   //console.log(original);
   //console.log(data);
+
   let d = diff(original, data);
   for (i in d) {
     if (d[i][0] !== 0) console.log(d[i]);

@@ -14,6 +14,7 @@ let basicTEI = '<?xml version="1.0" encoding="UTF-8"?>\
 <TEI xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:svg="http://www.w3.org/2000/svg"\
      xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns="http://www.tei-c.org/ns/1.0">\
 </TEI>';
+let currentNamespace = 'nonamespace';
 
 /**
  * changes < and > to html codes
@@ -60,22 +61,32 @@ function clean(node) {
  * @return {string} - xml content edited by teimeta library
  */
 export function generateTEI(teiData) {
+    if (!teiData.dataOdd.namespace) teiData.dataOdd.namespace = 'http://www.tei-c.org/ns/1.0';
     let eltspec = teiData.dataTei;
     let s = '';
     if (!teiData.doc) {
         if (teiData.dataOdd.namespace) {
             s = '<?xml version="1.0" encoding="UTF-8"?>';
+            /*
+            s += '<' + teiData.dataOdd.rootTEI + '></' + teiData.dataOdd.rootTEI + '>'
+            */
             if (teiData.dataOdd.namespace !== 'nonamespace')
-                s += '<' + teiData.dataOdd.rootTEI + ' xmlns="' + teiData.dataOdd.namespace + '"></' + teiData.dataOdd.rootTEI + '>'
+                s += '<' + teiData.dataOdd.rootTEI + ' xmlns="' + teiData.dataOdd.namespace + '"></' + teiData.dataOdd.rootTEI + '>';
             else
-                s += '<' + teiData.dataOdd.rootTEI + '></' + teiData.dataOdd.rootTEI + '>'
+                s += '<' + teiData.dataOdd.rootTEI + '></' + teiData.dataOdd.rootTEI + '>';
             teiData.doc = new DOMParser().parseFromString(s, 'text/xml');
         } else {
-            teiData.doc = new DOMParser().parseFromString(basicTEI, 'text/xml');
+                teiData.doc = new DOMParser().parseFromString(basicTEI, 'text/xml');
         }
         teiData.root = teiData.doc.documentElement;
+        /*
+        console.log("NS:", teiData.dataOdd.namespace);
+        if (teiData.dataOdd.namespace !== 'nonamespace')
+            teiData.root.namespaceURI = teiData.dataOdd.namespace;
+        */
         eltspec.node = teiData.root;
     }
+    currentNamespace = teiData.dataOdd.namespace;
     // first generate the root otherwise it would be duplicated
     generateFilledElement(eltspec, teiData.doc, eltspec.node);
     // console.log("generateTEI", teiData.dataOdd);
@@ -109,7 +120,7 @@ function generateElement(espec, doc, node) {
         // if node is empty create one at the end, son of the node above
         let current = espec.node;
         if (!current) {
-            current = doc.createElement(espec.ident);
+            current = (currentNamespace === 'nonamespace') ? doc.createElement(espec.ident) : doc.createElementNS(currentNamespace, espec.ident);
             node.appendChild(current);
             espec.node = current;
             s += '<!-- ajout de ' + espec.absolutepath + ' -->\n';
@@ -158,35 +169,6 @@ function setTextNode(node, val, doc) {
         let nn = doc.createTextNode(val);
         node.appendChild(nn);
     }
-}
-
-/**
- * @method createAbsolutePath
- * creates a path from top of xml file and returns last node created
- * @param path 
- * @param doc
- * @return node 
- */
-function createAbsolutePath(path, doc) {
-    let p = path.split('/').slice(1);
-    // the name of the root element is ignored
-    // It should be possible to control if this name is the one provided in the ODD
-    let node = doc.documentElement;
-    for (let i = 1; i < p.length; i++) {
-        let nds = odd.getChildrenByName(node, p[i]);
-        if (nds.length > 1) {
-            let s = p.slice(0,i).join('/');
-            s = '<!-- warning element ' + s + " is not uniq. -->";
-        }
-        if (nds.length > 0) {
-            node = nds[0];
-        } else {
-            let newnode = doc.createElement(p[i]);
-            node.appendChild(newnode);
-            node = newnode;
-        }
-    }
-    return node;
 }
 
 /**

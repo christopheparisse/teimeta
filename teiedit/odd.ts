@@ -513,7 +513,7 @@ export function loadOdd(data) {
     // let doc = parser.parseFromString(data, "text/xml");
     try {
         doc = parser.parseFromString(data.toString(), 'text/xml');
-        if (doc.documentElement.nodeName == "parsererror") {
+        if (doc.documentElement.nodeName === "parsererror") {
     //        checkErrorXML(doc.getElementsByTagName("parsererror")[0]);
             alert.alertUser("The ODD file is not valid: Operation canceled.")
             console.log("Erros in ODD file")

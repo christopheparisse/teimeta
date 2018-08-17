@@ -17,12 +17,18 @@ const puppeteer = require('puppeteer');
 (async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.goto('http://localhost/test/test102.html');
-  await page.click('button#test102', { button: 'left' });
-  await page.pdf({path: 'test/test102.pdf', format: 'A4'});
+  await page.goto('http://localhost/test/test103.html');
+
+  await page.focus('.UPI-schemaSpec-ident');
+  await page.keyboard.type('RUNNING TEST103');
+  await page.focus('.UPI-schemaSpec-start');
+  await page.keyboard.type('TEST103');
+
+  await page.click('button#test103', { button: 'left' });
+  await page.pdf({path: 'test/test103.pdf', format: 'A4'});
   var data = await page.$eval('#info', el => el.innerText);
-  fs.writeFileSync('test/test102-result.xml', data);
-  var original = fs.readFileSync('test/test102.xml').toString();
+  fs.writeFileSync('test/test103-result.xml', data);
+  var original = fs.readFileSync('test/test103.xml').toString();
 /*
   original = stripBOM(original).replace(/&#10;/g, '').replace(/&#xA;/g, '');
   data = stripBOM(data).replace(/&#10;/g, '').replace(/&#xA;/g, '');

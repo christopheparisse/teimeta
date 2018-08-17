@@ -1055,9 +1055,15 @@ function generateElement(elt, validatedStyle) {
             if (elt.usage === 'opt')
                 values[uniq] = { select: elt.validatedES, eltSpec: elt.parentElementSpec };
             // on peut valider
-            s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
-                + classOf(elt.usage)
-                + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+            if (values[uniq].select === 'ok') {
+                s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
+                    + classOf(elt.usage)
+                    + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+            } else {
+                s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
+                    + classOf(elt.usage)
+                    + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+            }
         }
         // description
         if (elt.desc)

@@ -135,7 +135,13 @@ export function initXml(filename: string, data: string) {
 export function initOdd(filename: string, data: string) {
     teiData.oddName = filename;
     teiData.dataOdd = odd.loadOdd(data);
-    return teiData.dataOdd.cssfile;
+    if (!teiData.dataOdd) {
+        teiData.dataTei = null;
+        teiData.parser = null;
+        teiData.doc = null;
+        return false;
+    }
+    return true;
 }
 
 /**
@@ -181,8 +187,9 @@ export function loadXmlOddCss(filenameXml: string, dataXml: string,
         if (dataCss) initCss(filenameCss, dataCss);
         if (!dataOdd) {
             alert.alertUser('no dataOdd in loadXmlOddCss: cannot edit xml/tei file');
+            return '<div>Missing odd!</div>'
         }
-        initOdd(filenameOdd, dataOdd);
+        if (initOdd(filenameOdd, dataOdd) === null) return '<div>Incorrect odd!</div>';
         loadXml(filenameXml, dataXml);
         return teiData.html;
 }
