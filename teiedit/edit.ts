@@ -524,6 +524,7 @@ export function hideAll() {
  * @return {string} r - HTML content
  */
 export function generateHTML(teiData) {
+    lastId = 0;
     initEditFunctions();
     recursiveDepth = 0;
     resizeList = [];
@@ -586,6 +587,7 @@ function generateMultiple(ec, abspath) {
     // ec est un ElementCount
     let s = '';
     let uniqCreate = createID();
+    let uniqCreate2 = createID();
     // console.log(ec); // ec.parentElementSpec.ident
     let idm = typeof(ec.ident) === 'string' ? ec.ident : (ec.ident.join('-'));
     s += '<div class="contentCountMany UPCM-' + idm + '" id="' + uniqCreate + '" ';
@@ -593,7 +595,7 @@ function generateMultiple(ec, abspath) {
         s += ' style="border: 1px solid black; border-radius: 4px;"';
     s += ' >\n';
     // on peut en rajouter ... ou supprimer
-    s += '<div class="plusCM"><i class="create fa fa-plus-square fa-color-expand" '
+    s += '<div class="plusCM"><i id="' + uniqCreate2 + '" class="create fa fa-plus-square fa-color-expand" '
         + 'onclick="window.ui.createEC(event, \'' + uniqCreate + '\')"></i></div>\n';
     values[uniqCreate] = {elt: ec.eCI[0], tab: ec.eCI, id: uniqCreate, path: abspath, eltSpec: ec.parentElementSpec};
     for (let i in ec.eCI) {
@@ -764,7 +766,7 @@ function editDataType(datatype, ident) {
                 iso639.code639[k].code + '" ';
                 if (datatype.valueContent === iso639.code639[k].code)
                     s  += 'selected="selected" ';
-                s += '>' + iso639.code639[k].name + ' - ' + iso639.code639[k].desc + '</option>\n';
+                s += '>' + iso639.code639[k].name /* + ' - ' + iso639.code639[k].desc */ + '</option>\n';
             }
             s += '</select>\n';
             break;

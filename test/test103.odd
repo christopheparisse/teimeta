@@ -157,6 +157,9 @@
                      <datatype>
                         <dataRef name="languagecode"/>
                      </datatype>
+                     <remarks>
+                     <p><ident>lang01</ident></p>
+                     </remarks>
                   </attDef>
                </attList>
             </elementSpec>

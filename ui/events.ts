@@ -251,7 +251,16 @@ export function newXml(choice) {
 }
 
 export function dumpHtml() {
-    common.saveFileLocal("html", "page.html", teimeta.teiData.html);
+//    common.saveFileLocal("html", "page.html", teimeta.teiData.html);
+    let t = document.getElementById('teidata');
+    if (t) {
+        let tc = t.innerHTML;
+        common.saveFileLocal("html", "page.html", tc);
+        console.log('using innerHTML');
+    } else {
+        common.saveFileLocal("html", "page.html", teimeta.teiData.html);
+        console.log('using teimeta.teiData.html');
+    }
 }
 
 export function checkChange(fun) {
