@@ -115,6 +115,12 @@ gulp.task('page-test2', function () {
     .pipe(gulp.dest('/Library/WebServer/Documents/temp-page/'))
 });
 
+gulp.task('page-test3', function () {
+  // copy test
+  return gulp.src('temp-page/fonts/*')
+    .pipe(gulp.dest('/Library/WebServer/Documents/test/fonts/'))
+});
+
 gulp.task('page', function(done) {
 //    runSequence('page-src', 'page-ui2', 'page-js', function() {
     runSequence('page-html', 'page-src', 'page-ui2', function() {
@@ -124,7 +130,7 @@ gulp.task('page', function(done) {
 });
 
 gulp.task('test', function(done) {
-      runSequence('page-test1', 'page-test2', function() {
+      runSequence('page-test1', 'page-test2', 'page-test3', function() {
           console.log('ok.');
           done();
       });

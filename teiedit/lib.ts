@@ -9,6 +9,8 @@
  * otherwise use require(teimeta) which does the same job
  */
 import * as teimeta from './teimeta';
+import '../css/font-awesome/css/font-awesome.min.css';
+import '../css/internal.css';
 
 /*
  * these four functions are necessary to use the interface

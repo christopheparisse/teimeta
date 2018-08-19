@@ -6,6 +6,9 @@ import * as events from './events';
 import * as teimeta from '../teiedit/teimeta';
 import * as common from './common';
 import * as msg from '../msg/messages';
+import '../css/font-awesome/css/font-awesome.min.css';
+import '../css/internal.css';
+import '../css/display.css';
 
 function bodyKeys(e) {
 /*    

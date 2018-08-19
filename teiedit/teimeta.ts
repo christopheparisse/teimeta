@@ -12,6 +12,7 @@ import * as load from './load';
 import * as edit from './edit';
 import * as generate from './generate';
 import * as alert from './alert';
+import { init } from '../ui/init-singlepage';
 
 /*
 * internal values
@@ -30,7 +31,19 @@ export let teiData = {
     system: '', // name of running system (electron or html)
     edit: edit, // pointer to edition functions
     params: odd.odd.params, // pointer to parameters
-    version: schema.version
+    version: schema.version,
+    init: function() {
+        this.oddName = ''; // name of ODD file
+        this.cssName = ''; // name of CSS file
+        this.fileName = ''; // name of XML/TEI file
+        this.dataOdd = null; // data to handle ODD
+        this.dataCss = null; // data to handle css (CSScstring)
+        this.dataTei = null; // data to handle xml data (by default TEI)
+        this.html = null; // html content string
+        this.new = true;
+        this.parser = null; // DOM Parser
+        this.doc = null; // DOM document
+    }
 };
 
 /**
@@ -133,14 +146,10 @@ export function initXml(filename: string, data: string) {
  * the return values are stored in the data structure
  */
 export function initOdd(filename: string, data: string) {
+    let o = odd.loadOdd(data);
+    if (!o) return false;
     teiData.oddName = filename;
-    teiData.dataOdd = odd.loadOdd(data);
-    if (!teiData.dataOdd) {
-        teiData.dataTei = null;
-        teiData.parser = null;
-        teiData.doc = null;
-        return false;
-    }
+    teiData.dataOdd = o;
     return true;
 }
 

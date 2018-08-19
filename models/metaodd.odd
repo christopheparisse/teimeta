@@ -322,6 +322,9 @@
             <!-- dataRef -->
             <elementSpec ident="dataRef" module="teimeta" mode="change" usage="opt">
                <desc>Type of content</desc>
+               <content>
+                  <elementRef key="valList" minOccurs="0" maxOccurs="1" />
+               </content>
                <attList>
                   <attDef ident="name">
                      <valList type="closed" mode="replace">

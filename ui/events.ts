@@ -330,9 +330,9 @@ export function openOddLoad(name, displayname, data) {
         localStorage.setItem("previousODD", js);
     }
 
+    if (teimeta.initOdd(name, data)===false) return;
     let el = document.getElementById('oddname');
     if (el) el.innerHTML = "ODD: " + displayname;
-    teimeta.initOdd(name, data);
     if (teimeta.teiData.dataOdd.cssfile) {
         testCss(teimeta.teiData.dataOdd.cssfile, finishOL);
     } else {
