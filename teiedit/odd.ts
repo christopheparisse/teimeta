@@ -551,15 +551,13 @@ export function loadOdd(data, eltsSpecs = null, eltsRefs = null) {
         alert.alertUser(s);
         return null;
     }
-    let duplicateOK = [];
+    let duplicateOK = {};
     // add classRefs (elements from included classRef) if there are some
     if (eltsSpecs !== null) {
         odd.listElementSpec = eltsSpecs; 
         // list element that can be duplicated
-        for (let i=0; i < eltsSpecs.length; i++) {
-            if (eltsSpecs[i].access) {
-                duplicateOK.push(eltsSpecs[i].access);
-            }
+        for (let i in eltsSpecs) {
+            duplicateOK[i] = i;
         }
     }
     // get attribute ident
@@ -597,7 +595,7 @@ export function loadOdd(data, eltsSpecs = null, eltsRefs = null) {
         }
         if (odd.listElementSpec[es.access]) {
             if (!duplicateOK[es.access])
-                error += msg.msg('redefelementspec') + es.access;
+                error += msg.msg('redefelementspec') + es.access + '<br/>';
             // if in duplicateOK, the old element is replaced by the new one
             else
                 console.log('duplicate element: ' + es.access);

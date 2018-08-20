@@ -154,8 +154,8 @@ export function initXml(filename: string, data: string) {
  */
 export function initOdd(filename: string, data: string, urlmodel: string) {
     let impts = odd.loadOddClassRef(data);
-    let eltSpecs = [];
-    let eltRefs = [];
+    let eltSpecs = {};
+    let eltRefs = {};
     if (impts && impts.length > 0) {
         console.log(impts);
         // there are imports to be loaded.
@@ -166,13 +166,17 @@ export function initOdd(filename: string, data: string, urlmodel: string) {
         async.each(impts, (ielt, callback) => {
             console.log("read:", p + ielt.source);
             readTextFile(p + ielt.source, function(err, idata) {
+                console.log('finished read ', ielt, err);
                 if (err) return callback(err);
                 try {
                     let ie = idata.toString();
                     let d = odd.loadOdd(ie);
-                    console.log(p + ielt.source, d, ie);
-                    if (d) eltSpecs.push(d.listElementSpec);
-                    if (d) eltRefs.push(d.listElementRef);
+                    console.log(p + ielt.source, d);
+                    if (d) {
+                        for (let i in d.listElementSpec) eltSpecs[i] = d.listElementSpec[i];
+                        for (let i in d.listElementRef) eltRefs[i] = d.listElementRef[i];
+                    }
+                    console.log(eltSpecs, eltRefs);
                 } catch (e) {
                     return callback(e);
                 }
@@ -180,19 +184,21 @@ export function initOdd(filename: string, data: string, urlmodel: string) {
             });
         }, err => {
             if (err) console.error(err.message);
-            // eltRefs contains now all elementSpec
+            console.log('fin:',err, eltSpecs, eltRefs);
+            // eltSpecs and eltRefs contains now all elementSpec and elementRef
             let o = odd.loadOdd(data, eltSpecs, eltRefs);
             if (!o) return false;
             teiData.oddName = filename;
             teiData.dataOdd = o;
             return true;
         });
+    } else {
+        let o = odd.loadOdd(data);
+        if (!o) return false;
+        teiData.oddName = filename;
+        teiData.dataOdd = o;
+        return true;
     }
-    let o = odd.loadOdd(data);
-    if (!o) return false;
-    teiData.oddName = filename;
-    teiData.dataOdd = o;
-    return true;
 }
 
 /**
