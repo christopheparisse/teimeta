@@ -551,15 +551,21 @@ export function loadOdd(data, eltsSpecs = null, eltsRefs = null) {
         alert.alertUser(s);
         return null;
     }
+
+    /* insert elements from included models */
     let duplicateOK = {};
     // add classRefs (elements from included classRef) if there are some
-    if (eltsSpecs !== null) {
+    if (eltsSpecs) {
         odd.listElementSpec = eltsSpecs; 
         // list element that can be duplicated
         for (let i in eltsSpecs) {
             duplicateOK[i] = i;
         }
     }
+    if (eltsRefs) {
+        odd.listElementRef = eltsRefs;
+    }
+
     // get attribute ident
     odd.rootIdent = schemaSpec[0].getAttribute("ident");
     // get all altIdent
@@ -579,14 +585,6 @@ export function loadOdd(data, eltsSpecs = null, eltsRefs = null) {
     // get attribute cssfile
     odd.cssfile = schemaSpec[0].getAttribute("rend");
     odd.remarks = false;
-    // get attribute other entries (corresp)
-    /*
-    attr = schemaSpec[0].getAttribute("corresp");
-    if (attr) {
-        let n = attr.split(' ');
-        if (n.length>0)
-            odd.entries = n;
-    */
     // read the elementSpec
     for (let i=0; i < eSpec.length ; i++) {
         var es = new schema.ElementSpec();
@@ -602,10 +600,8 @@ export function loadOdd(data, eltsSpecs = null, eltsRefs = null) {
         }
         odd.listElementSpec[es.access] = es;
     }
-    odd.listElementRef = listElementRef;
-    if (eltsRefs) {
-        for (let i in eltsRefs) odd.listElementRef[i] = eltsRefs[i];
-    }
+    // get all listed elementRef
+    for (let i in listElementRef) odd.listElementRef[i] = listElementRef[i];
     for (let i in odd.listElementRef) {
         // check if all elementRef exist as elementSpec
         if (!odd.listElementSpec[i]) {
@@ -632,7 +628,6 @@ export function loadOdd(data, eltsSpecs = null, eltsRefs = null) {
         alert.alertUser(warning);
         console.log(warning);
     }
-    odd.listElementRef = listElementRef;
     return odd;
 }
 

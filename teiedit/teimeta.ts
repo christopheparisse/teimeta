@@ -157,6 +157,7 @@ export function initOdd(filename: string, data: string, urlmodel: string) {
     let eltSpecs = {};
     let eltRefs = {};
     if (impts && impts.length > 0) {
+        let ok = false;
         console.log(impts);
         // there are imports to be loaded.
         let p = urlpathname(urlmodel);
@@ -190,8 +191,9 @@ export function initOdd(filename: string, data: string, urlmodel: string) {
             if (!o) return false;
             teiData.oddName = filename;
             teiData.dataOdd = o;
-            return true;
+            ok = true;
         });
+        if (ok) return true; else return false;
     } else {
         let o = odd.loadOdd(data);
         if (!o) return false;
