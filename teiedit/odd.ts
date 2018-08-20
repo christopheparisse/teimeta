@@ -15,7 +15,7 @@ let entities = require("entities");
 let xpath = require('xpath');
 let select;
 // import * as system from '../system/opensave';
-let listElementRef = [];
+let listElementRef = {};
 
 function tagES(k, c) {
     return (c) ? k + '#' + c : k;    
@@ -511,8 +511,8 @@ function valList(data, node) {
  * @param data : content of an odd file
  * @return teiOdd structure (model data from the ODD)
  */
-export function loadOdd(data, classRefs = null) {
-    listElementRef = [];
+export function loadOdd(data, eltsSpecs = null, eltsRefs = null) {
+    listElementRef = {};
     let odd = new schema.SCHEMA();
     let error = '';
     let warning = '';
@@ -553,12 +553,12 @@ export function loadOdd(data, classRefs = null) {
     }
     let duplicateOK = [];
     // add classRefs (elements from included classRef) if there are some
-    if (classRefs !== null) {
-        odd.listElementRef = classRefs; 
+    if (eltsSpecs !== null) {
+        odd.listElementSpec = eltsSpecs; 
         // list element that can be duplicated
-        for (let i=0; i < classRefs.length; i++) {
-            if (classRefs[i].access) {
-                duplicateOK.push(classRefs[i].access);
+        for (let i=0; i < eltsSpecs.length; i++) {
+            if (eltsSpecs[i].access) {
+                duplicateOK.push(eltsSpecs[i].access);
             }
         }
     }
@@ -603,6 +603,10 @@ export function loadOdd(data, classRefs = null) {
                 console.log('duplicate element: ' + es.access);
         }
         odd.listElementSpec[es.access] = es;
+    }
+    odd.listElementRef = listElementRef;
+    if (eltsRefs) {
+        for (let i in eltsRefs) odd.listElementRef[i] = eltsRefs[i];
     }
     for (let i in odd.listElementRef) {
         // check if all elementRef exist as elementSpec

@@ -154,6 +154,7 @@ export function initXml(filename: string, data: string) {
  */
 export function initOdd(filename: string, data: string, urlmodel: string) {
     let impts = odd.loadOddClassRef(data);
+    let eltSpecs = [];
     let eltRefs = [];
     if (impts && impts.length > 0) {
         console.log(impts);
@@ -170,7 +171,8 @@ export function initOdd(filename: string, data: string, urlmodel: string) {
                     let ie = idata.toString();
                     let d = odd.loadOdd(ie);
                     console.log(p + ielt.source, d, ie);
-                    if (d) eltRefs.push(d.listElementSpec);
+                    if (d) eltSpecs.push(d.listElementSpec);
+                    if (d) eltRefs.push(d.listElementRef);
                 } catch (e) {
                     return callback(e);
                 }
@@ -179,7 +181,7 @@ export function initOdd(filename: string, data: string, urlmodel: string) {
         }, err => {
             if (err) console.error(err.message);
             // eltRefs contains now all elementSpec
-            let o = odd.loadOdd(data, eltRefs);
+            let o = odd.loadOdd(data, eltSpecs, eltRefs);
             if (!o) return false;
             teiData.oddName = filename;
             teiData.dataOdd = o;
