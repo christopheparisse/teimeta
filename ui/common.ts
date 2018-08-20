@@ -328,47 +328,99 @@ export function askUserModalYesNoCancel(s, fun) {
     }).show();
 }
 
-export function askUserModalForOdd(previousname, loaded, fun) {
-    let askoddInfo = msg.msg('askoddInfo');
-    let askoddCurrent = msg.msg('askoddCurrent');
-    let askoddLocalOdd = msg.msg('askoddLocalOdd');
-    let askoddPredef = msg.msg('askoddPredef');
-//    let askoddOk = msg.msg('ok');
-    let askoddCancel = msg.msg('cancel');
+let oddprefdefined = [];
+/*
+    { label: "TEI Spoken", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", labelcss: "", css: "#clean#" },
+    { label: "Olac/DC", odd: "http://ct3.ortolang.fr/teimeta/olac.odd", labelcss: "", css: "" },
+    { label: "Media", odd: "http://ct3.ortolang.fr/teimeta/media.odd", labelcss: "", css: "" },
+    { label: "TEI Spoken FileDesc", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", 
+        labelcss: "FileDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenfile.css" },
+    { label: "TEI Spoken ProfileDesc", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", 
+        labelcss: "ProfileDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenprofile.css" },
+    { label: "TEI Spoken EncodingDesc", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", 
+        labelcss: "EncodingDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenencoding.css" },
 
-    let box = '<div id="aumomodal"><p class="aumo aumotitle">' + askoddInfo + '</p>' +
-    (loaded ? "<button class='aumo aumobutton current'>" + askoddCurrent + " " + previousname + "</button>" : "")
-        + "<button class='aumo aumobutton computer'>" + askoddLocalOdd + "</button>" +
-        '<p class="aumo aumoinfo">' + askoddPredef + "<p/>";
+    { label: "TEST", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", 
+        labelcss: "EncodingDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenencoding.css" },
+    { label: "TEST", odd: "file:///devlopt/teimeta/models/tei_p.odd", 
+        labelcss: "EncodingDesc", css: "" },
+*/
 
-    for (let s=0; s < (msg.oddpredefs()).length; s++) {
-        box += "<button class='aumo aumobutton aumoid" + s + "'>" + (msg.oddpredefs())[s].label + "</button>";
-    }
-
-    box += "<button class='aumo aumocancel cancel'>" + askoddCancel + "</button></div>";
-
-    picoModal({
-        content: box
-    }).afterCreate(modal => {
-        modal.modalElem().addEventListener("click", evt => {
-            if (evt.target) {
-                if (evt.target.matches(".current")) {
-                    modal.close('current');
-                } else if (evt.target.matches(".computer")) {
-                    modal.close('computer');
-                } else if (evt.target.matches(".cancel")) {
-                    modal.close('cancel');
+export function oddpredefs(callback) {
+    if (oddprefdefined.length < 1) {
+        teimeta.readTextFile("./models/models.json",
+            function(err, data) {
+                if (!err) {
+                    let ds = data.toString();
+                    try {
+                        let js = JSON.parse(ds);
+                        for (let i=0; i < js.length; i++) {
+                            if (js[i].css) js[i].css = './models/' + js[i].css;
+                            if (js[i].odd) js[i].odd = './models/' + js[i].odd;
+                            if (!js[i].labelcss) js[i].labelcss = "";
+                            if (!js[i].css) js[i].css = "";
+                        }
+                        oddprefdefined = js;
+                        console.log(js);
+                        callback(oddprefdefined);
+                    } catch(e) {
+                        alert.alertUser('error reading models.json: ' + e.toString());
+                        console.log('error reading models.json:',e);
+                    }
                 } else {
-                    for (let s=0; s < (msg.oddpredefs()).length; s++) {
-                        let l = "aumoid" + s;
-                        if (evt.target.matches("." + l)) {
-                            modal.close(l);
+                    alert.alertUser('error reading models.json: ' + data);
+                    console.log('error reading models.json:', data);
+            }
+            });
+    } else {
+        callback(oddprefdefined);
+    }
+}
+
+export function askUserModalForOdd(previousname, loaded, fun) {
+    function afteroddpredefs(predefs) {
+        let askoddInfo = msg.msg('askoddInfo');
+        let askoddCurrent = msg.msg('askoddCurrent');
+        let askoddLocalOdd = msg.msg('askoddLocalOdd');
+        let askoddPredef = msg.msg('askoddPredef');
+    //    let askoddOk = msg.msg('ok');
+        let askoddCancel = msg.msg('cancel');
+
+        let box = '<div id="aumomodal"><p class="aumo aumotitle">' + askoddInfo + '</p>' +
+        (loaded ? "<button class='aumo aumobutton current'>" + askoddCurrent + " " + previousname + "</button>" : "")
+            + "<button class='aumo aumobutton computer'>" + askoddLocalOdd + "</button>" +
+            '<p class="aumo aumoinfo">' + askoddPredef + "<p/>";
+
+        for (let s=0; s < (predefs).length; s++) {
+            box += "<button class='aumo aumobutton aumoid" + s + "'>" + (predefs)[s].label + "</button>";
+        }
+
+        box += "<button class='aumo aumocancel cancel'>" + askoddCancel + "</button></div>";
+
+        picoModal({
+            content: box
+        }).afterCreate(modal => {
+            modal.modalElem().addEventListener("click", evt => {
+                if (evt.target) {
+                    if (evt.target.matches(".current")) {
+                        modal.close('current');
+                    } else if (evt.target.matches(".computer")) {
+                        modal.close('computer');
+                    } else if (evt.target.matches(".cancel")) {
+                        modal.close('cancel');
+                    } else {
+                        for (let s=0; s < predefs.length; s++) {
+                            let l = "aumoid" + s;
+                            if (evt.target.matches("." + l)) {
+                                modal.close(l);
+                            }
                         }
                     }
                 }
-            }
-        });
-    }).afterClose((modal, event) => {
-        fun(event.detail);
-    }).show();
+            });
+        }).afterClose((modal, event) => {
+            fun(event.detail);
+        }).show();
+    }
+    oddpredefs(afteroddpredefs);
 }

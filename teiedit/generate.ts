@@ -5,7 +5,7 @@
  */
 
 // import * as alert from './alert';
-import * as odd from './odd';
+import * as teimeta from './teimeta';
 import * as edit from './edit';
 
 let entities = require("entities");
@@ -22,7 +22,7 @@ let currentNamespace = 'nonamespace';
  * @return {string} - new string content 
  */
 function encodeXML(s) {
-    if (odd.odd.params.encodeXMLFull)
+    if (teimeta.teiData.params.encodeXMLFull)
         return entities.encodeXML(s);
     s = s.replace(/\</,'&lt;');
     s = s.replace(/\>/,'&gt;');
@@ -32,8 +32,8 @@ function encodeXML(s) {
 /**
  * clean xml values in DOM from unused (empty) attributes
  * @param {Object} node - DOM top node recursively processed
- */
-function clean(node) {
+
+ function clean(node) {
     var nodes=[], values=[];
     for (let att, i = 0, atts = node.attributes, n = atts.length; i < n; i++) {
             att = atts[i];
@@ -54,6 +54,42 @@ function clean(node) {
         }
     }
 }
+ */
+
+/**
+ * @method createAbsolutePath
+ * creates a path from top of xml file and returns last node created
+ * @param path 
+ * @param doc
+ * @returns node 
+
+ function createAbsolutePath(path, doc) {
+    let p = path.split('/').slice(1);
+    // le nom de l'élément racine est ignoré
+    // on pourrait controler si le nom de l'élément correspond au nom donné dans l'ODD
+    // if (p[0] !== 'TEI') {
+    //     let s = 'impossible de créer des chemins qui ne commencent pas par TEI';
+    //     alert.alertUser(s);
+    //     return null;
+    // }
+    let node = doc.documentElement;
+    for (let i = 1; i < p.length; i++) {
+        let nds = odd.getChildrenByName(node, p[i]);
+        if (nds.length > 1) {
+            let s = p.slice(0,i).join('/');
+            s = '<!-- attention element ' + s + " n'est pas unique. -->";
+        }
+        if (nds.length > 0) {
+            node = nds[0];
+        } else {
+            let newnode = doc.createElement(p[i]);
+            node.appendChild(newnode);
+            node = newnode;
+        }
+    }
+    return node;
+}
+*/
 
 /**
  * gather the new state of the XML object edited by teimeta
@@ -131,7 +167,7 @@ function generateElement(espec, doc, node) {
         }
     } else {
         // suppress a node is this is allowed
-        if (espec.node && (odd.odd.params.canRemove || espec.usage === 'opt')) {
+        if (espec.node && (teimeta.teiData.params.canRemove || espec.usage === 'opt')) {
             espec.node.parentNode.removeChild(espec.node);
             espec.node = null;
         }
@@ -245,7 +281,7 @@ function generateFilledElement(elt, doc, node) {
                 elt.attr[i].datatype.valueContent = encodeXML(String(v));
             }
             // test if empty and if this the case, if parameters not to fill empty attribute is true, then remove attribute
-            if (!elt.attr[i].datatype.valueContent && elt.attr[i].usage === 'opt' && !odd.odd.params.defaultNewElement) {
+            if (!elt.attr[i].datatype.valueContent && elt.attr[i].usage === 'opt' && !teimeta.teiData.params.defaultNewElement) {
                 node.removeAttribute(elt.attr[i].ident);
             } else {
                 node.setAttribute(elt.attr[i].ident, elt.attr[i].datatype.valueContent);

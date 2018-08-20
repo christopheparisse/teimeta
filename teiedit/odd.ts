@@ -11,12 +11,11 @@ import * as alert from './alert';
 import * as msg from '../msg/messages';
 import * as schema from './schema';
 
-export let odd : schema.SCHEMA = new schema.SCHEMA();
-
 let entities = require("entities");
 let xpath = require('xpath');
 let select;
 // import * as system from '../system/opensave';
+let listElementRef = [];
 
 function tagES(k, c) {
     return (c) ? k + '#' + c : k;    
@@ -51,6 +50,7 @@ export function getChildrenByName(node, name, corresp=null) {
  */
 function readElementSpec(elementspec, node) {
     // find all about elementSpec
+    let remarks = false;
 
     // récupérer tous les attributs potentiels
     elementspec.ident = node.getAttribute("ident");
@@ -72,10 +72,12 @@ function readElementSpec(elementspec, node) {
     // le champ remarksContent
     let rc =  new schema.Remarks();
     if (readRemarks(rc, node, "element")) {
+        remarks = true;
         elementspec.remarks = rc;
     }
     rc =  new schema.Remarks();
     if (readRemarks(rc, node, "content")) {
+        remarks = true;
         // elementspec.remarksContent = rc;
         if (elementspec.content.datatype) {
             elementspec.content.datatype.remarks = rc;
@@ -91,10 +93,13 @@ function readElementSpec(elementspec, node) {
         let ad = getChildrenByName(a[0], 'attDef');
         for (let i in ad) {
             let adv = new schema.AttrDef();
-            readAttrDef(adv, ad[i]);
+            if (readAttrDef(adv, ad[i])) {
+                remarks = true;
+            }
             elementspec.attr.push(adv);
         }
     }
+    return remarks;
 }
 
 /**
@@ -110,7 +115,6 @@ function readRemarks(rm, node, style) {
         if (s === style || (style === 'element' && !s)) {
             let r = processRemarks(rm, d[i]);
             if (r) {
-                odd.remarks = true;
                 return rm;
             }
         }
@@ -295,10 +299,10 @@ function getElementRef(elementCount, node) {
     elementCount.ident = keyElementSpec(node);
     elementCount.corresp = correspElementSpec(node);
     elementCount.type = 'elementRef';
-    if (odd.listElementRef[elementCount.model] === undefined)
-        odd.listElementRef[elementCount.model] = 1;
+    if (listElementRef[elementCount.model] === undefined)
+        listElementRef[elementCount.model] = 1;
     else
-        odd.listElementRef[elementCount.model]++;
+        listElementRef[elementCount.model]++;
 }
 
 /**
@@ -320,10 +324,10 @@ function getSequence(elementCount, node) {
         elementCount.corresp.push(t);
         t = tagElementSpec(s[i]);
         elementCount.model.push(t);
-        if (odd.listElementRef[t] === undefined)
-            odd.listElementRef[t] = 1;
+        if (listElementRef[t] === undefined)
+            listElementRef[t] = 1;
         else
-            odd.listElementRef[t]++;
+            listElementRef[t]++;
     }
 }
 
@@ -424,18 +428,19 @@ function readDesc(desc, node) {
  * @param node 
  */
 function readAttrDef(attrDef, node) {
+    let remarks = false;
     attrDef.ident = node.getAttribute('ident');
     attrDef.usage = node.getAttribute('usage');
     attrDef.mode = node.getAttribute('mode');
     attrDef.rend = node.getAttribute('rend');
     if (!attrDef.rend) attrDef.rend = '';
     
-    // le champ desc
+    // desc field
     let d =  new schema.Desc();
     if (readDesc(d, node)) attrDef.desc = d;
 
     attrDef.datatype = new schema.DataType();
-    // le champ datatype
+    // datatype field
     let a = getChildrenByName(node, 'datatype');
     if (a.length > 0) {
         attrDef.datatype.type = getDataRef(a[0]);
@@ -449,7 +454,7 @@ function readAttrDef(attrDef, node) {
             let vlType = (attrDef.datatype.vallistType === 'closed') ? 'list' : attrDef.datatype.vallistType;
             attrDef.datatype.type = vlType;
         } else {
-            // type pas spécifié par valList: utiliser datatype ou par défaut
+            // type not specified by valList: use datatype or default
             if (attrDef.datatype.type !== 'openlist')
                 attrDef.datatype.type = 'list';
         }
@@ -460,13 +465,15 @@ function readAttrDef(attrDef, node) {
     }
     let rc =  new schema.Remarks();
     if (readRemarks(rc, node, "element")) {
+        remarks = true;
         attrDef.datatype.remarks = rc;
     }
+    return remarks;
 }
 
 /**
  * @method valList
- * fonction de traitement des listes de valeurs pour les attributs
+ * compute list of values for an attributre
  * @param {Object} data - Attr structure 
  * @param {Object} node - node of an ODD 
  * @return {numeric} length of node
@@ -482,7 +489,7 @@ function valList(data, node) {
             let vi = new schema.ValItem();
             let attr = valItem[k].getAttribute("ident");
             if (attr) vi.ident = attr;
-            // le champ desc
+            // desc field
             let d =  new schema.Desc();
             if (readDesc(d, valItem[k])) {
                 vi.desc = d;
@@ -500,11 +507,13 @@ function valList(data, node) {
 
 /**
  * @method loadOdd
- * parse tous les elementSpec du odd et appele sous-fonction pour les champs Content
- * @param data : contenu d'un fichier xml
- * @return structure teiOdd (modèle de données du ODD)
+ * parse all elementSpec from the odd and call sub routines for Content fields
+ * @param data : content of an odd file
+ * @return teiOdd structure (model data from the ODD)
  */
-export function loadOdd(data) {
+export function loadOdd(data, classRefs = null) {
+    listElementRef = [];
+    let odd = new schema.SCHEMA();
     let error = '';
     let warning = '';
     // get XML ready
@@ -515,8 +524,8 @@ export function loadOdd(data) {
         doc = parser.parseFromString(data.toString(), 'text/xml');
         if (doc.documentElement.nodeName === "parsererror") {
     //        checkErrorXML(doc.getElementsByTagName("parsererror")[0]);
-            alert.alertUser("The ODD file is not valid: Operation canceled.")
-            console.log("Erros in ODD file")
+            alert.alertUser("The ODD file is not valid: Operation canceled." + doc.documentElement.innerHTML);
+            console.log("Errors in ODD file", doc.documentElement.innerHTML);
         } else {
             console.log("No errors found");
         }
@@ -531,9 +540,9 @@ export function loadOdd(data) {
         alert.alertUser(s);
         return null;
     }
-    // récupérer attribut start
+    // get attribute start
     let attr = schemaSpec[0].getAttribute("start");
-    // valeur retour de la fonction
+    // function return value
     if (attr) {
         odd.init();
         odd.rootTEI = attr;
@@ -541,6 +550,17 @@ export function loadOdd(data) {
         let s = msg.msg('norootattr');
         alert.alertUser(s);
         return null;
+    }
+    let duplicateOK = [];
+    // add classRefs (elements from included classRef) if there are some
+    if (classRefs !== null) {
+        odd.listElementRef = classRefs; 
+        // list element that can be duplicated
+        for (let i=0; i < classRefs.length; i++) {
+            if (classRefs[i].access) {
+                duplicateOK.push(classRefs[i].access);
+            }
+        }
     }
     // get attribute ident
     odd.rootIdent = schemaSpec[0].getAttribute("ident");
@@ -572,9 +592,15 @@ export function loadOdd(data) {
     // read the elementSpec
     for (let i=0; i < eSpec.length ; i++) {
         var es = new schema.ElementSpec();
-        readElementSpec(es, eSpec[i]);
+        if (readElementSpec(es, eSpec[i])) {
+            odd.remarks = true;
+        }
         if (odd.listElementSpec[es.access]) {
-            error += msg.msg('redefelementspec') + es.access;
+            if (!duplicateOK[es.access])
+                error += msg.msg('redefelementspec') + es.access;
+            // if in duplicateOK, the old element is replaced by the new one
+            else
+                console.log('duplicate element: ' + es.access);
         }
         odd.listElementSpec[es.access] = es;
     }
@@ -585,7 +611,7 @@ export function loadOdd(data) {
         }
     }
     for (let i in odd.listElementSpec) {
-        // check if all elementRef exist as elementSpec
+        // check if all elementSpec exist as elementRef
         if (odd.listElementSpec[i].access !== odd.rootTEI && !odd.listElementRef[odd.listElementSpec[i].access]) {
             warning += msg.msg('notusedelementref1') + odd.listElementSpec[i].access + msg.msg('notusedelementref2') + '<br/>';
         }
@@ -604,5 +630,52 @@ export function loadOdd(data) {
         alert.alertUser(warning);
         console.log(warning);
     }
+    odd.listElementRef = listElementRef;
     return odd;
+}
+
+/**
+ * @method loadOddClassRef
+ * parse all classRef of the odd and return list
+ * @param data : content of odd file
+ * @return array of { key: "", source: "" }
+ */
+export function loadOddClassRef(data) {
+    let error = '';
+    let warning = '';
+    // get XML ready
+    let parser = new DOMParser();
+    let doc;
+    try {
+        doc = parser.parseFromString(data.toString(), 'text/xml');
+        if (doc.documentElement.nodeName === "parsererror") {
+            alert.alertUser("The ODD file is not valid: Operation canceled (in loadOddClassRef)." + doc.documentElement.innerHTML);
+            console.log("Errors in ODD file (loadOddClassRef).", doc.documentElement.innerHTML);
+        } else {
+            console.log("No errors found in loadOddClassRef");
+        }
+    } catch(e) {
+        alert.alertUser("The ODD file is not valid: Operation canceled (in loadOddClassRef) (catch) " + e.toString());
+    }
+    let ns = doc.documentElement.namespaceURI;
+    select = xpath.useNamespaces({"tei": ns});
+    let schemaSpec = select("//tei:schemaSpec", doc);
+    if (schemaSpec.length < 1) {
+        let s = msg.msg('nooddinelementspec');
+        alert.alertUser(s);
+        return null;
+    }
+    // get all classRef = including other files
+    let classRefs = [];
+    let cRef = getChildrenByName(schemaSpec[0], 'classRef');
+    for (let i=0; i < cRef.length; i++) {
+        let key = cRef[i].getAttribute("key");
+        let source = cRef[i].getAttribute("source");
+        if (key && source) {
+            classRefs.push({ key: key, source: source});
+        } else {
+            alert.alertUser('incorrect classRef specification for ' + cRef[0].toString());
+        }
+    }
+    return classRefs;
 }

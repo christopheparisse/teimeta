@@ -2,7 +2,6 @@
 * mode d'emploi logiciel
 * mode d'emploi ODD
 * modules
-* listes pour type list et openlist dans editeur de odd
 * Widgets améliorés
 
 ## Notes précedentes

@@ -113,19 +113,19 @@ function formatTime(t) {
     let d = new Date(t * 1000);
     let h = d.getUTCHours();
     let r;
-    if (odd.odd.params.fmt === 'hms') {
+    if (teimeta.teiData.params.fmt === 'hms') {
         if (h > 0)
             r = h + 'h' + d.getUTCMinutes() + "m" + d.getSeconds() + "s";
         else
             r = d.getUTCMinutes() + "m" + d.getSeconds() + "s";
-    } else if (odd.odd.params.fmt === '00:00') {
+    } else if (teimeta.teiData.params.fmt === '00:00') {
         r = intFormat2(h * 60 + d.getUTCMinutes()) + ':' + intFormat2(d.getSeconds());
-    } else if (odd.odd.params.fmt === '?:00:00') {
+    } else if (teimeta.teiData.params.fmt === '?:00:00') {
         if (h > 0)
             r = h + ':' + intFormat2(d.getUTCMinutes()) + ':' + intFormat2(d.getSeconds());
         else
             r = intFormat2(d.getUTCMinutes()) + ':' + intFormat2(d.getSeconds());
-    } else if (odd.odd.params.fmt === '0:00:00') {
+    } else if (teimeta.teiData.params.fmt === '0:00:00') {
         if (h > 0)
             r = h + ':' + intFormat2(d.getUTCMinutes()) + ':' + intFormat2(d.getSeconds());
         else
@@ -133,17 +133,17 @@ function formatTime(t) {
     } else {
         r = h;
     }
-    if (!odd.odd.params.nbdigits)
+    if (!teimeta.teiData.params.nbdigits)
         return r;
 
     let ms = '0.0';
-    if (odd.odd.params.nbdigits === 3)
+    if (teimeta.teiData.params.nbdigits === 3)
         ms = ms.substring(2, 5);
-    else if (odd.odd.params.nbdigits === 2)
+    else if (teimeta.teiData.params.nbdigits === 2)
         ms = ms.substring(2, 4);
-    else if (odd.odd.params.nbdigits === 1)
+    else if (teimeta.teiData.params.nbdigits === 1)
         ms = ms.substring(2, 3);
-    if (odd.odd.params.fmt === 'hms')
+    if (teimeta.teiData.params.fmt === 'hms')
         return r + ms;
     else
         return r + '.' + ms;
@@ -166,7 +166,7 @@ export function checkTime(event, id) {
         return;
     }
     let newt = 0;
-    if (odd.odd.params.fmt === 'hms') {
+    if (teimeta.teiData.params.fmt === 'hms') {
         var m = tx.split(/[hmsHMS]/);
         if (m.length !== 3) {
             alert.alertUser(msg.msg('badtimeformat'));
@@ -220,7 +220,7 @@ export function checkTime(event, id) {
  */
 function styleTime() {
     let s;
-    switch(odd.odd.params.fmt) {
+    switch(teimeta.teiData.params.fmt) {
         case 'hms':
         case 'HMS':
             s = "Format: 0h0m0s";
@@ -591,7 +591,7 @@ function generateMultiple(ec, abspath) {
     // console.log(ec); // ec.parentElementSpec.ident
     let idm = typeof(ec.ident) === 'string' ? ec.ident : (ec.ident.join('-'));
     s += '<div class="contentCountMany UPCM-' + idm + '" id="' + uniqCreate + '" ';
-    if (odd.odd.remarks === false || !teimeta.teiData.cssName)
+    if (teimeta.teiData.dataOdd.remarks === false || !teimeta.teiData.cssName)
         s += ' style="border: 1px solid black; border-radius: 4px;"';
     s += ' >\n';
     // on peut en rajouter ... ou supprimer
@@ -676,7 +676,7 @@ function editDataType(datatype, ident) {
                     datatype.vallist[k].ident + '" ';
                 if (datatype.valueContent === datatype.vallist[k].ident)
                     s  += 'selected="selected" ';
-                s += '>' + odd.textDesc(datatype.vallist[k].desc, odd.odd.params.language) + '</option>\n';
+                s += '>' + odd.textDesc(datatype.vallist[k].desc, teimeta.teiData.params.language) + '</option>\n';
             }
             s += '</select>\n';
             break;
@@ -699,7 +699,7 @@ function editDataType(datatype, ident) {
             for (let k in datatype.vallist) {
                 s += '<option value="' +
                     datatype.vallist[k].ident + '" ';
-                    s += '>' + odd.textDesc(datatype.vallist[k].desc, odd.odd.params.language);
+                    s += '>' + odd.textDesc(datatype.vallist[k].desc, teimeta.teiData.params.language);
                     s += '</option>\n';
             }
             s += '</datalist>\n';
@@ -734,7 +734,7 @@ function editDataType(datatype, ident) {
                     s  += 'selected="selected" ';
                     selected = true;                    
                 }
-                s += '>' + odd.textDesc(datatype.vallist[k].desc, odd.odd.params.language) + '</option>\n';
+                s += '>' + odd.textDesc(datatype.vallist[k].desc, teimeta.teiData.params.language) + '</option>\n';
             }
             s += '</select>\n';
             break;
@@ -935,7 +935,7 @@ function editAttr(elt) {
         s += '<span class="eltNodeAttr-' + classOf(elt.attr[i].usage) + '">\n';
         if (elt.attr[i].desc) {
             s += '<span class="descAttr">';
-            s += odd.textDesc(elt.attr[i].desc, odd.odd.params.language);
+            s += odd.textDesc(elt.attr[i].desc, teimeta.teiData.params.language);
             s +='</span>\n';
         }
         s += editDataType(elt.attr[i].datatype, elt.attr[i].ident);
@@ -962,9 +962,9 @@ function generateElement(elt, validatedStyle) {
     let classdisplay = "UP-" + elt.ident;
     s += '<div class="contentCountSimple UPCM-' + elt.ident + '">\n';
     if (elt.corresp) classdisplay += "-" + elt.corresp;
-    if (odd.odd.params.displayFullpath || elt.attr.length > 0 || (elt.content && elt.content.datatype)) {
-        let lprof = recursiveDepth * odd.odd.params.leftShift;
-        if (odd.odd.params.displayFullpath && (elt.attr.length === 0 && (!elt.content || !elt.content.datatype)))
+    if (teimeta.teiData.params.displayFullpath || elt.attr.length > 0 || (elt.content && elt.content.datatype)) {
+        let lprof = recursiveDepth * teimeta.teiData.params.leftShift;
+        if (teimeta.teiData.params.displayFullpath && (elt.attr.length === 0 && (!elt.content || !elt.content.datatype)))
             classdisplay = "noUP";
         // if (elt.remarks) console.log("elt remarks (on) ", elt.ident, elt);
         if (elt.remarks) {
@@ -976,7 +976,7 @@ function generateElement(elt, validatedStyle) {
             s += '<div class="nodeField node-' + classOf(elt.usage) + " " + classdisplay + '" title="' 
                 + elt.absolutepath + '" style="margin-left: ' + lprof + 'px;">\n';
         }
-        if (odd.odd.params.validateRequired && validatedStyle !== 'root') {
+        if (teimeta.teiData.params.validateRequired && validatedStyle !== 'root') {
             // on peut tout valider donc on ne se pose pas de question
             values[uniq] = { select: elt.validatedES, eltSpec: elt.parentElementSpec };
             elt.validatedESID = uniq;
@@ -1011,17 +1011,17 @@ function generateElement(elt, validatedStyle) {
         // contenu (node principal)
         s += '<i class="hidebutton fa fa-size2 fa-star-half-o fa-color-toggle" '
             + 'onclick="window.ui.toggleES(event, \'' + uniq + '\')"></i>';
-        if (odd.odd.params.displayFullpath) {
+        if (teimeta.teiData.params.displayFullpath) {
             s += '<span class="nodeIdent">' + elt.ident + '</span>\n';
             s += '<span class="nodeAbspath">' + elt.absolutepath + '</span>\n';
             s += '<div class="toggle" id="show' + uniq + '">';
             // description
-            if (elt.desc) s += '<div class="eltDescBlock ' + classdisplay + '-desc' + '">' + odd.textDesc(elt.desc, odd.odd.params.language) + '</div>\n';
+            if (elt.desc) s += '<div class="eltDescBlock ' + classdisplay + '-desc' + '">' + odd.textDesc(elt.desc, teimeta.teiData.params.language) + '</div>\n';
         } else {
             s += '<div class="toggle" id="show' + uniq + '">';
             // description
             if (elt.desc)
-                s += '<div class="eltDesc ' + classdisplay + '-desc' + '">' + odd.textDesc(elt.desc, odd.odd.params.language) + '</div>\n';
+                s += '<div class="eltDesc ' + classdisplay + '-desc' + '">' + odd.textDesc(elt.desc, teimeta.teiData.params.language) + '</div>\n';
             else
                 s += '<div class="eltDesc ' + classdisplay + '-desc' + '">' + elt.ident + '</div>\n';
         }
@@ -1040,7 +1040,7 @@ function generateElement(elt, validatedStyle) {
         s += '</div>\n';
     } else {
         recursiveDepth --; // cancel recursiveDepth
-        let lprof = recursiveDepth * odd.odd.params.leftShift;
+        let lprof = recursiveDepth * teimeta.teiData.params.leftShift;
         if (elt.remarks) {
             // if (elt.remarks) console.log("elt remarks (off) ", elt.ident, elt);
             s += '<div class="nodeField noUP node-' + classOf(elt.usage) + " " + classdisplay;
@@ -1069,8 +1069,8 @@ function generateElement(elt, validatedStyle) {
         }
         // description
         if (elt.desc)
-            s += '<div class="eltDesc ' + classdisplay + '-desc' + '">' + odd.textDesc(elt.desc, odd.odd.params.language) + '</div>\n';
-        else if (odd.odd.params.displayFullpath)
+            s += '<div class="eltDesc ' + classdisplay + '-desc' + '">' + odd.textDesc(elt.desc, teimeta.teiData.params.language) + '</div>\n';
+        else if (teimeta.teiData.params.displayFullpath)
             s += '<div class="eltDesc ' + classdisplay + '-desc' + '">' + elt.ident + '</div>\n';
         if (elt.content && elt.content.sequencesRefs.length > 0) {
             s += '<div class="nodeContent">';

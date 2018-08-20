@@ -67,9 +67,9 @@ export function openXml() {
                     // try to open it
                     let displayname = dispname(oddname);
                     // read ODD
-                    teimeta.readTextFile(oddname, function (text) {
+                    teimeta.readTextFile(oddname, function (err, text) {
                         // console.log("read ODD: ", oddname, text);
-                        if (text) {
+                        if (!err) {
                             // load ODD
                             openOddLoad(oddname, displayname, text);
                             // then open XML
@@ -82,6 +82,32 @@ export function openXml() {
         });
     });
 };
+
+function loadOddPredefs(c, choice, nameXml, dataXml) {
+    function afterReadOddPredefs(cs) {
+        let n = cs[c];
+        if (n && n.odd) {
+            if (n.css && n.css !== "#clean#") {
+                oddCssLoadUrls(n.odd, n.label, n.css, n.labelcss,
+                    function(){
+                        finishOpenXml(nameXml, dataXml);
+                    });
+            } else {
+                if (n.css === "#clean#") {
+                    cleanCss();
+                }
+                oddLoadUrl(n.odd, n.label,
+                    function(){
+                        finishOpenXml(nameXml, dataXml);
+                    });
+            }
+        } else {
+            console.log('bad number in choice:', choice, cs);
+            alert.alertUser('bad number in choice: ' + choice);
+        }
+    }
+    common.oddpredefs(afterReadOddPredefs);
+}
 
 /**
  * method findOdd
@@ -114,26 +140,7 @@ function findOdd(nameXml, dataXml) {
                         alert.alertUser('bad choice: ' + choice + " [" + c + "]");
                         return;
                     }
-                    let n = (msg.oddpredefs())[c];
-                    if (n && n.odd) {
-                        if (n.css && n.css !== "#clean#") {
-                            oddCssLoadUrls(n.odd, n.label, n.css, n.labelcss,
-                                function(){
-                                    finishOpenXml(nameXml, dataXml);
-                                });
-                        } else {
-                            if (n.css === "#clean#") {
-                                cleanCss();
-                            }
-                            oddLoadUrl(n.odd, n.label,
-                                function(){
-                                    finishOpenXml(nameXml, dataXml);
-                                });
-                        }
-                    } else {
-                        console.log('bad number in choice:', choice, msg.oddpredefs());
-                        alert.alertUser('bad number in choice: ' + choice);
-                    }
+                    loadOddPredefs(c, choice, nameXml, dataXml);
                 }
                 break;
         }
@@ -204,9 +211,9 @@ function testCss(cssname, fun) {
         // an odd is indicated in the xml file
         // try to open it
         let displayname = dispname(cssname);
-        teimeta.readTextFile(cssname, function (text) {
+        teimeta.readTextFile(cssname, function (err, text) {
             // console.log("read ODD: ", oddname, text);
-            if (text) {
+            if (!err) {
                 openCssLoad(cssname, displayname, text);
                 if (fun) fun();
             }
@@ -330,7 +337,7 @@ export function openOddLoad(name, displayname, data) {
         localStorage.setItem("previousODD", js);
     }
 
-    if (teimeta.initOdd(name, data)===false) return;
+    if (teimeta.initOdd(name, data, name) === false) return;
     let el = document.getElementById('oddname');
     if (el) el.innerHTML = "ODD: " + displayname;
     if (teimeta.teiData.dataOdd.cssfile) {
@@ -464,17 +471,29 @@ export function saveAsLocal(fun, force = false) {
 };
 
 export function oddLoadUrl(url, namedisplayed, fun) {
-    teimeta.readTextFile(url, function(text) {
-        openOddLoad(url, namedisplayed, text);
-        fun();
+    teimeta.readTextFile(url, function(err, text) {
+        if (!err) {
+            openOddLoad(url, namedisplayed, text);
+            fun();
+        } else {
+            console.log('error reading', url, text);
+            alert.alertUser('error reading ' + url + ' : ' + text);
+            return;
+        }
     });
 }
 
 export function oddCssLoadUrls(urlOdd, namedisplayedOdd, urlCss, namedisplayedCss, fun) {
-    teimeta.readTextFile(urlOdd, function(textOdd) {
-        teimeta.readTextFile(urlCss, function(textCss) {
-            openOddCssLoad(urlOdd, namedisplayedOdd, textOdd, urlCss, namedisplayedCss, textCss);
-            fun();
+    teimeta.readTextFile(urlOdd, function(err1, textOdd) {
+        teimeta.readTextFile(urlCss, function(err2, textCss) {
+            if (!err1 && !err2) {
+                openOddCssLoad(urlOdd, namedisplayedOdd, textOdd, urlCss, namedisplayedCss, textCss);
+                fun();
+            } else {
+                console.log('error reading', urlOdd, err1, urlCss, err2);
+                alert.alertUser('error reading ' + urlOdd  + err1 + " or " + urlCss + err2);
+                return;
+            }
         });
     });
 }

@@ -2,7 +2,7 @@
 ## English version
 [Version française](#user-content-version-française)
 
-**An editor (generated automatically from a ODD description) for subparts of a XML file**
+**An editor (generated automatically from a ODD description) for subparts of an XML file**
 
 ## Downloading or using the tool
 
@@ -24,11 +24,16 @@ Downloading the DC/OLAC ODD: [http://ct3.ortolang.fr/teimeta/olac.odd](http://ct
 
 TEIMETA is a tool for editing XML files. The editing structure, possibilies, and information are described in an XML ODD TEI file. TEIMETA uses this description (the model) to produce automatically a user interface in a webbrowser or an independant Electron application.
 
-The tool was created to edit TEI files, but it can be used for any type of XML format. XML schema control is not implemented. The quality of the final format is automatically controled by the description (the model) but the quality of the model is not (yet) controlled by TEIMETA.
+Integration of the tool in another application is possible through two different method:
+1) integrate the library as a plugin in another website, using your own functions to load and save the data
+2) redesign the HTML interface using the full power of the tool. 
+
+The tool was created to edit TEI files, but it can be used for any type of XML format. XML schema control of the XML created files is not (yet) implemented. The quality of the final files is automatically controled by the description (the ODD model) but the quality of what the model generates is not controlled by TEIMETA (note that it would be very difficult to control that the ODD are garantied to allways build correct XML files).
 
 TEIMETA allows to edit any XML node but not to move this node around in the XML file. New nodes can be created and nodes can be erased (if this is allowed by the model). The ODD describes node position from the root. **The values of an XML node not described in the ODD file will never be modified. This means that it is possible to edit parts of an XML file respecting the integrity of the rest of the file.**
 
 ## Version information
+0.6.2 - fully documented version
 0.5.2 - improved style of CSS for all display size
 0.5.1 - full English or French version
 0.5.0 - 2 may 2018 - ODD files can describe the visual presentation of the data edited using CSS features.
@@ -39,17 +44,14 @@ TEIMETA allows to edit any XML node but not to move this node around in the XML 
 The main editing features are:
 - creating a node, adding node to other nodes
 - editing a node with a specific format
-  - free text
-  - vocabulary (open or closed)
-  - number
-  - date
-  - duration
 - editing attributes from a node with a format
+  - for the two previous cases, editing can include 
   - free text
   - vocabulary (open or closed)
   - number
   - date
   - duration
+  - languages, countries
 
 ## Editing the ODD and XML examples
 
@@ -171,9 +173,9 @@ npm run electron
 npm start
 ```
 
-#### Use as a library in another software
-Include directory teimeta/*.ts
-Instructions are within tei.ts file
+#### Use as a library in another software using basic library
+Include directory lib.js and repertory fonts (in folder dist)
+Instructions are within lib.ts file in teimeta folder in sources.
 
 ```
 # use the library in another application.
@@ -183,6 +185,23 @@ import * from 'teimeta/tei'
 ... insert innerHTML in an HTML element
 ... generateTEI(innerHTML)
 ```
+
+#### Use as a plugin in another software using HTML implementation
+This takes advantage of all function implemented. It only requires to redesign the HTML page 
+and implement the adequate calls to basic functions:
+
+  - openXml() - ask the user to find an XML file on his computer (warning: a hidden tag with id 'upload-input-transcript' 
+  must exist in the HTML file - for exemple <div id='upload-input-transcript'></div>)
+  - cleanCss() - reset the value of the css data included in the presentation of an odd
+  - newXml(choice) - create an empty Xml data with an ODD - choice can be set to 'previous'. In this case the ODD loaded
+  in memory is used
+  - dumpHtml() - download the content of the innerHTML (useful for checking the HTML data and testing)
+  - reLoad()
+  - openOdd() - ask the user for an ODD and create new XML with it.
+  - openCss() - ask the user for a CSS and wait for further processing.
+  - emptyFile() - clean the data
+  - save() - save the content of the XML file
+  - others - see exports in events.ts
 
 ## Other information
 Download source code: [https://github.com/christopheparisse/teimeta/](https://github.com/christopheparisse/teimeta/)

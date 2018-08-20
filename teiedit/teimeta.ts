@@ -30,7 +30,7 @@ export let teiData = {
     doc: null, // DOM document
     system: '', // name of running system (electron or html)
     edit: edit, // pointer to edition functions
-    params: odd.odd.params, // pointer to parameters
+    params: new schema.PARAMS(), // pointer to parameters
     version: schema.version,
     init: function() {
         this.oddName = ''; // name of ODD file
@@ -58,10 +58,17 @@ export function readTextFile(file, callback) {
     rawFile.open("GET", file, true);
     rawFile.onload = function(e) {
         if (rawFile.readyState === 4 && rawFile.status == "200") {
-            callback(rawFile.responseText);
+            callback(0, rawFile.responseText);
+        } else {
+            callback(rawFile.status, "error reading " + file);
         }
     }
     rawFile.send(null);
+}
+
+function urlpathname(s) {
+    let p = s.lastIndexOf('/');
+    return (p >= 0) ? s.substring(0,p+1) : s;
 }
 
 /**
@@ -145,7 +152,40 @@ export function initXml(filename: string, data: string) {
  * @returns 'ok' / 'css' / 'null'
  * the return values are stored in the data structure
  */
-export function initOdd(filename: string, data: string) {
+export function initOdd(filename: string, data: string, urlmodel: string) {
+    let impts = odd.loadOddClassRef(data);
+    let eltRefs = [];
+    if (impts && impts.length > 0) {
+        console.log(impts);
+        // there are imports to be loaded.
+        let p = urlpathname(urlmodel);
+        // for use with Node-style callbacks...
+        var async = require("async");
+        // var obj = {dev: "/dev.json", test: "/test.json", prod: "/prod.json"};
+        async.each(impts, (ielt, callback) => {
+            console.log("read:", p + ielt.source);
+            readTextFile(p + ielt.source, function(err, idata) {
+                if (err) return callback(err);
+                try {
+                    let ie = idata.toString();
+                    let d = odd.loadOdd(ie);
+                    console.log(p + ielt.source, d, ie);
+                    if (d) eltRefs.push(d.listElementSpec);
+                } catch (e) {
+                    return callback(e);
+                }
+                callback();
+            });
+        }, err => {
+            if (err) console.error(err.message);
+            // eltRefs contains now all elementSpec
+            let o = odd.loadOdd(data, eltRefs);
+            if (!o) return false;
+            teiData.oddName = filename;
+            teiData.dataOdd = o;
+            return true;
+        });
+    }
     let o = odd.loadOdd(data);
     if (!o) return false;
     teiData.oddName = filename;
@@ -198,7 +238,7 @@ export function loadXmlOddCss(filenameXml: string, dataXml: string,
             alert.alertUser('no dataOdd in loadXmlOddCss: cannot edit xml/tei file');
             return '<div>Missing odd!</div>'
         }
-        if (initOdd(filenameOdd, dataOdd) === null) return '<div>Incorrect odd!</div>';
+        if (initOdd(filenameOdd, dataOdd, urlpathname(filenameOdd)) === null) return '<div>Incorrect odd!</div>';
         loadXml(filenameXml, dataXml);
         return teiData.html;
 }
@@ -220,8 +260,13 @@ export function readXmlOddCss (filenameXml: string,
     filenameOdd: string, filenameCss: string, callback: any) {
         function loadXml(filename, oddname, odddata, cssname, cssdata) {
             if (filename) {
-                readTextFile(filename, 
-                function(data) {
+                readTextFile(filename,
+                function(err, data) {
+                    if (err) {
+                        console.log('error : ', data);
+                        alert.alertUser('error reading ' + filename + ' : ' + data);
+                        return;
+                    }
                     let h = loadXmlOddCss(filename, data, oddname, odddata, cssname, cssdata);
                     callback(h);
                 });
@@ -233,7 +278,12 @@ export function readXmlOddCss (filenameXml: string,
         function loadOdd(filename, cssname, cssdata) {
             if (filename) {
                 readTextFile(filename, 
-                function(data) {
+                function(err, data) {
+                    if (err) {
+                        console.log('error : ', data);
+                        alert.alertUser('error reading ' + filename + ' : ' + data);
+                        return;
+                    }
                     loadXml(filenameXml, filenameOdd, data, filenameCss, data);
                 });
             } else {
@@ -242,7 +292,12 @@ export function readXmlOddCss (filenameXml: string,
         }
         if (filenameCss) {
             readTextFile(filenameCss, 
-            function(data) {
+            function(err, data) {
+                if (err) {
+                    console.log('error : ', data);
+                    alert.alertUser('error reading ' + filenameCss + ' : ' + data);
+                return;
+                }
                 loadOdd(filenameOdd, filenameCss, data);
             });
         } else {

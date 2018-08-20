@@ -6,7 +6,7 @@
  * the result structure teiData is ready to be processed
  */
 
-import * as edit from './edit';
+import * as teimeta from './teimeta';
 import * as odd from './odd';
 import * as schema from './schema';
 import * as alert from './alert';
@@ -108,22 +108,21 @@ export function loadTei(data, teiData) {
         return false;
     }
     if (root) {
-//        let attr = root.getAttribute("xml:base");
         // create first elementSpec and find and create the other recursively
         teiData.dataTei = loadElementSpec(h, root, path, '1', '1', null);
-        // h = descripteur elementSpec
-        // root = suite de noeuds
-        // '' = chemin initial
-        // 1 = nombre minimal de root autorisés
-        // 1 = nombre maximal de root autorisés
+        // h = descriptor elementSpec
+        // root = list of nodes
+        // '' = initial path
+        // 1 = minimal number of root authorized
+        // 1 = maximal number of root authorized
     } else {
         // create first elementSpec and find and create the other recursively
         teiData.dataTei = loadElementSpec(h, null, path, '1', '1', null);
-        // h = descripteur elementSpec
-        // root = suite de noeuds
-        // '' = chemin initial
-        // 1 = nombre minimal de root autorisés
-        // 1 = nombre maximal de root autorisés
+        // h = descriptor elementSpec
+        // root = list of nodes
+        // '' = initial path
+        // 1 = minimal number of root authorized
+        // 1 = maximal number of root authorized
     }
     return true;
 }
@@ -143,7 +142,7 @@ function verifyDatatype(datatype) {
             } 
         }
         if (found === false) {
-            // this item wa created by the user.
+            // this item was created by the user.
             let vi = new schema.ValItem();
             vi.ident = datatype.valueContent;
             // creation of a description with only the value and the discription is the same as the value for
@@ -170,32 +169,31 @@ function verifyDatatype(datatype) {
 export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
     let c = schema.copyElementSpec(es);
     // console.log('loadElementSpec ', c.access, path);
-    // creation d'un élément initial vide pour le noeud courant
+    // creation of an initial empty element for the current node
     c.node = node;
     c.parentElementSpec = parent;
     if (maxOcc === '2') {
         if (minOcc === '1')
             c.usage = 'req';
         else            
-            c.usage = 'opt'; // cas 0 à 2
+            c.usage = 'opt'; // case 0 to 2
     } else if (maxOcc === 'unbounded') {
         if (minOcc === '1')
             c.usage = 'req';
         else            
-            c.usage = 'opt'; // cas 0 à unbounded
+            c.usage = 'opt'; // case 0 to unbounded
     } else {
         if (minOcc === '1')
-            c.usage = 'req'; // cas 1 à 1
+            c.usage = 'req'; // case 1 to 1
         else
-            c.usage = 'opt'; // cas 0 à 1
+            c.usage = 'opt'; // case 0 to 1
     }
     c.validatedES = '';
-    // chercher tous les elements existant dans le DOM
-    // sous cet élément
+    // look for all existing element in the DOM under this node
     c.absolutepath = path;
     let nbElt = 0;
     if (node) {
-        c.validatedES = 'ok'; // l'élément existait donc il est validé par l'utilisateur
+        c.validatedES = 'ok'; // this element did exist so it was validated by the user
         // load content
         if (c.content && c.content.datatype) {
             // the text of the node is edited
@@ -210,8 +208,8 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
             if (c.attr[a].ident) {
                 c.attr[a].datatype.parentElementSpec = c;
                 if (c.attr[a].datatype.type === '') {
-                    // pas d'édition de l'attribut
-                    // mais valeur prédéfinie
+                    // no edition of the attribute
+                    // but predefined value
                     if (c.attr[a].rend) c.attr[a].datatype.valueContent = c.attr[a].rend;
                 } else {
                     let attr = node.getAttribute(c.attr[a].ident);
@@ -233,7 +231,7 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
         // with node recursivity is allowed because we follow node which is not recursive
         if (!c.content) return c;
         for (let ec of c.content.sequencesRefs) {
-            // ec au format ElementCount
+            // ec is at the format ElementCount
             if (ec.type === 'elementRef') {
                 loadElementRef(ec, node, c.absolutepath, c);
             } else {
@@ -241,12 +239,12 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
             }
         }
     } else {
-        // construire un élément vide non validé
-        // soit parce que le DOM est vide, soit parce que on n'a pas trouvé d'élément dans le DOM
-        // content et attr sont initialisés
-        // descendre dans l'arbre
-        /* ICI on applique un paramètre de l'application
-         * les éléments non renseignés sont inclus pas défaut ou non
+        // build an empty element not validated
+        // either because the DOM is empty or because we did not find the element in the current DOM
+        // content and attr will be initialized
+        // go down in the tree
+        /* here we apply a parameter of the software
+         * the elements not edited are or are not included by default
          */
         if (!c.content) return c;
         // check recursivity
@@ -256,9 +254,9 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
             console.log('recursive stop at ', c.access, c.absolutepath);
             return c;
         }
-        c.validatedES = odd.odd.params.defaultNewElement ? 'ok' : ''; // l'élément n'existait pas et il n'est pas validé par l'utilisateur
+        c.validatedES = teimeta.teiData.params.defaultNewElement ? 'ok' : ''; // l'élément n'existait pas et il n'est pas validé par l'utilisateur
         for (let ec of c.content.sequencesRefs) {
-            // ec au format ElementCount
+            // ec at the format ElementCount
             // load content
             if (ec.type === 'elementRef') {
                 loadElementRef(ec, null, c.absolutepath, c);
@@ -293,11 +291,11 @@ function isRecursive(es, name) {
  * @param parent 
  */
 function loadElementRef(ec, node, path, parent) {
-    // ec est un ElementCount
-    // préparer le premier élément ElementCountItem
+    // ec is an ElementCount
+    // prepare the first element ElementCountItem
     let eci = new schema.ElementCountItem();
     eci.parentElementSpec = parent;
-    // ec.model contient le nom de l'elementSpec
+    // ec.model contains the name of the elementSpec
     eci.type = 'elementRef';
     ec.eCI.push(eci);
 
@@ -313,7 +311,7 @@ function loadElementRef(ec, node, path, parent) {
         eci.element = loadElementSpec(h, null, path, ec.minOccurs, ec.maxOccurs, parent);
         return;
     }
-    // remplir le premier s'il y en a un
+    // fill the first one if there is one
     if (nodes.length > 0) {
         // find and create first elementSpec
         let h = ptrListElementSpec[ec.model];
@@ -324,8 +322,8 @@ function loadElementRef(ec, node, path, parent) {
         if (ec.maxOccurs === '1') {
             alert.alertUser(msg.msg('toomanyelements') + path + '/' + ec.model);
         }
-        // préparer les nouveaux éléments
-        // ec est un ElementCount
+        // prepare new elements
+        // ec is an ElementCount
         eci = new schema.ElementCountItem();
         eci.parentElementSpec = parent;
         eci.type = 'elementRef';
@@ -346,8 +344,8 @@ function loadElementRef(ec, node, path, parent) {
  */
 function loadSequence(ec, node, path, parent) {
     // load from TEI
-    let nnodes = []; // tableau de tableau de nodes
-    // pour tous les modèles de la séquence on cherche les noeuds correspondants
+    let nnodes = []; // array of arrays of nodes
+    // for all models in the sequence, we look for corresponding nodes
     if (node) {
         for (let n = 0; n < ec.ident.length; n++) {
             if (node) {
@@ -372,19 +370,19 @@ function loadSequence(ec, node, path, parent) {
     }
     */
     
-    // initialiser le tableau des descendants
+    // initialise the array of descendants
     ec.eCI = [];
-   // remplir un node s'il n'y en a aucun
+   // fill a node if there is none
     if (!node || maxlg === 0) {
-        // préparer la première séquence
-        // ec est un ElementCount
+        // prepare the first sequence
+        // ec is an ElementCount
         let eci = new schema.ElementCountItem();
         eci.parentElementSpec = parent;
         eci.type = 'sequence';
         ec.eCI.push(eci);
         eci.element = [];
         eci.model = [];
-        // ec.model contient un tableau de noms d'elementSpec
+        // ec.model contains an array of names of elementSpec
         // find and create first sequence of elementSpec
         for (let k=0; k < ec.model.length ; k++) {
             let h = ptrListElementSpec[ec.model[k]];
@@ -392,15 +390,15 @@ function loadSequence(ec, node, path, parent) {
             eci.element.push(loadElementSpec(h, null, path + '/' + ec.model[k], ec.minOccurs, ec.maxOccurs, parent));
         }
         if (ec.minOccurs === '2') {
-            // cas particulier des noeuds avec 2 éléments obligatoires
-            // préparer la deuxième séquence
-            // ec est un ElementCount
+            // specific case of a node with 2 obligatory elements
+            // prepare the second sequence
+            // ec is an ElementCount
             let eci = new schema.ElementCountItem();
             eci.type = 'sequence';
             ec.eCI.push(eci);
             eci.element = [];
             eci.model = [];
-            // ec.model contient un tableau de noms d'elementSpec
+            // ec.model contains an array of names of elementSpec
             // find and create first sequence of elementSpec
             for (let k=0; k < ec.model.length ; k++) {
                 let h = ptrListElementSpec[ec.model[k]];
@@ -411,7 +409,7 @@ function loadSequence(ec, node, path, parent) {
         return;
     }
 
-    // générer un ensemble de eci dans ec.eCI
+    // generate a set of eci in ec.eCI
     for (let i=0; i < maxlg ; i++) {            
         let eci = new schema.ElementCountItem();
         eci.parentElementSpec = parent;
@@ -421,10 +419,10 @@ function loadSequence(ec, node, path, parent) {
         ec.eCI.push(eci);
     }
     
-    // remplir les eci avec les nodes
+    // fill the eci with the nodes
     for (let i = 0; i < maxlg ; i++) {
-        // préparer les nouveaux éléments
-        // ec est un ElementCount
+        // prepare the new elements
+        // ec is an ElementCount
         for (let k=0; k < nnodes.length ; k++) {            
             // find and create first elementSpec
             let h = ptrListElementSpec[ec.model[k]];

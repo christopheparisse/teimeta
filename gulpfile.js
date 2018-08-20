@@ -121,16 +121,42 @@ gulp.task('page-test3', function () {
     .pipe(gulp.dest('/Library/WebServer/Documents/test/fonts/'))
 });
 
+gulp.task('page-test4', function () {
+  // copy test
+  return gulp.src('temp-page/models/*')
+    .pipe(gulp.dest('/Library/WebServer/Documents/dist/models/'))
+});
+
+gulp.task('page-test5', function () {
+  // copy test
+  return gulp.src('temp-page/fonts/*')
+    .pipe(gulp.dest('/Library/WebServer/Documents/dist/fonts/'))
+});
+
+gulp.task('page-test6', function () {
+  // copy test
+  return gulp.src(['temp-page/bundle.js', 'temp-page/favicon.ico','temp-page/teimeta.html'])
+    .pipe(gulp.dest('/Library/WebServer/Documents/dist/'))
+});
+
+gulp.task('page-models', function () {
+  // copy test
+  return gulp.src(['models/models.json', 'models/filedesc.odd', 'models/teispokenfile.css', 'models/media.odd',
+   'models/partdesc.odd', 'models/settingencodingdesc.odd', 'models/teispoken2.odd', 'models/metaodd.odd',
+   'models/olac.odd', 'models/olac.css'])
+    .pipe(gulp.dest('temp-page/models/'))
+});
+
 gulp.task('page', function(done) {
 //    runSequence('page-src', 'page-ui2', 'page-js', function() {
-    runSequence('page-html', 'page-src', 'page-ui2', function() {
+    runSequence('page-html', 'page-src', 'page-ui2', 'page-models', function() {
         console.log('ok.');
         done();
     });
 });
 
 gulp.task('test', function(done) {
-      runSequence('page-test1', 'page-test2', 'page-test3', function() {
+      runSequence('page-test1', 'page-test2', 'page-test3', 'page-test4', 'page-test5', 'page-test6', function() {
           console.log('ok.');
           done();
       });

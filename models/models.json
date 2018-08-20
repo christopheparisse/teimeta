@@ -1,0 +1,9 @@
+[
+{ "label": "TEI FileDesc", "odd": "filedesc.odd", "labelcss": "CSS FileDesc", "css": "teispokenfile.css" },
+{ "label": "TEI Media", "odd": "media.odd" },
+{ "label": "TEI PartDesc and TextDesc", "odd": "partdesc.odd" },
+{ "label": "TEI Setting and EncodingDesc", "odd": "settingencodingdesc.odd" },
+{ "label": "Tei for Spoken language", "odd": "teispoken2.odd" },
+{ "label": "MetaODD", "odd": "metaodd.odd" },
+{ "label": "Olac/DC", "odd": "olac.odd", "labelcss": "CSS Olac/DC", "css": "olac.css" }
+]
