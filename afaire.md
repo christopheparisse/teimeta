@@ -1,7 +1,7 @@
 ### En cours
 * mode d'emploi logiciel
 * mode d'emploi ODD
-* modules
+* test modules
 * Widgets améliorés
 
 ## Notes précedentes

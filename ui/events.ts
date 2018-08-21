@@ -337,7 +337,9 @@ export function openOddLoad(name, displayname, data) {
         localStorage.setItem("previousODD", js);
     }
 
-    if (teimeta.initOdd(name, data, name) === false) return;
+    let v = teimeta.initOdd(name, data, name);
+    if (v === false)
+        return;
     let el = document.getElementById('oddname');
     if (el) el.innerHTML = "ODD: " + displayname;
     if (teimeta.teiData.dataOdd.cssfile) {

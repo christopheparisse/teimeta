@@ -157,8 +157,16 @@ The soft works in a static webpage that can be used locally or distantly. Nothin
 
 ```
 npm run page
-# creation d'un sous-répertoire temp-page
+# creating a sub-directory temp-page
 $ open temp-page/teimeta.html
+```
+
+```
+npm run test
+# creating a sub-directory temp-page and a localhost test run in /Library/WebServer/Documents/
+$ open http://localhost/temp-page/teimeta.html
+# creating a distribution sub-directory in ./dist/ and a copy in /Library/WebServer/Documents/dist/
+# test runs are done by calling node test/test1.js up to test/test4.js
 ```
 
 ### Stand Alone Version (implemented)
@@ -173,22 +181,58 @@ npm run electron
 npm start
 ```
 
-#### Use as a library in another software using basic library
-Include directory lib.js and repertory fonts (in folder dist)
+### Use as a library in another software using basic library
+Include *lib.js and directory fonts* (found in folder dist)
 Instructions are within lib.ts file in teimeta folder in sources.
+Five functions that are sufficient to use teimeta as a library are integrated in the global object:
+global.loadXmlOddCss - load from raw data
+global.readXmlOddCss - load from url addresses
+global.finalizeHTML - finalize HTML display
+global.generateXml - get results of edition from the user
+global.teimetaParams - set parameters
+Two supplementary function are available for easy implementation of a standalone HTML page software such as TEIMETA.
+global.readTextFile - read an url as raw data
+global.saveFileLocal - save raw data as a local file in the download section
 
+#### EXEMPLE
 ```
-# use the library in another application.
-import * from 'teimeta/tei'
-... innerHTML = openODD(dataOdd)
-... innerHTML = openODDTEI(dataTei, dataOdd)
-... insert innerHTML in an HTML element
-... generateTEI(innerHTML)
+<html>
+<script src="../dist/lib.js"></script>
+<style>
+pre {
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+</style>
+<body>
+  <span><b>Please edit the data and then</b></span>
+  <button id="test102" type="button" onclick="saveTheData();"><b><em>Save the data</em></b></button>
+  <hr/>
+  <div id="teimeta"></div>
+  <pre id="info">Nothing yet.</pre>
+</body>
+<script>
+
+readXmlOddCss('http://localhost/test/test102.xml', 'http://localhost/test/test102.odd', null,
+  function (h) {
+    var el = document.getElementById('teimeta');
+    el.innerHTML = h;
+    finalizeHTML();
+  });
+
+function saveTheData() {
+  var r = generateXml();
+  saveFileLocal('xml', 'test102-result.xml', r);
+  var el = document.getElementById('info');
+  info.textContent = r;
+}
+
+</script>
+</html>
 ```
 
-#### Use as a plugin in another software using HTML implementation
-This takes advantage of all function implemented. It only requires to redesign the HTML page 
-and implement the adequate calls to basic functions:
+### Use as a library in another software using the full implementation
+Include the dist directory minus lib.js (unneeded) and teimeta.html (or you can redesing this file). This takes advantage of all functions implemented. It only requires to redesign the HTML page. The software can runned calling all internal basic functions:
 
   - openXml() - ask the user to find an XML file on his computer (warning: a hidden tag with id 'upload-input-transcript' 
   must exist in the HTML file - for exemple <div id='upload-input-transcript'></div>)
@@ -201,7 +245,7 @@ and implement the adequate calls to basic functions:
   - openCss() - ask the user for a CSS and wait for further processing.
   - emptyFile() - clean the data
   - save() - save the content of the XML file
-  - others - see exports in events.ts
+  - others - see exports in events.ts and common.ts
 
 ## Other information
 Download source code: [https://github.com/christopheparisse/teimeta/](https://github.com/christopheparisse/teimeta/)

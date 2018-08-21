@@ -21,11 +21,6 @@ gulp.task('electron-msg', function () {
     .pipe(gulp.dest('temp-electron/msg/'))
 });
 
-gulp.task('electron-js', function () {
-  return gulp.src('js/picoModal.js')
-    .pipe(gulp.dest('temp-electron/js/'))
-});
-
 gulp.task('electron-html', function () {
   // construct index.html
   return gulp.src(['./html/index.html','./html/body.html','./html/head.html'])
@@ -124,25 +119,32 @@ gulp.task('page-test3', function () {
 gulp.task('page-test4', function () {
   // copy test
   return gulp.src('temp-page/models/*')
-    .pipe(gulp.dest('/Library/WebServer/Documents/dist/models/'))
+    .pipe(gulp.dest('./dist/models/'))
 });
 
 gulp.task('page-test5', function () {
   // copy test
   return gulp.src('temp-page/fonts/*')
-    .pipe(gulp.dest('/Library/WebServer/Documents/dist/fonts/'))
+    .pipe(gulp.dest('./dist/fonts/'))
 });
 
 gulp.task('page-test6', function () {
   // copy test
-  return gulp.src(['temp-page/bundle.js', 'temp-page/favicon.ico','temp-page/teimeta.html'])
+  return gulp.src(['temp-page/bundle.js', 'temp-page/favicon.ico', 'temp-page/teimeta.html', 'temp-page/lib.js'])
+    .pipe(gulp.dest('./dist/'))
+});
+
+gulp.task('page-test7', function () {
+  // copy dist
+  return gulp.src(['dist/**'])
     .pipe(gulp.dest('/Library/WebServer/Documents/dist/'))
 });
 
 gulp.task('page-models', function () {
   // copy test
-  return gulp.src(['models/models.json', 'models/filedesc.odd', 'models/teispokenfile.css', 'models/media.odd',
-   'models/partdesc.odd', 'models/settingencodingdesc.odd', 'models/teispoken2.odd', 'models/metaodd.odd',
+  return gulp.src(['models/models.json', 'models/filedesc.odd', 'models/filedesc.css', 'models/media.odd',
+   'models/partdesc.odd', 'models/partdesc.css', 'models/settingencodingdesc.odd', 'models/settingencodingdesc.css', 
+   'models/teispoken2.odd', 'models/teispoken2.css', 'models/metaodd.odd',
    'models/olac.odd', 'models/olac.css'])
     .pipe(gulp.dest('temp-page/models/'))
 });
@@ -156,7 +158,7 @@ gulp.task('page', function(done) {
 });
 
 gulp.task('test', function(done) {
-      runSequence('page-test1', 'page-test2', 'page-test3', 'page-test4', 'page-test5', 'page-test6', function() {
+      runSequence('page-test1', 'page-test2', 'page-test3', 'page-test4', 'page-test5', 'page-test6', 'page-test7', function() {
           console.log('ok.');
           done();
       });

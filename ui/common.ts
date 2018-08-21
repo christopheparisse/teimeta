@@ -77,9 +77,9 @@ export function setLanguage(lg, reload=true) {
     if (lg === 'fr' || lg === 'fra' || lg === 'fre') {
         teimeta.teiData.params.language = 'fre';
         msg.setLanguage('fre');
-    } else if (lg === 'es' || lg === 'esp') {
-        teimeta.teiData.params.language = 'esp';
-        msg.setLanguage('esp');
+    } else if (lg === 'es' || lg === 'esp' || lg === 'spa') {
+        teimeta.teiData.params.language = 'spa';
+        msg.setLanguage('spa');
     } else if (lg === 'ja' || lg === 'jpn') {
         teimeta.teiData.params.language = 'jpn';
         msg.setLanguage('jpn');
@@ -157,12 +157,6 @@ export function oddParams() {
         + ((teimeta.teiData.params.canRemove)
             ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
             : '<i class="fa fa-square-o" aria-hidden="true"></i>')
-/*
-    + `</span></li>
-        <li onclick="window.ui.setLanguage('fra');">Version française <img height="15px" src="css/fr.png"></img>`
-    + `</span></li>
-        <li onclick="window.ui.setLanguage('eng');">English version<img height="15px" src="css/us.png"></img>`
-*/
     + `</span></li>
     </ul>
     `;
@@ -240,6 +234,7 @@ export function init(funbodykeys) {
     if (el) el.textContent = ' - ' + version.version + ' - ' + version.date;
     el = document.getElementsByTagName('body');
     if (el) el[0].addEventListener("keydown", funbodykeys);
+
     el = document.getElementById('file-open');
     if (el) el.addEventListener("click", events.openXml);
     el = document.getElementById('file-new');
@@ -270,6 +265,7 @@ export function init(funbodykeys) {
     if (el) el.addEventListener("click", teimeta.teiData.edit.hideAll);
     el = document.getElementById('upload-input-transcript');
     if (el) el.addEventListener("change", syscall.openLocalFile);
+    
     //
     if (!window['ui']) window['ui'] = {};
     window['ui'].setLeftShift = setLeftShift;

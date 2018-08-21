@@ -164,7 +164,7 @@ export function initOdd(filename: string, data: string, urlmodel: string) {
         // for use with Node-style callbacks...
         var async = require("async");
         // var obj = {dev: "/dev.json", test: "/test.json", prod: "/prod.json"};
-        async.each(impts, (ielt, callback) => {
+        let v = async.each(impts, (ielt, callback) => {
             console.log("read:", p + ielt.source);
             readTextFile(p + ielt.source, function(err, idata) {
                 console.log('finished read ', ielt, err);
@@ -192,6 +192,7 @@ export function initOdd(filename: string, data: string, urlmodel: string) {
             teiData.oddName = filename;
             teiData.dataOdd = o;
             ok = true;
+            return ok;
         });
         if (ok) return true; else return false;
     } else {
