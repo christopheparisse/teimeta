@@ -12,7 +12,6 @@ import * as load from './load';
 import * as edit from './edit';
 import * as generate from './generate';
 import * as alert from './alert';
-import { init } from '../ui/init-singlepage';
 
 /*
 * internal values
