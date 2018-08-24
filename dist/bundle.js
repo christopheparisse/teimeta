@@ -143,12 +143,14 @@ function init() {
     teimeta.teiData.system = 'html';
     // load params
     common.loadParams();
+    /*
     // the file-save is a download save
-    var el = document.getElementById('file-save');
+    let el = document.getElementById('file-save');
     el.addEventListener("click", events.saveLocal);
     //  and a saveas
     el = document.getElementById('file-saveas');
     el.addEventListener("click", events.saveAsLocal);
+    */
     common.init(bodyKeys);
     window.addEventListener("beforeunload", function (e) {
         if (teimeta.teiData.edit.change() === false) {
@@ -214,8 +216,9 @@ function dispname(s) {
 }
 function afterOpenXmlFile(err, oddname, displayname, odddata, xmlname, xmldata) {
     if (!err) {
-        openOddLoad(oddname, displayname, odddata);
-        finishOpenXml(xmlname, xmldata);
+        openOddLoad(oddname, displayname, odddata, function () {
+            finishOpenXml(xmlname, xmldata);
+        });
     }
 }
 function openXml() {
@@ -251,9 +254,10 @@ function openXml() {
                         // console.log("read ODD: ", oddname, text);
                         if (!err) {
                             // load ODD
-                            openOddLoad(oddname_1, displayname_1, text);
-                            // then open XML
-                            finishOpenXml(name, data);
+                            openOddLoad(oddname_1, displayname_1, text, function () {
+                                // then open XML
+                                finishOpenXml(name, data);
+                            });
                         }
                     });
                 }
@@ -301,8 +305,9 @@ function findOdd(nameXml, dataXml) {
                 // open local odd
                 opensave.chooseOpenFile(function (err, name, data) {
                     if (!err) {
-                        openOddLoad(name, name, data);
-                        finishOpenXml(nameXml, dataXml);
+                        openOddLoad(name, name, data, function () {
+                            finishOpenXml(nameXml, dataXml);
+                        });
                     }
                     else {
                         console.log('cancel open odd for xml file: ', nameXml);
@@ -431,9 +436,10 @@ function newXml(choice) {
                     if (lcss) {
                         openCssLoad(jcss.cssName, jcss.cssName, jcss.data);
                     }
-                    openOddLoad(js.oddName, js.oddName, js.data);
-                    //alert.alertUser('here is previous');
-                    finishOpenXml(msg.msg('newfile'), null);
+                    openOddLoad(js.oddName, js.oddName, js.data, function () {
+                        //alert.alertUser('here is previous');
+                        finishOpenXml(msg.msg('newfile'), null);
+                    });
                 }
                 else {
                     emptyFile();
@@ -487,9 +493,9 @@ exports.checkChange = checkChange;
 function reLoad(callback) {
     try {
         var ls = localStorage.getItem("previousODD");
-        var lx = localStorage.getItem("previousXML");
-        var lxname = localStorage.getItem("previousXMLName");
-        if (ls && lx) {
+        var lx_1 = localStorage.getItem("previousXML");
+        var lxname_1 = localStorage.getItem("previousXMLName");
+        if (ls && lx_1) {
             var js = JSON.parse(ls);
             if (!js.version || js.version !== teimeta.teiData.version) {
                 //console.log('ancienne version de localstorage');
@@ -504,10 +510,11 @@ function reLoad(callback) {
             if (lcss) {
                 openCssLoad(jcss.cssName, jcss.cssName, jcss.data);
             }
-            openOddLoad(js.oddName, js.oddName, js.data);
-            finishOpenXml(lxname, lx);
-            if (callback)
-                callback(0);
+            openOddLoad(js.oddName, js.oddName, js.data, function () {
+                finishOpenXml(lxname_1, lx_1);
+                if (callback)
+                    callback(0);
+            });
         }
         else {
             emptyFile();
@@ -519,31 +526,38 @@ function reLoad(callback) {
     }
 }
 exports.reLoad = reLoad;
-function openOddCssLoad(nameOdd, dispNameOdd, dataOdd, nameCss, dispNameCss, dataCss) {
+function openOddCssLoad(nameOdd, dispNameOdd, dataOdd, nameCss, dispNameCss, dataCss, callback) {
     openCssLoad(nameCss, dispNameCss, dataCss);
-    openOddLoad(nameOdd, dispNameOdd, dataOdd);
+    openOddLoad(nameOdd, dispNameOdd, dataOdd, callback);
 }
 exports.openOddCssLoad = openOddCssLoad;
-function openOddLoad(name, displayname, data) {
+function openOddLoad(name, displayname, data, callback) {
     function finishOL() {
-        el = document.getElementById('cssname');
+        var el = document.getElementById('cssname');
         if (el)
             el.innerHTML = "CSS: " + teimeta.teiData.cssName;
         var js = JSON.stringify({ data: data, oddName: name, version: teimeta.teiData.version });
         localStorage.setItem("previousODD", js);
+        callback(true);
     }
-    var v = teimeta.initOdd(name, data, name);
-    if (v === false)
-        return;
-    var el = document.getElementById('oddname');
-    if (el)
-        el.innerHTML = "ODD: " + displayname;
-    if (teimeta.teiData.dataOdd.cssfile) {
-        testCss(teimeta.teiData.dataOdd.cssfile, finishOL);
+    function intermediateOL(v) {
+        console.log('return from teimeta.initOdd', v);
+        if (v === false) {
+            console.log('no processing after teimeta.initOdd');
+            callback(false);
+        }
+        var el = document.getElementById('oddname');
+        if (el)
+            el.innerHTML = "ODD: " + displayname;
+        console.log('finishing the ODD loading');
+        if (teimeta.teiData.dataOdd.cssfile) {
+            testCss(teimeta.teiData.dataOdd.cssfile, finishOL);
+        }
+        else {
+            finishOL();
+        }
     }
-    else {
-        finishOL();
-    }
+    teimeta.initOdd(name, data, name, intermediateOL);
 }
 exports.openOddLoad = openOddLoad;
 function openOdd() {
@@ -692,13 +706,12 @@ exports.saveAsLocal = saveAsLocal;
 function oddLoadUrl(url, namedisplayed, fun) {
     teimeta.readTextFile(url, function (err, text) {
         if (!err) {
-            openOddLoad(url, namedisplayed, text);
-            fun();
+            openOddLoad(url, namedisplayed, text, fun);
         }
         else {
             console.log('error reading', url, text);
             alert.alertUser('error reading ' + url + ' : ' + text);
-            return;
+            fun();
         }
     });
 }
@@ -707,8 +720,7 @@ function oddCssLoadUrls(urlOdd, namedisplayedOdd, urlCss, namedisplayedCss, fun)
     teimeta.readTextFile(urlOdd, function (err1, textOdd) {
         teimeta.readTextFile(urlCss, function (err2, textCss) {
             if (!err1 && !err2) {
-                openOddCssLoad(urlOdd, namedisplayedOdd, textOdd, urlCss, namedisplayedCss, textCss);
-                fun();
+                openOddCssLoad(urlOdd, namedisplayedOdd, textOdd, urlCss, namedisplayedCss, textCss, fun);
             }
             else {
                 console.log('error reading', urlOdd, err1, urlCss, err2);
@@ -729,7 +741,7 @@ exports.oddCssLoadUrls = oddCssLoadUrls;
 
 /**
  * Author: Christophe Parisse
- * Module: data.ts
+ * Module: teimeta.ts
  * handle the data for the triplet XML file, ODD file, CSS file.
  * so that to open, create and save an XML file it is only necessary to interface with this file
  * and the internal specificities are hidden from the external interface
@@ -880,12 +892,11 @@ exports.initXml = initXml;
  * @returns 'ok' / 'css' / 'null'
  * the return values are stored in the data structure
  */
-function initOdd(filename, data, urlmodel) {
+function initOdd(filename, data, urlmodel, finalProcess) {
     var impts = odd.loadOddClassRef(data);
     var eltSpecs = {};
     var eltRefs = {};
     if (impts && impts.length > 0) {
-        var ok_1 = false;
         console.log(impts);
         // there are imports to be loaded.
         var p_1 = urlpathname(urlmodel);
@@ -916,30 +927,38 @@ function initOdd(filename, data, urlmodel) {
                 callback();
             });
         }, function (err) {
-            if (err)
+            if (err) {
                 console.error(err.message);
+                finalProcess(false);
+                return;
+            }
             console.log('fin:', err, eltSpecs, eltRefs);
             // eltSpecs and eltRefs contains now all elementSpec and elementRef
             var o = odd.loadOdd(data, eltSpecs, eltRefs);
-            if (!o)
-                return false;
+            console.log('return from odd.loadOdd', o);
+            if (!o) {
+                console.error("cannot load ODD multiple");
+                finalProcess(false);
+                return;
+            }
             exports.teiData.oddName = filename;
             exports.teiData.dataOdd = o;
-            ok_1 = true;
-            return ok_1;
+            console.log('final return ok');
+            finalProcess(true);
         });
-        if (ok_1)
-            return true;
-        else
-            return false;
     }
     else {
         var o = odd.loadOdd(data);
-        if (!o)
-            return false;
+        console.log('return standalone ODD from odd.loadOdd', o);
+        if (!o) {
+            console.error("cannot load ODD Single");
+            finalProcess(false);
+            return;
+        }
         exports.teiData.oddName = filename;
         exports.teiData.dataOdd = o;
-        return true;
+        console.log('final return of standalone ODD');
+        finalProcess(true);
     }
 }
 exports.initOdd = initOdd;
@@ -981,17 +1000,22 @@ exports.generateXml = generateXml;
  * @returns 'ok' / 'null'
  * the return values are stored in the teiData structure
  */
-function loadXmlOddCss(filenameXml, dataXml, filenameOdd, dataOdd, filenameCss, dataCss) {
+function loadXmlOddCss(filenameXml, dataXml, filenameOdd, dataOdd, filenameCss, dataCss, callback) {
+    function finalXOC(r) {
+        if (!r)
+            callback('<div>Incorrect odd!</div>');
+        else {
+            loadXml(filenameXml, dataXml);
+            callback(exports.teiData.html);
+        }
+    }
     if (dataCss)
         initCss(filenameCss, dataCss);
     if (!dataOdd) {
         alert.alertUser('no dataOdd in loadXmlOddCss: cannot edit xml/tei file');
-        return '<div>Missing odd!</div>';
+        callback('<div>Missing odd!</div>');
     }
-    if (initOdd(filenameOdd, dataOdd, urlpathname(filenameOdd)) === null)
-        return '<div>Incorrect odd!</div>';
-    loadXml(filenameXml, dataXml);
-    return exports.teiData.html;
+    initOdd(filenameOdd, dataOdd, urlpathname(filenameOdd), finalXOC);
 }
 exports.loadXmlOddCss = loadXmlOddCss;
 /**
@@ -1016,13 +1040,11 @@ function readXmlOddCss(filenameXml, filenameOdd, filenameCss, callback) {
                     alert.alertUser('error reading ' + filename + ' : ' + data);
                     return;
                 }
-                var h = loadXmlOddCss(filename, data, oddname, odddata, cssname, cssdata);
-                callback(h);
+                loadXmlOddCss(filename, data, oddname, odddata, cssname, cssdata, callback);
             });
         }
         else {
-            var h = loadXmlOddCss(null, null, oddname, odddata, cssname, cssdata);
-            callback(h);
+            loadXmlOddCss(null, null, oddname, odddata, cssname, cssdata, callback);
         }
     }
     function loadOdd(filename, cssname, cssdata) {
@@ -8502,17 +8524,17 @@ var teimeta = __webpack_require__(2);
  */
 function initEditFunctions() {
     // for user interface in html pages
-    if (!window['ui'])
-        window['ui'] = {};
-    window['ui'].setOnOffES = teimeta.teiData.edit.setOnOffES;
-    window['ui'].setText = teimeta.teiData.edit.setText;
-    window['ui'].createEC = teimeta.teiData.edit.createEC;
-    window['ui'].setOpenlist = teimeta.teiData.edit.setOpenlist;
-    window['ui'].initOpenlist = teimeta.teiData.edit.initOpenlist;
-    window['ui'].toggleES = teimeta.teiData.edit.toggleES;
-    window['ui'].checkTime = teimeta.teiData.edit.checkTime;
-    window['ui'].highlight = teimeta.teiData.edit.highlight;
-    window['ui'].odd = teimeta.teiData.dataOdd;
+    if (!window['teimeta'])
+        window['teimeta'] = {};
+    window['teimeta'].setOnOffES = teimeta.teiData.edit.setOnOffES;
+    window['teimeta'].setText = teimeta.teiData.edit.setText;
+    window['teimeta'].createEC = teimeta.teiData.edit.createEC;
+    window['teimeta'].setOpenlist = teimeta.teiData.edit.setOpenlist;
+    window['teimeta'].initOpenlist = teimeta.teiData.edit.initOpenlist;
+    window['teimeta'].toggleES = teimeta.teiData.edit.toggleES;
+    window['teimeta'].checkTime = teimeta.teiData.edit.checkTime;
+    window['teimeta'].highlight = teimeta.teiData.edit.highlight;
+    window['teimeta'].odd = teimeta.teiData.dataOdd;
     // for debugging purposes
     window['dbg'] = {};
     window['dbg'].tei = teimeta.teiData;
@@ -9041,7 +9063,7 @@ function generateContent(ct, abspath) {
         //console.log(">>>",ec.model);
         if (ec.minOccurs === '1' && ec.maxOccurs === '1') {
             //console.log("1-1",ec.model);
-            s += '<div class="headHRef" onmouseover="window.ui.highlight(event)">';
+            s += '<div class="headHRef" onmouseover="window.teimeta.highlight(event)">';
             if (ec.type === 'elementRef') {
                 s += generateElement(ec.eCI[0].element, 'obligatory');
             }
@@ -9079,7 +9101,7 @@ function generateMultiple(ec, abspath) {
     s += ' >\n';
     // on peut en rajouter ... ou supprimer
     s += '<div class="plusCM"><i id="' + uniqCreate2 + '" class="create fa fa-plus-square fa-color-expand" '
-        + 'onclick="window.ui.createEC(event, \'' + uniqCreate + '\')"></i></div>\n';
+        + 'onclick="window.teimeta.createEC(event, \'' + uniqCreate + '\')"></i></div>\n';
     exports.values[uniqCreate] = { elt: ec.eCI[0], tab: ec.eCI, id: uniqCreate, path: abspath, eltSpec: ec.parentElementSpec };
     for (var i in ec.eCI) {
         // HERE can put info about expansions
@@ -9155,7 +9177,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');" >\n';
+            s += 'onchange="window.teimeta.setText(event, \'' + uniq + '\');" >\n';
             for (var k = 0; k < datatype.vallist.length; k++) {
                 s += '<option value="' +
                     datatype.vallist[k].ident + '" ';
@@ -9180,7 +9202,7 @@ function editDataType(datatype, ident) {
             exports.values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
             /*
             s +='<input type=text class="awesomplete listattr" data-minchars="0" list="' + uniq + '" value="' + datatype.valueContent + '" ';
-            s +='onchange="window.ui.setAttr(event, \'' + uniq + '\');"/>\n';
+            s +='onchange="window.teimeta.setAttr(event, \'' + uniq + '\');"/>\n';
             s +='<datalist id="' + uniq + '">';
             for (let k in datatype.vallist) {
                 s += '<option value="' +
@@ -9199,9 +9221,9 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setOpenlist(event, \'' + uniq + '\');" \n';
+            s += 'onchange="window.teimeta.setOpenlist(event, \'' + uniq + '\');" \n';
             if (datatype.vallist.length === 0) {
-                s += 'onclick="window.ui.initOpenlist(event, \'' + uniq + '\');" \n';
+                s += 'onclick="window.teimeta.initOpenlist(event, \'' + uniq + '\');" \n';
                 // ne faire cela que pour des listes pas encore remplie. Pas nécessaire pour les autres.                
             }
             s += '>\n';
@@ -9247,7 +9269,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');" >\n';
+            s += 'onchange="window.teimeta.setText(event, \'' + uniq + '\');" >\n';
             for (var k = 0; k < iso639.code639.length; k++) {
                 s += '<option value="' +
                     iso639.code639[k].code + '" ';
@@ -9280,7 +9302,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');" >\n';
+            s += 'onchange="window.teimeta.setText(event, \'' + uniq + '\');" >\n';
             for (var k = 0; k < iso3166.iso3666Alpha2.length; k++) {
                 s += '<option value="' +
                     iso3166.iso3666Alpha2[k].code + '" ';
@@ -9311,7 +9333,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.checkTime(event, \'' + uniq + '\');"';
+            s += 'onchange="window.teimeta.checkTime(event, \'' + uniq + '\');"';
             s += ' value="' + formatTime(datatype.valueContent) + '"';
             s += ' />\n';
             break;
@@ -9335,7 +9357,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+            s += 'onchange="window.teimeta.setText(event, \'' + uniq + '\');"';
             if (datatype.valueContent)
                 s += ' value="' + datatype.valueContent + '"';
             s += ' />\n';
@@ -9360,7 +9382,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+            s += 'onchange="window.teimeta.setText(event, \'' + uniq + '\');"';
             //            if (datatype.valueContent) s += ' value="' + datatype.valueContent + '"';
             s += ' >';
             if (datatype.valueContent)
@@ -9391,7 +9413,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+            s += 'onchange="window.teimeta.setText(event, \'' + uniq + '\');"';
             if (datatype.valueContent)
                 s += ' value="' + datatype.valueContent + '"';
             s += ' />\n';
@@ -9476,12 +9498,12 @@ function generateElement(elt, validatedStyle) {
             if (elt.validatedES) {
                 s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
                     + classOf(elt.usage)
-                    + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                    + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
             }
             else {
                 s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
                     + classOf(elt.usage)
-                    + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                    + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
             }
         }
         else {
@@ -9494,18 +9516,18 @@ function generateElement(elt, validatedStyle) {
                 if (elt.validatedES) {
                     s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
                         + classOf(elt.usage)
-                        + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                        + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
                 }
                 else {
                     s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
                         + classOf(elt.usage)
-                        + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                        + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
                 }
             }
         }
         // contenu (node principal)
         s += '<i class="hidebutton fa fa-size2 fa-star-half-o fa-color-toggle" '
-            + 'onclick="window.ui.toggleES(event, \'' + uniq + '\')"></i>';
+            + 'onclick="window.teimeta.toggleES(event, \'' + uniq + '\')"></i>';
         if (teimeta.teiData.params.displayFullpath) {
             s += '<span class="nodeIdent">' + elt.ident + '</span>\n';
             s += '<span class="nodeAbspath">' + elt.absolutepath + '</span>\n';
@@ -9560,12 +9582,12 @@ function generateElement(elt, validatedStyle) {
             if (exports.values[uniq].select === 'ok') {
                 s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
                     + classOf(elt.usage)
-                    + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                    + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
             }
             else {
                 s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
                     + classOf(elt.usage)
-                    + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                    + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
             }
         }
         // description
@@ -16939,9 +16961,9 @@ function setLanguage(lg, reload) {
         teimeta.teiData.params.language = 'fre';
         msg.setLanguage('fre');
     }
-    else if (lg === 'es' || lg === 'esp') {
-        teimeta.teiData.params.language = 'esp';
-        msg.setLanguage('esp');
+    else if (lg === 'es' || lg === 'esp' || lg === 'spa') {
+        teimeta.teiData.params.language = 'spa';
+        msg.setLanguage('spa');
     }
     else if (lg === 'ja' || lg === 'jpn') {
         teimeta.teiData.params.language = 'jpn';
@@ -17009,21 +17031,21 @@ function setLanguage(lg, reload) {
 exports.setLanguage = setLanguage;
 function oddParams() {
     var paramsPicomodal = null;
-    var userInfo = "\n    <h2 style=\"margin-top: 0\">Param\u00E8tres</h2>\n    <ul>\n        <li onclick=\"window.ui.setDispFPath();\">" + msg.msg('paramfullpath') + '<span id="toggleDispFPath">'
+    var userInfo = "\n    <h2 style=\"margin-top: 0\">Param\u00E8tres</h2>\n    <ul>\n        <li onclick=\"window.teimeta.setDispFPath();\">" + msg.msg('paramfullpath') + '<span id="toggleDispFPath">'
         + ((teimeta.teiData.params.displayFullpath)
             ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
             : '<i class="fa fa-square-o" aria-hidden="true"></i>')
         + "</span></li>\n        <li>" + msg.msg('paramshift') + '<input type="number" min="0" max="100" value="'
         + teimeta.teiData.params.leftShift
-        + "\" name=\"leftshift\" onchange=\"window.ui.setLeftShift(event);\"/></li>\n        <li onclick=\"window.ui.setDefNewElt();\">" + msg.msg('paramdefincl') + '<span id="toggleDefNewElt">'
+        + "\" name=\"leftshift\" onchange=\"window.teimeta.setLeftShift(event);\"/></li>\n        <li onclick=\"window.teimeta.setDefNewElt();\">" + msg.msg('paramdefincl') + '<span id="toggleDefNewElt">'
         + ((teimeta.teiData.params.defaultNewElement)
             ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
             : '<i class="fa fa-square-o" aria-hidden="true"></i>')
-        + "</span></li>\n        <li onclick=\"window.ui.setValReq();\">" + msg.msg('paramsupprobl') + '<span id="toggleDefValReq">'
+        + "</span></li>\n        <li onclick=\"window.teimeta.setValReq();\">" + msg.msg('paramsupprobl') + '<span id="toggleDefValReq">'
         + ((teimeta.teiData.params.validateRequired)
             ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
             : '<i class="fa fa-square-o" aria-hidden="true"></i>')
-        + "</span></li>\n        <li onclick=\"window.ui.setCanRm();\">" + msg.msg('paramcanrm') + '<span id="toggleDefCanRm">'
+        + "</span></li>\n        <li onclick=\"window.teimeta.setCanRm();\">" + msg.msg('paramcanrm') + '<span id="toggleDefCanRm">'
         + ((teimeta.teiData.params.canRemove)
             ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
             : '<i class="fa fa-square-o" aria-hidden="true"></i>')
@@ -17102,27 +17124,27 @@ function init(funbodykeys) {
     el = document.getElementsByTagName('body');
     if (el)
         el[0].addEventListener("keydown", funbodykeys);
+    /*
     el = document.getElementById('file-open');
-    if (el)
-        el.addEventListener("click", events.openXml);
+    if (el) el.addEventListener("click", events.openXml);
     el = document.getElementById('file-new');
-    if (el)
-        el.addEventListener("click", events.newXml);
+    if (el) el.addEventListener("click", events.newXml);
     el = document.getElementById('file-apply-odd');
-    if (el)
-        el.addEventListener("click", events.openOdd);
+    if (el) el.addEventListener("click", events.openOdd);
     el = document.getElementById('file-apply-css');
-    if (el)
-        el.addEventListener("click", events.openCss);
+    if (el) el.addEventListener("click", events.openCss);
     el = document.getElementById('file-clean-css');
-    if (el)
-        el.addEventListener("click", events.cleanCss);
+    if (el) el.addEventListener("click", events.cleanCss);
     el = document.getElementById('help');
-    if (el)
-        el.addEventListener("click", version.about);
+    if (el) el.addEventListener("click", version.about);
     el = document.getElementById('top2-params');
-    if (el)
-        el.addEventListener("click", oddParams);
+    if (el) el.addEventListener("click", oddParams);
+
+    el = document.getElementById('showall');
+    if (el) el.addEventListener("click", teimeta.teiData.edit.showAll);
+    el = document.getElementById('hideall');
+    if (el) el.addEventListener("click", teimeta.teiData.edit.hideAll);
+    */
     el = document.getElementById('link-ortolang');
     if (el)
         el.addEventListener("click", function () { link('https://www.ortolang.fr'); });
@@ -17135,24 +17157,31 @@ function init(funbodykeys) {
     el = document.getElementById('link-teicorpo');
     if (el)
         el.addEventListener("click", function () { link('http://ct3.ortolang.fr/tei-corpo/'); });
-    el = document.getElementById('showall');
-    if (el)
-        el.addEventListener("click", teimeta.teiData.edit.showAll);
-    el = document.getElementById('hideall');
-    if (el)
-        el.addEventListener("click", teimeta.teiData.edit.hideAll);
     el = document.getElementById('upload-input-transcript');
     if (el)
         el.addEventListener("change", syscall.openLocalFile);
     //
-    if (!window['ui'])
-        window['ui'] = {};
-    window['ui'].setLeftShift = setLeftShift;
-    window['ui'].setDispFPath = setDispFPath;
-    window['ui'].setDefNewElt = setDefNewElt;
-    window['ui'].setValReq = setValReq;
-    window['ui'].setCanRm = setCanRm;
-    window['ui'].setLanguage = setLanguage;
+    if (!window['teimeta'])
+        window['teimeta'] = {};
+    window['teimeta'].setLeftShift = setLeftShift;
+    window['teimeta'].setDispFPath = setDispFPath;
+    window['teimeta'].setDefNewElt = setDefNewElt;
+    window['teimeta'].setValReq = setValReq;
+    window['teimeta'].setCanRm = setCanRm;
+    window['teimeta'].setLanguage = setLanguage;
+    window['teimeta'].openXml = events.openXml;
+    window['teimeta'].newXml = events.newXml;
+    window['teimeta'].openOdd = events.openOdd;
+    window['teimeta'].openCss = events.openCss;
+    window['teimeta'].cleanCss = events.cleanCss;
+    window['teimeta'].about = version.about;
+    window['teimeta'].oddParams = oddParams;
+    window['teimeta'].showAll = teimeta.teiData.edit.showAll;
+    window['teimeta'].hideAll = teimeta.teiData.edit.hideAll;
+    window['teimeta'].saveLocal = events.saveLocal;
+    window['teimeta'].saveAsLocal = events.saveAsLocal;
+    window['teimeta'].dumpHtml = events.dumpHtml;
+    window['teimeta'].emptyFile = events.emptyFile;
 }
 exports.init = init;
 function saveFileLocal(type, name, data) {
@@ -17322,7 +17351,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var alert = __webpack_require__(5);
 var msg = __webpack_require__(7);
 exports.version = '0.6.2';
-exports.date = '8-08-2018';
+exports.date = '24-08-2018';
 function about() {
     var s = msg.msg('versionname') + exports.version + " - " + exports.date + "</br></br>";
     s += msg.msg('shorthelp');

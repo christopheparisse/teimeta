@@ -36,8 +36,9 @@ function dispname(s:string) {
 
 function afterOpenXmlFile(err, oddname, displayname, odddata, xmlname, xmldata) {
     if (!err) {
-        openOddLoad(oddname, displayname, odddata);
-        finishOpenXml(xmlname, xmldata);
+        openOddLoad(oddname, displayname, odddata, function() {
+            finishOpenXml(xmlname, xmldata);
+        });
     }                    
 }
 
@@ -71,9 +72,10 @@ export function openXml() {
                         // console.log("read ODD: ", oddname, text);
                         if (!err) {
                             // load ODD
-                            openOddLoad(oddname, displayname, text);
-                            // then open XML
-                            finishOpenXml(name, data);
+                            openOddLoad(oddname, displayname, text, function() {
+                                // then open XML
+                                finishOpenXml(name, data);
+                            });
                         }
                     });
                 }
@@ -120,8 +122,9 @@ function findOdd(nameXml, dataXml) {
                 // open local odd
                 opensave.chooseOpenFile(function(err, name, data) {
                     if (!err) {
-                        openOddLoad(name, name, data);
-                        finishOpenXml(nameXml, dataXml);
+                        openOddLoad(name, name, data, function() {
+                            finishOpenXml(nameXml, dataXml);
+                        });
                     } else {
                         console.log('cancel open odd for xml file: ', nameXml);
                     }
@@ -243,9 +246,10 @@ export function newXml(choice) {
                     if (lcss) {
                         openCssLoad(jcss.cssName, jcss.cssName, jcss.data);
                     }
-                    openOddLoad(js.oddName, js.oddName, js.data);
-                    //alert.alertUser('here is previous');
-                    finishOpenXml(msg.msg('newfile'), null);
+                    openOddLoad(js.oddName, js.oddName, js.data, function() {
+                        //alert.alertUser('here is previous');
+                        finishOpenXml(msg.msg('newfile'), null);
+                    });
                 } else {
                     emptyFile();
                 }
@@ -312,9 +316,10 @@ export function reLoad(callback) {
             if (lcss) {
                 openCssLoad(jcss.cssName, jcss.cssName, jcss.data);
             }
-            openOddLoad(js.oddName, js.oddName, js.data);
-            finishOpenXml(lxname, lx);
-            if (callback) callback(0);
+            openOddLoad(js.oddName, js.oddName, js.data, function() {
+                finishOpenXml(lxname, lx);
+                if (callback) callback(0);
+            });
         } else {
             emptyFile();
         }
@@ -324,29 +329,35 @@ export function reLoad(callback) {
     }
 }
 
-export function openOddCssLoad(nameOdd, dispNameOdd, dataOdd, nameCss, dispNameCss, dataCss) {
+export function openOddCssLoad(nameOdd, dispNameOdd, dataOdd, nameCss, dispNameCss, dataCss, callback) {
     openCssLoad(nameCss, dispNameCss, dataCss);
-    openOddLoad(nameOdd, dispNameOdd, dataOdd);
+    openOddLoad(nameOdd, dispNameOdd, dataOdd, callback);
 }
 
-export function openOddLoad(name, displayname, data) {
+export function openOddLoad(name, displayname, data, callback) {
     function finishOL() {
-        el = document.getElementById('cssname');
+        let el = document.getElementById('cssname');
         if (el) el.innerHTML = "CSS: " + teimeta.teiData.cssName;
         let js = JSON.stringify({data: data, oddName: name, version: teimeta.teiData.version});
         localStorage.setItem("previousODD", js);
+        callback(true);
     }
-
-    let v = teimeta.initOdd(name, data, name);
-    if (v === false)
-        return;
-    let el = document.getElementById('oddname');
-    if (el) el.innerHTML = "ODD: " + displayname;
-    if (teimeta.teiData.dataOdd.cssfile) {
-        testCss(teimeta.teiData.dataOdd.cssfile, finishOL);
-    } else {
-        finishOL();
+    function intermediateOL(v) {
+        console.log('return from teimeta.initOdd', v);
+        if (v === false) {
+            console.log('no processing after teimeta.initOdd');
+            callback(false);
+        }
+        let el = document.getElementById('oddname');
+        if (el) el.innerHTML = "ODD: " + displayname;
+        console.log('finishing the ODD loading');
+        if (teimeta.teiData.dataOdd.cssfile) {
+            testCss(teimeta.teiData.dataOdd.cssfile, finishOL);
+        } else {
+            finishOL();
+        }
     }
+    teimeta.initOdd(name, data, name, intermediateOL);
 }
 
 export function openOdd() {
@@ -475,12 +486,11 @@ export function saveAsLocal(fun, force = false) {
 export function oddLoadUrl(url, namedisplayed, fun) {
     teimeta.readTextFile(url, function(err, text) {
         if (!err) {
-            openOddLoad(url, namedisplayed, text);
-            fun();
+            openOddLoad(url, namedisplayed, text, fun);
         } else {
             console.log('error reading', url, text);
             alert.alertUser('error reading ' + url + ' : ' + text);
-            return;
+            fun();
         }
     });
 }
@@ -489,8 +499,7 @@ export function oddCssLoadUrls(urlOdd, namedisplayedOdd, urlCss, namedisplayedCs
     teimeta.readTextFile(urlOdd, function(err1, textOdd) {
         teimeta.readTextFile(urlCss, function(err2, textCss) {
             if (!err1 && !err2) {
-                openOddCssLoad(urlOdd, namedisplayedOdd, textOdd, urlCss, namedisplayedCss, textCss);
-                fun();
+                openOddCssLoad(urlOdd, namedisplayedOdd, textOdd, urlCss, namedisplayedCss, textCss, fun);
             } else {
                 console.log('error reading', urlOdd, err1, urlCss, err2);
                 alert.alertUser('error reading ' + urlOdd  + err1 + " or " + urlCss + err2);

@@ -12,12 +12,14 @@ import * as teimeta from './teimeta';
 import '../css/font-awesome/css/font-awesome.min.css';
 import '../css/internal.css';
 
+if (window['teimeta'] === undefined) window['teimeta'] = {};  
+
 /*
  * these four functions are necessary to use the interface
  */
 
 /**
- * @method global.loadXmlOddCss
+ * @method window['teimeta'].loadXmlOddCss
  * this function takes as input the string content of all the data
  * filename parameters is optional (can be null) and are used for display
  * if dataCss is null, no css is used (unless included in dataOdd)
@@ -32,10 +34,10 @@ import '../css/internal.css';
  * @returns 'ok' / 'null'
  * the return values are stored in the teiData structure
  */
-global.loadXmlOddCss = teimeta.loadXmlOddCss;
+window['teimeta'].loadXmlOddCss = teimeta.loadXmlOddCss;
 
 /**
- * @method global.readXmlOddCss
+ * @method window['teimeta'].readXmlOddCss
  * this function takes as input three urls
  * the urls are filenames that must be available though http protocol
  * if filenameCss is null, no css is used (unless included in filenameOdd)
@@ -47,20 +49,20 @@ global.loadXmlOddCss = teimeta.loadXmlOddCss;
  * @returns 'ok' / 'null'
  * the return values are stored in the teiData structure
  */
-global.readXmlOddCss = teimeta.readXmlOddCss;
+window['teimeta'].readXmlOddCss = teimeta.readXmlOddCss;
 
 /**
- * methode global.finalizeHTML
+ * methode window['teimeta'].finalizeHTML
  * to be executed after an HTMl string provided by teimeta has been loaded
  * necessary to implement automatic resize of entry fields - no parameters
  */
-global.finalizeHTML = teimeta.finalizeHTML;
+window['teimeta'].finalizeHTML = teimeta.finalizeHTML;
 
 /**
  * gather the new state of the XML object edited by teimeta
  * @return {string} - xml content edited by teimeta library
  */
-global.generateXml = teimeta.generateXml;
+window['teimeta'].generateXml = teimeta.generateXml;
 
 /**
  * acces to parameters
@@ -75,7 +77,7 @@ global.generateXml = teimeta.generateXml;
     nbdigits = 0; // number of digits allowed in the decimal part of a number
     encodeXMLFull = false; // if true use entities.encodeXML otherwise only encodes < and >
  */
-global.teimetaParams = teimeta.teiData.params;
+window['teimeta'].teimetaParams = teimeta.teiData.params;
 
 /*
  * the functions below as utilitary and to be used only for easy implementation
@@ -85,7 +87,7 @@ global.teimetaParams = teimeta.teiData.params;
 /**
  * utilitary function for loading urls for user that don't want to implement 
  */
-global.readTextFile = teimeta.readTextFile;
+window['teimeta'].readTextFile = teimeta.readTextFile;
 
 let saveAs = require('file-saver');
 /**
@@ -107,4 +109,4 @@ function saveFileLocal(type, name, data) {
     var l = name.substr(p1);
     saveAs.saveAs(blob, l);
 };
-global.saveFileLocal = saveFileLocal;
+window['teimeta'].saveFileLocal = saveFileLocal;

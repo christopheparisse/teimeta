@@ -33,11 +33,11 @@ The tool was created to edit TEI files, but it can be used for any type of XML f
 TEIMETA allows to edit any XML node but not to move this node around in the XML file. New nodes can be created and nodes can be erased (if this is allowed by the model). The ODD describes node position from the root. **The values of an XML node not described in the ODD file will never be modified. This means that it is possible to edit parts of an XML file respecting the integrity of the rest of the file.**
 
 ## Version information
-0.6.2 - fully documented version
-0.5.2 - improved style of CSS for all display size
-0.5.1 - full English or French version
-0.5.0 - 2 may 2018 - ODD files can describe the visual presentation of the data edited using CSS features.
-0.4.9 - feb 2018 - correction of bugs and namespace implementation
+  - 0.6.2 - fully documented version
+  - 0.5.2 - improved style of CSS for all display size
+  - 0.5.1 - full English or French version
+  - 0.5.0 - 2 may 2018 - ODD files can describe the visual presentation of the data edited using CSS features.
+  - 0.4.9 - feb 2018 - correction of bugs and namespace implementation
 
 ## Organization of the data
 
@@ -69,6 +69,8 @@ moduleRef are not used.
   * schemaSpec
     * start = root for the result xml
     * ns = namespace for the result xml
+    * rend = name of the optional css file
+    * altIdent = sub node that contains all material that goes in the header of the result file
 
   * elementSpec
     * ident="name of the tag in the TEI" corresp="optional tag to be used when ident is not unique"
@@ -76,6 +78,8 @@ moduleRef are not used.
     * content: content of the node, subelement and text node
     * attList: list of the attributes
     * remarks: CSS presentation of an elementSpec and/or the content field
+      * ab: raw CSS content
+      * p/ident: CSS class name (to be found in the CSS file prodive in the rend attribute of schemaSpec)
 
   * content
     * sequence minOccurs maxOccurs (if there is more than one element)
@@ -97,10 +101,25 @@ moduleRef are not used.
     * valList ==> multiple choices presented to the user
       * valItem ident="value-in-the-TEI"
       * desc (multilingue) + rendition (optional help)
+      * remarks: CSS presentation of an elementSpec and/or the content field
+        * ab: raw CSS content
+        * p/ident: CSS class name (to be found in the CSS file prodive in the rend attribute of schemaSpec)
+
+  * classRef
+    * this allows to include a OOD into another ODD so as not to repeat elements defined otherwhere.
+    * key: display name of included file
+    * source: name of the included file (with classRef all ODD must have an http address - the included file must be in the same web directory than the main ODD)
+    * in this case, elementSpec defined in the included files are superseeded by elementSpec with the same name in the main ODD
 
 #### Example
 
 ```
+<schemaSpec ident="NameOfOdd" ns="http://basic-namespace.org" start="olac:olac"
+					 	rend="http://ct3.ortolang.fr/teimeta/olac.css">
+            <altIdent type="xmlns:olac">http://www.language-archives.org/OLAC/1.1/</altIdent>
+
+<classRef key="filedesc" source="filedesc.odd"/>
+
 <elementSpec ident="tag_TEI" module="header"
     corresp="name_for_a_unique_identification">
     <desc xml:lang="fr">... in French ... - partie affichée pour décrire
@@ -141,15 +160,17 @@ moduleRef are not used.
     <!-- this will display the elementSpec block as it is described in the <ab> field -->
     <remarks style="element">
         <ab>background-color: lightgreen; border-radius: 8px; margin: 3px; margin-top: 10px;</ab>
+        <p><ident>css-classname-for-element</ident></p>
     </remarks>
     <!-- this will display the texnode/datatype in the content part as it is described in the <ab> field -->
     <remarks style="content">
         <ab>color: blue; width: 500px;</ab>
+        <p><ident>css-classname-for-content</ident></p>
     </remarks>
 </elementSpec>
 ```
 
-## Use
+## Use the application
 
 ### HTML Page Version (implemented)
 
@@ -169,6 +190,11 @@ $ open http://localhost/temp-page/teimeta.html
 # test runs are done by calling node test/test1.js up to test/test4.js
 ```
 
+A free available version is found here: http://ct3.ortolang.fr/teimeta/ The software running on that page can be easily run on a static web server. It is only necessary
+to copy the dist directory (from the sources) on the web server. The models sub-directory can be tailored to your needed. To do this, edit the models.json file and provide 
+your own files in the models directory.
+
+
 ### Stand Alone Version (implemented)
 
 ####  TEIMETA Application
@@ -181,18 +207,20 @@ npm run electron
 npm start
 ```
 
-### Use as a library in another software using basic library
+### Use as a library in another software using basic library (implemented)
+TEIMETA is written using typescript and it can be easily interface with javascript or typescript using the distribution file or directly from the sources.
+
 Include *lib.js and directory fonts* (found in folder dist)
 Instructions are within lib.ts file in teimeta folder in sources.
 Five functions that are sufficient to use teimeta as a library are integrated in the global object:
-global.loadXmlOddCss - load from raw data
-global.readXmlOddCss - load from url addresses
-global.finalizeHTML - finalize HTML display
-global.generateXml - get results of edition from the user
-global.teimetaParams - set parameters
+    window.teimeta.loadXmlOddCss - load from raw data
+    window.teimeta.readXmlOddCss - load from url addresses
+    window.teimeta.finalizeHTML - finalize HTML display
+    window.teimeta.generateXml - get results of edition from the user
+    window.teimeta.teimetaParams - set parameters
 Two supplementary function are available for easy implementation of a standalone HTML page software such as TEIMETA.
-global.readTextFile - read an url as raw data
-global.saveFileLocal - save raw data as a local file in the download section
+    window.teimeta.readTextFile - read an url as raw data
+    window.teimeta.saveFileLocal - save raw data as a local file in the download section
 
 #### EXEMPLE
 ```
@@ -213,16 +241,17 @@ pre {
 </body>
 <script>
 
-readXmlOddCss('http://localhost/test/test102.xml', 'http://localhost/test/test102.odd', null,
+window.teimeta.teimetaParams.defaultNewElement = false;
+window.teimeta.readXmlOddCss('http://localhost/test/test102.xml', 'http://localhost/test/test102.odd', null,
   function (h) {
     var el = document.getElementById('teimeta');
     el.innerHTML = h;
-    finalizeHTML();
+    window.teimeta.finalizeHTML();
   });
 
 function saveTheData() {
-  var r = generateXml();
-  saveFileLocal('xml', 'test102-result.xml', r);
+  var r = window.teimeta.generateXml();
+  window.teimeta.saveFileLocal('xml', 'test102-result.xml', r);
   var el = document.getElementById('info');
   info.textContent = r;
 }
@@ -231,24 +260,36 @@ function saveTheData() {
 </html>
 ```
 
-### Use as a library in another software using the full implementation
-Include the dist directory minus lib.js (unneeded) and teimeta.html (or you can redesing this file). This takes advantage of all functions implemented. It only requires to redesign the HTML page. The software can runned calling all internal basic functions:
+### Use as a library in another software using the full implementation (implemented)
+Include the dist directory minus lib.js (unneeded) and teimeta.html (or you can redesing this file). This takes advantage of all functions implemented. It only requires to redesign the HTML page. The software can runned calling all internal basic functions.
+Include *bundle.js and directory fonts* (found in folder dist)
 
-  - openXml() - ask the user to find an XML file on his computer (warning: a hidden tag with id 'upload-input-transcript' 
+  - window.teimeta.openXml() - ask the user to find an XML file on his computer (warning: a hidden tag with id 'upload-input-transcript' 
   must exist in the HTML file - for exemple <div id='upload-input-transcript'></div>)
-  - cleanCss() - reset the value of the css data included in the presentation of an odd
-  - newXml(choice) - create an empty Xml data with an ODD - choice can be set to 'previous'. In this case the ODD loaded
+  - window.teimeta.newXml(choice) - create an empty Xml data with an ODD - choice can be set to 'previous'. In this case the ODD loaded
   in memory is used
-  - dumpHtml() - download the content of the innerHTML (useful for checking the HTML data and testing)
-  - reLoad()
-  - openOdd() - ask the user for an ODD and create new XML with it.
-  - openCss() - ask the user for a CSS and wait for further processing.
-  - emptyFile() - clean the data
-  - save() - save the content of the XML file
+  - window.teimeta.openOdd() - ask the user for an ODD and create new XML with it.
+  - window.teimeta.openCss() - ask the user for a CSS and wait for further processing.
+  - window.teimeta.cleanCss() - reset the value of the css data included in the presentation of an odd.
+  - window.teimeta.saveLocal() - save the content of the XML in the download directory.   
+  - window.teimeta.saveAsLocal() - ask for a file name and save the content of the XML in the download directory.   
+  - window.teimeta.oddParams() - open the parameter box for the user to choose parameters
+  - window.teimeta.setLanguage(lang) - set the language in the software and in the ODD - values: fre, eng, spa, jpn
+  - window.teimeta.showAll() - expands all editing boxes
+  - window.teimeta.hideAll() - reduces all editing boxes
+  - window.teimeta.dumpHtml() - download the content of the innerHTML (useful for checking the HTML data and testing)
+  - window.teimeta.emptyFile() - clean the data
   - others - see exports in events.ts and common.ts
 
-## Other information
-Download source code: [https://github.com/christopheparisse/teimeta/](https://github.com/christopheparisse/teimeta/)
+### Use the sources with require/import
+
+For people which want to use the source code, then they can download it and then use the require() / import features of javascript or typescript. For example:
+
+  - import * as teimeta from 'teimeta/teiedit/teimeta'; // equivalent to the features of lib.js - see above
+  - import * as events from 'teimeta/ui/events'; // equivalent to the features of bundle.js - see above
+  - import * as common from 'teimeta/ui/common'; // see events.ts and common.ts - see also init-singlepage.ts
+
+Download source code and distribution: [https://github.com/christopheparisse/teimeta/](https://github.com/christopheparisse/teimeta/)
 
 Issues, questions and comments [issues](https://github.com/christopheparisse/teimeta/issues).
 

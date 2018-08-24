@@ -1,6 +1,6 @@
 /**
  * Author: Christophe Parisse
- * Module: teimeta.ts 
+ * Module: data.ts 
  * handle the data for the triplet XML file, ODD file, CSS file.
  * so that to open, create and save an XML file it is only necessary to interface with this file
  * and the internal specificities are hidden from the external interface
@@ -12,7 +12,6 @@ import * as load from './load';
 import * as edit from './edit';
 import * as generate from './generate';
 import * as alert from './alert';
-import { init } from '../ui/init-singlepage';
 
 /*
 * internal values
@@ -143,6 +142,45 @@ export function initXml(filename: string, data: string) {
     return load.getOddFromXml(data, teiData);
 }
 
+function includedOdd(ielt, callback) {
+    console.log("read:", ielt.p + ielt.source);
+    readTextFile(ielt.p + ielt.source, function(err, idata) {
+        console.log('finished read ', ielt, err);
+        if (err) return callback(err);
+        try {
+            let ie = idata.toString();
+            let d = odd.loadOdd(ie);
+            console.log(ielt.p + ielt.source, d);
+            if (d) {
+                for (let i in d.listElementSpec) ielt.eltSpecs[i] = d.listElementSpec[i];
+                for (let i in d.listElementRef) ielt.eltRefs[i] = d.listElementRef[i];
+            }
+            console.log(ielt.eltSpecs, ielt.eltRefs);
+        } catch (e) {
+            return callback(e);
+        }
+        callback(null);
+    });
+}
+
+const waitFor = (elt) => new Promise(r => includedOdd(elt, r))
+
+async function delayed(item) {
+  await waitFor(item);
+  console.log("in delayed()", item);
+}
+
+async function processArray(array, attheend) {
+  for (const item of array) {
+     await delayed(item);
+  }
+  console.log('done processArray1.');
+  attheend();
+  console.log('done processArray2.');
+}
+
+// processArray([1, 2, 3]);
+
 /**
  * @method initOdd
  * this function takes as input the string content of the file to be open
@@ -152,7 +190,18 @@ export function initXml(filename: string, data: string) {
  * @returns 'ok' / 'css' / 'null'
  * the return values are stored in the data structure
  */
-export function initOdd(filename: string, data: string, urlmodel: string, finalProcess) {
+export function initOdd(filename: string, data: string, urlmodel: string) {
+    function finalProcess() {
+        //        if (err) console.error(err.message);
+        console.log('fin:', eltSpecs, eltRefs);
+        // eltSpecs and eltRefs contains now all elementSpec and elementRef
+        let o = odd.loadOdd(data, eltSpecs, eltRefs);
+        console.log('return from muliple load odd.loadOdd', o);
+        if (!o) return;
+        teiData.oddName = filename;
+        teiData.dataOdd = o;
+    }
+
     let impts = odd.loadOddClassRef(data);
     let eltSpecs = {};
     let eltRefs = {};
@@ -160,60 +209,22 @@ export function initOdd(filename: string, data: string, urlmodel: string, finalP
         console.log(impts);
         // there are imports to be loaded.
         let p = urlpathname(urlmodel);
-        // for use with Node-style callbacks...
-        var async = require("async");
-        // var obj = {dev: "/dev.json", test: "/test.json", prod: "/prod.json"};
-        let v = async.each(impts, (ielt, callback) => {
-            console.log("read:", p + ielt.source);
-            readTextFile(p + ielt.source, function(err, idata) {
-                console.log('finished read ', ielt, err);
-                if (err) return callback(err);
-                try {
-                    let ie = idata.toString();
-                    let d = odd.loadOdd(ie);
-                    console.log(p + ielt.source, d);
-                    if (d) {
-                        for (let i in d.listElementSpec) eltSpecs[i] = d.listElementSpec[i];
-                        for (let i in d.listElementRef) eltRefs[i] = d.listElementRef[i];
-                    }
-                    console.log(eltSpecs, eltRefs);
-                } catch (e) {
-                    return callback(e);
-                }
-                callback();
-            });
-        }, err => {
-            if (err) {
-                console.error(err.message);
-                finalProcess(false);
-                return;
-            }
-            console.log('fin:',err, eltSpecs, eltRefs);
-            // eltSpecs and eltRefs contains now all elementSpec and elementRef
-            let o = odd.loadOdd(data, eltSpecs, eltRefs);
-            console.log('return from odd.loadOdd', o);
-            if (!o) {
-                console.error("cannot load ODD multiple");
-                finalProcess(false);
-                return;
-            }
-            teiData.oddName = filename;
-            teiData.dataOdd = o;
-            console.log('final return ok');
-            finalProcess(true);
-        });
+        for (let i of impts) {
+            i.p = p;
+            i.eltSpecs = eltSpecs;
+            i.eltRefs = eltRefs;
+        }
+        processArray(impts, finalProcess);
+        console.log('final return ok = ', teiData.dataOdd);
+        if (teiData.dataOdd) return true; else return false;
     } else {
         let o = odd.loadOdd(data);
         console.log('return standalone ODD from odd.loadOdd', o);
-        if (!o) {
-            console.error("cannot load ODD Single");
-            finalProcess(false);
-            return;
-        }
+        if (!o) return false;
         teiData.oddName = filename;
         teiData.dataOdd = o;
         console.log('final return of standalone ODD');
-        finalProcess(true);
+        return true;
     }
 }
 
@@ -256,21 +267,15 @@ export function generateXml() {
  * the return values are stored in the teiData structure
  */
 export function loadXmlOddCss(filenameXml: string, dataXml: string, 
-    filenameOdd: string, dataOdd: string, filenameCss: string, dataCss: string, callback) {
-        function finalXOC(r) {
-            if (!r)
-                callback('<div>Incorrect odd!</div>');
-            else {
-                loadXml(filenameXml, dataXml);
-                callback(teiData.html);
-            }
-        }
+    filenameOdd: string, dataOdd: string, filenameCss: string, dataCss: string) {
         if (dataCss) initCss(filenameCss, dataCss);
         if (!dataOdd) {
             alert.alertUser('no dataOdd in loadXmlOddCss: cannot edit xml/tei file');
-            callback('<div>Missing odd!</div>');
+            return '<div>Missing odd!</div>'
         }
-        initOdd(filenameOdd, dataOdd, urlpathname(filenameOdd), finalXOC);
+        if (initOdd(filenameOdd, dataOdd, urlpathname(filenameOdd)) === null) return '<div>Incorrect odd!</div>';
+        loadXml(filenameXml, dataXml);
+        return teiData.html;
 }
 
 /**
@@ -297,10 +302,12 @@ export function readXmlOddCss (filenameXml: string,
                         alert.alertUser('error reading ' + filename + ' : ' + data);
                         return;
                     }
-                    loadXmlOddCss(filename, data, oddname, odddata, cssname, cssdata, callback);
+                    let h = loadXmlOddCss(filename, data, oddname, odddata, cssname, cssdata);
+                    callback(h);
                 });
             } else {
-                loadXmlOddCss(null, null, oddname, odddata, cssname, cssdata, callback);
+                let h = loadXmlOddCss(null, null, oddname, odddata, cssname, cssdata);
+                callback(h);
             }
         }
         function loadOdd(filename, cssname, cssdata) {

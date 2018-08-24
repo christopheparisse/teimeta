@@ -12,8 +12,8 @@
   <div id="topall">
   <div class="nav-title">
     <span id="title">Edition de métadonnées TEI / CORLI </span>
-    <i class="fa fa-star" id="showall"></i>
-    <i class="fa fa-star-o" id="hideall"></i>
+    <i class="fa fa-star" id="showall" onclick="window.teimeta.showAll();"></i>
+    <i class="fa fa-star-o" id="hideall" onclick="window.teimeta.hideAll();"></i>
     <span id="titledate"></span>
   </div>
 
@@ -22,7 +22,7 @@
   <input type="checkbox" id="show-menu" role="button">
   <ul id="menu">
     <li>
-      <a id="file-open" target="_blank">
+      <a id="file-open" target="_blank" onclick="window.teimeta.openXml();">
         <i class="headtopi fa fa-folder-open-o fa-1x" title="Open TEI File"></i>
         <span class="headtopt" id="xmlopen">Open</span>
       </a>
@@ -33,20 +33,20 @@
         <span class="headtopt" id="xmlsave1">Save</span> ￬ </a>
       <ul class="hidden">
         <li>
-          <a id="file-save" target="_blank">
+          <a id="file-save" target="_blank" onclick="window.teimeta.saveLocal();">
             <i class="headtopi fa fa-save fa-1x" title="Save TEI file"></i>
             <span class="headtopt" id="xmlsave2">Save TEI file</span>
           </a>
         </li>
         <li>
-          <a id="file-saveas" target="_blank">
+          <a id="file-saveas" target="_blank" onclick="window.teimeta.saveAsLocal();">
             <span class="headtopt" id="xmlsaveas">Save TEI file as ...</span>
           </a>
         </li>
       </ul>
       </li>
     <li>
-        <a id="file-new" target="_blank">
+        <a id="file-new" target="_blank" onclick="window.teimeta.newXml();">
           <i class="headtopi fa fa-cog fa-1x" title="New XML file"></i>
           <span class="headtopt" id="xmlnew">New</span> ￬ </a>
     </li>
@@ -54,18 +54,18 @@
       <a href="#"><span id="applyoddcss">Apply ODD/CSS</span> ￬ </a>
       <ul class="hidden">
         <li>
-          <a id="file-apply-odd" target="_blank">
+          <a id="file-apply-odd" target="_blank" onclick="window.teimeta.openOdd();">
             <i class="headtopi fa fa-cog fa-1x" title="Apply ODD file"></i>
             <span class="headtopt" id="oddapply">Apply ODD file</span>
           </a>
         </li>
         <li>
-          <a id="file-apply-css" target="_blank">
+          <a id="file-apply-css" target="_blank" onclick="window.teimeta.openCss();">
             <span class="headtopt" id="cssapply">Apply CSS file</span>
           </a>
         </li>
         <li>
-          <a id="file-clean-css" target="_blank">
+          <a id="file-clean-css" target="_blank" onclick="window.teimeta.cleanCss();">
             <span class="headtopt" id="cssclean">Clean CSS file</span>
           </a>
         </li>
@@ -75,7 +75,7 @@
     <a href="#"><span id="paramlinks">Parameters / Links</span> ￬ </a>
     <ul class="hidden">
       <li>
-        <a id="top2-params" target="_blank">
+        <a id="top2-params" target="_blank" onclick="window.teimeta.oddParams();">
           <i class="headtopi fa fa-wrench fa-1x" title="Parametres"></i>
           <span class="headtopt" id="menuparam">Parameters</span>
         </a>
@@ -108,25 +108,25 @@
           <li>
             <a id="top2-language" target="_blank">
               <!-- <i class="headtopi fa fa-language fa-1x" title="Languages"></i> -->
-              <span onclick="window.ui.setLanguage('fre');" height="20px">Français</span>
+              <span onclick="window.teimeta.setLanguage('fre');" height="20px">Français</span>
             </a>
           </li>
           <li>
             <a id="top2-language" target="_blank">
                 <!-- <i class="headtopi fa fa-language fa-1x" title="Languages"></i> -->
-                <span onclick="window.ui.setLanguage('eng');" height="20px">English</span>
+                <span onclick="window.teimeta.setLanguage('eng');" height="20px">English</span>
             </a>
           </li>
           <li>
               <a id="top2-language" target="_blank">
               <!-- <i class="headtopi fa fa-language fa-1x" title="Languages"></i> -->
-              <span onclick="window.ui.setLanguage('spa');" height="20px">Español</span>
+              <span onclick="window.teimeta.setLanguage('spa');" height="20px">Español</span>
             </a>
           </li>
           <li>
             <a id="top2-language" target="_blank">
               <!-- <i class="headtopi fa fa-language fa-1x" title="Languages"></i> -->
-              <span onclick="window.ui.setLanguage('jpn');" height="20px">日本語</span>
+              <span onclick="window.teimeta.setLanguage('jpn');" height="20px">日本語</span>
             </a>
           </li>
                 
@@ -134,7 +134,7 @@
         </ul>
     </li>
     <li>
-      <a id="help" target="_blank">
+      <a id="help" target="_blank" onclick="window.teimeta.about();">
         <i class="headtopi fa fa-question fa-1x" title="Aide"></i>
         <span class="headtopt" id="menuhelp">Aide</span>
       </a>
@@ -144,7 +144,6 @@
   </div>
 
   <div id="bottomall">
-  <input style="display:none;" id="upload-input-transcript" type="file" name="file-transcript" />
   <div id="info">
     <div class="infofiles" id="oddname">ODD: </div>
     <div class="infofiles" id="cssname">CSS: </div>
@@ -152,5 +151,6 @@
   </div>
   <div id="teidata"></div>
   </div>
+  <input style="display:none;" id="upload-input-transcript" type="file" name="file-transcript" />
 </body>
 </html>

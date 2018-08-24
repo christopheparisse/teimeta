@@ -20,16 +20,16 @@ import * as teimeta from './teimeta';
  */
 function initEditFunctions() {
     // for user interface in html pages
-    if (!window['ui']) window['ui'] = {};
-    window['ui'].setOnOffES = teimeta.teiData.edit.setOnOffES;
-    window['ui'].setText = teimeta.teiData.edit.setText;
-    window['ui'].createEC = teimeta.teiData.edit.createEC;
-    window['ui'].setOpenlist = teimeta.teiData.edit.setOpenlist;
-    window['ui'].initOpenlist = teimeta.teiData.edit.initOpenlist;
-    window['ui'].toggleES = teimeta.teiData.edit.toggleES;
-    window['ui'].checkTime = teimeta.teiData.edit.checkTime;
-    window['ui'].highlight = teimeta.teiData.edit.highlight;
-    window['ui'].odd = teimeta.teiData.dataOdd;
+    if (!window['teimeta']) window['teimeta'] = {};
+    window['teimeta'].setOnOffES = teimeta.teiData.edit.setOnOffES;
+    window['teimeta'].setText = teimeta.teiData.edit.setText;
+    window['teimeta'].createEC = teimeta.teiData.edit.createEC;
+    window['teimeta'].setOpenlist = teimeta.teiData.edit.setOpenlist;
+    window['teimeta'].initOpenlist = teimeta.teiData.edit.initOpenlist;
+    window['teimeta'].toggleES = teimeta.teiData.edit.toggleES;
+    window['teimeta'].checkTime = teimeta.teiData.edit.checkTime;
+    window['teimeta'].highlight = teimeta.teiData.edit.highlight;
+    window['teimeta'].odd = teimeta.teiData.dataOdd;
     // for debugging purposes
     window['dbg'] = {};
     window['dbg'].tei = teimeta.teiData;
@@ -560,7 +560,7 @@ function generateContent(ct, abspath) {
         //console.log(">>>",ec.model);
         if (ec.minOccurs === '1' && ec.maxOccurs === '1') {
             //console.log("1-1",ec.model);
-            s += '<div class="headHRef" onmouseover="window.ui.highlight(event)">';
+            s += '<div class="headHRef" onmouseover="window.teimeta.highlight(event)">';
             if (ec.type === 'elementRef') {
                 s += generateElement(ec.eCI[0].element, 'obligatory');
             } else {
@@ -596,7 +596,7 @@ function generateMultiple(ec, abspath) {
     s += ' >\n';
     // on peut en rajouter ... ou supprimer
     s += '<div class="plusCM"><i id="' + uniqCreate2 + '" class="create fa fa-plus-square fa-color-expand" '
-        + 'onclick="window.ui.createEC(event, \'' + uniqCreate + '\')"></i></div>\n';
+        + 'onclick="window.teimeta.createEC(event, \'' + uniqCreate + '\')"></i></div>\n';
     values[uniqCreate] = {elt: ec.eCI[0], tab: ec.eCI, id: uniqCreate, path: abspath, eltSpec: ec.parentElementSpec};
     for (let i in ec.eCI) {
         // HERE can put info about expansions
@@ -670,7 +670,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s +='onchange="window.ui.setText(event, \'' + uniq + '\');" >\n';
+            s +='onchange="window.teimeta.setText(event, \'' + uniq + '\');" >\n';
             for (let k=0; k < datatype.vallist.length; k++) {
                 s += '<option value="' +
                     datatype.vallist[k].ident + '" ';
@@ -694,7 +694,7 @@ function editDataType(datatype, ident) {
             values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
             /*
             s +='<input type=text class="awesomplete listattr" data-minchars="0" list="' + uniq + '" value="' + datatype.valueContent + '" ';
-            s +='onchange="window.ui.setAttr(event, \'' + uniq + '\');"/>\n';
+            s +='onchange="window.teimeta.setAttr(event, \'' + uniq + '\');"/>\n';
             s +='<datalist id="' + uniq + '">';
             for (let k in datatype.vallist) {
                 s += '<option value="' +
@@ -713,9 +713,9 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setOpenlist(event, \'' + uniq + '\');" \n';
+            s += 'onchange="window.teimeta.setOpenlist(event, \'' + uniq + '\');" \n';
             if (datatype.vallist.length === 0) {
-                s += 'onclick="window.ui.initOpenlist(event, \'' + uniq + '\');" \n';
+                s += 'onclick="window.teimeta.initOpenlist(event, \'' + uniq + '\');" \n';
                 // ne faire cela que pour des listes pas encore remplie. Pas nécessaire pour les autres.                
             }
             s += '>\n';
@@ -760,7 +760,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s +='onchange="window.ui.setText(event, \'' + uniq + '\');" >\n';
+            s +='onchange="window.teimeta.setText(event, \'' + uniq + '\');" >\n';
             for (let k=0; k < iso639.code639.length; k++) {
                 s += '<option value="' +
                 iso639.code639[k].code + '" ';
@@ -792,7 +792,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s +='onchange="window.ui.setText(event, \'' + uniq + '\');" >\n';
+            s +='onchange="window.teimeta.setText(event, \'' + uniq + '\');" >\n';
             for (let k=0; k < iso3166.iso3666Alpha2.length; k++) {
                 s += '<option value="' +
                 iso3166.iso3666Alpha2[k].code + '" ';
@@ -823,7 +823,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.checkTime(event, \'' + uniq + '\');"';
+            s += 'onchange="window.teimeta.checkTime(event, \'' + uniq + '\');"';
             s += ' value="' + formatTime(datatype.valueContent) + '"';
             s += ' />\n';
             break;
@@ -847,7 +847,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+            s += 'onchange="window.teimeta.setText(event, \'' + uniq + '\');"';
             if (datatype.valueContent) s += ' value="' + datatype.valueContent + '"';
             s += ' />\n';
             break;
@@ -871,7 +871,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+            s += 'onchange="window.teimeta.setText(event, \'' + uniq + '\');"';
 //            if (datatype.valueContent) s += ' value="' + datatype.valueContent + '"';
             s += ' >';
             if (datatype.valueContent) s += datatype.valueContent;
@@ -901,7 +901,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+            s += 'onchange="window.teimeta.setText(event, \'' + uniq + '\');"';
             if (datatype.valueContent) s += ' value="' + datatype.valueContent + '"';
             s += ' />\n';
             break;
@@ -983,11 +983,11 @@ function generateElement(elt, validatedStyle) {
             if (elt.validatedES) {
                 s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
                     + classOf(elt.usage)
-                    + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                    + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
             } else {
                 s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
                     + classOf(elt.usage)
-                    + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                    + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
             }
         } else {
             // on ne peut pas valider les req - ils sont toujours à validatedES === 'ok'
@@ -999,18 +999,18 @@ function generateElement(elt, validatedStyle) {
                 if (elt.validatedES) {
                     s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
                         + classOf(elt.usage)
-                        + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                        + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
                 } else {
                     s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
                         + classOf(elt.usage)
-                        + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                        + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
                 }
             }
         }
 
         // contenu (node principal)
         s += '<i class="hidebutton fa fa-size2 fa-star-half-o fa-color-toggle" '
-            + 'onclick="window.ui.toggleES(event, \'' + uniq + '\')"></i>';
+            + 'onclick="window.teimeta.toggleES(event, \'' + uniq + '\')"></i>';
         if (teimeta.teiData.params.displayFullpath) {
             s += '<span class="nodeIdent">' + elt.ident + '</span>\n';
             s += '<span class="nodeAbspath">' + elt.absolutepath + '</span>\n';
@@ -1060,11 +1060,11 @@ function generateElement(elt, validatedStyle) {
             if (values[uniq].select === 'ok') {
                 s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
                     + classOf(elt.usage)
-                    + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                    + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
             } else {
                 s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
                     + classOf(elt.usage)
-                    + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                    + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
             }
         }
         // description

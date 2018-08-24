@@ -94,7 +94,7 @@
 
 /**
  * Author: Christophe Parisse
- * Module: data.ts
+ * Module: teimeta.ts
  * handle the data for the triplet XML file, ODD file, CSS file.
  * so that to open, create and save an XML file it is only necessary to interface with this file
  * and the internal specificities are hidden from the external interface
@@ -245,12 +245,11 @@ exports.initXml = initXml;
  * @returns 'ok' / 'css' / 'null'
  * the return values are stored in the data structure
  */
-function initOdd(filename, data, urlmodel) {
+function initOdd(filename, data, urlmodel, finalProcess) {
     var impts = odd.loadOddClassRef(data);
     var eltSpecs = {};
     var eltRefs = {};
     if (impts && impts.length > 0) {
-        var ok_1 = false;
         console.log(impts);
         // there are imports to be loaded.
         var p_1 = urlpathname(urlmodel);
@@ -281,30 +280,38 @@ function initOdd(filename, data, urlmodel) {
                 callback();
             });
         }, function (err) {
-            if (err)
+            if (err) {
                 console.error(err.message);
+                finalProcess(false);
+                return;
+            }
             console.log('fin:', err, eltSpecs, eltRefs);
             // eltSpecs and eltRefs contains now all elementSpec and elementRef
             var o = odd.loadOdd(data, eltSpecs, eltRefs);
-            if (!o)
-                return false;
+            console.log('return from odd.loadOdd', o);
+            if (!o) {
+                console.error("cannot load ODD multiple");
+                finalProcess(false);
+                return;
+            }
             exports.teiData.oddName = filename;
             exports.teiData.dataOdd = o;
-            ok_1 = true;
-            return ok_1;
+            console.log('final return ok');
+            finalProcess(true);
         });
-        if (ok_1)
-            return true;
-        else
-            return false;
     }
     else {
         var o = odd.loadOdd(data);
-        if (!o)
-            return false;
+        console.log('return standalone ODD from odd.loadOdd', o);
+        if (!o) {
+            console.error("cannot load ODD Single");
+            finalProcess(false);
+            return;
+        }
         exports.teiData.oddName = filename;
         exports.teiData.dataOdd = o;
-        return true;
+        console.log('final return of standalone ODD');
+        finalProcess(true);
     }
 }
 exports.initOdd = initOdd;
@@ -346,17 +353,22 @@ exports.generateXml = generateXml;
  * @returns 'ok' / 'null'
  * the return values are stored in the teiData structure
  */
-function loadXmlOddCss(filenameXml, dataXml, filenameOdd, dataOdd, filenameCss, dataCss) {
+function loadXmlOddCss(filenameXml, dataXml, filenameOdd, dataOdd, filenameCss, dataCss, callback) {
+    function finalXOC(r) {
+        if (!r)
+            callback('<div>Incorrect odd!</div>');
+        else {
+            loadXml(filenameXml, dataXml);
+            callback(exports.teiData.html);
+        }
+    }
     if (dataCss)
         initCss(filenameCss, dataCss);
     if (!dataOdd) {
         alert.alertUser('no dataOdd in loadXmlOddCss: cannot edit xml/tei file');
-        return '<div>Missing odd!</div>';
+        callback('<div>Missing odd!</div>');
     }
-    if (initOdd(filenameOdd, dataOdd, urlpathname(filenameOdd)) === null)
-        return '<div>Incorrect odd!</div>';
-    loadXml(filenameXml, dataXml);
-    return exports.teiData.html;
+    initOdd(filenameOdd, dataOdd, urlpathname(filenameOdd), finalXOC);
 }
 exports.loadXmlOddCss = loadXmlOddCss;
 /**
@@ -381,13 +393,11 @@ function readXmlOddCss(filenameXml, filenameOdd, filenameCss, callback) {
                     alert.alertUser('error reading ' + filename + ' : ' + data);
                     return;
                 }
-                var h = loadXmlOddCss(filename, data, oddname, odddata, cssname, cssdata);
-                callback(h);
+                loadXmlOddCss(filename, data, oddname, odddata, cssname, cssdata, callback);
             });
         }
         else {
-            var h = loadXmlOddCss(null, null, oddname, odddata, cssname, cssdata);
-            callback(h);
+            loadXmlOddCss(null, null, oddname, odddata, cssname, cssdata, callback);
         }
     }
     function loadOdd(filename, cssname, cssdata) {
@@ -7867,17 +7877,17 @@ var teimeta = __webpack_require__(2);
  */
 function initEditFunctions() {
     // for user interface in html pages
-    if (!window['ui'])
-        window['ui'] = {};
-    window['ui'].setOnOffES = teimeta.teiData.edit.setOnOffES;
-    window['ui'].setText = teimeta.teiData.edit.setText;
-    window['ui'].createEC = teimeta.teiData.edit.createEC;
-    window['ui'].setOpenlist = teimeta.teiData.edit.setOpenlist;
-    window['ui'].initOpenlist = teimeta.teiData.edit.initOpenlist;
-    window['ui'].toggleES = teimeta.teiData.edit.toggleES;
-    window['ui'].checkTime = teimeta.teiData.edit.checkTime;
-    window['ui'].highlight = teimeta.teiData.edit.highlight;
-    window['ui'].odd = teimeta.teiData.dataOdd;
+    if (!window['teimeta'])
+        window['teimeta'] = {};
+    window['teimeta'].setOnOffES = teimeta.teiData.edit.setOnOffES;
+    window['teimeta'].setText = teimeta.teiData.edit.setText;
+    window['teimeta'].createEC = teimeta.teiData.edit.createEC;
+    window['teimeta'].setOpenlist = teimeta.teiData.edit.setOpenlist;
+    window['teimeta'].initOpenlist = teimeta.teiData.edit.initOpenlist;
+    window['teimeta'].toggleES = teimeta.teiData.edit.toggleES;
+    window['teimeta'].checkTime = teimeta.teiData.edit.checkTime;
+    window['teimeta'].highlight = teimeta.teiData.edit.highlight;
+    window['teimeta'].odd = teimeta.teiData.dataOdd;
     // for debugging purposes
     window['dbg'] = {};
     window['dbg'].tei = teimeta.teiData;
@@ -8406,7 +8416,7 @@ function generateContent(ct, abspath) {
         //console.log(">>>",ec.model);
         if (ec.minOccurs === '1' && ec.maxOccurs === '1') {
             //console.log("1-1",ec.model);
-            s += '<div class="headHRef" onmouseover="window.ui.highlight(event)">';
+            s += '<div class="headHRef" onmouseover="window.teimeta.highlight(event)">';
             if (ec.type === 'elementRef') {
                 s += generateElement(ec.eCI[0].element, 'obligatory');
             }
@@ -8444,7 +8454,7 @@ function generateMultiple(ec, abspath) {
     s += ' >\n';
     // on peut en rajouter ... ou supprimer
     s += '<div class="plusCM"><i id="' + uniqCreate2 + '" class="create fa fa-plus-square fa-color-expand" '
-        + 'onclick="window.ui.createEC(event, \'' + uniqCreate + '\')"></i></div>\n';
+        + 'onclick="window.teimeta.createEC(event, \'' + uniqCreate + '\')"></i></div>\n';
     exports.values[uniqCreate] = { elt: ec.eCI[0], tab: ec.eCI, id: uniqCreate, path: abspath, eltSpec: ec.parentElementSpec };
     for (var i in ec.eCI) {
         // HERE can put info about expansions
@@ -8520,7 +8530,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');" >\n';
+            s += 'onchange="window.teimeta.setText(event, \'' + uniq + '\');" >\n';
             for (var k = 0; k < datatype.vallist.length; k++) {
                 s += '<option value="' +
                     datatype.vallist[k].ident + '" ';
@@ -8545,7 +8555,7 @@ function editDataType(datatype, ident) {
             exports.values[uniq] = { value: datatype.valueContent, eltSpec: datatype.parentElementSpec };
             /*
             s +='<input type=text class="awesomplete listattr" data-minchars="0" list="' + uniq + '" value="' + datatype.valueContent + '" ';
-            s +='onchange="window.ui.setAttr(event, \'' + uniq + '\');"/>\n';
+            s +='onchange="window.teimeta.setAttr(event, \'' + uniq + '\');"/>\n';
             s +='<datalist id="' + uniq + '">';
             for (let k in datatype.vallist) {
                 s += '<option value="' +
@@ -8564,9 +8574,9 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setOpenlist(event, \'' + uniq + '\');" \n';
+            s += 'onchange="window.teimeta.setOpenlist(event, \'' + uniq + '\');" \n';
             if (datatype.vallist.length === 0) {
-                s += 'onclick="window.ui.initOpenlist(event, \'' + uniq + '\');" \n';
+                s += 'onclick="window.teimeta.initOpenlist(event, \'' + uniq + '\');" \n';
                 // ne faire cela que pour des listes pas encore remplie. Pas nécessaire pour les autres.                
             }
             s += '>\n';
@@ -8612,7 +8622,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');" >\n';
+            s += 'onchange="window.teimeta.setText(event, \'' + uniq + '\');" >\n';
             for (var k = 0; k < iso639.code639.length; k++) {
                 s += '<option value="' +
                     iso639.code639[k].code + '" ';
@@ -8645,7 +8655,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');" >\n';
+            s += 'onchange="window.teimeta.setText(event, \'' + uniq + '\');" >\n';
             for (var k = 0; k < iso3166.iso3666Alpha2.length; k++) {
                 s += '<option value="' +
                     iso3166.iso3666Alpha2[k].code + '" ';
@@ -8676,7 +8686,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.checkTime(event, \'' + uniq + '\');"';
+            s += 'onchange="window.teimeta.checkTime(event, \'' + uniq + '\');"';
             s += ' value="' + formatTime(datatype.valueContent) + '"';
             s += ' />\n';
             break;
@@ -8700,7 +8710,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+            s += 'onchange="window.teimeta.setText(event, \'' + uniq + '\');"';
             if (datatype.valueContent)
                 s += ' value="' + datatype.valueContent + '"';
             s += ' />\n';
@@ -8725,7 +8735,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+            s += 'onchange="window.teimeta.setText(event, \'' + uniq + '\');"';
             //            if (datatype.valueContent) s += ' value="' + datatype.valueContent + '"';
             s += ' >';
             if (datatype.valueContent)
@@ -8756,7 +8766,7 @@ function editDataType(datatype, ident) {
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
-            s += 'onchange="window.ui.setText(event, \'' + uniq + '\');"';
+            s += 'onchange="window.teimeta.setText(event, \'' + uniq + '\');"';
             if (datatype.valueContent)
                 s += ' value="' + datatype.valueContent + '"';
             s += ' />\n';
@@ -8841,12 +8851,12 @@ function generateElement(elt, validatedStyle) {
             if (elt.validatedES) {
                 s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
                     + classOf(elt.usage)
-                    + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                    + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
             }
             else {
                 s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
                     + classOf(elt.usage)
-                    + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                    + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
             }
         }
         else {
@@ -8859,18 +8869,18 @@ function generateElement(elt, validatedStyle) {
                 if (elt.validatedES) {
                     s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
                         + classOf(elt.usage)
-                        + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                        + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
                 }
                 else {
                     s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
                         + classOf(elt.usage)
-                        + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                        + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
                 }
             }
         }
         // contenu (node principal)
         s += '<i class="hidebutton fa fa-size2 fa-star-half-o fa-color-toggle" '
-            + 'onclick="window.ui.toggleES(event, \'' + uniq + '\')"></i>';
+            + 'onclick="window.teimeta.toggleES(event, \'' + uniq + '\')"></i>';
         if (teimeta.teiData.params.displayFullpath) {
             s += '<span class="nodeIdent">' + elt.ident + '</span>\n';
             s += '<span class="nodeAbspath">' + elt.absolutepath + '</span>\n';
@@ -8925,12 +8935,12 @@ function generateElement(elt, validatedStyle) {
             if (exports.values[uniq].select === 'ok') {
                 s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark fa-choice-validated fa-'
                     + classOf(elt.usage)
-                    + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                    + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
             }
             else {
                 s += '<i id="' + elt.validatedESID + '" class="validate fa fa-size2 fa-bookmark-o fa-choice-not-validated fa-'
                     + classOf(elt.usage)
-                    + '" onclick="window.ui.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
+                    + '" onclick="window.teimeta.setOnOffES(event, \'' + uniq + '\', \'' + elt.usage + '\')"></i>';
             }
         }
         // description
@@ -18945,7 +18955,7 @@ exports.push([module.i, "/*\n * css for the automatically generated part\n */\n\
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
+
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @module lib.ts
@@ -18960,11 +18970,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var teimeta = __webpack_require__(2);
 __webpack_require__(34);
 __webpack_require__(49);
+if (window['teimeta'] === undefined)
+    window['teimeta'] = {};
 /*
  * these four functions are necessary to use the interface
  */
 /**
- * @method global.loadXmlOddCss
+ * @method window['teimeta'].loadXmlOddCss
  * this function takes as input the string content of all the data
  * filename parameters is optional (can be null) and are used for display
  * if dataCss is null, no css is used (unless included in dataOdd)
@@ -18979,9 +18991,9 @@ __webpack_require__(49);
  * @returns 'ok' / 'null'
  * the return values are stored in the teiData structure
  */
-global.loadXmlOddCss = teimeta.loadXmlOddCss;
+window['teimeta'].loadXmlOddCss = teimeta.loadXmlOddCss;
 /**
- * @method global.readXmlOddCss
+ * @method window['teimeta'].readXmlOddCss
  * this function takes as input three urls
  * the urls are filenames that must be available though http protocol
  * if filenameCss is null, no css is used (unless included in filenameOdd)
@@ -18993,18 +19005,18 @@ global.loadXmlOddCss = teimeta.loadXmlOddCss;
  * @returns 'ok' / 'null'
  * the return values are stored in the teiData structure
  */
-global.readXmlOddCss = teimeta.readXmlOddCss;
+window['teimeta'].readXmlOddCss = teimeta.readXmlOddCss;
 /**
- * methode global.finalizeHTML
+ * methode window['teimeta'].finalizeHTML
  * to be executed after an HTMl string provided by teimeta has been loaded
  * necessary to implement automatic resize of entry fields - no parameters
  */
-global.finalizeHTML = teimeta.finalizeHTML;
+window['teimeta'].finalizeHTML = teimeta.finalizeHTML;
 /**
  * gather the new state of the XML object edited by teimeta
  * @return {string} - xml content edited by teimeta library
  */
-global.generateXml = teimeta.generateXml;
+window['teimeta'].generateXml = teimeta.generateXml;
 /**
  * acces to parameters
     defaultNewElement = true; // if true the non existing elements are included by default
@@ -19018,7 +19030,7 @@ global.generateXml = teimeta.generateXml;
     nbdigits = 0; // number of digits allowed in the decimal part of a number
     encodeXMLFull = false; // if true use entities.encodeXML otherwise only encodes < and >
  */
-global.teimetaParams = teimeta.teiData.params;
+window['teimeta'].teimetaParams = teimeta.teiData.params;
 /*
  * the functions below as utilitary and to be used only for easy implementation
  * and testing purposes
@@ -19026,7 +19038,7 @@ global.teimetaParams = teimeta.teiData.params;
 /**
  * utilitary function for loading urls for user that don't want to implement
  */
-global.readTextFile = teimeta.readTextFile;
+window['teimeta'].readTextFile = teimeta.readTextFile;
 var saveAs = __webpack_require__(31);
 /**
  * utilitary function for testing as for user that don't want to implement
@@ -19050,9 +19062,8 @@ function saveFileLocal(type, name, data) {
     saveAs.saveAs(blob, l);
 }
 ;
-global.saveFileLocal = saveFileLocal;
+window['teimeta'].saveFileLocal = saveFileLocal;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(24)))
 
 /***/ })
 /******/ ]);

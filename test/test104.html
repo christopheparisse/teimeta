@@ -1,7 +1,5 @@
 <html>
 <script src="../temp-page/lib.js"></script>
-<link rel="stylesheet" href="../temp-page/css/font-awesome/css/font-awesome.min.css">
-<link rel="stylesheet" type="../temp-page/text/css" href="css/internal.css">
 <style>
 pre {
     white-space: pre-wrap;       /* Since CSS 2.1 */
@@ -17,17 +15,17 @@ pre {
 </body>
 <script>
 
-teimetaParams.defaultNewElement = false;
-readXmlOddCss(null, 'http://localhost/test/test104.odd', null,
+window.teimeta.teimetaParams.defaultNewElement = false;
+window.teimeta.readXmlOddCss(null, 'http://localhost/test/test104.odd', null,
   function (h) {
     var el = document.getElementById('teimeta');
     el.innerHTML = h;
-    finalizeHTML();
+    window.teimeta.finalizeHTML();
   });
 
 function saveTheData() {
-  var r = generateXml();
-//  saveFileLocal('xml', 'test104-result.xml', r);
+  var r = window.teimeta.generateXml();
+//  window.teimeta.saveFileLocal('xml', 'test104-result.xml', r);
   var el = document.getElementById('info');
   info.textContent = r;
 }

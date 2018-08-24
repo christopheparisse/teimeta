@@ -15,16 +15,16 @@ pre {
 </body>
 <script>
 
-readXmlOddCss(null, 'http://localhost/test/test101.odd', null,
+window.teimeta.readXmlOddCss(null, 'http://localhost/test/test101.odd', null,
   function (h) {
     var el = document.getElementById('teimeta');
     el.innerHTML = h;
-    finalizeHTML();
+    window.teimeta.finalizeHTML();
   });
 
 function saveTheData() {
-  var r = generateXml();
-  saveFileLocal('xml', 'test101-result.xml', r);
+  var r = window.teimeta.generateXml();
+  window.teimeta.saveFileLocal('xml', 'test101-result.xml', r);
   var el = document.getElementById('info');
   info.textContent = r;
 }

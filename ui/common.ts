@@ -135,25 +135,25 @@ export function oddParams() {
     let userInfo = `
     <h2 style="margin-top: 0">Paramètres</h2>
     <ul>
-        <li onclick="window.ui.setDispFPath();">` + msg.msg('paramfullpath') + '<span id="toggleDispFPath">'
+        <li onclick="window.teimeta.setDispFPath();">` + msg.msg('paramfullpath') + '<span id="toggleDispFPath">'
         + ((teimeta.teiData.params.displayFullpath)
             ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
             : '<i class="fa fa-square-o" aria-hidden="true"></i>')
     + `</span></li>
         <li>` + msg.msg('paramshift') + '<input type="number" min="0" max="100" value="'
         + teimeta.teiData.params.leftShift 
-    + `" name="leftshift" onchange="window.ui.setLeftShift(event);"/></li>
-        <li onclick="window.ui.setDefNewElt();">` + msg.msg('paramdefincl') + '<span id="toggleDefNewElt">'
+    + `" name="leftshift" onchange="window.teimeta.setLeftShift(event);"/></li>
+        <li onclick="window.teimeta.setDefNewElt();">` + msg.msg('paramdefincl') + '<span id="toggleDefNewElt">'
         + ((teimeta.teiData.params.defaultNewElement)
             ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
             : '<i class="fa fa-square-o" aria-hidden="true"></i>')
     + `</span></li>
-        <li onclick="window.ui.setValReq();">` + msg.msg('paramsupprobl') + '<span id="toggleDefValReq">'
+        <li onclick="window.teimeta.setValReq();">` + msg.msg('paramsupprobl') + '<span id="toggleDefValReq">'
         + ((teimeta.teiData.params.validateRequired)
             ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
             : '<i class="fa fa-square-o" aria-hidden="true"></i>')
     + `</span></li>
-        <li onclick="window.ui.setCanRm();">` + msg.msg('paramcanrm') + '<span id="toggleDefCanRm">'
+        <li onclick="window.teimeta.setCanRm();">` + msg.msg('paramcanrm') + '<span id="toggleDefCanRm">'
         + ((teimeta.teiData.params.canRemove)
             ? '<i class="fa fa-check-square-o" aria-hidden="true"></i>'
             : '<i class="fa fa-square-o" aria-hidden="true"></i>')
@@ -235,6 +235,7 @@ export function init(funbodykeys) {
     el = document.getElementsByTagName('body');
     if (el) el[0].addEventListener("keydown", funbodykeys);
 
+    /*
     el = document.getElementById('file-open');
     if (el) el.addEventListener("click", events.openXml);
     el = document.getElementById('file-new');
@@ -250,6 +251,12 @@ export function init(funbodykeys) {
     el = document.getElementById('top2-params');
     if (el) el.addEventListener("click", oddParams);
 
+    el = document.getElementById('showall');
+    if (el) el.addEventListener("click", teimeta.teiData.edit.showAll);
+    el = document.getElementById('hideall');
+    if (el) el.addEventListener("click", teimeta.teiData.edit.hideAll);
+    */
+
     el = document.getElementById('link-ortolang');
     if (el) el.addEventListener("click", function() { link('https://www.ortolang.fr')});
     el = document.getElementById('link-metadoc');
@@ -259,21 +266,30 @@ export function init(funbodykeys) {
     el = document.getElementById('link-teicorpo');
     if (el) el.addEventListener("click", function() { link('http://ct3.ortolang.fr/tei-corpo/')});
 
-    el = document.getElementById('showall');
-    if (el) el.addEventListener("click", teimeta.teiData.edit.showAll);
-    el = document.getElementById('hideall');
-    if (el) el.addEventListener("click", teimeta.teiData.edit.hideAll);
     el = document.getElementById('upload-input-transcript');
     if (el) el.addEventListener("change", syscall.openLocalFile);
     
     //
-    if (!window['ui']) window['ui'] = {};
-    window['ui'].setLeftShift = setLeftShift;
-    window['ui'].setDispFPath = setDispFPath;
-    window['ui'].setDefNewElt = setDefNewElt;
-    window['ui'].setValReq = setValReq;
-    window['ui'].setCanRm = setCanRm;
-    window['ui'].setLanguage = setLanguage;
+    if (!window['teimeta']) window['teimeta'] = {};
+    window['teimeta'].setLeftShift = setLeftShift;
+    window['teimeta'].setDispFPath = setDispFPath;
+    window['teimeta'].setDefNewElt = setDefNewElt;
+    window['teimeta'].setValReq = setValReq;
+    window['teimeta'].setCanRm = setCanRm;
+    window['teimeta'].setLanguage = setLanguage;
+    window['teimeta'].openXml = events.openXml;
+    window['teimeta'].newXml = events.newXml;
+    window['teimeta'].openOdd = events.openOdd;
+    window['teimeta'].openCss = events.openCss;
+    window['teimeta'].cleanCss = events.cleanCss;
+    window['teimeta'].about = version.about;
+    window['teimeta'].oddParams = oddParams;
+    window['teimeta'].showAll = teimeta.teiData.edit.showAll;
+    window['teimeta'].hideAll = teimeta.teiData.edit.hideAll;
+    window['teimeta'].saveLocal = events.saveLocal;
+    window['teimeta'].saveAsLocal = events.saveAsLocal;
+    window['teimeta'].dumpHtml = events.dumpHtml;
+    window['teimeta'].emptyFile = events.emptyFile;
 }
 
 export function saveFileLocal(type, name, data) {
