@@ -46,6 +46,24 @@ gulp.task('electron-ts', function () {
 
 gulp.task('electron-src', ['electron-teiedit', 'electron-ui', 'electron-msg', 'electron-css', 'electron-main']);
 
+gulp.task('electron-models', function () {
+  // copy test
+  return gulp.src(['models/models.json', 'models/filedesc.odd', 'models/filedesc.css', 'models/media.odd',
+   'models/partdesc.odd', 'models/partdesc.css', 'models/settingencodingdesc.odd', 'models/settingencodingdesc.css', 
+   'models/teispoken2.odd', 'models/teispoken2.css', 'models/metaodd.odd',
+   'models/olac.odd', 'models/olac.css'])
+    .pipe(gulp.dest('temp-electron/models/'))
+});
+
+gulp.task('page-models', function () {
+  // copy test
+  return gulp.src(['models/models.json', 'models/filedesc.odd', 'models/filedesc.css', 'models/media.odd',
+   'models/partdesc.odd', 'models/partdesc.css', 'models/settingencodingdesc.odd', 'models/settingencodingdesc.css', 
+   'models/teispoken2.odd', 'models/teispoken2.css', 'models/metaodd.odd',
+   'models/olac.odd', 'models/olac.css'])
+    .pipe(gulp.dest('temp-page/models/'))
+});
+
 gulp.task('page-teiedit', function () {
   return gulp.src('teiedit/*.ts')
     .pipe(gulp.dest('temp-page/teiedit/'))
@@ -92,7 +110,7 @@ gulp.task('page-main', function () {
 gulp.task('page-src', ['page-teiedit', 'page-ui', 'page-msg', 'page-css', 'page-main']);
 
 gulp.task('electron', function(done) {
-    runSequence('electron-html', 'electron-src', 'electron-ts', function() {
+    runSequence('electron-html', 'electron-src', 'electron-models', 'electron-ts', function() {
         console.log('ok.');
         done();
     });
@@ -138,15 +156,6 @@ gulp.task('page-test7', function () {
   // copy dist
   return gulp.src(['dist/**'])
     .pipe(gulp.dest('/Library/WebServer/Documents/dist/'))
-});
-
-gulp.task('page-models', function () {
-  // copy test
-  return gulp.src(['models/models.json', 'models/filedesc.odd', 'models/filedesc.css', 'models/media.odd',
-   'models/partdesc.odd', 'models/partdesc.css', 'models/settingencodingdesc.odd', 'models/settingencodingdesc.css', 
-   'models/teispoken2.odd', 'models/teispoken2.css', 'models/metaodd.odd',
-   'models/olac.odd', 'models/olac.css'])
-    .pipe(gulp.dest('temp-page/models/'))
 });
 
 gulp.task('page', function(done) {

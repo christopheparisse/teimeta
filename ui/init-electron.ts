@@ -1,5 +1,5 @@
 /**
- * @name initelectron.js
+ * @name init-electron.js
  * @author Christophe Parisse
  */
 
@@ -18,22 +18,6 @@ function quit() {
     });
 }
 
-/*
-    ipcRenderer.on('close', function (e) {
-        if (edit.change() === false) {
-            const remote = require('electron').remote;
-            remote.process.preventClose = false;
-            remote.app.quit();
-        }
-        var answer = confirm('Something is not saved. Do you really want to close the application?');
-        if (!answer) {
-            const remote = require('electron').remote;
-            remote.process.preventClose = true;
-        }
-    });
-
-*/
-
 function bodyKeys(e) {
 /*    
     console.log('keyCode '+ e.keyCode);
@@ -44,11 +28,6 @@ function bodyKeys(e) {
     console.log('meta '+ e.metaKey);
     console.log('ident ' + e.keyIdentifier);
 */    
-/*    if (e.which === 117 && e.altKey !== true && e.ctrlKey !== true) {
-        e.preventDefault();
-        teiEdit.insertLineAtEnd(e);
-    }
-*/  
     if (e.which === 79 && (e.ctrlKey === true || e.metaKey === true) && e.shiftKey === true) { // ctrl shift O
         e.preventDefault();
         events.openOdd();
@@ -62,6 +41,10 @@ function bodyKeys(e) {
         e.preventDefault();
         events.dumpHtml();
         return;
+    }
+    if (e.which === 83 && (e.ctrlKey === true || e.metaKey === true && e.shiftKey === true)) { // ctrl shift S
+        e.preventDefault();
+        events.saveAs(() => {});
     }
     if (e.which === 83 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl S
         e.preventDefault();
@@ -104,9 +87,11 @@ export function init() {
 
     // the file-save is a real save
     let el = document.getElementById('file-save');
+    el.removeEventListener("click", events.saveLocal);
     el.addEventListener("click", events.save);
     // the file-saveas always ask for name
     el = document.getElementById('file-saveas');
+    el.removeEventListener("click", events.saveAsLocal);
     el.addEventListener("click", events.saveAs);
 
     common.init(bodyKeys);

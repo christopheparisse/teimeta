@@ -1,5 +1,5 @@
 /**
- * initalone.js
+ * init-singlepage.js
  */
 
 import * as events from './events';
@@ -39,9 +39,13 @@ function bodyKeys(e) {
         events.dumpHtml();
         return;
     }
-    if (e.which === 83 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl S
+    if (e.which === 83 && (e.ctrlKey === true || e.metaKey === true && e.shiftKey === true)) { // ctrl shift S
         e.preventDefault();
         events.saveAsLocal(null);
+    }
+    if (e.which === 83 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl S
+        e.preventDefault();
+        events.saveLocal(null);
     }
     if (e.which === 78 && (e.ctrlKey === true || e.metaKey === true)) { // ctrl N
         e.preventDefault();

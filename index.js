@@ -23,6 +23,7 @@ app.on('window-all-closed', function() {
 app.on('ready', function() {
 // Create the browser window.
 mainWindow = new BrowserWindow({width: 1000, height: 800});
+mainWindow.webContents.on('will-navigate', (event) => event.preventDefault());
 
 // and load the index.html of the app.
 mainWindow.loadURL('file://' + __dirname + '/index.html');

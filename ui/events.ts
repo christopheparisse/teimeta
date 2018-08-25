@@ -416,7 +416,8 @@ export function emptyFile() {
     el.innerHTML = msg.msg('file') + teimeta.teiData.fileName;
 }
 
-export function saveAs(fun) {    
+export function saveAs(fun) {
+    console.log("saveAs");
     opensave.chooseSaveFile('xml', function(err, name) {
         if (!err) {
             teimeta.teiData.fileName = name;
@@ -431,13 +432,8 @@ export function saveAs(fun) {
     });
 };
 
-export function saveStorage() {
-    var ed = teimeta.generateXml();
-    localStorage.setItem("previousXML", ed);
-    localStorage.setItem("previousXMLName", teimeta.teiData.fileName);
-};
-
 export function save(fun) {
+    console.log("save");
     if (teimeta.teiData.fileName !== msg.msg('newfile')) {
             var ed = teimeta.generateXml();
             teimeta.teiData.edit.change(false);
@@ -446,6 +442,12 @@ export function save(fun) {
     } else {
         return saveAs(fun);
     }
+};
+
+export function saveStorage() {
+    var ed = teimeta.generateXml();
+    localStorage.setItem("previousXML", ed);
+    localStorage.setItem("previousXMLName", teimeta.teiData.fileName);
 };
 
 function saveit(name, fun) {
@@ -457,6 +459,8 @@ function saveit(name, fun) {
 }
 
 export function saveLocal(fun, force = false) {
+    console.log("saveLocal");
+    if (teimeta.teiData.system === 'electron') return;
     let nf = msg.msg('newfile');
     if (teimeta.teiData.fileName === nf || force === true) {
         alert.promptUserModal("Please give the name of your new file: ",
@@ -473,6 +477,8 @@ export function saveLocal(fun, force = false) {
 };
 
 export function saveAsLocal(fun, force = false) {
+    console.log("saveAsLocal");
+    if (teimeta.teiData.system === 'electron') return;
     alert.promptUserModal("Please give the name of your new file: ",
         function(newname) {
             if (!newname) return;
