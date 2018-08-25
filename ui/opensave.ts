@@ -14,7 +14,7 @@ export function chooseOpenFile(callback) {
         var fl = remote.dialog.showOpenDialog({
             title: 'Open file',
             filters: [
-                { name: 'Xml/Tei Files', extensions: ['tei', 'xml', 'odd'] },
+                { name: 'Xml/Tei Files', extensions: ['xml', 'tei', 'odd'] },
 //                { name: 'Csv Files', extensions: ['csv', 'tsv', 'txt'] },
 //                { name: 'Json Files', extensions: ['json'] },
                 { name: 'All Files', extensions: ['*'] }
@@ -39,7 +39,7 @@ export function chooseSaveFile(extension, callback) {
         ];
     else if (extension === 'xml')
         filter = [
-                { name: 'Xml/Tei Files', extensions: ['tei', 'xml'] },
+                { name: 'Xml/Tei Files', extensions: ['xml', 'tei'] },
         ];
     else if (extension === 'csv')
         filter = [
@@ -51,7 +51,7 @@ export function chooseSaveFile(extension, callback) {
         ];
     try {
         var fl = remote.dialog.showSaveDialog({
-            title: 'Save tei file',
+            title: 'Save xml/tei file',
             filters: filter,
         });
         if (fl) {
