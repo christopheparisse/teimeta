@@ -381,13 +381,15 @@ export function oddpredefs(callback) {
                         console.log(js);
                         callback(oddprefdefined);
                     } catch(e) {
-                        alert.alertUser('error reading models.json: ' + e.toString());
+                        // alert.alertUser('error reading models.json: ' + e.toString());
                         console.log('error reading models.json:',e);
+                        callback(oddprefdefined);
                     }
                 } else {
-                    alert.alertUser('error reading models.json: ' + data);
+                    // alert.alertUser('error reading models.json: ' + data);
                     console.log('error reading models.json:', data);
-            }
+                    callback(oddprefdefined);
+                }
             });
     } else {
         callback(oddprefdefined);
@@ -405,11 +407,15 @@ export function askUserModalForOdd(previousname, loaded, fun) {
 
         let box = '<div id="aumomodal"><p class="aumo aumotitle">' + askoddInfo + '</p>' +
         (loaded ? "<button class='aumo aumobutton current'>" + askoddCurrent + " " + previousname + "</button>" : "")
-            + "<button class='aumo aumobutton computer'>" + askoddLocalOdd + "</button>" +
-            '<p class="aumo aumoinfo">' + askoddPredef + "<p/>";
+            + "<button class='aumo aumobutton computer'>" + askoddLocalOdd + "</button>";
 
-        for (let s=0; s < (predefs).length; s++) {
-            box += "<button class='aumo aumobutton aumoid" + s + "'>" + (predefs)[s].label + "</button>";
+        if (predefs.length === 0) {
+            box += "<p class='aumo aumoinfo'>" + "No predefined ODDs" + "</p>";
+        } else {
+            box += '<p class="aumo aumoinfo">' + askoddPredef + "<p/>";
+            for (let s=0; s < predefs.length; s++) {
+                box += "<button class='aumo aumobutton aumoid" + s + "'>" + (predefs)[s].label + "</button>";
+            }
         }
 
         box += "<button class='aumo aumocancel cancel'>" + askoddCancel + "</button></div>";

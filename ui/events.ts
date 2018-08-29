@@ -514,7 +514,7 @@ export function oddCssLoadUrls(urlOdd, namedisplayedOdd, urlCss, namedisplayedCs
                 openOddCssLoad(urlOdd, namedisplayedOdd, textOdd, urlCss, namedisplayedCss, textCss, fun);
             } else {
                 console.log('error reading', urlOdd, err1, urlCss, err2);
-                alert.alertUser('error reading ' + urlOdd  + err1 + " or " + urlCss + err2);
+                alert.alertUser('error reading ' + urlOdd + " " + err1 + " or " + urlCss + " " + err2);
                 return;
             }
         });

@@ -144,6 +144,7 @@ exports.teiData = {
  */
 function readTextFile(file, callback) {
     var rawFile = new XMLHttpRequest();
+    rawFile.timeout = 4000; // Set timeout to 4 seconds (4000 milliseconds)
     // rawFile.overrideMimeType("text/xml");
     rawFile.responseType = "text";
     rawFile.open("GET", file, true);
@@ -155,7 +156,15 @@ function readTextFile(file, callback) {
             callback(rawFile.status, "error reading " + file);
         }
     };
-    rawFile.send(null);
+    rawFile.ontimeout = function () {
+        callback("internet slow", "slow internet: cannot read " + file);
+    };
+    try {
+        rawFile.send(null);
+    }
+    catch (e) {
+        callback("internet down", "no internet: cannot read " + file);
+    }
 }
 exports.readTextFile = readTextFile;
 function urlpathname(s) {

@@ -743,7 +743,7 @@ function oddCssLoadUrls(urlOdd, namedisplayedOdd, urlCss, namedisplayedCss, fun)
             }
             else {
                 console.log('error reading', urlOdd, err1, urlCss, err2);
-                alert.alertUser('error reading ' + urlOdd + err1 + " or " + urlCss + err2);
+                alert.alertUser('error reading ' + urlOdd + " " + err1 + " or " + urlCss + " " + err2);
                 return;
             }
         });
@@ -810,6 +810,7 @@ exports.teiData = {
  */
 function readTextFile(file, callback) {
     var rawFile = new XMLHttpRequest();
+    rawFile.timeout = 4000; // Set timeout to 4 seconds (4000 milliseconds)
     // rawFile.overrideMimeType("text/xml");
     rawFile.responseType = "text";
     rawFile.open("GET", file, true);
@@ -821,7 +822,15 @@ function readTextFile(file, callback) {
             callback(rawFile.status, "error reading " + file);
         }
     };
-    rawFile.send(null);
+    rawFile.ontimeout = function () {
+        callback("internet slow", "slow internet: cannot read " + file);
+    };
+    try {
+        rawFile.send(null);
+    }
+    catch (e) {
+        callback("internet down", "no internet: cannot read " + file);
+    }
 }
 exports.readTextFile = readTextFile;
 function urlpathname(s) {
@@ -17311,13 +17320,15 @@ function oddpredefs(callback) {
                     callback(oddprefdefined);
                 }
                 catch (e) {
-                    alert.alertUser('error reading models.json: ' + e.toString());
+                    // alert.alertUser('error reading models.json: ' + e.toString());
                     console.log('error reading models.json:', e);
+                    callback(oddprefdefined);
                 }
             }
             else {
-                alert.alertUser('error reading models.json: ' + data);
+                // alert.alertUser('error reading models.json: ' + data);
                 console.log('error reading models.json:', data);
+                callback(oddprefdefined);
             }
         });
     }
@@ -17336,10 +17347,15 @@ function askUserModalForOdd(previousname, loaded, fun) {
         var askoddCancel = msg.msg('cancel');
         var box = '<div id="aumomodal"><p class="aumo aumotitle">' + askoddInfo + '</p>' +
             (loaded ? "<button class='aumo aumobutton current'>" + askoddCurrent + " " + previousname + "</button>" : "")
-            + "<button class='aumo aumobutton computer'>" + askoddLocalOdd + "</button>" +
-            '<p class="aumo aumoinfo">' + askoddPredef + "<p/>";
-        for (var s = 0; s < (predefs).length; s++) {
-            box += "<button class='aumo aumobutton aumoid" + s + "'>" + (predefs)[s].label + "</button>";
+            + "<button class='aumo aumobutton computer'>" + askoddLocalOdd + "</button>";
+        if (predefs.length === 0) {
+            box += "<p class='aumo aumoinfo'>" + "No predefined ODDs" + "</p>";
+        }
+        else {
+            box += '<p class="aumo aumoinfo">' + askoddPredef + "<p/>";
+            for (var s = 0; s < predefs.length; s++) {
+                box += "<button class='aumo aumobutton aumoid" + s + "'>" + (predefs)[s].label + "</button>";
+            }
         }
         box += "<button class='aumo aumocancel cancel'>" + askoddCancel + "</button></div>";
         picoModal({
