@@ -51,7 +51,7 @@ export let teiData = {
  * @param {FileCallback} callback - function executed after the call 
  */
 export function readTextFile(file, callback) {
-    if (file.substring(0,4) !== 'http') {
+    if (file.substring(0,4) !== 'http' && teiData.system !== 'electron') {
         callback("cross origin with no http protocol", "cannot read protocol for " + file)
         return;
     }
