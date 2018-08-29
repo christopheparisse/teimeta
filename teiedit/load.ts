@@ -228,7 +228,7 @@ export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
             }
         }
         // load content
-        // with node recursivity is allowed because we follow node which is not recursive
+        // node recursivity is allowed because we follow node which is not recursive
         if (!c.content) return c;
         for (let ec of c.content.sequencesRefs) {
             // ec is at the format ElementCount

@@ -36,10 +36,14 @@ function dispname(s:string) {
 
 function afterOpenXmlFile(err, oddname, displayname, odddata, xmlname, xmldata) {
     if (!err) {
+        // open with new odd
         openOddLoad(oddname, displayname, odddata, function() {
             finishOpenXml(xmlname, xmldata);
         });
-    }                    
+    } else {
+        // open with current odd
+        finishOpenXml(xmlname, xmldata);
+    }               
 }
 
 export function openXml() {
@@ -62,7 +66,9 @@ export function openXml() {
                     // so cannot access directly if not electron
                     let displayname = dispname(oddname);
                     // open ODD then open XML
-                    common.openSpecificLocalFile(oddname, displayname, name, data, afterOpenXmlFile);
+                    // find any odd including one on the current machine.
+                    findOdd(name, data); // all odds
+                    // common.openSpecificLocalFile(oddname, displayname, name, data, afterOpenXmlFile); // only on the current machine
                 } else {
                     // an odd is indicated in the xml file
                     // try to open it

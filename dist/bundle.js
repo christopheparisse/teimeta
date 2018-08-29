@@ -220,9 +220,14 @@ function dispname(s) {
 }
 function afterOpenXmlFile(err, oddname, displayname, odddata, xmlname, xmldata) {
     if (!err) {
+        // open with new odd
         openOddLoad(oddname, displayname, odddata, function () {
             finishOpenXml(xmlname, xmldata);
         });
+    }
+    else {
+        // open with current odd
+        finishOpenXml(xmlname, xmldata);
     }
 }
 function openXml() {
@@ -247,7 +252,9 @@ function openXml() {
                     // so cannot access directly if not electron
                     var displayname = dispname(oddname_1);
                     // open ODD then open XML
-                    common.openSpecificLocalFile(oddname_1, displayname, name, data, afterOpenXmlFile);
+                    // find any odd including one on the current machine.
+                    findOdd(name, data); // all odds
+                    // common.openSpecificLocalFile(oddname, displayname, name, data, afterOpenXmlFile); // only on the current machine
                 }
                 else {
                     // an odd is indicated in the xml file
@@ -627,6 +634,7 @@ function emptyFile() {
 }
 exports.emptyFile = emptyFile;
 function saveAs(fun) {
+    console.log("saveAs");
     opensave.chooseSaveFile('xml', function (err, name) {
         if (!err) {
             teimeta.teiData.fileName = name;
@@ -644,14 +652,8 @@ function saveAs(fun) {
 }
 exports.saveAs = saveAs;
 ;
-function saveStorage() {
-    var ed = teimeta.generateXml();
-    localStorage.setItem("previousXML", ed);
-    localStorage.setItem("previousXMLName", teimeta.teiData.fileName);
-}
-exports.saveStorage = saveStorage;
-;
 function save(fun) {
+    console.log("save");
     if (teimeta.teiData.fileName !== msg.msg('newfile')) {
         var ed = teimeta.generateXml();
         teimeta.teiData.edit.change(false);
@@ -665,6 +667,13 @@ function save(fun) {
 }
 exports.save = save;
 ;
+function saveStorage() {
+    var ed = teimeta.generateXml();
+    localStorage.setItem("previousXML", ed);
+    localStorage.setItem("previousXMLName", teimeta.teiData.fileName);
+}
+exports.saveStorage = saveStorage;
+;
 function saveit(name, fun) {
     var ed = teimeta.generateXml();
     // console.log(ed);
@@ -675,6 +684,9 @@ function saveit(name, fun) {
 }
 function saveLocal(fun, force) {
     if (force === void 0) { force = false; }
+    console.log("saveLocal");
+    if (teimeta.teiData.system === 'electron')
+        return;
     var nf = msg.msg('newfile');
     if (teimeta.teiData.fileName === nf || force === true) {
         alert.promptUserModal("Please give the name of your new file: ", function (newname) {
@@ -695,6 +707,9 @@ exports.saveLocal = saveLocal;
 ;
 function saveAsLocal(fun, force) {
     if (force === void 0) { force = false; }
+    console.log("saveAsLocal");
+    if (teimeta.teiData.system === 'electron')
+        return;
     alert.promptUserModal("Please give the name of your new file: ", function (newname) {
         if (!newname)
             return;
@@ -8291,7 +8306,7 @@ function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
             }
         }
         // load content
-        // with node recursivity is allowed because we follow node which is not recursive
+        // node recursivity is allowed because we follow node which is not recursive
         if (!c.content)
             return c;
         for (var _i = 0, _a = c.content.sequencesRefs; _i < _a.length; _i++) {
@@ -11358,10 +11373,13 @@ var reIsUint = /^(?:0|[1-9]\d*)$/;
  * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
  */
 function isIndex(value, length) {
+  var type = typeof value;
   length = length == null ? MAX_SAFE_INTEGER$1 : length;
+
   return !!length &&
-    (typeof value == 'number' || reIsUint.test(value)) &&
-    (value > -1 && value % 1 == 0 && value < length);
+    (type == 'number' ||
+      (type != 'symbol' && reIsUint.test(value))) &&
+        (value > -1 && value % 1 == 0 && value < length);
 }
 
 /** `Object#toString` result references. */
@@ -11447,6 +11465,14 @@ var freeProcess = moduleExports$1 && freeGlobal.process;
 /** Used to access faster Node.js helpers. */
 var nodeUtil = (function() {
   try {
+    // Use `util.types` for Node.js 10+.
+    var types = freeModule$1 && freeModule$1.require && freeModule$1.require('util').types;
+
+    if (types) {
+      return types;
+    }
+
+    // Legacy `process.binding('util')` for Node.js < 10.
     return freeProcess && freeProcess.binding && freeProcess.binding('util');
   } catch (e) {}
 }());
@@ -11662,6 +11688,7 @@ function _eachOfLimit(limit) {
         var nextElem = iterator(obj);
         var done = false;
         var running = 0;
+        var looping = false;
 
         function iterateeCallback(err, value) {
             running -= 1;
@@ -11673,12 +11700,13 @@ function _eachOfLimit(limit) {
                 done = true;
                 return callback(null);
             }
-            else {
+            else if (!looping) {
                 replenish();
             }
         }
 
         function replenish () {
+            looping = true;
             while (running < limit && !done) {
                 var elem = nextElem();
                 if (elem === null) {
@@ -11691,6 +11719,7 @@ function _eachOfLimit(limit) {
                 running += 1;
                 iteratee(elem.value, elem.key, onlyOnce(iterateeCallback));
             }
+            looping = false;
         }
 
         replenish();
@@ -14511,7 +14540,7 @@ function memoize(fn, hasher) {
 
 /**
  * Calls `callback` on a later loop around the event loop. In Node.js this just
- * calls `process.nextTicl`.  In the browser it will use `setImmediate` if
+ * calls `process.nextTick`.  In the browser it will use `setImmediate` if
  * available, otherwise `setTimeout(callback, 0)`, which means other higher
  * priority events may precede the execution of `callback`.
  *
@@ -17210,8 +17239,12 @@ function openSpecificLocalFile(oddname, displayname, xmlname, xmldata, funCallba
         funCallback(err, name, name, data, xmlname, xmldata);
     }
     alert.askUserModal('The file <b>' + xmlname + '</b> uses a file named <b>' + oddname +
-        '</b> - please locate it on you computer.', function (response) { if (response)
-        syscall.chooseOpenFile(fun); });
+        '</b> - please locate it on you computer.', function (response) {
+        if (response)
+            syscall.chooseOpenFile(fun);
+        else
+            fun("cancel", "", "");
+    });
 }
 exports.openSpecificLocalFile = openSpecificLocalFile;
 function askUserModalYesNoCancel(s, fun) {
@@ -17354,8 +17387,8 @@ exports.askUserModalForOdd = askUserModalForOdd;
 Object.defineProperty(exports, "__esModule", { value: true });
 var alert = __webpack_require__(5);
 var msg = __webpack_require__(7);
-exports.version = '0.6.2';
-exports.date = '24-08-2018';
+exports.version = '0.6.3';
+exports.date = '29-08-2018';
 function about() {
     var s = msg.msg('versionname') + exports.version + " - " + exports.date + "</br></br>";
     s += msg.msg('shorthelp');

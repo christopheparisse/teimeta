@@ -313,7 +313,12 @@ export function openSpecificLocalFile(oddname, displayname, xmlname, xmldata, fu
     alert.askUserModal(
         'The file <b>' + xmlname + '</b> uses a file named <b>' + oddname +
         '</b> - please locate it on you computer.',
-        function(response) { if (response) syscall.chooseOpenFile(fun) }
+        function(response) { 
+            if (response) 
+                syscall.chooseOpenFile(fun)
+            else
+                fun("cancel", "", "");
+        }
     );    
 }
 

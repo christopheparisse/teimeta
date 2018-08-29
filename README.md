@@ -33,6 +33,7 @@ The tool was created to edit TEI files, but it can be used for any type of XML f
 TEIMETA allows to edit any XML node but not to move this node around in the XML file. New nodes can be created and nodes can be erased (if this is allowed by the model). The ODD describes node position from the root. **The values of an XML node not described in the ODD file will never be modified. This means that it is possible to edit parts of an XML file respecting the integrity of the rest of the file.**
 
 ## Version information
+  - 0.6.3 - corrections of small errors
   - 0.6.2 - fully documented version
   - 0.5.2 - improved style of CSS for all display size
   - 0.5.1 - full English or French version
@@ -322,6 +323,8 @@ Tout noeud édité garde sa position. Un noeud inexistant peut être créé, mai
 L'ODD doit décrire toute l'arborescence depuis la racine. **Les valeurs d'un fichier XML non décrites dans l'ODD ne sont pas modifiées lors de l'édition du fichier XML par TEIMETA. TEIMETA permet donc d'éditer une partie d'un fichier XML en respectant l'intégrité du reste du fichier.** Les valeurs décrites pevuent être créées, modifiées et vidées. La suppression est possible en désactivant les noeuds non-obligatoires. Il est possible en option (pas encore implémentée d'autoriser la suppression des noeuds obligatoires).
 
 ## Versions disponibles
+0.6.3 - corrections de bugs
+0.6.2 - version modifié pour inclusion dans d'autres applications - version anglaise des commentaires
 0.5.2 - amélioration CSS et en-tête pour toutes tailles d'écran
 0.5.1 - version complète Anglais ou Français
 0.5.0 - 2 mai 2018 - version permettant une présentation visuelle à façon en éditant les fichiers ODD
