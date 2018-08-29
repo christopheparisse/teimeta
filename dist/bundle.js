@@ -809,6 +809,10 @@ exports.teiData = {
  * @param {FileCallback} callback - function executed after the call
  */
 function readTextFile(file, callback) {
+    if (file.substring(0, 4) !== 'http') {
+        callback("cross origin with no http protocol", "cannot read protocol for " + file);
+        return;
+    }
     var rawFile = new XMLHttpRequest();
     rawFile.timeout = 4000; // Set timeout to 4 seconds (4000 milliseconds)
     // rawFile.overrideMimeType("text/xml");
