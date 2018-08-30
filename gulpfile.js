@@ -50,7 +50,7 @@ gulp.task('electron-models', function () {
   // copy test
   return gulp.src(['models/models.json', 'models/filedesc.odd', 'models/filedesc.css', 'models/media.odd',
    'models/partdesc.odd', 'models/partdesc.css', 'models/settingencodingdesc.odd', 'models/settingencodingdesc.css', 
-   'models/teispoken2.odd', 'models/teispoken2.css', 'models/metaodd.odd',
+   'models/teispoken.odd', 'models/teispoken.css', 'models/metaodd.odd',
    'models/olac.odd', 'models/olac.css'])
     .pipe(gulp.dest('temp-electron/models/'))
 });
@@ -59,7 +59,7 @@ gulp.task('page-models', function () {
   // copy test
   return gulp.src(['models/models.json', 'models/filedesc.odd', 'models/filedesc.css', 'models/media.odd',
    'models/partdesc.odd', 'models/partdesc.css', 'models/settingencodingdesc.odd', 'models/settingencodingdesc.css', 
-   'models/teispoken2.odd', 'models/teispoken2.css', 'models/metaodd.odd',
+   'models/teispoken.odd', 'models/teispoken.css', 'models/metaodd.odd',
    'models/olac.odd', 'models/olac.css'])
     .pipe(gulp.dest('temp-page/models/'))
 });

@@ -365,7 +365,7 @@ let oddprefdefined = [];
 
 export function oddpredefs(callback) {
     if (oddprefdefined.length < 1) {
-        teimeta.readTextFile("./models/models.json",
+        teimeta.readTextFile("relatif:" + "./models/models.json",
             function(err, data) {
                 if (!err) {
                     let ds = data.toString();
