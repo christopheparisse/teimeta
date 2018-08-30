@@ -809,13 +809,14 @@ exports.teiData = {
  * @param {FileCallback} callback - function executed after the call
  */
 function readTextFile(file, callback) {
-    if (file.substring(0, 8) === "relatif:") {
+    /*
+    if (file.substring(0,8) === "relatif:") {
         file = file.substring(8);
-    }
-    else if (file.substring(0, 4) !== 'http' && exports.teiData.system !== 'electron') {
-        callback("cross origin with no http protocol", "cannot read protocol for " + file);
+    } else if (file.substring(0,4) !== 'http' && teiData.system !== 'electron') {
+        callback("cross origin with no http protocol", "cannot read protocol for " + file)
         return;
     }
+    */
     var rawFile = new XMLHttpRequest();
     rawFile.timeout = 4000; // Set timeout to 4 seconds (4000 milliseconds)
     // rawFile.overrideMimeType("text/xml");
@@ -17307,7 +17308,7 @@ var oddprefdefined = [];
 */
 function oddpredefs(callback) {
     if (oddprefdefined.length < 1) {
-        teimeta.readTextFile("relatif:" + "./models/models.json", function (err, data) {
+        teimeta.readTextFile("./models/models.json", function (err, data) {
             if (!err) {
                 var ds = data.toString();
                 try {
