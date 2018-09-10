@@ -190,17 +190,18 @@ function finishOpenXml(name, data) {
     // test if cssfile is needed
     if (teimeta.teiData.dataOdd && teimeta.teiData.dataOdd.cssfile) {
         testCss(teimeta.teiData.dataOdd.cssfile, finishIt);
-    }
-    finishIt();
-}
-
-function afterOpenCssFile(err, cssname, displayname, cssdata, unused1, unused2) {
-    if (!err) {
-        openCssLoad(cssname, displayname, cssdata);
-    }                    
+    } else
+        finishIt();
 }
 
 function testCss(cssname, fun) {
+    function afterOpenCssFile(err, cssname, displayname, cssdata, unused1, unused2) {
+        if (!err) {
+            openCssLoad(cssname, displayname, cssdata);
+            if (fun) fun();
+        }                    
+    }
+
     if (!cssname) {
         // nothing to do
         if (fun) fun();
@@ -215,7 +216,6 @@ function testCss(cssname, fun) {
         // it is not an external address so cannot access directly if not electron
         let displayname = dispname(cssname);
         common.openSpecificLocalFile(cssname, cssname, teimeta.teiData.oddName, null, afterOpenCssFile);
-        if (fun) fun();
     } else {
         // an odd is indicated in the xml file
         // try to open it

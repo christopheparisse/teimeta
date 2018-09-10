@@ -121,6 +121,7 @@ exports.teiData = {
     parser: null,
     doc: null,
     system: '',
+    protocol: '',
     edit: edit,
     params: new schema.PARAMS(),
     version: schema.version,
@@ -143,14 +144,10 @@ exports.teiData = {
  * @param {FileCallback} callback - function executed after the call
  */
 function readTextFile(file, callback) {
-    /*
-    if (file.substring(0,8) === "relatif:") {
-        file = file.substring(8);
-    } else if (file.substring(0,4) !== 'http' && teiData.system !== 'electron') {
-        callback("cross origin with no http protocol", "cannot read protocol for " + file)
+    if (exports.teiData.protocol === 'file') {
+        callback("cross origin with no http protocol", "cannot read protocol for " + file);
         return;
     }
-    */
     var rawFile = new XMLHttpRequest();
     rawFile.timeout = 4000; // Set timeout to 4 seconds (4000 milliseconds)
     // rawFile.overrideMimeType("text/xml");
@@ -863,6 +860,7 @@ function readRemarks(rm, node, style) {
  */
 function processRemarks(rm, node) {
     // ab field : must be unique
+    rm.cssvalue = '';
     var d = getChildrenByName(node, 'ab');
     if (d.length > 1) {
         var s = msg.msg('remarksmultab');
@@ -876,25 +874,47 @@ function processRemarks(rm, node) {
     // load the <p><ident> field if it exists
     // load the <p><note> fields (easier to use than the css)
     d = getChildrenByName(node, 'p');
+    var warningmultipleident = false;
     for (var i in d) {
-        var p = getChildrenByName(d[0], 'ident');
+        var p = getChildrenByName(d[i], 'ident');
+        var found = false;
         if (p.length > 1) {
             var s = msg.msg('remarksmultident');
             alert.alertUser(s);
         }
         if (p.length >= 1) {
+            if (warningmultipleident === true) {
+                var s = msg.msg('remarksmultident');
+                alert.alertUser(s + ' ' + p[0].textContent);
+            }
+            warningmultipleident = true;
             rm.ident = p[0].textContent;
+            found = true;
         }
-        p = getChildrenByName(d[0], 'note');
+        p = getChildrenByName(d[i], 'note');
         if (p.length > 0 && rm.cssvalue !== '') {
-            var s = msg.msg('remarksabplusnote');
+            var s = msg.msg('remarksabplusnote' + d[i].innerHTML + " " + rm.cssvalue);
             alert.alertUser(s);
+            found = true;
         }
         else if (p.length > 0) {
             rm.cssvalue = '';
             for (var j in p) {
                 var a = p[j].getAttribute('type');
                 rm.cssvalue += ' ' + a + ':' + p[j].textContent + ';';
+            }
+            found = true;
+        }
+        if (found === false) {
+            // by default p contains the same value as with ident
+            var t = d[i].textContent;
+            if (t) {
+                if (warningmultipleident === true) {
+                    var s = msg.msg('remarksmultident');
+                    alert.alertUser(s + ' ' + t);
+                }
+                warningmultipleident = true;
+                rm.ident = t;
             }
         }
     }
@@ -9854,10 +9874,19 @@ function generateTEI(teiData) {
             /*
             s += '<' + teiData.dataOdd.rootTEI + '></' + teiData.dataOdd.rootTEI + '>'
             */
+            /*
             if (teiData.dataOdd.namespace !== 'nonamespace')
                 s += '<' + teiData.dataOdd.rootTEI + ' xmlns="' + teiData.dataOdd.namespace + '"></' + teiData.dataOdd.rootTEI + '>';
             else
                 s += '<' + teiData.dataOdd.rootTEI + '></' + teiData.dataOdd.rootTEI + '>';
+            */
+            s += '<' + teiData.dataOdd.rootTEI + ' ';
+            if (teiData.dataOdd.namespace !== 'nonamespace')
+                s += ' xmlns="' + teiData.dataOdd.namespace + '"';
+            for (var i = 0; i < teiData.dataOdd.altIdent.length; i++) {
+                s += ' ' + teiData.dataOdd.altIdent[i].type + '="' + teiData.dataOdd.altIdent[i].value + '"';
+            }
+            s += '></' + teiData.dataOdd.rootTEI + '>';
             teiData.doc = new DOMParser().parseFromString(s, 'text/xml');
         }
         else {
@@ -9875,9 +9904,11 @@ function generateTEI(teiData) {
     // first generate the root otherwise it would be duplicated
     generateFilledElement(eltspec, teiData.doc, eltspec.node);
     // console.log("generateTEI", teiData.dataOdd);
-    for (var i = 0; i < teiData.dataOdd.altIdent.length; i++) {
+    /*
+    for (let i=0; i<teiData.dataOdd.altIdent.length; i++) {
         eltspec.node.setAttribute(teiData.dataOdd.altIdent[i].type, teiData.dataOdd.altIdent[i].value);
     }
+    */
     if (eltspec.content)
         s += generateTEIContent(eltspec.content, teiData.doc, eltspec.node);
     // add oddname to teiData.doc

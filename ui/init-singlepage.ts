@@ -54,7 +54,14 @@ function bodyKeys(e) {
 }
 
 export function init() {
-    teimeta.teiData.system = 'html';
+    var sURL = window.document.URL.toString();
+    if (sURL.substring(0,5) === "file:") {
+        teimeta.teiData.system = 'html';
+        teimeta.teiData.protocol = 'file';
+    } else {
+        teimeta.teiData.system = 'html';
+        teimeta.teiData.protocol = 'http';
+    }
     // load params
     common.loadParams();
 

@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+    <?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+    <?xml-model href="http://www.tei-c.org/release/xml/tei/custom/schema/relaxng/tei_odds.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+
+	<teiHeader>
+		<fileDesc>
+			<titleStmt>
+      <title>
+        <idno type="title">ODD example for the TEO 2018 conference at Tokyo</idno>
+      </title>
+      <principal>
+        <name type="org">CORLI</name>
+        <name type="org">Christophe Parisse, Carole Etienne, Loic Liégeois</name>
+      </principal>
+			</titleStmt>
+		</fileDesc>
+	</teiHeader>
+
+	<text>
+		<body>
+			<schemaSpec ident="TEI_FRONT_EXAMPLE" start="TEI">
+
+				<!-- general TEI structure -->
+				<elementSpec ident="TEI">
+					<desc xml:lang="eng">This is an example of ODD for the workshop of the 2018 TEI conference in Tokyo.
+					It is a real ODD that could be used for editing the title of a TEI document 
+					(the physical title in the data, not the title of the metadata).</desc>
+					<desc xml:lang="fre">Ceci est un exemple d'ODD pour l'atelier de la conférence TEI de 2018 à Tokyo.
+					C'est un véritable ODD qui pourrait être utilisé pour éditer le titre d'un document TEI 
+					(le titre physique dans les données, pas le titre des métadonnées)</desc>
+					<desc xml:lang="jpn">これは、東京で開催された2018年のTEI会議のワークショップのODDの例です。
+					これは、TEIドキュメントのタイトル（メタデータのタイトルではなく、データ内の物理的なタイトル）
+					の編集に使用できる実際のODDです。</desc>
+					<content>
+						<sequence minOccurs="1" maxOccurs="1">
+							<elementRef key="teiHeader" />
+							<elementRef key="text" />
+						</sequence>
+					</content>
+				</elementSpec>
+
+				<!-- the empty teiHeader -->
+				<elementSpec ident="teiHeader" module="header" mode="change">
+				</elementSpec>
+
+				<!-- the text element: contains front and body -->
+				<elementSpec ident="text">
+					<desc xml:lang="eng">Text part of the TEI document</desc>
+					<desc xml:lang="fre">Partie texte du document TEI</desc>
+					<desc xml:lang="jpn">TEI文書のテキスト部分 (TEI bunsho no tekisuto bubun)</desc>
+					<content>
+						<sequence minOccurs="1" maxOccurs="1">
+							<elementRef key="front" />
+							<elementRef key="body" />
+						</sequence>
+					</content>
+				</elementSpec>
+
+				<!-- the front element: is optional (no all files need to have this) -->
+				<elementSpec ident="front" usage="opt">
+					<desc xml:lang="eng">(front matter) contains any prefatory 
+					matter (headers, abstracts, title page, prefaces, dedications, etc.) 
+					found at the start of a document, before the main body</desc>
+					<desc xml:lang="fre">(texte préliminaire) contient tout ce qui est 
+					au début du document, avant le corps du texte : page de titre, 
+					dédicaces, préfaces, etc.</desc>
+					<desc xml:lang="jpn">(front matter) 本文より前，文書の
+					始めにある序文としてあるもの(標題，タイトル，序文， 献辞など)</desc>
+					<content>
+						<elementRef key="docTitle" minOccurs="1" maxOccurs="1"/>
+					</content>
+					<remarks style="element">
+						<ab>background-color: lightgreen; border-radius: 8px; margin: 3px;</ab>
+						<!--
+						<p><ident>front-element</ident></p>
+						-->
+					</remarks>
+				</elementSpec>
+				
+				<elementSpec ident="docTitle" usage="req">
+					<desc xml:lang="eng">contains the title of a document, including all its constituents, as given on a title page.</desc>
+					<desc xml:lang="fre">contient le titre d’un document, incluant la totalité de ses composants tels qu’ils sont donnés sur la page de titre.</desc>
+					<desc xml:lang="jpn">当該文書のタイトルを示す．タイトルページにあるタイトルの全情報を含む</desc>
+					<content>
+						<sequence minOccurs="0" maxOccurs="1">
+							<elementRef key="titlePart" minOccurs="1" maxOccurs="unbounded"/>
+						</sequence>
+					</content>
+					<remarks style="element">
+						<ab>background-color: lightyellow; border-radius: 8px; margin: 3px;</ab>
+						<!--
+						<p><ident>docTitle-element</ident></p>
+						-->
+					</remarks>
+				</elementSpec>
+				
+				<elementSpec ident="titlePart" usage="opt">
+					<desc xml:lang="eng">contains a subsection or division of the title of a work, as indicated on a title page.</desc>
+					<desc xml:lang="fre">contient une section ou division du titre d’un ouvrage telle qu’elle est indiquée sur la page de titre.</desc>
+					<desc xml:lang="jpn">タイトルページに示されている，作品タイトルの下位部分を示す．</desc>
+					<content>
+						<textNode/>
+						<dataRef name="multiline"/>
+					</content>
+					<attList>
+						<attDef ident="type" usage="req" rend="main">
+							<desc>Type of title part.</desc>
+							<valList type="closed">
+								<valItem ident="main">
+									<desc xml:lang="eng">main title of the work</desc>
+									<desc xml:lang="fre">titre principal de l'oeuvre.</desc>
+									<desc xml:lang="jpn">主タイトル．[初期値]</desc>
+								</valItem>
+								<valItem ident="sub">
+									<desc xml:lang="eng">subtitle of the work</desc>
+									<desc xml:lang="fre">sous-titre de l'oeuvre.</desc>
+									<desc xml:lang="jpn">副タイトル</desc>
+								</valItem>
+								<valItem ident="alt"/>
+								<valItem ident="short"/>
+								<valItem ident="desc"/>
+							</valList>
+							<remarks>
+								<p>title-type</p>
+							</remarks>
+						</attDef>
+					</attList>
+					<remarks style="content">
+						<!--
+						<ab>background-color: lightgray; border-radius: 8px; margin: 3px;</ab>
+						<p><ident>titlePart-content</ident></p>
+						-->
+						<p>
+							<note type="background-color">lightblue</note>
+							<note type="border-radius">8px</note>
+							<note type="margin">3px</note>
+						</p> 
+					</remarks>
+				</elementSpec>
+				
+				<!-- the empty body -->
+				<elementSpec ident="body">
+				</elementSpec>
+
+			</schemaSpec>
+		</body>
+	</text>
+</TEI>

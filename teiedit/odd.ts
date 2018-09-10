@@ -129,6 +129,7 @@ function readRemarks(rm, node, style) {
  */
 function processRemarks(rm, node) {
     // ab field : must be unique
+    rm.cssvalue = '';
     let d = getChildrenByName(node, 'ab');
     if (d.length > 1) {
         let s = msg.msg('remarksmultab');
@@ -141,24 +142,46 @@ function processRemarks(rm, node) {
     // load the <p><ident> field if it exists
     // load the <p><note> fields (easier to use than the css)
     d = getChildrenByName(node, 'p');
+    let warningmultipleident = false;
     for (let i in d) {
-        let p = getChildrenByName(d[0], 'ident');
+        let p = getChildrenByName(d[i], 'ident');
+        let found = false;
         if (p.length > 1) {
             let s = msg.msg('remarksmultident');
             alert.alertUser(s);
         }
         if (p.length >= 1) {
+            if (warningmultipleident === true) {
+                let s = msg.msg('remarksmultident');
+                alert.alertUser(s + ' ' + p[0].textContent);
+            }
+            warningmultipleident = true;
             rm.ident = p[0].textContent;
+            found = true;
         }
-        p = getChildrenByName(d[0], 'note');
+        p = getChildrenByName(d[i], 'note');
         if (p.length > 0 && rm.cssvalue !== '') {
-            let s = msg.msg('remarksabplusnote');
+            let s = msg.msg('remarksabplusnote' + d[i].innerHTML + " " + rm.cssvalue);
             alert.alertUser(s);
+            found = true;
         } else if (p.length > 0) {
             rm.cssvalue = '';
             for (let j in p) {
                 let a = p[j].getAttribute('type');
                 rm.cssvalue += ' ' + a + ':' + p[j].textContent + ';';
+            }
+            found = true;
+        }
+        if (found === false) {
+            // by default p contains the same value as with ident
+            let t = d[i].textContent;
+            if (t) {
+                if (warningmultipleident === true) {
+                    let s = msg.msg('remarksmultident');
+                    alert.alertUser(s + ' ' + t);
+                }
+                warningmultipleident = true;
+                rm.ident = t;
             }
         }
     }

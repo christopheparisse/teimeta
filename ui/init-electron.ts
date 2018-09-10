@@ -64,6 +64,7 @@ function bodyKeys(e) {
 
 export function init() {
     teimeta.teiData.system = 'electron';
+    teimeta.teiData.protocol = 'electron';
     common.loadParams();
 
     ipcRenderer.on('open', function(event, arg) {

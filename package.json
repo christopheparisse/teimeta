@@ -1,7 +1,7 @@
 {
   "name": "teimeta",
   "productName": "TeiMeta",
-  "version": "0.6.2",
+  "version": "0.6.4",
   "description": "An editor for TEI CORPO metadata",
   "main": "index.js",
   "scripts": {

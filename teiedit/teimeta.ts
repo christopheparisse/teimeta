@@ -28,6 +28,7 @@ export let teiData = {
     parser: null, // DOM Parser
     doc: null, // DOM document
     system: '', // name of running system (electron or html)
+    protocol: '', // name of protocol (http or file or electron)
     edit: edit, // pointer to edition functions
     params: new schema.PARAMS(), // pointer to parameters
     version: schema.version,
@@ -51,14 +52,10 @@ export let teiData = {
  * @param {FileCallback} callback - function executed after the call 
  */
 export function readTextFile(file, callback) {
-    /*
-    if (file.substring(0,8) === "relatif:") {
-        file = file.substring(8);
-    } else if (file.substring(0,4) !== 'http' && teiData.system !== 'electron') {
+    if (teiData.protocol === 'file') {
         callback("cross origin with no http protocol", "cannot read protocol for " + file)
         return;
     }
-    */
     var rawFile:any = new XMLHttpRequest();
     rawFile.timeout = 4000; // Set timeout to 4 seconds (4000 milliseconds)
     // rawFile.overrideMimeType("text/xml");

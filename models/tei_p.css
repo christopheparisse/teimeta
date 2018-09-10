@@ -1,6 +1,4 @@
 .title-element { display: block; background-color: brown; }
 .desc-element { display: block; border: 2px solid blue; background-color: burlywood; }
-.div-element { display: block; background-color: darkgreen; }
-.p-element { display: block; background-color: lightgreen; }
-.p-content { background-color: black; color: white; }
-.div-type { background-color: chocolate; color: blue; }
+.div-element { display: block; background-color: rgb(143, 173, 197); }
+.p-element { display: block; background-color: rgb(157, 184, 157); }

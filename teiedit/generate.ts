@@ -106,10 +106,19 @@ export function generateTEI(teiData) {
             /*
             s += '<' + teiData.dataOdd.rootTEI + '></' + teiData.dataOdd.rootTEI + '>'
             */
+            /*
             if (teiData.dataOdd.namespace !== 'nonamespace')
                 s += '<' + teiData.dataOdd.rootTEI + ' xmlns="' + teiData.dataOdd.namespace + '"></' + teiData.dataOdd.rootTEI + '>';
             else
                 s += '<' + teiData.dataOdd.rootTEI + '></' + teiData.dataOdd.rootTEI + '>';
+            */
+            s += '<' + teiData.dataOdd.rootTEI + ' ';
+            if (teiData.dataOdd.namespace !== 'nonamespace')
+                s += ' xmlns="' + teiData.dataOdd.namespace + '"';
+            for (let i=0; i<teiData.dataOdd.altIdent.length; i++) {
+                s += ' ' + teiData.dataOdd.altIdent[i].type + '="' + teiData.dataOdd.altIdent[i].value + '"';
+            }
+            s += '></' + teiData.dataOdd.rootTEI + '>';
             teiData.doc = new DOMParser().parseFromString(s, 'text/xml');
         } else {
                 teiData.doc = new DOMParser().parseFromString(basicTEI, 'text/xml');
@@ -126,9 +135,11 @@ export function generateTEI(teiData) {
     // first generate the root otherwise it would be duplicated
     generateFilledElement(eltspec, teiData.doc, eltspec.node);
     // console.log("generateTEI", teiData.dataOdd);
+    /*
     for (let i=0; i<teiData.dataOdd.altIdent.length; i++) {
         eltspec.node.setAttribute(teiData.dataOdd.altIdent[i].type, teiData.dataOdd.altIdent[i].value);
     }
+    */
     if (eltspec.content)
         s += generateTEIContent(eltspec.content, teiData.doc, eltspec.node);
     // add oddname to teiData.doc

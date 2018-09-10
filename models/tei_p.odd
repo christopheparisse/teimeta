@@ -106,21 +106,22 @@
 				</elementSpec>
 
 				<elementSpec ident="body">
+					<desc>Begining of the core of the text</desc>
 					<content>
 						<elementRef key="div" minOccurs="0" maxOccurs="unbounded"/>
 						<elementRef key="p" minOccurs="0" maxOccurs="unbounded"/>
 					</content>
 				</elementSpec>
 
-				<elementSpec ident="div">
+				<elementSpec ident="div" usage="opt">
 					<desc xml:lang="fr">Div ou chapitres</desc>
 					<desc xml:lang="en">Divisions or chapters</desc>
 					<content>
-						<sequence minOccurs="1" maxOccurs="1">
+						<sequence minOccurs="0" maxOccurs="unbounded">
 							<elementRef key="head" minOccurs="0" maxOccurs="1"/>
 							<elementRef key="p" minOccurs="0" maxOccurs="unbounded"/>
 						</sequence>
-						<sequence minOccurs="1" maxOccurs="1">
+						<sequence minOccurs="0" maxOccurs="unbounded">
 							<elementRef key="head" minOccurs="0" maxOccurs="1"/>
 							<elementRef key="div" minOccurs="0" maxOccurs="unbounded"/>
 						</sequence>
@@ -135,7 +136,16 @@
 								<p><ident>div-type</ident></p>
 							</remarks>
 						</attDef>
-						<attDef ident="version" usage="req" mode="change">
+						<attDef ident="subtype" usage="opt" mode="change">
+							<desc>Subtype</desc>
+							<datatype>
+								<dataRef name="string"/>
+							</datatype>
+							<remarks style="element">
+								<p><ident>div-subtype</ident></p>
+							</remarks>
+						</attDef>
+						<attDef ident="version" usage="opt" mode="change">
 							<desc>Version</desc>
 							<valList>
 								<valItem ident="v1">
@@ -157,7 +167,7 @@
 					</remarks>
 				</elementSpec>
 
-				<elementSpec ident="p">
+				<elementSpec ident="p" usage="opt">
 					<content>
 						<textNode/>
 						<dataRef name="multiline"/>
@@ -170,7 +180,7 @@
 					</remarks>
 				</elementSpec>
 
-				<elementSpec ident="head">
+				<elementSpec ident="head" usage="opt">
 					<content>
 						<textNode/>
 						<dataRef name="string"/>
