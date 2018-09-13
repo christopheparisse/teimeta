@@ -500,8 +500,8 @@ export function oddLoadUrl(url, namedisplayed, fun) {
         if (!err) {
             openOddLoad(url, namedisplayed, text, fun);
         } else {
-            console.log('error reading', url, text);
-            alert.alertUser('error reading ' + url + ' : ' + text);
+            console.log('error', err, 'reading', url, text);
+            alert.alertUser('error ' + err + ' reading ' + url);
             fun();
         }
     });
@@ -512,9 +512,15 @@ export function oddCssLoadUrls(urlOdd, namedisplayedOdd, urlCss, namedisplayedCs
         teimeta.readTextFile(urlCss, function(err2, textCss) {
             if (!err1 && !err2) {
                 openOddCssLoad(urlOdd, namedisplayedOdd, textOdd, urlCss, namedisplayedCss, textCss, fun);
+            } else if (!err1 && err2) {
+                // odd ok but css bad.
+                console.log('error', err2, 'reading', urlCss);
+                alert.alertUser('error' + err2 + ' reading ' + urlCss + ": reading ODD file.");
+                openOddLoad(urlOdd, namedisplayedOdd, textOdd, fun);
             } else {
-                console.log('error reading', urlOdd, err1, urlCss, err2);
-                alert.alertUser('error reading ' + urlOdd + " " + err1 + " or " + urlCss + " " + err2);
+                console.log('error', err1, 'reading', urlOdd, 'error', err2, 'reading', urlCss);
+                alert.alertUser('error ' + err1 + 'reading ' + urlOdd 
+                    + " error " + err2 + " reading " + urlCss);
                 return;
             }
         });

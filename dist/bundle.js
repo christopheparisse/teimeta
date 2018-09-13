@@ -737,8 +737,8 @@ function oddLoadUrl(url, namedisplayed, fun) {
             openOddLoad(url, namedisplayed, text, fun);
         }
         else {
-            console.log('error reading', url, text);
-            alert.alertUser('error reading ' + url + ' : ' + text);
+            console.log('error', err, 'reading', url, text);
+            alert.alertUser('error ' + err + ' reading ' + url);
             fun();
         }
     });
@@ -750,9 +750,16 @@ function oddCssLoadUrls(urlOdd, namedisplayedOdd, urlCss, namedisplayedCss, fun)
             if (!err1 && !err2) {
                 openOddCssLoad(urlOdd, namedisplayedOdd, textOdd, urlCss, namedisplayedCss, textCss, fun);
             }
+            else if (!err1 && err2) {
+                // odd ok but css bad.
+                console.log('error', err2, 'reading', urlCss);
+                alert.alertUser('error' + err2 + ' reading ' + urlCss + ": reading ODD file.");
+                openOddLoad(urlOdd, namedisplayedOdd, textOdd, fun);
+            }
             else {
-                console.log('error reading', urlOdd, err1, urlCss, err2);
-                alert.alertUser('error reading ' + urlOdd + " " + err1 + " or " + urlCss + " " + err2);
+                console.log('error', err1, 'reading', urlOdd, 'error', err2, 'reading', urlCss);
+                alert.alertUser('error ' + err1 + 'reading ' + urlOdd
+                    + " error " + err2 + " reading " + urlCss);
                 return;
             }
         });
@@ -8615,6 +8622,16 @@ function resizable(id, factor) {
     var el = document.getElementById(id);
     if (!el)
         return;
+    if (el.tagName && el.tagName.toLowerCase() == "textarea") {
+        var s = el.textContent;
+        console.log('this is a textarea', s, el);
+        var lines_1 = function (x) { return x.split(/\r*\n/); };
+        var lineCount = function (x) { return lines_1(x).length; };
+        var nbl = lineCount(s);
+        console.log('nb lines:', nbl);
+        el.rows = nbl;
+        return;
+    }
     var int = Number(factor) || 7.7;
     function resize() { el.style.width = ((el.value.length + 1) * int) + 'px'; }
     var e = 'keyup,keypress,focus,blur,change'.split(',');
@@ -9443,7 +9460,7 @@ function editDataType(datatype, ident) {
                 s += ' ' + datatype.remarks.ident;
             }
             s += '" name="' + uniq + '" id="' + uniq + '" ';
-            //resizeList.push(uniq);
+            resizeList.push(uniq);
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
@@ -17330,22 +17347,6 @@ function askUserModalYesNoCancel(s, fun) {
 }
 exports.askUserModalYesNoCancel = askUserModalYesNoCancel;
 var oddprefdefined = [];
-/*
-    { label: "TEI Spoken", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", labelcss: "", css: "#clean#" },
-    { label: "Olac/DC", odd: "http://ct3.ortolang.fr/teimeta/olac.odd", labelcss: "", css: "" },
-    { label: "Media", odd: "http://ct3.ortolang.fr/teimeta/media.odd", labelcss: "", css: "" },
-    { label: "TEI Spoken FileDesc", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd",
-        labelcss: "FileDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenfile.css" },
-    { label: "TEI Spoken ProfileDesc", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd",
-        labelcss: "ProfileDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenprofile.css" },
-    { label: "TEI Spoken EncodingDesc", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd",
-        labelcss: "EncodingDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenencoding.css" },
-
-    { label: "TEST", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd",
-        labelcss: "EncodingDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenencoding.css" },
-    { label: "TEST", odd: "file:///devlopt/teimeta/models/tei_p.odd",
-        labelcss: "EncodingDesc", css: "" },
-*/
 function oddpredefs(callback) {
     if (oddprefdefined.length < 1) {
         teimeta.readTextFile("./models/models.json", function (err, data) {
@@ -17451,8 +17452,8 @@ exports.askUserModalForOdd = askUserModalForOdd;
 Object.defineProperty(exports, "__esModule", { value: true });
 var alert = __webpack_require__(5);
 var msg = __webpack_require__(7);
-exports.version = '0.6.4';
-exports.date = '10-09-2018';
+exports.version = '0.6.5';
+exports.date = '13-09-2018';
 function about() {
     var s = msg.msg('versionname') + exports.version + " - " + exports.date + "</br></br>";
     s += msg.msg('shorthelp');

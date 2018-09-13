@@ -346,22 +346,6 @@ export function askUserModalYesNoCancel(s, fun) {
 }
 
 let oddprefdefined = [];
-/*
-    { label: "TEI Spoken", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", labelcss: "", css: "#clean#" },
-    { label: "Olac/DC", odd: "http://ct3.ortolang.fr/teimeta/olac.odd", labelcss: "", css: "" },
-    { label: "Media", odd: "http://ct3.ortolang.fr/teimeta/media.odd", labelcss: "", css: "" },
-    { label: "TEI Spoken FileDesc", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", 
-        labelcss: "FileDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenfile.css" },
-    { label: "TEI Spoken ProfileDesc", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", 
-        labelcss: "ProfileDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenprofile.css" },
-    { label: "TEI Spoken EncodingDesc", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", 
-        labelcss: "EncodingDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenencoding.css" },
-
-    { label: "TEST", odd: "http://ct3.ortolang.fr/teimeta/teispoken.odd", 
-        labelcss: "EncodingDesc", css: "http://ct3.ortolang.fr/teimeta/teispokenencoding.css" },
-    { label: "TEST", odd: "file:///devlopt/teimeta/models/tei_p.odd", 
-        labelcss: "EncodingDesc", css: "" },
-*/
 
 export function oddpredefs(callback) {
     if (oddprefdefined.length < 1) {

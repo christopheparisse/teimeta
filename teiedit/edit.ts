@@ -46,6 +46,16 @@ function resizable (id, factor) {
     // deal with input tags
     let el:any = document.getElementById(id);
     if (!el) return;
+    if (el.tagName && el.tagName.toLowerCase() == "textarea") {
+        let s = el.textContent;
+        console.log('this is a textarea', s, el);
+        let lines = function(x) { return x.split(/\r*\n/); }
+        let lineCount = function(x) { return lines(x).length; }
+        let nbl = lineCount(s);
+        console.log('nb lines:', nbl);
+        el.rows = nbl;
+        return;
+    }
     var int = Number(factor) || 7.7;
     function resize() {el.style.width = ((el.value.length+1) * int) + 'px'}
     var e = 'keyup,keypress,focus,blur,change'.split(',');
@@ -867,7 +877,7 @@ function editDataType(datatype, ident) {
                 s += ' ' + datatype.remarks.ident;
             }
             s += '" name="' + uniq + '" id="' + uniq + '" ';
-            //resizeList.push(uniq);
+            resizeList.push(uniq);
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }

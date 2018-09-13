@@ -18,8 +18,7 @@
   </teiHeader>
   <text>
       <body>
-         <schemaSpec ident="OLAC" ns="nonamespace" start="olac:olac"
-                rend="http://ct3.ortolang.fr/teimeta/models/olac.css">
+         <schemaSpec ident="OLAC" ns="nonamespace" start="olac:olac">
             <altIdent type="xmlns:olac">http://www.language-archives.org/OLAC/1.1/</altIdent>
             <altIdent type="xmlns:xsi">http://www.w3.org/2001/XMLSchema-instance</altIdent>
             <altIdent type="xmlns:dc">http://purl.org/dc/elements/1.1/</altIdent>

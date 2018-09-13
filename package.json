@@ -12,7 +12,8 @@
     "readme": "marky-markdown README.md > readme.html",
     "webpack": "webpack --mode=none",
     "iso639": "awk -f iso639.awk models/ISO-639-2_utf-8.txt | grep -v \"|\" > teiedit/iso639.js",
-    "test": "gulp page; webpack --mode=none; gulp test"
+    "test": "gulp page; webpack --mode=none; gulp test",
+    "distct3": "sh majwb.sh"
   },
   "keywords": [
     "Electron",

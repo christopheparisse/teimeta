@@ -7940,6 +7940,16 @@ function resizable(id, factor) {
     var el = document.getElementById(id);
     if (!el)
         return;
+    if (el.tagName && el.tagName.toLowerCase() == "textarea") {
+        var s = el.textContent;
+        console.log('this is a textarea', s, el);
+        var lines_1 = function (x) { return x.split(/\r*\n/); };
+        var lineCount = function (x) { return lines_1(x).length; };
+        var nbl = lineCount(s);
+        console.log('nb lines:', nbl);
+        el.rows = nbl;
+        return;
+    }
     var int = Number(factor) || 7.7;
     function resize() { el.style.width = ((el.value.length + 1) * int) + 'px'; }
     var e = 'keyup,keypress,focus,blur,change'.split(',');
@@ -8768,7 +8778,7 @@ function editDataType(datatype, ident) {
                 s += ' ' + datatype.remarks.ident;
             }
             s += '" name="' + uniq + '" id="' + uniq + '" ';
-            //resizeList.push(uniq);
+            resizeList.push(uniq);
             if (datatype.remarks) {
                 s += 'style="' + datatype.remarks.cssvalue + '" \n';
             }
