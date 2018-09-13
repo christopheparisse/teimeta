@@ -33,6 +33,7 @@ The tool was created to edit TEI files, but it can be used for any type of XML f
 TEIMETA allows to edit any XML node but not to move this node around in the XML file. New nodes can be created and nodes can be erased (if this is allowed by the model). The ODD describes node position from the root. **The values of an XML node not described in the ODD file will never be modified. This means that it is possible to edit parts of an XML file respecting the integrity of the rest of the file.**
 
 ## Version information
+  - 0.6.5 - resize for multiline and correction of errors
   - 0.6.3 - corrections of small errors
   - 0.6.2 - fully documented version
   - 0.5.2 - improved style of CSS for all display size
