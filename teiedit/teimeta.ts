@@ -92,7 +92,7 @@ export function finalizeHTML() {
 }
 
 /**
- * @method openXml
+ * @method loadXml
  * this function takes as input the string content of the file to be open
  * the filename parameter is optional and is used for display
  * the function tries to find out whether the xml file contains the name of ODD file
@@ -169,7 +169,7 @@ export function initOdd(filename: string, data: string, urlmodel: string, finalP
     let eltSpecs = {};
     let eltRefs = {};
     if (impts && impts.length > 0) {
-        console.log(impts);
+        console.log("imports", impts);
         // there are imports to be loaded.
         let p = urlpathname(urlmodel);
         // for use with Node-style callbacks...

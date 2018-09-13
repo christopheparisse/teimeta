@@ -282,7 +282,7 @@ function openXml() {
                 }
             }
             else
-                console.log(name, err);
+                console.log("error on openXml", name, err);
         });
     });
 }
@@ -307,7 +307,7 @@ function loadOddPredefs(c, choice, nameXml, dataXml) {
             }
         }
         else {
-            console.log('bad number in choice:', choice, cs);
+            console.log('loadOddPredefs: bad number in choice:', choice, cs);
             alert.alertUser('bad number in choice: ' + choice);
         }
     }
@@ -466,7 +466,7 @@ function newXml(choice) {
                 }
             }
             catch (error) {
-                console.log(error);
+                console.log("newXml: catch", error);
                 emptyFile();
             }
         }
@@ -541,7 +541,7 @@ function reLoad(callback) {
         }
     }
     catch (error) {
-        console.log(error);
+        console.log("reLoad", error);
         emptyFile();
     }
 }
@@ -561,7 +561,7 @@ function openOddLoad(name, displayname, data, callback) {
         callback(true);
     }
     function intermediateOL(v) {
-        console.log('return from teimeta.initOdd', v);
+        console.log(name, displayname, 'return from teimeta.initOdd', v);
         if (v === false) {
             console.log('no processing after teimeta.initOdd');
             callback(false);
@@ -569,7 +569,7 @@ function openOddLoad(name, displayname, data, callback) {
         var el = document.getElementById('oddname');
         if (el)
             el.innerHTML = "ODD: " + displayname;
-        console.log('finishing the ODD loading');
+        console.log(name, displayname, 'finishing the ODD loading');
         if (teimeta.teiData.dataOdd.cssfile) {
             testCss(teimeta.teiData.dataOdd.cssfile, finishOL);
         }
@@ -614,7 +614,7 @@ function openCss() {
                 reLoad(null);
             }
             else
-                console.log(name, err);
+                console.log("openCss error", name, err);
         });
     });
 }
@@ -867,7 +867,7 @@ function finalizeHTML() {
 }
 exports.finalizeHTML = finalizeHTML;
 /**
- * @method openXml
+ * @method loadXml
  * this function takes as input the string content of the file to be open
  * the filename parameter is optional and is used for display
  * the function tries to find out whether the xml file contains the name of ODD file
@@ -946,7 +946,7 @@ function initOdd(filename, data, urlmodel, finalProcess) {
     var eltSpecs = {};
     var eltRefs = {};
     if (impts && impts.length > 0) {
-        console.log(impts);
+        console.log("imports", impts);
         // there are imports to be loaded.
         var p_1 = urlpathname(urlmodel);
         // for use with Node-style callbacks...
@@ -1968,9 +1968,8 @@ function loadOdd(data, eltsSpecs, eltsRefs) {
             //        checkErrorXML(doc.getElementsByTagName("parsererror")[0]);
             alert.alertUser("The ODD file is not valid: Operation canceled." + doc.documentElement.innerHTML);
             console.log("Errors in ODD file", doc.documentElement.innerHTML);
-        }
-        else {
-            console.log("No errors found");
+            // } else {
+            // console.log("No errors found");
         }
     }
     catch (e) {
@@ -2092,9 +2091,8 @@ function loadOddClassRef(data) {
         if (doc.documentElement.nodeName === "parsererror") {
             alert.alertUser("The ODD file is not valid: Operation canceled (in loadOddClassRef)." + doc.documentElement.innerHTML);
             console.log("Errors in ODD file (loadOddClassRef).", doc.documentElement.innerHTML);
-        }
-        else {
-            console.log("No errors found in loadOddClassRef");
+            // } else {
+            // console.log("No errors found in loadOddClassRef");
         }
     }
     catch (e) {
@@ -8198,7 +8196,7 @@ exports.getOddFromXml = getOddFromXml;
  * @returns {*} true if ok
  */
 function loadTei(data, teiData) {
-    // console.log("call of loadTei ", data, teiData, noreload);
+    console.log("call of loadTei ", data, teiData);
     // get XML ready
     if (!teiData.parser)
         teiData.parser = new DOMParser();
@@ -8230,24 +8228,13 @@ function loadTei(data, teiData) {
         alert.alertUser(msg.msg('norootinodd'));
         return false;
     }
-    if (root) {
-        // create first elementSpec and find and create the other recursively
-        teiData.dataTei = loadElementSpec(h, root, path, '1', '1', null);
-        // h = descriptor elementSpec
-        // root = list of nodes
-        // '' = initial path
-        // 1 = minimal number of root authorized
-        // 1 = maximal number of root authorized
-    }
-    else {
-        // create first elementSpec and find and create the other recursively
-        teiData.dataTei = loadElementSpec(h, null, path, '1', '1', null);
-        // h = descriptor elementSpec
-        // root = list of nodes
-        // '' = initial path
-        // 1 = minimal number of root authorized
-        // 1 = maximal number of root authorized
-    }
+    // create first elementSpec and find and create the other recursively
+    // h = descriptor elementSpec
+    // root = list of nodes (could be null)
+    // '' = initial path
+    // 1 = minimal number of root authorized
+    // 1 = maximal number of root authorized
+    teiData.dataTei = loadElementSpec(h, root, path, '1', '1', null);
     return true;
 }
 exports.loadTei = loadTei;
@@ -8292,7 +8279,7 @@ function verifyDatatype(datatype) {
  */
 function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
     var c = schema.copyElementSpec(es);
-    // console.log('loadElementSpec ', c.access, path);
+    console.log('loadElementSpec ', c.access, path);
     // creation of an initial empty element for the current node
     c.node = node;
     c.parentElementSpec = parent;
@@ -8430,6 +8417,7 @@ function isRecursive(es, name) {
  * @param parent
  */
 function loadElementRef(ec, node, path, parent) {
+    console.log("loadElementRef:", ec, node, path);
     // ec is an ElementCount
     // prepare the first element ElementCountItem
     var eci = new schema.ElementCountItem();
@@ -8480,6 +8468,7 @@ function loadElementRef(ec, node, path, parent) {
  * @param parent
  */
 function loadSequence(ec, node, path, parent) {
+    console.log("loadSequence:", ec, node, path);
     // load from TEI
     var nnodes = []; // array of arrays of nodes
     // for all models in the sequence, we look for corresponding nodes
@@ -8624,11 +8613,11 @@ function resizable(id, factor) {
         return;
     if (el.tagName && el.tagName.toLowerCase() == "textarea") {
         var s = el.textContent;
-        console.log('this is a textarea', s, el);
+        //console.log('this is a textarea', s, el);
         var lines_1 = function (x) { return x.split(/\r*\n/); };
         var lineCount = function (x) { return lines_1(x).length; };
         var nbl = lineCount(s);
-        console.log('nb lines:', nbl);
+        //console.log('nb lines:', nbl);
         el.rows = nbl;
         return;
     }
@@ -17126,7 +17115,7 @@ function setLanguage(lg, reload) {
     }
     catch (error) {
         alert.alertUser('Erreur de message: ' + error.toString());
-        console.log(error);
+        console.log("setLanguage", error);
     }
     changeParams = false;
     saveParams();
@@ -17365,7 +17354,7 @@ function oddpredefs(callback) {
                             js[i].css = "";
                     }
                     oddprefdefined = js;
-                    console.log(js);
+                    console.log("oddpredefs", js);
                     callback(oddprefdefined);
                 }
                 catch (e) {

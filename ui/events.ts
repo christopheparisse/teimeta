@@ -86,7 +86,7 @@ export function openXml() {
                     });
                 }
             } else
-                console.log(name, err);
+                console.log("error on openXml", name, err);
         });
     });
 };
@@ -110,7 +110,7 @@ function loadOddPredefs(c, choice, nameXml, dataXml) {
                     });
             }
         } else {
-            console.log('bad number in choice:', choice, cs);
+            console.log('loadOddPredefs: bad number in choice:', choice, cs);
             alert.alertUser('bad number in choice: ' + choice);
         }
     }
@@ -260,7 +260,7 @@ export function newXml(choice) {
                     emptyFile();
                 }
             } catch (error) {
-                console.log(error);
+                console.log("newXml: catch", error);
                 emptyFile();
             }
         }
@@ -330,7 +330,7 @@ export function reLoad(callback) {
             emptyFile();
         }
     } catch (error) {
-        console.log(error);
+        console.log("reLoad", error);
         emptyFile();
     }
 }
@@ -349,14 +349,14 @@ export function openOddLoad(name, displayname, data, callback) {
         callback(true);
     }
     function intermediateOL(v) {
-        console.log('return from teimeta.initOdd', v);
+        //console.log(name, displayname, 'return from teimeta.initOdd', v);
         if (v === false) {
-            console.log('no processing after teimeta.initOdd');
+            //console.log('no processing after teimeta.initOdd');
             callback(false);
         }
         let el = document.getElementById('oddname');
         if (el) el.innerHTML = "ODD: " + displayname;
-        console.log('finishing the ODD loading');
+        //console.log(name, displayname, 'finishing the ODD loading');
         if (teimeta.teiData.dataOdd.cssfile) {
             testCss(teimeta.teiData.dataOdd.cssfile, finishOL);
         } else {
@@ -397,7 +397,7 @@ export function openCss() {
                 openCssLoad(name, name, data);
                 reLoad(null);
             } else
-                console.log(name, err);
+                console.log("openCss error", name, err);
         });
     });
 };
@@ -423,7 +423,7 @@ export function emptyFile() {
 }
 
 export function saveAs(fun) {
-    console.log("saveAs");
+    //console.log("saveAs");
     opensave.chooseSaveFile('xml', function(err, name) {
         if (!err) {
             teimeta.teiData.fileName = name;
@@ -439,7 +439,7 @@ export function saveAs(fun) {
 };
 
 export function save(fun) {
-    console.log("save");
+    //console.log("save");
     if (teimeta.teiData.fileName !== msg.msg('newfile')) {
             var ed = teimeta.generateXml();
             teimeta.teiData.edit.change(false);
@@ -465,7 +465,7 @@ function saveit(name, fun) {
 }
 
 export function saveLocal(fun, force = false) {
-    console.log("saveLocal");
+    //console.log("saveLocal");
     if (teimeta.teiData.system === 'electron') return;
     let nf = msg.msg('newfile');
     if (teimeta.teiData.fileName === nf || force === true) {
@@ -483,7 +483,7 @@ export function saveLocal(fun, force = false) {
 };
 
 export function saveAsLocal(fun, force = false) {
-    console.log("saveAsLocal");
+    //console.log("saveAsLocal");
     if (teimeta.teiData.system === 'electron') return;
     alert.promptUserModal("Please give the name of your new file: ",
         function(newname) {

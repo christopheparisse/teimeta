@@ -45,12 +45,24 @@ function getNodeText(node) {
  * @returns {*} true if ok
  */
 export function getOddFromXml(data, teiData) {
+    data = schema.stripBOM(data);
     if (!teiData.dataOdd) return ''; // no odd already loaded
     // get XML ready
     teiData.parser = new DOMParser();
-    teiData.doc = data 
-        ? teiData.parser.parseFromString(data.toString(), 'text/xml')
-        : null;
+    try {
+        if (data) {
+            let datastring = data.toString();
+            teiData.doc = teiData.parser.parseFromString(datastring, 'text/xml');
+            if (teiData.doc.documentElement.nodeName === "parsererror") {
+                alert.alertUser("The XML file is not valid: Operation canceled." + teiData.doc.documentElement.innerHTML);
+                console.log("Errors in XML file", teiData.doc.documentElement.innerHTML);
+            // } else {
+                // console.log("No errors found");
+            }
+        }
+    } catch(e) {
+        alert.alertUser("The XML file is not valid: Operation canceled (catch) " + e.toString());
+    }
 
     // find root
     let root = null;
@@ -77,13 +89,26 @@ export function getOddFromXml(data, teiData) {
  * @returns {*} true if ok
  */
 export function loadTei(data, teiData) {
-    // console.log("call of loadTei ", data, teiData, noreload);
+    data = schema.stripBOM(data);
+    //console.log("call of loadTei ", data, teiData);
     // get XML ready
     if (!teiData.parser) teiData.parser = new DOMParser();
-    if (!teiData.doc) teiData.doc = data 
-        ? teiData.parser.parseFromString(data.toString(), 'text/xml')
-        : null;
-
+    try {
+        if (!teiData.doc) {
+            if (data) {
+                let datastring = data.toString();
+                teiData.doc = teiData.parser.parseFromString(datastring, 'text/xml');
+                if (teiData.doc.documentElement.nodeName === "parsererror") {
+                    alert.alertUser("The XML file is not valid: Operation canceled." + teiData.doc.documentElement.innerHTML);
+                    console.log("Errors in XML file", teiData.doc.documentElement.innerHTML);
+                // } else {
+                    // console.log("No errors found");
+                }
+            }
+        }
+    } catch(e) {
+        alert.alertUser("The XML file is not valid: Operation canceled (catch) " + e.toString());
+    }
     if (!teiData.dataOdd) return ''; // no odd loaded
 
     // find root
@@ -107,23 +132,13 @@ export function loadTei(data, teiData) {
         alert.alertUser(msg.msg('norootinodd'));
         return false;
     }
-    if (root) {
-        // create first elementSpec and find and create the other recursively
-        teiData.dataTei = loadElementSpec(h, root, path, '1', '1', null);
-        // h = descriptor elementSpec
-        // root = list of nodes
-        // '' = initial path
-        // 1 = minimal number of root authorized
-        // 1 = maximal number of root authorized
-    } else {
-        // create first elementSpec and find and create the other recursively
-        teiData.dataTei = loadElementSpec(h, null, path, '1', '1', null);
-        // h = descriptor elementSpec
-        // root = list of nodes
-        // '' = initial path
-        // 1 = minimal number of root authorized
-        // 1 = maximal number of root authorized
-    }
+    // create first elementSpec and find and create the other recursively
+    // h = descriptor elementSpec
+    // root = list of nodes (could be null)
+    // '' = initial path
+    // 1 = minimal number of root authorized
+    // 1 = maximal number of root authorized
+    teiData.dataTei = loadElementSpec(h, root, path, '1', '1', null);
     return true;
 }
 
@@ -168,7 +183,7 @@ function verifyDatatype(datatype) {
  */
 export function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
     let c = schema.copyElementSpec(es);
-    // console.log('loadElementSpec ', c.access, path);
+    //console.log('loadElementSpec ', c.access, path);
     // creation of an initial empty element for the current node
     c.node = node;
     c.parentElementSpec = parent;
@@ -291,6 +306,7 @@ function isRecursive(es, name) {
  * @param parent 
  */
 function loadElementRef(ec, node, path, parent) {
+    //console.log("loadElementRef:",ec,node,path);
     // ec is an ElementCount
     // prepare the first element ElementCountItem
     let eci = new schema.ElementCountItem();
@@ -343,6 +359,7 @@ function loadElementRef(ec, node, path, parent) {
  * @param parent 
  */
 function loadSequence(ec, node, path, parent) {
+    //console.log("loadSequence:",ec,node,path);
     // load from TEI
     let nnodes = []; // array of arrays of nodes
     // for all models in the sequence, we look for corresponding nodes

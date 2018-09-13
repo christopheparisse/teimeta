@@ -81,6 +81,7 @@
 					<content>
 						<elementRef key="sourceDesc" minOccurs="1" maxOccurs="1"/>
 					</content>
+					<model behaviour="content" cssClass="joli-fileDesc"></model>
 				</elementSpec>
 
 				<!-- recordingStmt : recording et medias-->
@@ -200,6 +201,14 @@
 							</remarks>
 						</attDef>
 					</attList>
+					<model behaviour="inline" predicate="." useSourceRendition="true" cssClass="media-element">
+						<outputRendition>background-color: lightgreen; border-radius: 8px; margin: 3px;</outputRendition>
+					</model>
+					<model behaviour="inline" predicate="text()" useSourceRendition="false" cssClass="media-content">
+					</model>
+					<model behaviour="inline" predicate="@url" useSourceRendition="true" cssClass="media-url">
+						<outputRendition>color:blue;</outputRendition>
+					</model>
 					<remarks style="element">
 						<ab>background-color: lightgreen; border-radius: 8px; margin: 3px;</ab>
 						<p><ident>media-element</ident></p>

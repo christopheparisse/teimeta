@@ -119,7 +119,7 @@ export function setLanguage(lg, reload=true) {
         if (el) el.textContent = msg.msg("paramlinks");
     } catch (error) {
         alert.alertUser('Erreur de message: ' + error.toString());
-        console.log(error);
+        console.log("setLanguage", error);
     }
 
     changeParams = false;
@@ -362,11 +362,11 @@ export function oddpredefs(callback) {
                             if (!js[i].css) js[i].css = "";
                         }
                         oddprefdefined = js;
-                        console.log(js);
+                        console.log("oddpredefs", js);
                         callback(oddprefdefined);
                     } catch(e) {
                         // alert.alertUser('error reading models.json: ' + e.toString());
-                        console.log('error reading models.json:',e);
+                        console.log('error reading models.json:', e);
                         callback(oddprefdefined);
                     }
                 } else {

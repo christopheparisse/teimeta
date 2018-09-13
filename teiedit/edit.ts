@@ -48,11 +48,11 @@ function resizable (id, factor) {
     if (!el) return;
     if (el.tagName && el.tagName.toLowerCase() == "textarea") {
         let s = el.textContent;
-        console.log('this is a textarea', s, el);
+        //console.log('this is a textarea', s, el);
         let lines = function(x) { return x.split(/\r*\n/); }
         let lineCount = function(x) { return lines(x).length; }
         let nbl = lineCount(s);
-        console.log('nb lines:', nbl);
+        //console.log('nb lines:', nbl);
         el.rows = nbl;
         return;
     }

@@ -535,6 +535,7 @@ function valList(data, node) {
  * @return teiOdd structure (model data from the ODD)
  */
 export function loadOdd(data, eltsSpecs = null, eltsRefs = null) {
+    data = schema.stripBOM(data);
     listElementRef = {};
     let odd = new schema.SCHEMA();
     let error = '';
@@ -544,13 +545,13 @@ export function loadOdd(data, eltsSpecs = null, eltsRefs = null) {
     let doc;
     // let doc = parser.parseFromString(data, "text/xml");
     try {
-        doc = parser.parseFromString(data.toString(), 'text/xml');
+        let datastring = data.toString();
+        doc = parser.parseFromString(datastring, 'text/xml');
         if (doc.documentElement.nodeName === "parsererror") {
-    //        checkErrorXML(doc.getElementsByTagName("parsererror")[0]);
             alert.alertUser("The ODD file is not valid: Operation canceled." + doc.documentElement.innerHTML);
             console.log("Errors in ODD file", doc.documentElement.innerHTML);
-        } else {
-            console.log("No errors found");
+        // } else {
+            // console.log("No errors found");
         }
     } catch(e) {
         alert.alertUser("The ODD file is not valid: Operation canceled (catch) " + e.toString());
@@ -661,6 +662,7 @@ export function loadOdd(data, eltsSpecs = null, eltsRefs = null) {
  * @return array of { key: "", source: "" }
  */
 export function loadOddClassRef(data) {
+    data = schema.stripBOM(data);
     let error = '';
     let warning = '';
     // get XML ready
@@ -671,8 +673,8 @@ export function loadOddClassRef(data) {
         if (doc.documentElement.nodeName === "parsererror") {
             alert.alertUser("The ODD file is not valid: Operation canceled (in loadOddClassRef)." + doc.documentElement.innerHTML);
             console.log("Errors in ODD file (loadOddClassRef).", doc.documentElement.innerHTML);
-        } else {
-            console.log("No errors found in loadOddClassRef");
+        // } else {
+            // console.log("No errors found in loadOddClassRef");
         }
     } catch(e) {
         alert.alertUser("The ODD file is not valid: Operation canceled (in loadOddClassRef) (catch) " + e.toString());

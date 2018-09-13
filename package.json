@@ -1,7 +1,7 @@
 {
   "name": "teimeta",
   "productName": "TeiMeta",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "An editor for TEI CORPO metadata",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,11 @@
     "webpack": "webpack --mode=none",
     "iso639": "awk -f iso639.awk models/ISO-639-2_utf-8.txt | grep -v \"|\" > teiedit/iso639.js",
     "test": "gulp page; webpack --mode=none; gulp test",
-    "distct3": "sh majwb.sh"
+    "buildelectron": "sh buildmacos.sh",
+    "distelectron": "sh majelectron.sh",
+    "distct3": "sh majwb.sh",
+    "buildmaj": "sh majwb.sh; sh buildmacos.sh; sh majelectron.sh",
+    "git": "sh sg.sh"
   },
   "keywords": [
     "Electron",
