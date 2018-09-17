@@ -45,8 +45,8 @@ function getNodeText(node) {
  * @returns {*} true if ok
  */
 export function getOddFromXml(data, teiData) {
-    data = schema.stripBOM(data);
     if (!teiData.dataOdd) return ''; // no odd already loaded
+    if (data) data = schema.stripBOM(data);
     // get XML ready
     teiData.parser = new DOMParser();
     try {
@@ -89,7 +89,7 @@ export function getOddFromXml(data, teiData) {
  * @returns {*} true if ok
  */
 export function loadTei(data, teiData) {
-    data = schema.stripBOM(data);
+    if (data) data = schema.stripBOM(data);
     //console.log("call of loadTei ", data, teiData);
     // get XML ready
     if (!teiData.parser) teiData.parser = new DOMParser();

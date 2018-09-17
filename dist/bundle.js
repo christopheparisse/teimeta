@@ -561,15 +561,15 @@ function openOddLoad(name, displayname, data, callback) {
         callback(true);
     }
     function intermediateOL(v) {
-        console.log(name, displayname, 'return from teimeta.initOdd', v);
+        //console.log(name, displayname, 'return from teimeta.initOdd', v);
         if (v === false) {
-            console.log('no processing after teimeta.initOdd');
+            //console.log('no processing after teimeta.initOdd');
             callback(false);
         }
         var el = document.getElementById('oddname');
         if (el)
             el.innerHTML = "ODD: " + displayname;
-        console.log(name, displayname, 'finishing the ODD loading');
+        //console.log(name, displayname, 'finishing the ODD loading');
         if (teimeta.teiData.dataOdd.cssfile) {
             testCss(teimeta.teiData.dataOdd.cssfile, finishOL);
         }
@@ -643,7 +643,7 @@ function emptyFile() {
 }
 exports.emptyFile = emptyFile;
 function saveAs(fun) {
-    console.log("saveAs");
+    //console.log("saveAs");
     opensave.chooseSaveFile('xml', function (err, name) {
         if (!err) {
             teimeta.teiData.fileName = name;
@@ -662,7 +662,7 @@ function saveAs(fun) {
 exports.saveAs = saveAs;
 ;
 function save(fun) {
-    console.log("save");
+    //console.log("save");
     if (teimeta.teiData.fileName !== msg.msg('newfile')) {
         var ed = teimeta.generateXml();
         teimeta.teiData.edit.change(false);
@@ -693,7 +693,7 @@ function saveit(name, fun) {
 }
 function saveLocal(fun, force) {
     if (force === void 0) { force = false; }
-    console.log("saveLocal");
+    //console.log("saveLocal");
     if (teimeta.teiData.system === 'electron')
         return;
     var nf = msg.msg('newfile');
@@ -716,7 +716,7 @@ exports.saveLocal = saveLocal;
 ;
 function saveAsLocal(fun, force) {
     if (force === void 0) { force = false; }
-    console.log("saveAsLocal");
+    //console.log("saveAsLocal");
     if (teimeta.teiData.system === 'electron')
         return;
     alert.promptUserModal("Please give the name of your new file: ", function (newname) {
@@ -1407,6 +1407,17 @@ function copyDataType(obj, parent) {
     cp.vallist = obj.vallist; // no duplication necessary because these elements wont be modified
     return cp;
 }
+// From Ben N.
+function stripBOM(content) {
+    // Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
+    // because the buffer-to-string conversion in `fs.readFileSync()`
+    // translates it to FEFF, the UTF-16 BOM.
+    if (content.charCodeAt(0) === 0xFEFF) {
+        content = content.slice(1);
+    }
+    return content;
+}
+exports.stripBOM = stripBOM;
 
 
 /***/ }),
@@ -1954,6 +1965,7 @@ function valList(data, node) {
 function loadOdd(data, eltsSpecs, eltsRefs) {
     if (eltsSpecs === void 0) { eltsSpecs = null; }
     if (eltsRefs === void 0) { eltsRefs = null; }
+    data = schema.stripBOM(data);
     listElementRef = {};
     var odd = new schema.SCHEMA();
     var error = '';
@@ -1963,9 +1975,9 @@ function loadOdd(data, eltsSpecs, eltsRefs) {
     var doc;
     // let doc = parser.parseFromString(data, "text/xml");
     try {
-        doc = parser.parseFromString(data.toString(), 'text/xml');
+        var datastring = data.toString();
+        doc = parser.parseFromString(datastring, 'text/xml');
         if (doc.documentElement.nodeName === "parsererror") {
-            //        checkErrorXML(doc.getElementsByTagName("parsererror")[0]);
             alert.alertUser("The ODD file is not valid: Operation canceled." + doc.documentElement.innerHTML);
             console.log("Errors in ODD file", doc.documentElement.innerHTML);
             // } else {
@@ -2081,6 +2093,7 @@ exports.loadOdd = loadOdd;
  * @return array of { key: "", source: "" }
  */
 function loadOddClassRef(data) {
+    data = schema.stripBOM(data);
     var error = '';
     var warning = '';
     // get XML ready
@@ -8164,11 +8177,25 @@ function getNodeText(node) {
 function getOddFromXml(data, teiData) {
     if (!teiData.dataOdd)
         return ''; // no odd already loaded
+    if (data)
+        data = schema.stripBOM(data);
     // get XML ready
     teiData.parser = new DOMParser();
-    teiData.doc = data
-        ? teiData.parser.parseFromString(data.toString(), 'text/xml')
-        : null;
+    try {
+        if (data) {
+            var datastring = data.toString();
+            teiData.doc = teiData.parser.parseFromString(datastring, 'text/xml');
+            if (teiData.doc.documentElement.nodeName === "parsererror") {
+                alert.alertUser("The XML file is not valid: Operation canceled." + teiData.doc.documentElement.innerHTML);
+                console.log("Errors in XML file", teiData.doc.documentElement.innerHTML);
+                // } else {
+                // console.log("No errors found");
+            }
+        }
+    }
+    catch (e) {
+        alert.alertUser("The XML file is not valid: Operation canceled (catch) " + e.toString());
+    }
     // find root
     var root = null;
     if (teiData.doc) {
@@ -8196,14 +8223,29 @@ exports.getOddFromXml = getOddFromXml;
  * @returns {*} true if ok
  */
 function loadTei(data, teiData) {
-    console.log("call of loadTei ", data, teiData);
+    if (data)
+        data = schema.stripBOM(data);
+    //console.log("call of loadTei ", data, teiData);
     // get XML ready
     if (!teiData.parser)
         teiData.parser = new DOMParser();
-    if (!teiData.doc)
-        teiData.doc = data
-            ? teiData.parser.parseFromString(data.toString(), 'text/xml')
-            : null;
+    try {
+        if (!teiData.doc) {
+            if (data) {
+                var datastring = data.toString();
+                teiData.doc = teiData.parser.parseFromString(datastring, 'text/xml');
+                if (teiData.doc.documentElement.nodeName === "parsererror") {
+                    alert.alertUser("The XML file is not valid: Operation canceled." + teiData.doc.documentElement.innerHTML);
+                    console.log("Errors in XML file", teiData.doc.documentElement.innerHTML);
+                    // } else {
+                    // console.log("No errors found");
+                }
+            }
+        }
+    }
+    catch (e) {
+        alert.alertUser("The XML file is not valid: Operation canceled (catch) " + e.toString());
+    }
     if (!teiData.dataOdd)
         return ''; // no odd loaded
     // find root
@@ -8279,7 +8321,7 @@ function verifyDatatype(datatype) {
  */
 function loadElementSpec(es, node, path, minOcc, maxOcc, parent) {
     var c = schema.copyElementSpec(es);
-    console.log('loadElementSpec ', c.access, path);
+    //console.log('loadElementSpec ', c.access, path);
     // creation of an initial empty element for the current node
     c.node = node;
     c.parentElementSpec = parent;
@@ -8417,7 +8459,7 @@ function isRecursive(es, name) {
  * @param parent
  */
 function loadElementRef(ec, node, path, parent) {
-    console.log("loadElementRef:", ec, node, path);
+    //console.log("loadElementRef:",ec,node,path);
     // ec is an ElementCount
     // prepare the first element ElementCountItem
     var eci = new schema.ElementCountItem();
@@ -8468,7 +8510,7 @@ function loadElementRef(ec, node, path, parent) {
  * @param parent
  */
 function loadSequence(ec, node, path, parent) {
-    console.log("loadSequence:", ec, node, path);
+    //console.log("loadSequence:",ec,node,path);
     // load from TEI
     var nnodes = []; // array of arrays of nodes
     // for all models in the sequence, we look for corresponding nodes
@@ -17442,7 +17484,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var alert = __webpack_require__(5);
 var msg = __webpack_require__(7);
 exports.version = '0.6.5';
-exports.date = '13-09-2018';
+exports.date = '17-09-2018';
 function about() {
     var s = msg.msg('versionname') + exports.version + " - " + exports.date + "</br></br>";
     s += msg.msg('shorthelp');
