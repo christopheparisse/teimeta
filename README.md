@@ -6,19 +6,19 @@
 
 ## Downloading or using the tool
 
-Online use: [http://ct3.ortolang.fr/teimeta/](http://ct3.ortolang.fr/teimeta/)
+Online use: [http://vheborto-ct3.inist.fr/teimeta/](http://vheborto-ct3.inist.fr/teimeta/)
 
-Downloading the tool for MacOs: [http://ct3.ortolang.fr/download/teimeta-macos.zip](http://ct3.ortolang.fr/download/teimeta-macos.zip)
+Downloading the tool for MacOs: [http://vheborto-ct3.inist.fr/download/teimeta-macos.zip](http://vheborto-ct3.inist.fr/download/teimeta-macos.zip)
 
-Downloading the tool for windows 64: [http://ct3.ortolang.fr/download/teimeta-x64.exe](http://ct3.ortolang.fr/download/teimeta-x64.exe)
+Downloading the tool for windows 64: [http://vheborto-ct3.inist.fr/download/teimeta-x64.exe](http://vheborto-ct3.inist.fr/download/teimeta-x64.exe)
 
-Downloading the tool for windows 32: [http://ct3.ortolang.fr/download/teimeta-x86.exe](http://ct3.ortolang.fr/download/teimeta-x86.exe)
+Downloading the tool for windows 32: [http://vheborto-ct3.inist.fr/download/teimeta-x86.exe](http://vheborto-ct3.inist.fr/download/teimeta-x86.exe)
 
-Downloading the TEI Spoken language ODD: [http://ct3.ortolang.fr/teimeta/teispoken.odd](http://ct3.ortolang.fr/teimeta/teispoken.odd)
+Downloading the TEI Spoken language ODD: [http://vheborto-ct3.inist.fr/teimeta/teispoken.odd](http://vheborto-ct3.inist.fr/teimeta/teispoken.odd)
 
-Downloading the TEI Media ODD: [http://ct3.ortolang.fr/teimeta/media.odd](http://ct3.ortolang.fr/teimeta/media.odd)
+Downloading the TEI Media ODD: [http://vheborto-ct3.inist.fr/teimeta/media.odd](http://vheborto-ct3.inist.fr/teimeta/media.odd)
 
-Downloading the DC/OLAC ODD: [http://ct3.ortolang.fr/teimeta/olac.odd](http://ct3.ortolang.fr/teimeta/olac.odd)
+Downloading the DC/OLAC ODD: [http://vheborto-ct3.inist.fr/teimeta/olac.odd](http://vheborto-ct3.inist.fr/teimeta/olac.odd)
 
 ## Description
 
@@ -33,6 +33,7 @@ The tool was created to edit TEI files, but it can be used for any type of XML f
 TEIMETA allows to edit any XML node but not to move this node around in the XML file. New nodes can be created and nodes can be erased (if this is allowed by the model). The ODD describes node position from the root. **The values of an XML node not described in the ODD file will never be modified. This means that it is possible to edit parts of an XML file respecting the integrity of the rest of the file.**
 
 ## Version information
+  - 0.6.9 - new website version
   - 0.6.5 - resize for multiline and correction of errors and correct reading of files with BOM header
   - 0.6.3 - corrections of small errors
   - 0.6.2 - fully documented version
@@ -117,7 +118,7 @@ moduleRef are not used.
 
 ```
 <schemaSpec ident="NameOfOdd" ns="http://basic-namespace.org" start="olac:olac"
-					 	rend="http://ct3.ortolang.fr/teimeta/olac.css">
+					 	rend="http://vheborto-ct3.inist.fr/teimeta/olac.css">
             <altIdent type="xmlns:olac">http://www.language-archives.org/OLAC/1.1/</altIdent>
 
 <classRef key="filedesc" source="filedesc.odd"/>
@@ -192,7 +193,7 @@ $ open http://localhost/temp-page/teimeta.html
 # test runs are done by calling node test/test1.js up to test/test4.js
 ```
 
-A free available version is found here: http://ct3.ortolang.fr/teimeta/ The software running on that page can be easily run on a static web server. It is only necessary
+A free available version is found here: http://vheborto-ct3.inist.fr/teimeta/ The software running on that page can be easily run on a static web server. It is only necessary
 to copy the dist directory (from the sources) on the web server. The models sub-directory can be tailored to your needed. To do this, edit the models.json file and provide 
 your own files in the models directory.
 
@@ -304,13 +305,13 @@ Issues, questions and comments [issues](https://github.com/christopheparisse/tei
 **Outil d'édition de champs xml dans un fichier xml à partir d'une description odd**
 
 ## Accès à l'outil
-Utilisation en ligne: [http://ct3.ortolang.fr/teimeta/](http://ct3.ortolang.fr/teimeta/)
+Utilisation en ligne: [http://vheborto-ct3.inist.fr/teimeta/](http://vheborto-ct3.inist.fr/teimeta/)
 
-Téléchargement application autonome pour MacOs: [http://ct3.ortolang.fr/download/teimeta-macos.zip](http://ct3.ortolang.fr/download/teimeta-macos.zip)
+Téléchargement application autonome pour MacOs: [http://vheborto-ct3.inist.fr/download/teimeta-macos.zip](http://vheborto-ct3.inist.fr/download/teimeta-macos.zip)
 
-Téléchargement application windows 64 bits: [http://ct3.ortolang.fr/download/teimeta-x64.exe](http://ct3.ortolang.fr/download/teimeta-x64.exe)
+Téléchargement application windows 64 bits: [http://vheborto-ct3.inist.fr/download/teimeta-x64.exe](http://vheborto-ct3.inist.fr/download/teimeta-x64.exe)
 
-Téléchargement application windows 32 bits: [http://ct3.ortolang.fr/download/teimeta-x86.exe](http://ct3.ortolang.fr/download/teimeta-x86.exe)
+Téléchargement application windows 32 bits: [http://vheborto-ct3.inist.fr/download/teimeta-x86.exe](http://vheborto-ct3.inist.fr/download/teimeta-x86.exe)
 
 ## Description générale
 

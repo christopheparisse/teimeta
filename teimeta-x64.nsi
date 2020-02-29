@@ -41,7 +41,7 @@ UninstPage instfiles
 ;--------------------------------
 
 ; The stuff to install
-Section "teimeta 64bits v0.6.5 (required)"
+Section "teimeta 64bits v0.6.9 (required)"
 
   SectionIn RO
 

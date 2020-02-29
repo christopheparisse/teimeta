@@ -1,7 +1,7 @@
 {
   "name": "teimeta",
   "productName": "TeiMeta",
-  "version": "0.6.5",
+  "version": "0.6.9",
   "description": "An editor for TEI CORPO metadata",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "distelectron": "sh majelectron.sh",
     "distct3": "sh majwb.sh",
     "buildmaj": "sh majwb.sh; sh buildmacos.sh; sh majelectron.sh",
-    "git": "sh sg.sh"
+    "git": "sh maj.sh"
   },
   "keywords": [
     "Electron",
