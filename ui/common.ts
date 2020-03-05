@@ -258,13 +258,13 @@ export function init(funbodykeys) {
     */
 
     el = document.getElementById('link-ortolang');
-    if (el) el.addEventListener("click", function() { link('http://localhost:80/')});
+    if (el) el.addEventListener("click", function() { link('http://vheborto-ct3.inist.fr:80/')});
     el = document.getElementById('link-metadoc');
-    if (el) el.addEventListener("click", function() { link('http://localhost:80/ct3/teimeta-doc/')});
+    if (el) el.addEventListener("click", function() { link('http://vheborto-ct3.inist.fr:80/ct3/teimeta-doc/')});
     el = document.getElementById('link-teiconvert');
-    if (el) el.addEventListener("click", function() { link('http://localhost:80/teiconvert/')});
+    if (el) el.addEventListener("click", function() { link('http://vheborto-ct3.inist.fr:80/teiconvert/')});
     el = document.getElementById('link-teicorpo');
-    if (el) el.addEventListener("click", function() { link('http://localhost:80/ct3/teicorpo-doc/')});
+    if (el) el.addEventListener("click", function() { link('http://vheborto-ct3.inist.fr:80/ct3/teicorpo-doc/')});
 
     el = document.getElementById('upload-input-transcript');
     if (el) el.addEventListener("change", syscall.openLocalFile);
