@@ -17,7 +17,7 @@ La sauvegarde (cliquer sur "Sauver") se fait dans le répertoire de télécharge
 <i class="create fa fa-plus-square fa-color-expand"></i> indique qu'un élément ou un bloc peut être ajouté au fichier. Il sera validé ou non en utilisant les icones précédentes.</br>
 <i class="hidebutton fa fa-size2 fa-star-half-o fa-color-toggle"></i> permet de montrer ou cacher une partie du fichier.</br>
 </br>
-Pour toute information (documentation, téléchargement), aller sur <a href="http://vheborto-ct3.inist.fr/teimeta-doc/" target="_blank">http://vheborto-ct3.inist.fr/teimeta-doc/</a><br/>
+Pour toute information (documentation, téléchargement), aller sur <a href="http://ct3.ortolang.fr/teimeta-doc/" target="_blank">http://ct3.ortolang.fr/teimeta-doc/</a><br/>
 Pour télécharger les sources de ce logiciel, aller sur <a href="https://github.com/christopheparisse/teimeta" target="_blank">https://github.com/christopheparisse/teimeta</a><br/>
 Pour signaler une erreur ou proposer une fonctionnalité, aller sur <a href="https://github.com/christopheparisse/teimeta/issues" target="_blank">https://github.com/christopheparisse/teimeta/issues</a><br/>
 `;
@@ -237,7 +237,7 @@ Saving (click "Save") is performed in the download directory (or elsewhere, acco
 <i class="create fa fa-plus-square fa-color-expand"></i> indicate whether an element or a bloc can be added to the file. It will be validated or not using the previous icons.</br>
 <i class="hidebutton fa fa-size2 fa-star-half-o fa-color-toggle"></i> allows to show or hide part of the file.</br>
 </br>
-For all information (downloading, documentation), go to <a href="http://vheborto-ct3.inist.fr/teimeta-doc/" target="_blank">http://vheborto-ct3.inist.fr/teimeta-doc/</a><br/>
+For all information (downloading, documentation), go to <a href="http://ct3.ortolang.fr/teimeta-doc/" target="_blank">http://ct3.ortolang.fr/teimeta-doc/</a><br/>
 To download the sources of the tool, go to <a href="https://github.com/christopheparisse/teimeta" target="_blank">https://github.com/christopheparisse/teimeta</a><br/>
 To signal an error or a problem, or ask for improvments, go to <a href="https://github.com/christopheparisse/teimeta/issues" target="_blank">https://github.com/christopheparisse/teimeta/issues</a><br/>
 `;
