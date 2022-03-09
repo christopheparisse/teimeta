@@ -1,8 +1,12 @@
 ### En cours
-* mode d'emploi logiciel
-* mode d'emploi ODD
-* test modules
-* Widgets améliorés
+  * mode d'emploi logiciel
+  * mode d'emploi ODD
+  * test modules
+  * Widgets améliorés
+
+### En projet
+  * version metadonnées d'un corpus
+  * version métadonnées pour l'écrit
 
 ## Notes précedentes
 
