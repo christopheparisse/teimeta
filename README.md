@@ -494,4 +494,4 @@ Téléchargement du code source: [https://github.com/christopheparisse/teimeta/]
 
 Signaler erreurs et commentaires dans [issues](https://github.com/christopheparisse/teimeta/issues).
 
-#### License [CC0 (Public Domain)](LICENSE.md)
+#### License [GNU General Public License version 3](LICENSE)

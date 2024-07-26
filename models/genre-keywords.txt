@@ -1,0 +1,46 @@
+0_OFC_genre	0_OFC_genre	0_OFC_genre
+interactions_orales	interactions orales	oral interactions
+interactions_orales.conference	interactions orales - conférence	oral interactions - conference
+interactions_orales.conversation	interactions orales - conversation	oral interactions - conversation
+interactions_orales.cours	interactions orales - cours	oral interactions - course
+interactions_orales.dialogue_ofc	interactions orales - dialogue_ofc	oral interactions - dialogue_ofc
+interactions_orales.entretien	interactions orales - entretien	oral interactions - interview
+interactions_orales.entretien_dirige	interactions orales - entretien dirigé	oral interactions - guided interview
+interactions_orales.jeu	interactions orales - jeu	oral interactions - game
+interactions_orales.repas	interactions orales - repas	oral interactions - meal
+interactions_orales.reunion	interactions orales - réunion	oral interactions - meeting
+interactions_orales.transaction	interactions orales - transaction	oral interactions - transaction
+interactions_ecrites	interactions écrites	written interactions
+interactions_ecrites.blog	interactions orales - blog	written interactions - blog
+interactions_ecrites.carte_postale	interactions orales - carte postale	written interactions - postcard
+interactions_ecrites.forum	interactions orales - forum	written interactions - forum
+interactions_ecrites.lettre	interactions orales - lettre	written interactions - letter
+interactions_ecrites.SMS	interactions orales - SMS	written interactions - SMS
+interactions_ecrites.twitch	interactions orales - Twitch	written interactions - Twitch
+interactions_ecrites.wikipedia	interactions orales - Wikipédia	written interactions - Wikipedia
+presse	presse	press
+presse.article_journalistique	presse - article journalistique	press - journalistic article
+presse.interview	presse - interview	press - interview
+textes_juridiques	presse - textes juridiques	press - legal texts
+textes_parlementaires	textes parlementaires	parliamentary texts
+textes_parlementaires.compte-rendu_de_parole	presse - compte-rendu de parole	parliamentary texts - speech report
+textes_parlementaires.compte-rendu_de_reunion	presse - compte-rendu de réunion	parliamentary texts - meeting report
+textes_parlementaires.compte-rendu_de_seance_publique	presse - compte-rendu de séance publique	parliamentary texts - public meeting report
+textes_parlementaires.debat_parlementaire	presse - débat parlementaire	parliamentary texts - parliamentary debate
+textes_scientifiques	textes scientifiques	scientific texts
+textes_scientifiques.article_encyclopedique	presse - article encyclopédique	scientific texts - encyclopedic article
+textes_scientifiques.article_scientifique	presse - article scientifique	scientific texts - scientific article
+textes_scientifiques.conference	presse - conférence	scientific texts - conference
+textes_simplifies	textes simplifiés	simplified texts
+textes_simplifies.article_encyclopedique	textes simplifiés - article encyclopédique	simplified texts - encyclopaedic article
+textes_simplifies.article_scientifique	textes simplifiés - article scientifique	simplified texts - scientific article
+ecrits_scolaires	écrits scolaires	academic writing
+ecrits_scolaires.analyse_sujet_type_CRPE	écrits scolaires - analyse - sujet type CRPE	academic writing - analysis - CRPE-type subject
+ecrits_scolaires.compte_rendu_de_lecture	écrits scolaires - compte-rendu de lecture	academic writing - reading report
+ecrits_scolaires.compte_rendu_professionnel	écrits scolaires - compte-rendu professionnel	academic writing - professional report
+ecrits_scolaires.dossier	écrits scolaires - dossier	academic writing - dossier
+ecrits_scolaires.lettre_de_motivation	écrits scolaires - lettre de motivation	academic writing - cover letter
+ecrits_scolaires.memoire	écrits scolaires - mémoire	academic writing - dissertation
+ecrits_scolaires.rapport_de_stage	écrits scolaires - rapport de stage	academic writing - internship report
+ecrits_scolaires.redaction	écrits scolaires - rédaction	academic writing - essay
+ecrits_scolaires.synthese_theorique	écrits scolaires - synthèse théorique	academic writing - theoretical synthesis
