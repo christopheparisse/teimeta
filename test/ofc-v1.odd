@@ -279,8 +279,8 @@
 				</elementSpec>
 
 				<elementSpec ident="pubPlace" module="core">
-					<desc xml:lang="fr">Diffusion dans d'autres sites</desc>
-					<desc xml:lang="en">Other website for this resource</desc>
+					<desc xml:lang="fr">Dépot de données de la ressource</desc>
+					<desc xml:lang="en">Resource repository</desc>
 					<content>
 						<elementRef key="ref" minOccurs="1" maxOccurs="unbounded"/>
 						<textNode/>
@@ -288,15 +288,15 @@
 				</elementSpec>
 
 				<elementSpec ident="ref">
-					<desc xml:lang="fr">URL</desc>
-					<desc xml:lang="en">URL</desc>
+					<desc xml:lang="fr">URL ou emplacement</desc>
+					<desc xml:lang="en">URL or location</desc>
 					<content>
 						<textNode/>
 					</content>
 					<attList>
 						<attDef ident="target" usage="req" mode="change">
-							<desc xml:lang="fr">Lien vers la ressource (URL)</desc>
-							<desc xml:lang="en">Resource target (URL)</desc>
+							<desc xml:lang="fr">Lien vers la ressource (URL exact)</desc>
+							<desc xml:lang="en">Resource target (exact URL)</desc>
 							<datatype>
 								<dataRef name="anyURI"/>
 							</datatype>
@@ -374,8 +374,10 @@
 					<desc xml:lang="en">Mode: radio/tv/phone/presence/visio</desc>
 					<attList>
 						<attDef ident="mode" usage="req" mode="change" rend="mode.unknown" >
+							<datatype>
+								<dataRef name="openlist"/>
+							</datatype>
 							<valList>
-								<!-- pas de choix autre volontairement -->
 								<valItem ident="mode.audio">
 									<desc xml:lang="fr">audio</desc>
 									<desc xml:lang="en">audio</desc>
@@ -403,8 +405,10 @@
 							</valList>
 						</attDef>
 						<attDef ident="submode" usage="req" mode="change" rend="submode.unknown">
+							<datatype>
+								<dataRef name="openlist"/>
+							</datatype>
 							<valList>
-								<!-- pas de choix autre volontairement -->
 								<valItem ident="submode.recording">
 									<desc xml:lang="fr">enregistement</desc>
 									<desc xml:lang="en">recording</desc>
@@ -467,6 +471,9 @@
 					<desc xml:lang="en">Domain</desc>
 					<attList>
 						<attDef ident="type" usage="req" mode="change" >
+							<datatype>
+								<dataRef name="openlist"/>
+							</datatype>
 							<valList>
 								<valItem ident="domain.artistique">
 									<desc xml:lang="fr">artistique</desc>
@@ -476,7 +483,6 @@
 									<desc xml:lang="fr">didactico-scientifique</desc>
 									<desc xml:lang="en">scientific didactic</desc>
 								</valItem>
-
 								<valItem ident="nature_type.unknown">
 									<desc xml:lang="fr">domaine inconnu</desc>
 									<desc xml:lang="en">unknown domain</desc>
@@ -504,191 +510,16 @@
 					<desc xml:lang="fr">Thèmes</desc>
 					<desc xml:lang="en">Theme</desc>
 					<content>
+						<datatype>
+							<dataRef name="openlist"/>
+						</datatype>
 						<valList>
-							<valItem ident="interactions_orales">
-								<desc xml:lang="fr">interactions orales</desc>
-								<desc xml:lang="en">oral interactions</desc>
-							</valItem>
-							<valItem ident="interactions_orales.conference">
-								<desc xml:lang="fr">interactions orales - conférence</desc>
-								<desc xml:lang="en">oral interactions - conference</desc>
-							</valItem>
-							<valItem ident="interactions_orales.conversation">
-								<desc xml:lang="fr">interactions orales - conversation</desc>
-								<desc xml:lang="en">oral interactions - conversation</desc>
-							</valItem>
-							<valItem ident="interactions_orales.cours">
-								<desc xml:lang="fr">interactions orales - cours</desc>
-								<desc xml:lang="en">oral interactions - course</desc>
-							</valItem>
-							<valItem ident="interactions_orales.dialogue_ofc">
-								<desc xml:lang="fr">interactions orales - dialogue_ofc</desc>
-								<desc xml:lang="en">oral interactions - dialogue_ofc</desc>
-							</valItem>
-							<valItem ident="interactions_orales.entretien">
-								<desc xml:lang="fr">interactions orales - entretien</desc>
-								<desc xml:lang="en">oral interactions - interview</desc>
-							</valItem>
-							<valItem ident="interactions_orales.entretien_dirige">
-								<desc xml:lang="fr">interactions orales - entretien dirigé</desc>
-								<desc xml:lang="en">oral interactions - guided interview</desc>
-							</valItem>
-							<valItem ident="interactions_orales.jeu">
-								<desc xml:lang="fr">interactions orales - jeu</desc>
-								<desc xml:lang="en">oral interactions - game</desc>
-							</valItem>
-							<valItem ident="interactions_orales.repas">
-								<desc xml:lang="fr">interactions orales - repas</desc>
-								<desc xml:lang="en">oral interactions - meal</desc>
-							</valItem>
-							<valItem ident="interactions_orales.reunion">
-								<desc xml:lang="fr">interactions orales - réunion</desc>
-								<desc xml:lang="en">oral interactions - meeting</desc>
-							</valItem>
-							<valItem ident="interactions_orales.transaction">
-								<desc xml:lang="fr">interactions orales - transaction</desc>
-								<desc xml:lang="en">oral interactions - transaction</desc>
-							</valItem>
-							<valItem ident="interactions_ecrites">
-								<desc xml:lang="fr">interactions écrites</desc>
-								<desc xml:lang="en">written interactions</desc>
-							</valItem>
-							<valItem ident="interactions_ecrites.blog">
-								<desc xml:lang="fr">interactions orales - blog</desc>
-								<desc xml:lang="en">written interactions - blog</desc>
-							</valItem>
-							<valItem ident="interactions_ecrites.carte_postale">
-								<desc xml:lang="fr">interactions orales - carte postale</desc>
-								<desc xml:lang="en">written interactions - postcard</desc>
-							</valItem>
-							<valItem ident="interactions_ecrites.forum">
-								<desc xml:lang="fr">interactions orales - forum</desc>
-								<desc xml:lang="en">written interactions - forum</desc>
-							</valItem>
-							<valItem ident="interactions_ecrites.lettre">
-								<desc xml:lang="fr">interactions orales - lettre</desc>
-								<desc xml:lang="en">written interactions - letter</desc>
-							</valItem>
-							<valItem ident="interactions_ecrites.SMS">
-								<desc xml:lang="fr">interactions orales - SMS</desc>
-								<desc xml:lang="en">written interactions - SMS</desc>
-							</valItem>
-							<valItem ident="interactions_ecrites.twitch">
-								<desc xml:lang="fr">interactions orales - Twitch</desc>
-								<desc xml:lang="en">written interactions - Twitch</desc>
-							</valItem>
-							<valItem ident="interactions_ecrites.wikipedia">
-								<desc xml:lang="fr">interactions orales - Wikipédia</desc>
-								<desc xml:lang="en">written interactions - Wikipedia</desc>
-							</valItem>
-							<valItem ident="presse">
-								<desc xml:lang="fr">presse</desc>
-								<desc xml:lang="en">press</desc>
-							</valItem>
-							<valItem ident="presse.article_journalistique">
-								<desc xml:lang="fr">presse - article journalistique</desc>
-								<desc xml:lang="en">press - journalistic article</desc>
-							</valItem>
-							<valItem ident="presse.interview">
-								<desc xml:lang="fr">presse - interview</desc>
-								<desc xml:lang="en">press - interview</desc>
-							</valItem>
-							<valItem ident="textes_juridiques">
-								<desc xml:lang="fr">presse - textes juridiques</desc>
-								<desc xml:lang="en">press - legal texts</desc>
-							</valItem>
-							<valItem ident="textes_parlementaires">
-								<desc xml:lang="fr">textes parlementaires</desc>
-								<desc xml:lang="en">parliamentary texts</desc>
-							</valItem>
-							<valItem ident="textes_parlementaires.compte-rendu_de_parole">
-								<desc xml:lang="fr">presse - compte-rendu de parole</desc>
-								<desc xml:lang="en">parliamentary texts - speech report</desc>
-							</valItem>
-							<valItem ident="textes_parlementaires.compte-rendu_de_reunion">
-								<desc xml:lang="fr">presse - compte-rendu de réunion</desc>
-								<desc xml:lang="en">parliamentary texts - meeting report</desc>
-							</valItem>
-							<valItem ident="textes_parlementaires.compte-rendu_de_seance_publique">
-								<desc xml:lang="fr">presse - compte-rendu de séance publique</desc>
-								<desc xml:lang="en">parliamentary texts - public meeting report</desc>
-							</valItem>
-							<valItem ident="textes_parlementaires.debat_parlementaire">
-								<desc xml:lang="fr">presse - débat parlementaire</desc>
-								<desc xml:lang="en">parliamentary texts - parliamentary debate</desc>
-							</valItem>
-							<valItem ident="textes_scientifiques">
-								<desc xml:lang="fr">textes scientifiques</desc>
-								<desc xml:lang="en">scientific texts</desc>
-							</valItem>
-							<valItem ident="textes_scientifiques.article_encyclopedique">
-								<desc xml:lang="fr">presse - article encyclopédique</desc>
-								<desc xml:lang="en">scientific texts - encyclopedic article</desc>
-							</valItem>
-							<valItem ident="textes_scientifiques.article_scientifique">
-								<desc xml:lang="fr">presse - article scientifique</desc>
-								<desc xml:lang="en">scientific texts - scientific article</desc>
-							</valItem>
-							<valItem ident="textes_scientifiques.conference">
-								<desc xml:lang="fr">presse - conférence</desc>
-								<desc xml:lang="en">scientific texts - conference</desc>
-							</valItem>
-							<valItem ident="textes_simplifies">
-								<desc xml:lang="fr">textes simplifiés</desc>
-								<desc xml:lang="en">simplified texts</desc>
-							</valItem>
-							<valItem ident="textes_simplifies.article_encyclopedique">
-								<desc xml:lang="fr">textes simplifiés - article encyclopédique</desc>
-								<desc xml:lang="en">simplified texts - encyclopaedic article</desc>
-							</valItem>
-							<valItem ident="textes_simplifies.article_scientifique">
-								<desc xml:lang="fr">textes simplifiés - article scientifique</desc>
-								<desc xml:lang="en">simplified texts - scientific article</desc>
-							</valItem>
-							<valItem ident="ecrits_scolaires">
-								<desc xml:lang="fr">écrits scolaires</desc>
-								<desc xml:lang="en">academic writing</desc>
-							</valItem>
-							<valItem ident="ecrits_scolaires.analyse_sujet_type_CRPE">
-								<desc xml:lang="fr">écrits scolaires - analyse - sujet type CRPE</desc>
-								<desc xml:lang="en">academic writing - analysis - CRPE-type subject</desc>
-							</valItem>
-							<valItem ident="ecrits_scolaires.compte_rendu_de_lecture">
-								<desc xml:lang="fr">écrits scolaires - compte-rendu de lecture</desc>
-								<desc xml:lang="en">academic writing - reading report</desc>
-							</valItem>
-							<valItem ident="ecrits_scolaires.compte_rendu_professionnel">
-								<desc xml:lang="fr">écrits scolaires - compte-rendu professionnel</desc>
-								<desc xml:lang="en">academic writing - professional report</desc>
-							</valItem>
-							<valItem ident="ecrits_scolaires.dossier">
-								<desc xml:lang="fr">écrits scolaires - dossier</desc>
-								<desc xml:lang="en">academic writing - dossier</desc>
-							</valItem>
-							<valItem ident="ecrits_scolaires.lettre_de_motivation">
-								<desc xml:lang="fr">écrits scolaires - lettre de motivation</desc>
-								<desc xml:lang="en">academic writing - cover letter</desc>
-							</valItem>
-							<valItem ident="ecrits_scolaires.memoire">
-								<desc xml:lang="fr">écrits scolaires - mémoire</desc>
-								<desc xml:lang="en">academic writing - dissertation</desc>
-							</valItem>
-							<valItem ident="ecrits_scolaires.rapport_de_stage">
-								<desc xml:lang="fr">écrits scolaires - rapport de stage</desc>
-								<desc xml:lang="en">academic writing - internship report</desc>
-							</valItem>
-							<valItem ident="ecrits_scolaires.redaction">
-								<desc xml:lang="fr">écrits scolaires - rédaction</desc>
-								<desc xml:lang="en">academic writing - essay</desc>
-							</valItem>
-							<valItem ident="ecrits_scolaires.synthese_theorique">
-								<desc xml:lang="fr">écrits scolaires - synthèse théorique</desc>
-								<desc xml:lang="en">academic writing - theoretical synthesis</desc>
-							</valItem>
-							<valItem ident="unknown">
-								<desc xml:lang="fr">inconnu</desc>
-								<desc xml:lang="en">unknown</desc>
-							</valItem>
+							<valItem ident="vie universitaire"></valItem>
+							<valItem ident="ville d'Orléans"></valItem>
+							<valItem ident="travail"></valItem>
+							<valItem ident="vie quotidienne"></valItem>
+							<valItem ident="prose"></valItem>
+							<valItem ident="autres"></valItem>
 						</valList>
 					</content>
 				</elementSpec>
@@ -697,12 +528,22 @@
 					<desc xml:lang="fr">Type de genre</desc>
 					<desc xml:lang="en">Genre name</desc>
 					<content>
+						<datatype>
+							<dataRef name="openlist"/>
+						</datatype>
 						<valList>
-							<valItem ident="Comptes rendus de séance">
-							</valItem>
-							<valItem ident="Textes simplifiés">
-							</valItem>
-						</valList>
+							<valItem ident="Comptes rendus de séance"></valItem>
+							<valItem ident="Textes simplifiés"></valItem>
+							<valItem ident="Presse"></valItem>
+							<valItem ident="Rapports"></valItem>
+							<valItem ident="Ecrits scolaires"></valItem>
+							<valItem ident="Interactions orales"></valItem>
+							<valItem ident="Textes scientifiques"></valItem>
+							<valItem ident="Interactions écrites"></valItem>
+							<valItem ident="Français médiéval"></valItem>
+							<valItem ident="Retranscription"></valItem>
+							<valItem ident="Textes juridiques"></valItem>
+                        </valList>
 					</content>
 				</elementSpec>
 
@@ -847,8 +688,12 @@
 					<desc xml:lang="spa">Fuentes de los datos</desc>
 					<desc xml:lang="jpn">データのソース</desc>
 					<content>
-						<elementRef key="recordingStmt" minOccurs="1" maxOccurs="1"/>
+						<elementRef key="recordingStmt" minOccurs="0" maxOccurs="1"/>
+						<elementRef key="msDesc" minOccurs="0" maxOccurs="1"/>
 					</content>
+					<remarks style="element">
+						<p><ident>css-sourceDesc</ident></p>
+					</remarks>
 				</elementSpec>
 				
 				<elementSpec ident="recordingStmt" module="spoken">
@@ -873,7 +718,6 @@
 						</sequence>
 					</content>
 					<remarks style="element">
-						<ab>background-color: lightblue; border-radius: 8px; margin: 3px;</ab>
 						<p><ident>recording-element</ident></p>
 					</remarks>
 				</elementSpec>
@@ -887,7 +731,6 @@
 						<textNode/>
 					</content>
 					<remarks style="element">
-						<ab>background-color: lightgreen; border-radius: 8px; margin: 3px; margin-top: 10px;</ab>
 						<p><ident>media-p-element</ident></p>
 					</remarks>
 				</elementSpec>
@@ -966,7 +809,7 @@
 						<outputRendition>color:blue;</outputRendition>
 					</model>
 					<remarks style="element">
-						<ab>background-color: lightgreen; border-radius: 8px; margin: 3px;</ab>
+<!--						<ab>background-color: lightgreen; border-radius: 8px; margin: 3px;</ab> -->
 						<p><ident>media-element</ident></p>
 					</remarks>
 				</elementSpec>
@@ -1037,6 +880,41 @@
 							</valList>
 						</attDef>
 					</attList>
+				</elementSpec>
+
+				<elementSpec ident="msDesc" module="header" mode="change">
+					<desc xml:lang="fre">Données sources écrites</desc>
+					<desc xml:lang="eng">Sources of the written data</desc>
+					<desc xml:lang="spa">Fuentes de los datos escritos</desc>
+					<content>
+						<elementRef key="msContents" minOccurs="0" maxOccurs="1"/>
+						<elementRef key="msIdentifier" minOccurs="0" maxOccurs="1"/>
+						<elementRef key="physDesc" minOccurs="0" maxOccurs="1"/>
+					</content>
+				</elementSpec>
+
+				<elementSpec ident="msContents" module="header" mode="change">
+					<desc xml:lang="fre">Contenu manuscrit</desc>
+					<content>
+						<textNode/>
+						<dataRef name="multiline"/>
+					</content>
+				</elementSpec>
+
+				<elementSpec ident="msIdentifier" module="header" mode="change">
+					<desc xml:lang="fre">Identifiant manuscrit</desc>
+					<content>
+						<textNode/>
+						<dataRef name="multiline"/>
+					</content>
+				</elementSpec>
+
+				<elementSpec ident="physDesc" module="header" mode="change">
+					<desc xml:lang="fre">Description physique</desc>
+					<content>
+						<textNode/>
+						<dataRef name="multiline"/>
+					</content>
 				</elementSpec>
 
 			</schemaSpec>

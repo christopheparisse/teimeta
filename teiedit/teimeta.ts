@@ -298,49 +298,48 @@ export function loadXmlOddCss(filenameXml: string, dataXml: string,
  * @returns 'ok' / 'null'
  * the return values are stored in the teiData structure
  */
-export function readXmlOddCss (filenameXml: string,  
-    filenameOdd: string, filenameCss: string, callback: any) {
-        function loadXml(filename, oddname, odddata, cssname, cssdata) {
-            if (filename) {
-                readTextFile(filename,
-                function(err, data) {
-                    if (err) {
-                        console.log('error : ', data);
-                        alert.alertUser('error reading ' + filename + ' : ' + data);
-                        return;
-                    }
-                    loadXmlOddCss(filename, data, oddname, odddata, cssname, cssdata, callback);
-                });
-            } else {
-                loadXmlOddCss(null, null, oddname, odddata, cssname, cssdata, callback);
-            }
-        }
-        function loadOdd(filename, cssname, cssdata) {
-            if (filename) {
-                readTextFile(filename, 
-                function(err, data) {
-                    if (err) {
-                        console.log('error : ', data);
-                        alert.alertUser('error reading ' + filename + ' : ' + data);
-                        return;
-                    }
-                    loadXml(filenameXml, filenameOdd, data, filenameCss, data);
-                });
-            } else {
-                alert.alertUser('cannot run readXmlOddCss with null filenameOdd');
-            }
-        }
-        if (filenameCss) {
-            readTextFile(filenameCss, 
-            function(err, data) {
+export function readXmlOddCss(myfilenameXml: string, myfilenameOdd: string, myfilenameCss: string, callback: any) {
+    function loadXml(xmlname, oddname, odddata, cssname, cssdata) {
+        if (xmlname) {
+            readTextFile(xmlname, function (err, data) {
                 if (err) {
                     console.log('error : ', data);
-                    alert.alertUser('error reading ' + filenameCss + ' : ' + data);
-                return;
+                    alert.alertUser('error reading ' + xmlname + ' : ' + data);
+                    return;
                 }
-                loadOdd(filenameOdd, filenameCss, data);
+                loadXmlOddCss(xmlname, data, oddname, odddata, cssname, cssdata, callback);
             });
-        } else {
-            loadOdd(filenameOdd, null, null);
         }
+        else {
+            loadXmlOddCss(null, null, oddname, odddata, cssname, cssdata, callback);
+        }
+    }
+    function loadOdd(filenameXml, filenameOdd, cssname, cssdata) {
+        if (filenameOdd) {
+            readTextFile(filenameOdd, function (err, data) {
+                if (err) {
+                    console.log('error : ', data);
+                    alert.alertUser('error reading ' + filenameOdd + ' : ' + data);
+                    return;
+                }
+                loadXml(filenameXml, filenameOdd, data, cssname, data);
+            });
+        }
+        else {
+            alert.alertUser('cannot run readXmlOddCss with null filenameOdd');
+        }
+    }
+    if (myfilenameCss) {
+        readTextFile(myfilenameCss, function (err, data) {
+            if (err) {
+                console.log('error : ', data);
+                alert.alertUser('error reading ' + myfilenameCss + ' : ' + data);
+                return;
+            }
+            loadOdd(myfilenameXml, myfilenameOdd, myfilenameCss, data);
+        });
+    }
+    else {
+        loadOdd(myfilenameXml, myfilenameOdd, null, null);
+    }
 }

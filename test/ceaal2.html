@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="./css/internal.css">
+<link rel="stylesheet" href="teispoken.css">
+<script src="../dist/lib.js"></script>
+<style>
+pre {
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+</style>
+<title>EDITION METADONNEES OFC: Corpus écrits d'apprenants et acquisition de L2 (CEAAL2)</title>
+</head>
+<body>
+  <span><b>Editez les métadonnées du corpus: Corpus écrits d'apprenants et acquisition de L2 (CEAAL2)</b></span>
+  <span><b>puis sauvegardez les.</b></span>
+  <button id="ofcmeta-localsave" type="button" onclick="saveTheData();"><b><em>Save the data</em></b></button>
+  <hr/>
+  <div id="teimeta"></div>
+  <pre id="info">CORLI OFC Metadata 2024.</pre>
+</body>
+<script>
+
+window.teimeta.teimetaParams.defaultNewElement = false;
+window.teimeta.readXmlOddCss('http://localhost:8080/devl/teimeta/test/ceaal2.xml', 
+    'http://localhost:8080/devl/teimeta/test/ofc-v1.odd',
+    null, // 'http://localhost:8080/devl/teimeta/test/teispoken.css',
+  function (h) {
+    var el = document.getElementById('teimeta');
+    el.innerHTML = h;
+    window.teimeta.finalizeHTML();
+  });
+
+function saveTheData() {
+  var r = window.teimeta.generateXml();
+  window.teimeta.saveFileLocal('xml', 'ceaal2-result.xml', r);
+  var el = document.getElementById('info');
+  info.textContent = r;
+}
+
+</script>
+</html>

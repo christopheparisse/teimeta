@@ -774,7 +774,9 @@ function editDataType(datatype, ident) {
             for (let k=0; k < iso639.code639.length; k++) {
                 s += '<option value="' +
                 iso639.code639[k].code + '" ';
-                if (datatype.valueContent === iso639.code639[k].code)
+                if (datatype.valueContent === iso639.code639[k].code
+                    || datatype.valueContent === iso639.code639[k].code2
+                    || datatype.valueContent === iso639.code639[k].code2l)
                     s  += 'selected="selected" ';
                 s += '>' + iso639.code639[k].name /* + ' - ' + iso639.code639[k].desc */ + '</option>\n';
             }

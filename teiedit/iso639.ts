@@ -4,6 +4,7 @@
  * list of codes for iso languages reference
  */
 export let code639 = [
+    { code: "fre", code2: "fra", code2l: "fr", name: "French", desc: "français" },
     { code: "baq", code2: "eus", code2l: "eu", name: "Basque", desc: "basque" },
     { code: "chi", code2: "zho", code2l: "zh", name: "Chinese", desc: "chinois" },
     { code: "cze", code2: "ces", code2l: "cs", name: "Czech", desc: "tchèque" },
@@ -12,7 +13,6 @@ export let code639 = [
     { code: "eng", code2: "", code2l: "en", name: "English", desc: "anglais" },
     { code: "est", code2: "", code2l: "et", name: "Estonian", desc: "estonien" },
     { code: "fin", code2: "", code2l: "fi", name: "Finnish", desc: "finnois" },
-    { code: "fre", code2: "fra", code2l: "fr", name: "French", desc: "français" },
     { code: "ger", code2: "deu", code2l: "de", name: "German", desc: "allemand" },
     { code: "heb", code2: "", code2l: "he", name: "Hebrew", desc: "hébreu" },
     { code: "hrv", code2: "", code2l: "hr", name: "Croatian", desc: "croate" },

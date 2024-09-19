@@ -5,6 +5,7 @@
  */
 export let iso3666Alpha2 =
 [
+    { code: "FR", name: "France" },
     { code: "AF", name: "Afghanistan" },
     { code: "AX", name: "Åland Islands" },
     { code: "AL", name: "Albania" },
@@ -80,7 +81,6 @@ export let iso3666Alpha2 =
     { code: "FO", name: "Faroe Islands" },
     { code: "FJ", name: "Fiji" },
     { code: "FI", name: "Finland" },
-    { code: "FR", name: "France" },
     { code: "GF", name: "French Guiana" },
     { code: "PF", name: "French Polynesia" },
     { code: "TF", name: "French Southern Territories" },

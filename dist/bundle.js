@@ -1080,49 +1080,49 @@ exports.loadXmlOddCss = loadXmlOddCss;
  * @returns 'ok' / 'null'
  * the return values are stored in the teiData structure
  */
-function readXmlOddCss(filenameXml, filenameOdd, filenameCss, callback) {
-    function loadXml(filename, oddname, odddata, cssname, cssdata) {
-        if (filename) {
-            readTextFile(filename, function (err, data) {
+function readXmlOddCss(myfilenameXml, myfilenameOdd, myfilenameCss, callback) {
+    function loadXml(xmlname, oddname, odddata, cssname, cssdata) {
+        if (xmlname) {
+            readTextFile(xmlname, function (err, data) {
                 if (err) {
                     console.log('error : ', data);
-                    alert.alertUser('error reading ' + filename + ' : ' + data);
+                    alert.alertUser('error reading ' + xmlname + ' : ' + data);
                     return;
                 }
-                loadXmlOddCss(filename, data, oddname, odddata, cssname, cssdata, callback);
+                loadXmlOddCss(xmlname, data, oddname, odddata, cssname, cssdata, callback);
             });
         }
         else {
             loadXmlOddCss(null, null, oddname, odddata, cssname, cssdata, callback);
         }
     }
-    function loadOdd(filename, cssname, cssdata) {
-        if (filename) {
-            readTextFile(filename, function (err, data) {
+    function loadOdd(filenameXml, filenameOdd, cssname, cssdata) {
+        if (filenameOdd) {
+            readTextFile(filenameOdd, function (err, data) {
                 if (err) {
                     console.log('error : ', data);
-                    alert.alertUser('error reading ' + filename + ' : ' + data);
+                    alert.alertUser('error reading ' + filenameOdd + ' : ' + data);
                     return;
                 }
-                loadXml(filenameXml, filenameOdd, data, filenameCss, data);
+                loadXml(filenameXml, filenameOdd, data, cssname, data);
             });
         }
         else {
             alert.alertUser('cannot run readXmlOddCss with null filenameOdd');
         }
     }
-    if (filenameCss) {
-        readTextFile(filenameCss, function (err, data) {
+    if (myfilenameCss) {
+        readTextFile(myfilenameCss, function (err, data) {
             if (err) {
                 console.log('error : ', data);
-                alert.alertUser('error reading ' + filenameCss + ' : ' + data);
+                alert.alertUser('error reading ' + myfilenameCss + ' : ' + data);
                 return;
             }
-            loadOdd(filenameOdd, filenameCss, data);
+            loadOdd(myfilenameXml, myfilenameOdd, myfilenameCss, data);
         });
     }
     else {
-        loadOdd(filenameOdd, null, null);
+        loadOdd(myfilenameXml, myfilenameOdd, null, null);
     }
 }
 exports.readXmlOddCss = readXmlOddCss;
@@ -9386,7 +9386,9 @@ function editDataType(datatype, ident) {
             for (var k = 0; k < iso639.code639.length; k++) {
                 s += '<option value="' +
                     iso639.code639[k].code + '" ';
-                if (datatype.valueContent === iso639.code639[k].code)
+                if (datatype.valueContent === iso639.code639[k].code
+                    || datatype.valueContent === iso639.code639[k].code2
+                    || datatype.valueContent === iso639.code639[k].code2l)
                     s += 'selected="selected" ';
                 s += '>' + iso639.code639[k].name /* + ' - ' + iso639.code639[k].desc */ + '</option>\n';
             }
@@ -9735,15 +9737,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * list of codes for iso languages reference
  */
 exports.code639 = [
+    { code: "fre", code2: "fra", code2l: "fr", name: "French", desc: "français" },
     { code: "baq", code2: "eus", code2l: "eu", name: "Basque", desc: "basque" },
     { code: "chi", code2: "zho", code2l: "zh", name: "Chinese", desc: "chinois" },
+    { code: "cmn", code2: "", code2l: "", name: "Mandarin", desc: "mandarin" },
     { code: "cze", code2: "ces", code2l: "cs", name: "Czech", desc: "tchèque" },
     { code: "dan", code2: "", code2l: "da", name: "Danish", desc: "danois" },
     { code: "dut", code2: "nld", code2l: "nl", name: "Dutch; Flemish", desc: "néerlandais; flamand" },
     { code: "eng", code2: "", code2l: "en", name: "English", desc: "anglais" },
     { code: "est", code2: "", code2l: "et", name: "Estonian", desc: "estonien" },
     { code: "fin", code2: "", code2l: "fi", name: "Finnish", desc: "finnois" },
-    { code: "fre", code2: "fra", code2l: "fr", name: "French", desc: "français" },
     { code: "ger", code2: "deu", code2l: "de", name: "German", desc: "allemand" },
     { code: "heb", code2: "", code2l: "he", name: "Hebrew", desc: "hébreu" },
     { code: "hrv", code2: "", code2l: "hr", name: "Croatian", desc: "croate" },
@@ -10236,6 +10239,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * list of codes for iso contries reference
  */
 exports.iso3666Alpha2 = [
+    { code: "FR", name: "France" },
     { code: "AF", name: "Afghanistan" },
     { code: "AX", name: "Åland Islands" },
     { code: "AL", name: "Albania" },
@@ -10311,7 +10315,6 @@ exports.iso3666Alpha2 = [
     { code: "FO", name: "Faroe Islands" },
     { code: "FJ", name: "Fiji" },
     { code: "FI", name: "Finland" },
-    { code: "FR", name: "France" },
     { code: "GF", name: "French Guiana" },
     { code: "PF", name: "French Polynesia" },
     { code: "TF", name: "French Southern Territories" },
